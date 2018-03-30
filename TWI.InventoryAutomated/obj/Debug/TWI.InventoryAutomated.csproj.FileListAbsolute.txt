@@ -93,6 +93,7 @@ D:\Krunal\Projects\SCB_New\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Ent
 D:\Krunal\Projects\SCB_New\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.SqlServer.dll
 D:\Krunal\Projects\SCB_New\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.xml
 D:\Krunal\Projects\SCB_New\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.SqlServer.xml
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.CoreCompileInputs.cache
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\ApplicationInsights.config
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\TWI.InventoryAutomated.dll.config
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\TWI.InventoryAutomated.dll
@@ -183,7 +184,6 @@ E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.ServerTelemetryChannel.xml
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.WindowsServer.xml
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.Web.xml
-E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojResolveAssemblyReference.cache
-E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.CoreCompileInputs.cache
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.dll
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.pdb
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojResolveAssemblyReference.cache

@@ -22,6 +22,10 @@ namespace TWI.InventoryAutomated.Controllers
         {
             return View();
         }
+        public ActionResult SubMenu()
+        {
+            return View();
+        }
 
         #endregion
 

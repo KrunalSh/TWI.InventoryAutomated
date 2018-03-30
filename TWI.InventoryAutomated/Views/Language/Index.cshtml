@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row"> &nbsp;</div>
+<div class="row"> &nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">Language(s)</div>
+
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Home","Home")'><i class="fa fa-home fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:3px 7px;" class="table-responsive">
+                <table id="LanguagesTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+            dataTable = $("#LanguagesTable").DataTable({
+                "ajax": {
+                    "url": "/Language/GetData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "Code" },
+                    { "data": "Description" },
+                    {
+                        "data": "IsActive", "render": function (data) {
+                            if (data)
+                                return "<i class='fa fa-hand-stop-o' style='color:green;'></i>";
+                            else
+                                return "<i class='fa fa-hand-stop-o' style='color:red;'></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    },
+                    {
+                        "data": "CreatedDate", "render": function (date) { return new Date(parseInt(date.replace('/Date(', ''))); },
+                        "visible": false
+                    },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return "<i class='fa fa-pencil' onclick=PopupForm('@Url.Action("AddOrEdit", "Language")/" + data + "')></i><i class='fa fa-trash' style='margin-left:5px' onclick=Delete(" + data + ")></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    }
+
+
+                ],
+                "aaSorting": [[3, "desc"]] ,
+                "responsive": true,
+                "language": {
+
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                },
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_filter a').length==0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" onclick="PopupForm(\'@Url.Action("AddOrEdit", "Language")\')">Add New</a>');
+                }
+            });
+        });
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+                $.get(url)
+                    .done(function (response) {
+                        formDiv.html(response);
+
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: 'Language Detail',
+                            modal: true
+                            //,
+                            //width: 'auto',
+                            //close: function () {
+                            //    Popup.dialog('destroy').remove();
+                            //}
+                            //,
+                            //create: function (event, ui) {
+                            //    $(this).css("maxWidth", "660px");
+                            //}
+
+                        });
+                    });
+            }
+
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+                            $('#lblcode').notify(data.message, {
+                                arrowShow: false, className: "success", elementPosition: 'top center'
+                            });
+                        }
+                        else
+                            $('#lblcode').notify(data.message, {
+                                arrowShow: false, className: "error", elementPosition: 'top center' });
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id) {
+            if (confirm('Are you sure to disable this Language record ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Language")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            $('#topHeading').notify(data.message, {
+                                arrowShow: false, className: "success", elementPosition: 'bottom center'
+                            });
+                        }
+                        else
+                        $('#topHeading').notify(data.message, {
+                            arrowShow: false, className: "error", elementPosition: 'bottom center'
+                        });
+                    }
+
+                });
+            }
+        }
+    </script>
+}
+
+

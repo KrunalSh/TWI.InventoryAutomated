@@ -27,5 +27,9 @@ namespace TWI.InventoryAutomated.Models
     
         public virtual DbSet<UserAccess> UserAccesses { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Company> Companies { get; set; }
+        public virtual DbSet<Instance> Instances { get; set; }
+        public virtual DbSet<RegisteredDevice> RegisteredDevices { get; set; }
+        public virtual DbSet<Language> Languages { get; set; }
     }
 }
