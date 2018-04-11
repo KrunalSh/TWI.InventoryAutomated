@@ -16,6 +16,18 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
+        <EntityType Name="Forms">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FormName" Type="nvarchar" MaxLength="50" />
+          <Property Name="SourceFileName" Type="nvarchar" MaxLength="150" />
+          <Property Name="ModuleID" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
+        </EntityType>
         <EntityType Name="Instances">
           <Key>
             <PropertyRef Name="ID" />
@@ -38,6 +50,27 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
+        <EntityType Name="Modules">
+          <Key>
+            <PropertyRef Name="ModuleID" />
+          </Key>
+          <Property Name="ModuleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ModuleName" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
+        </EntityType>
+        <EntityType Name="Permissions">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PermissionCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="PermissionDesc" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
+        </EntityType>
         <EntityType Name="RegisteredDevice">
           <Key>
             <PropertyRef Name="ID" />
@@ -49,13 +82,22 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
+        <EntityType Name="UIPermissionAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PermissionID" Type="int" />
+          <Property Name="FormID" Type="int" />
+          <Property Name="ModuleID" Type="int" />
+          <Property Name="AllowAccess" Type="bit" />
+        </EntityType>
         <EntityType Name="UserAccess">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserID" Type="int" />
-          <Property Name="DeviceID" Type="int" />
           <Property Name="CompanyID" Type="int" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="500" />
           <Property Name="InstanceID" Type="int" />
@@ -64,6 +106,26 @@
           <Property Name="CreatedBy" Type="int" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="datetime" />
+        </EntityType>
+        <EntityType Name="UserAccessDevices">
+          <Key>
+            <PropertyRef Name="UserAccessID" />
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="UserAccessID" Type="int" Nullable="false" />
+          <Property Name="DeviceID" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="UserLanguages">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="LanguageID" />
+          </Key>
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="LanguageID" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -81,10 +143,16 @@
         </EntityType>
         <EntityContainer Name="TWIInventoryPortalModelStoreContainer">
           <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UIPermissionAssignment" EntityType="Self.UIPermissionAssignment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserAccess" EntityType="Self.UserAccess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserAccessDevices" EntityType="Self.UserAccessDevices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserLanguages" EntityType="Self.UserLanguages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -97,7 +165,6 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" />
-          <Property Name="DeviceID" Type="Int32" />
           <Property Name="CompanyID" Type="Int32" />
           <Property Name="CompanyName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="InstanceID" Type="Int32" />
@@ -128,6 +195,12 @@
           <EntitySet Name="Instances" EntityType="TWIInventoryPortalModel.Instance" />
           <EntitySet Name="RegisteredDevices" EntityType="TWIInventoryPortalModel.RegisteredDevice" />
           <EntitySet Name="Languages" EntityType="TWIInventoryPortalModel.Language" />
+          <EntitySet Name="Forms" EntityType="TWIInventoryPortalModel.Form" />
+          <EntitySet Name="Modules" EntityType="TWIInventoryPortalModel.Module" />
+          <EntitySet Name="Permissions" EntityType="TWIInventoryPortalModel.Permission" />
+          <EntitySet Name="UIPermissionAssignments" EntityType="TWIInventoryPortalModel.UIPermissionAssignment" />
+          <EntitySet Name="UserLanguages" EntityType="TWIInventoryPortalModel.UserLanguage" />
+          <EntitySet Name="UserAccessDevices" EntityType="TWIInventoryPortalModel.UserAccessDevice" />
         </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -173,6 +246,69 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsActive" Type="Boolean" />
         </EntityType>
+        <EntityType Name="Form">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FormName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFileName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleID" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Module">
+          <Key>
+            <PropertyRef Name="ModuleID" />
+          </Key>
+          <Property Name="ModuleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModuleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PermissionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PermissionDesc" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="UIPermissionAssignment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PermissionID" Type="Int32" />
+          <Property Name="FormID" Type="Int32" />
+          <Property Name="ModuleID" Type="Int32" />
+          <Property Name="AllowAccess" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="UserLanguage">
+          <Key>
+            <PropertyRef Name="UserID" />
+            <PropertyRef Name="LanguageID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="LanguageID" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="UserAccessDevice">
+          <Key>
+            <PropertyRef Name="UserAccessID" />
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="UserAccessID" Type="Int32" Nullable="false" />
+          <Property Name="DeviceID" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -184,7 +320,6 @@
               <MappingFragment StoreEntitySet="UserAccess">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
                 <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="InstanceID" ColumnName="InstanceID" />
@@ -256,6 +391,73 @@
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Forms">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.Form">
+              <MappingFragment StoreEntitySet="Forms">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+                <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
+                <ScalarProperty Name="FormName" ColumnName="FormName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Modules">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.Module">
+              <MappingFragment StoreEntitySet="Modules">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModuleName" ColumnName="ModuleName" />
+                <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Permissions">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.Permission">
+              <MappingFragment StoreEntitySet="Permissions">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="PermissionDesc" ColumnName="PermissionDesc" />
+                <ScalarProperty Name="PermissionCode" ColumnName="PermissionCode" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UIPermissionAssignments">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.UIPermissionAssignment">
+              <MappingFragment StoreEntitySet="UIPermissionAssignment">
+                <ScalarProperty Name="AllowAccess" ColumnName="AllowAccess" />
+                <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+                <ScalarProperty Name="FormID" ColumnName="FormID" />
+                <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserLanguages">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserLanguage">
+              <MappingFragment StoreEntitySet="UserLanguages">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserAccessDevices">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserAccessDevice">
+              <MappingFragment StoreEntitySet="UserAccessDevices">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="UserAccessID" ColumnName="UserAccessID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

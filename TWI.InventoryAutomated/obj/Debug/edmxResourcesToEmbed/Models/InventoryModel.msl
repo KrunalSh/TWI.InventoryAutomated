@@ -6,7 +6,6 @@
         <MappingFragment StoreEntitySet="UserAccess">
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="UserID" ColumnName="UserID" />
-          <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
           <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
           <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
           <ScalarProperty Name="InstanceID" ColumnName="InstanceID" />
@@ -78,6 +77,73 @@
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Code" ColumnName="Code" />
           <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Forms">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.Form">
+        <MappingFragment StoreEntitySet="Forms">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+          <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
+          <ScalarProperty Name="FormName" ColumnName="FormName" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Modules">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.Module">
+        <MappingFragment StoreEntitySet="Modules">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="ModuleName" ColumnName="ModuleName" />
+          <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Permissions">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.Permission">
+        <MappingFragment StoreEntitySet="Permissions">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="PermissionDesc" ColumnName="PermissionDesc" />
+          <ScalarProperty Name="PermissionCode" ColumnName="PermissionCode" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UIPermissionAssignments">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.UIPermissionAssignment">
+        <MappingFragment StoreEntitySet="UIPermissionAssignment">
+          <ScalarProperty Name="AllowAccess" ColumnName="AllowAccess" />
+          <ScalarProperty Name="ModuleID" ColumnName="ModuleID" />
+          <ScalarProperty Name="FormID" ColumnName="FormID" />
+          <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserLanguages">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserLanguage">
+        <MappingFragment StoreEntitySet="UserLanguages">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="LanguageID" ColumnName="LanguageID" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserAccessDevices">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserAccessDevice">
+        <MappingFragment StoreEntitySet="UserAccessDevices">
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+          <ScalarProperty Name="UserAccessID" ColumnName="UserAccessID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

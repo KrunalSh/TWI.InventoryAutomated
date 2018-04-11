@@ -14,7 +14,7 @@
 
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Home","Home")'><i class="fa fa-home fa-2x"></i></a>
             </div>
-            <div style="width:95%;margin:3px 7px;" class="table-responsive">
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
                 <table id="LanguagesTable" class="table table-striped dt-responsive display nowrap table-bordered">
                     <thead>
                         <tr>
@@ -53,21 +53,24 @@
                     {
                         "data": "IsActive", "render": function (data) {
                             if (data)
-                                return "<i class='fa fa-hand-stop-o' style='color:green;'></i>";
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightgreen" ></i><i data-toggle="tooltip" title="Active" class="fa fa-circle-thin fa-stack-1x icon-green"></i></span >';
                             else
-                                return "<i class='fa fa-hand-stop-o' style='color:red;'></i>";
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightred" ></i><i data-toggle="tooltip" title="InActive" class="fa fa-circle-thin fa-stack-1x icon-red"></i></span >';
                         },
                         "orderable": false,
                         "searchable": false,
                         "width": "50px"
                     },
                     {
-                        "data": "CreatedDate", "render": function (date) { return new Date(parseInt(date.replace('/Date(', ''))); },
+                        "data": "CreatedDate", "render": function (date) {
+                            if (date != null) return new Date(parseInt(date.replace('/Date(', '')));
+                            else return "";
+                        },
                         "visible": false
                     },
                     {
                         "data": "ID", "render": function (data) {
-                            return "<i class='fa fa-pencil' onclick=PopupForm('@Url.Action("AddOrEdit", "Language")/" + data + "')></i><i class='fa fa-trash' style='margin-left:5px' onclick=Delete(" + data + ")></i>";
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "Language")/" + data + "')></i>  <i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ")></i>";
                         },
                         "orderable": false,
                         "searchable": false,
@@ -83,8 +86,9 @@
                     "emptyTable": "No data found, Please click on <b>Add New</b> Button"
                 },
                 'fnDrawCallback': function (oSettings) {
-                    if ($('.dataTables_filter a').length==0)
-                        $('.dataTables_filter').append('  <a class="btn btn-success" onclick="PopupForm(\'@Url.Action("AddOrEdit", "Language")\')">Add New</a>');
+                    if ($('.dataTables_filter i').length == 0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("AddOrEdit", "Language")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                    $('[data-toggle="tooltip"]').tooltip();
                 }
             });
         });
@@ -98,15 +102,6 @@
                             autoOpen: true,
                             title: 'Language Detail',
                             modal: true
-                            //,
-                            //width: 'auto',
-                            //close: function () {
-                            //    Popup.dialog('destroy').remove();
-                            //}
-                            //,
-                            //create: function (event, ui) {
-                            //    $(this).css("maxWidth", "660px");
-                            //}
 
                         });
                     });
@@ -126,13 +121,13 @@
                         if (data.success) {
                             Popup.dialog('close');
                             dataTable.ajax.reload();
-                            $('#lblcode').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'top center'
+                            $('.txtNotification').notify(data.message, {
+                                arrowShow: false, className: "success", elementPosition: 'bottom center'
                             });
                         }
                         else
-                            $('#lblcode').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'top center' });
+                            $('.txtNotification').notify(data.message, {
+                                arrowShow: false, className: "error", elementPosition: 'bottom center' });
                     }
                 });
             }

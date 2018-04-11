@@ -31,5 +31,11 @@ namespace TWI.InventoryAutomated.Models
         public virtual DbSet<Instance> Instances { get; set; }
         public virtual DbSet<RegisteredDevice> RegisteredDevices { get; set; }
         public virtual DbSet<Language> Languages { get; set; }
+        public virtual DbSet<Form> Forms { get; set; }
+        public virtual DbSet<Module> Modules { get; set; }
+        public virtual DbSet<Permission> Permissions { get; set; }
+        public virtual DbSet<UIPermissionAssignment> UIPermissionAssignments { get; set; }
+        public virtual DbSet<UserLanguage> UserLanguages { get; set; }
+        public virtual DbSet<UserAccessDevice> UserAccessDevices { get; set; }
     }
 }

@@ -96,7 +96,7 @@ namespace TWI.InventoryAutomated.Controllers
                         else
                         {
                             Company comp = db.Companies.AsNoTracking().Where(x => x.ID == company.ID).FirstOrDefault();
-                            comp.CreatedDate = company.CreatedDate;
+                            comp.CreatedDate = comp.CreatedDate;
                             db.Entry(company).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);

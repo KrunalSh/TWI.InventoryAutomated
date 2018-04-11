@@ -16,7 +16,6 @@ namespace TWI.InventoryAutomated.Models
     {
         public int ID { get; set; }
         public Nullable<int> UserID { get; set; }
-        public Nullable<int> DeviceID { get; set; }
         public Nullable<int> CompanyID { get; set; }
         public string CompanyName { get; set; }
         public Nullable<int> InstanceID { get; set; }

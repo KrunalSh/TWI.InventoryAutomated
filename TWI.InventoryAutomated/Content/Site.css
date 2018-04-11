@@ -34,6 +34,36 @@ input.input-validation-error {
 .ui-dialog > .ui-widget-header {
     background: #808080;
 }
+.ui-dialog > .ui-widget-header span {
+    color:white;
+}
 .ui-dialog-titlebar-close {
     display: none !important;
 }
+
+.checkbox-righttext{
+    float:right;
+}
+
+.icon-green {
+    color: #40c040;
+}
+.icon-lightgreen {
+    color: #c0ffc0;
+}
+.icon-red {
+    color: red;
+}
+
+.icon-lightred {
+    color: #ffd7c0;
+}
+.customstack {
+    height: 1em !important;
+    line-height: 1em !important;
+}
+.requiredfield {
+    font-size: larger;
+    color: #7E1617;
+}
+    

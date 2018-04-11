@@ -151,15 +151,24 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\FormController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstanceController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
+    <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\PermissionAssignmentController.cs" />
+    <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\RegisteredDeviceController.cs" />
+    <Compile Include="Controllers\UserAccessController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataAccess\CommonServices.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Company.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Form.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Instance.cs">
@@ -184,7 +193,16 @@
     <Compile Include="Models\Language.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Module.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Permission.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\RegisteredDevice.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UIPermissionAssignment.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
@@ -193,11 +211,19 @@
     <Compile Include="Models\UserAccess.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserAccessDevice.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserLanguage.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen-sprite.png" />
+    <Content Include="Content\chosen.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -227,6 +253,7 @@
       <DependentUpon>InventoryModel.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -260,6 +287,17 @@
     <Content Include="Views\Home\SubMenu.cshtml" />
     <Content Include="Views\Language\Index.cshtml" />
     <Content Include="Views\Language\AddOrEdit.cshtml" />
+    <Content Include="Views\Module\Index.cshtml" />
+    <Content Include="Views\Module\AddOrEdit.cshtml" />
+    <Content Include="Views\Form\Index.cshtml" />
+    <Content Include="Views\Form\AddOrEdit.cshtml" />
+    <Content Include="Views\Permission\Index.cshtml" />
+    <Content Include="Views\Permission\AddOrEdit.cshtml" />
+    <Content Include="Views\PermissionAssignment\Index.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\AddOrEdit.cshtml" />
+    <Content Include="Views\UserAccess\Index.cshtml" />
+    <Content Include="Views\UserAccess\AddOrEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
