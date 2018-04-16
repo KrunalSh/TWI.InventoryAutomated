@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using TWI.InventoryAutomated.Security;
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -15,6 +16,11 @@
         </div>
         <div style="margin:auto;background:#ffffff;width:98%;padding:15px;">
             @RenderBody()
+        </div>
+        <div style="float:right;position:fixed;bottom:25px;width:100%;height:25px;background:#7E1617;">
+            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">@(Session["InstanceName"]!=null?Session["InstanceName"].ToString():"")</div>
+            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">@(Session["CompanyName"]!=null?Session["CompanyName"].ToString():"")</div>
+            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">@SessionPersister.UserName</div>
         </div>
         <div style="float:right;position:fixed;bottom:0;width:100%;height:25px;background:#7E1617;">
             <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">&copy; Theodor Wille Intertrade LLC - 2018 </div>

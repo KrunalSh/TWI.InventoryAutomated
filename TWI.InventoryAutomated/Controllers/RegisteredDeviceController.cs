@@ -5,12 +5,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using TWI.InventoryAutomated.Models;
+using TWI.InventoryAutomated.Security;
 
 namespace TWI.InventoryAutomated.Controllers
 {
     public class RegisteredDeviceController : Controller
     {
         // GET: RegisteredDevice
+        //[CustomAuthorize(Roles = "Create Product2")]
         public ActionResult Index()
         {
             return View();

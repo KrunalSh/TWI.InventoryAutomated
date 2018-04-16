@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Default";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <div class="row">
+        <img src="https://www.w3schools.com/howto/img_fjords_wide.jpg" style="width:100%">
+    </div>
+    <div class="row">
+        <br />
+        <br />
+    </div>
+    <div class="row">
+        <a href="#" style="float:right;font-size:x-large; " onclick="OpenForm();">Click to Login</a>
+    </div>
+</div>
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup
+        $(document).ready(function () {
+
+        });
+        function OpenForm() {
+            var formDiv = $('<div/>');
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AuthenticateDevice", "Home")' ,
+                    success: function (data) {
+                        formDiv.html(data);
+
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: 'Login',
+                            modal: true
+
+                        });
+                    }
+
+                });
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (!data.success)
+                            $('#LoginError').text(data.message);
+                        else
+                            location.href = data.message;
+                    }
+                });
+            }
+            return false;
+        }
+    </script>
+    
+}

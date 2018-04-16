@@ -54,7 +54,7 @@
                     <div>
                         @Html.LabelFor(model => model.PermissionID, new { @class = "control-label" })
                         <span class="requiredfield">*</span>
-                        @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), "Please Select Permission",new { @class = "form-control" })
+                        @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), "Please Select",new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.PermissionID)
                     </div>
                 </td>
