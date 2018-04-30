@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Admin Sub Menu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TWI.InventoryAutomated.DataAccess;
+<div class="container">
+
+    <div class="row" style="padding-bottom:30px;padding-left:20px;">
+        @if (CommonServices.IsUserhasAccessOnPage("Registered Devices") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px; height:90px;" onclick="location.href='@Url.Action("Index", "RegisteredDevice")'">Registered Devices</button>
+                </div>
+
+
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Instances") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Instance")'">Instances</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Languages") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Language")'">Languages</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Modules") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Module")'">Modules</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Forms") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Form")'">Forms</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Permissions") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Permission")'">Permissions</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Users") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "User")'">User</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")'">Active Sessions</button>
+                </div>
+            </div>
+        }
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding:11px;">
+                <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Home", "Home")'">Main Menu</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+

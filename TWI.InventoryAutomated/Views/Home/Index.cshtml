@@ -10,19 +10,19 @@
             <h5 style="color:red" id="LoginError"></h5>
             <div class="input-group" style="float:right;padding:5px;">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control" })
+                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(model => model.UserName)
             </div>
             <div class="input-group" style="float:right;padding:5px;">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control", @autocomplete = "off" })
                 @Html.ValidationMessageFor(model => model.Password)
             </div>
             <br />
             <br />
             <div class="form-group" style="float:right;padding:5px;">
                 <button type="button" class="btn btn-link">Forgot Password</button>
-                <input type="submit" value="Login" class="btn btn-primary" />
+                <input type="submit" id="Login" value="Login" class="btn btn-primary" />
             </div>
         </div>
     </div>

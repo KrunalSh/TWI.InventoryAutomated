@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 
 namespace TWI.InventoryAutomated.Controllers
@@ -13,7 +14,14 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: User
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         public ActionResult GetData()
         {
@@ -22,14 +30,12 @@ namespace TWI.InventoryAutomated.Controllers
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     var dataList = (from x in db.Users
-                                    join y in db.Permissions on x.PermissionID equals y.ID
                                     select new
                                     {
                                         x.UserID,
                                         x.UserName,
                                         x.EmailID,
-                                        x.IsActive,
-                                        y.PermissionDesc
+                                        x.IsActive
                                     }).ToList();
                     return Json(new { data = dataList }, JsonRequestBehavior.AllowGet);
                 }
@@ -48,8 +54,7 @@ namespace TWI.InventoryAutomated.Controllers
             try
             {
                 InventoryPortalEntities db = new InventoryPortalEntities();
-                ViewBag.Permissions = db.Permissions.ToList();
-                ViewBag.Languages = (from r in db.Languages select new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code }).ToList();
+                ViewBag.Languages = (from r in db.Languages where r.IsActive==true select new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code }).ToList();
                 if (id == 0)
                 {
                     ViewBag.selectedLanguages = db.Languages.Where(x => x.Description.Contains("English") && x.IsActive == true).Select(x => x.ID).ToList();
@@ -84,6 +89,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (user.UserID == 0)
                         {
                             user.CreatedDate = DateTime.Now;
+                            user.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Users.Add(user);
                             db.SaveChanges();
                             updateLanguages(user, selectedval);
@@ -93,6 +99,7 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             User _user = db.Users.AsNoTracking().Where(x => x.UserID == user.UserID).FirstOrDefault();
                             user.CreatedDate = _user.CreatedDate;
+                            user.CreatedBy = _user.CreatedBy;
                             db.Entry(user).State = EntityState.Modified;
                             db.SaveChanges();
                             updateLanguages(user, selectedval);

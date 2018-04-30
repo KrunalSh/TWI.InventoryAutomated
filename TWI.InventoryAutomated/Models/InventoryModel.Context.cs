@@ -25,7 +25,6 @@ namespace TWI.InventoryAutomated.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<UserAccess> UserAccesses { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Instance> Instances { get; set; }
@@ -37,5 +36,7 @@ namespace TWI.InventoryAutomated.Models
         public virtual DbSet<UIPermissionAssignment> UIPermissionAssignments { get; set; }
         public virtual DbSet<UserLanguage> UserLanguages { get; set; }
         public virtual DbSet<UserAccessDevice> UserAccessDevices { get; set; }
+        public virtual DbSet<UserSessionLog> UserSessionLogs { get; set; }
+        public virtual DbSet<UserAccess> UserAccesses { get; set; }
     }
 }

@@ -1,0 +1,94 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+.field-validation-error {
+    color: #e80c4d;
+    font-weight: bold;
+}
+
+
+input.input-validation-error {
+    border: 1px solid #e80c4d;
+}
+.ui-dialog > .ui-widget-header {
+    background: #808080;
+}
+.ui-dialog > .ui-widget-header span {
+    color:white;
+}
+.ui-dialog-titlebar-close {
+    display: none;
+}
+.showContent {
+    display: block !important;
+}
+.checkbox-righttext{
+    float:right;
+}
+
+.icon-green {
+    color: #40c040;
+}
+.icon-lightgreen {
+    color: #c0ffc0;
+}
+.icon-red {
+    color: red;
+}
+
+.icon-lightred {
+    color: #ffd7c0;
+}
+.customstack {
+    height: 1em !important;
+    line-height: 1em !important;
+}
+.requiredfield {
+    font-size: larger;
+    color: #7E1617;
+}
+/* For mobile phones: */
+[class*="mobileDevices"] {
+    text-align: center;
+    font-family: Arial 'Times New Roman';
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    vertical-align: middle;
+    padding-left: 15px;
+}
+@media only screen and (min-width: 768px) {
+
+    .footertext {
+        font-family: Arial 'Times New Roman';
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        vertical-align: middle;
+        padding-left: 15px;
+        text-align: right;
+    }
+}
+    
+    

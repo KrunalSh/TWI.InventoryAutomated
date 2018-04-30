@@ -9,14 +9,26 @@
     <div class="form-group">
         @Html.LabelFor(model => model.InstanceID, "Instance Name", new { @class = "control-label" })
         <span class="requiredfield">*</span>
-        @Html.DropDownListFor(model => model.InstanceID, new SelectList(ViewBag.Instances, "ID", "InstanceName"), new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.InstanceID, new SelectList(ViewBag.Instances, "ID", "InstanceName"), new { @class = "form-control", @id = "Instances" })
         @Html.ValidationMessageFor(model => model.InstanceID)
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.CompanyID, "Company Name", new { @class = "control-label" })
         <span class="requiredfield">*</span>
-        @Html.DropDownListFor(model => model.CompanyID, new SelectList(ViewBag.Companies, "ID", "CompanyName"), new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.CompanyID, Enumerable.Empty<SelectListItem>(), new { @class = "form-control", @id = "Companies" })
         @Html.ValidationMessageFor(model => model.CompanyID)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.PermissionID, new { @class = "control-label" })
+        <span class="requiredfield">*</span>
+        @if (ViewBag.IsSuperUser != null)
+        {
+            @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), new { @class = "form-control", @disabled="disabled" })
+        }
+        else
+        {
+            @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), new { @class = "form-control" })
+        }@Html.ValidationMessageFor(model => model.PermissionID)
     </div>
     <div class="form-group">
         <label class="control-label">Devices</label>

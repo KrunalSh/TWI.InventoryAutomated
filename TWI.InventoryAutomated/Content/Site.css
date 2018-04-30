@@ -38,9 +38,11 @@ input.input-validation-error {
     color:white;
 }
 .ui-dialog-titlebar-close {
-    display: none !important;
+    display: none;
 }
-
+.showContent {
+    display: block !important;
+}
 .checkbox-righttext{
     float:right;
 }
@@ -66,4 +68,27 @@ input.input-validation-error {
     font-size: larger;
     color: #7E1617;
 }
+/* For mobile phones: */
+[class*="mobileDevices"] {
+    text-align: center;
+    font-family: Arial 'Times New Roman';
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    vertical-align: middle;
+    padding-left: 15px;
+}
+@media only screen and (min-width: 768px) {
+
+    .footertext {
+        font-family: Arial 'Times New Roman';
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        vertical-align: middle;
+        padding-left: 15px;
+        text-align: right;
+    }
+}
+    
     

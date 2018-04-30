@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row"> &nbsp;</div>
+<div class="row"> &nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">Active Sessions</div>
+
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("SubMenu","Home")'><i class="fa fa-home fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="ActiveSessionsTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>MAC Address</th>
+                            <th>Instance Name</th>
+                            <th>Company Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+
+            dataTable = $("#ActiveSessionsTable").DataTable({
+                "ajax": {
+                    "url": "/CurrentSessions/GetData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "DisplayName" },
+                    { "data": "MacAddress" },
+                    { "data": "InstanceName" },
+                    { "data": "CompanyName" },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return "<i class='fa fa-trash fa-lg' data-toggle='tooltip' title='Delete' style='margin-left:15px' onclick=RemoveSession(" + data + ")></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    }
+
+
+                ],
+                "responsive": true,
+                "language": {
+
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                }
+            });
+        });
+
+        function RemoveSession(id) {
+            if (confirm('Are you sure to deactivate this connection ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveSession", "CurrentSessions")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+
+                });
+            }
+        }
+
+    </script>
+}
+
+

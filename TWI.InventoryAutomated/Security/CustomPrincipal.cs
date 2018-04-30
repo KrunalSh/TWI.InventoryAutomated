@@ -26,9 +26,10 @@ namespace TWI.InventoryAutomated.Security
         {
             var roles = permissions.Split(new char[] { ',' });
             List<string> perms = (from u in db.Users
-                                  join v in db.Permissions on u.PermissionID equals v.ID
+                                  join v in db.UserAccesses on u.UserID equals v.UserID
+                                  join w in db.Permissions on v.PermissionID equals w.ID
                                   where u.UserName == this.user.UserName
-                                  select v.PermissionDesc).ToList();
+                                  select w.PermissionDesc).ToList();
 
             return roles.Any(r => perms.Contains(r));
         }

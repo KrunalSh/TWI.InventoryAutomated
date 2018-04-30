@@ -19,7 +19,6 @@ namespace TWI.InventoryAutomated.Models
         public string EmailID { get; set; }
         public string DisplayName { get; set; }
         public string Password { get; set; }
-        public Nullable<int> PermissionID { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }

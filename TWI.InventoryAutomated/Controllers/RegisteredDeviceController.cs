@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 using TWI.InventoryAutomated.Security;
 
@@ -15,7 +16,14 @@ namespace TWI.InventoryAutomated.Controllers
         //[CustomAuthorize(Roles = "Create Product2")]
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         public ActionResult GetData()
         {
@@ -67,6 +75,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (regDevice.ID == 0)
                         {
                             regDevice.CreatedDate = DateTime.Now;
+                            regDevice.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.RegisteredDevices.Add(regDevice);
                             db.SaveChanges();
                             return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
@@ -75,6 +84,7 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             RegisteredDevice regdevice = db.RegisteredDevices.AsNoTracking().Where(x => x.ID == regDevice.ID).FirstOrDefault();
                             regDevice.CreatedDate = regdevice.CreatedDate;
+                            regDevice.CreatedBy = regdevice.CreatedBy;
                             db.Entry(regDevice).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);

@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using TWI.InventoryAutomated.Security;
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding-top:10px; margin:auto;">
+                <button type="button" class="btn" style="width:300px; height:90px;">InBound</button>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding-top:10px;margin:auto;">
+                <button type="button" class="btn" style="width:300px;height:90px;">OutBound</button>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;margin:auto;padding-top:10px;">
+                <button type="button" class="btn" style="width:300px;height:90px;">Internal</button>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;margin:auto;padding-top:10px;">
+                <button type="button" class="btn" style="width:300px;height:90px;" onclick="location.href='@Url.Action("SubMenu", "Home")'">Admin</button>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;margin:auto;padding-top:10px;">
+                <button type="button" class="btn" style="width:300px;height:90px;" onclick="location.href='@Url.Action("LogOut","Home")'">Logout</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

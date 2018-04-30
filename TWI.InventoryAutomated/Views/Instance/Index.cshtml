@@ -9,7 +9,7 @@
         <div style="margin:auto;width:80%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
                 <div style="font-weight:bold">Navision Instance(s)</div>
-                <a style="margin-top:-21px;float: right;color: white;" href='@Url.Action("Home","Home")'><i class="fa fa-home fa-2x"></i></a>
+                <a style="margin-top:-21px;float: right;color: white;" href='@Url.Action("SubMenu","Home")'><i class="fa fa-home fa-2x"></i></a>
             </div>
             <div style="width:95%;margin:22px 25px;" class="table-responsive">
                 <table id="InstancesTable" class="table table-striped dt-responsive display nowrap table-bordered">
@@ -122,14 +122,10 @@
                         if (data.success) {
                             Popup.dialog('close');
                             dataTable.ajax.reload();
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
                 });
             }
@@ -144,14 +140,10 @@
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
 
                 });

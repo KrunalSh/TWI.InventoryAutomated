@@ -161,12 +161,25 @@ namespace TWI.InventoryAutomated.Models
             ErrorMessage = "Please provide valid email id")]
         [Display(Name = "Email ID")]
         public string EmailID { get; set; }
-        [Display(Name = "Permissions")]
         [Required(ErrorMessage = "Required Field")]
-        public Nullable<int> PermissionID { get; set; }
+        public string DisplayName { get; set; }
+
         [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
-#endregion
+    #endregion
+    //#region UserAccess
+    //[MetadataType(typeof(UserAttribs))]
+    //public partial class UserAccess
+    //{
 
+    //}
+
+    //public class UserAccessAttribs
+    //{
+    //    [Display(Name = "Permissions")]
+    //    [Required(ErrorMessage = "Required Field")]
+    //    public Nullable<int> PermissionID { get; set; }
+    //}
+    //#endregion
 }

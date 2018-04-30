@@ -1,0 +1,80 @@
+﻿@model TWI.InventoryAutomated.Models.UserAccess
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("AddOrEdit", "UserAccess", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group">
+        @Html.LabelFor(model => model.InstanceID, "Instance Name", new { @class = "control-label" })
+        <span class="requiredfield">*</span>
+        @Html.DropDownListFor(model => model.InstanceID, new SelectList(ViewBag.Instances, "ID", "InstanceName"), new { @class = "form-control", @id = "Instances" })
+        @Html.ValidationMessageFor(model => model.InstanceID)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.CompanyID, "Company Name", new { @class = "control-label" })
+        <span class="requiredfield">*</span>
+        @Html.DropDownListFor(model => model.CompanyID, Enumerable.Empty<SelectListItem>(), new { @class = "form-control", @id = "Companies" })
+        @Html.ValidationMessageFor(model => model.CompanyID)
+    </div>
+    <div>
+        @Html.LabelFor(model => model.PermissionID, new { @class = "control-label" })
+        <span class="requiredfield">*</span>
+        @if (ViewBag.IsSuperUser != null)
+        {
+            @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), new { @class = "form-control", @disabled="disabled" })
+        }
+        else
+        {
+            @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), new { @class = "form-control" })
+        }@Html.ValidationMessageFor(model => model.PermissionID)
+    </div>
+    <div class="form-group">
+        <label class="control-label">Devices</label>
+        <span class="requiredfield">*</span>
+        <select id="ListDevices" multiple="multiple" class="form-control" required name="devices">
+            @{bool IsallSelected = false;
+            }
+            @if (ViewBag.Devices != null && ViewBag.selectedDevices != null && ViewBag.selectedDevices.Count == ViewBag.Devices.Count)
+            {
+                <option selected="selected" value="All">All</option>
+                IsallSelected = true;
+            }
+            else
+            {
+                <option value="All">All</option>
+            }
+            @if (ViewBag.Devices != null)
+            {
+                foreach (var item in ViewBag.Devices)
+                {
+                    if (IsallSelected == false && ViewBag.selectedDevices != null && ViewBag.selectedDevices.Contains(Convert.ToInt32(item.Value)))
+                    {
+                        <option selected="selected" value="@item.Value">@item.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group txtNotification">
+        @{
+            var IsActive = true;
+            if (Model.IsActive != null)
+            { IsActive = (bool)Model.IsActive; }
+        }
+        @Html.CheckBoxFor(x => IsActive)
+        @Html.LabelFor(model => model.IsActive, new { @class = "control-label" })
+    </div>
+    <br />
+    <br />
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="reset" value="Cancel" class="btn" onclick="Cancelbutton();" />
+    </div>
+}

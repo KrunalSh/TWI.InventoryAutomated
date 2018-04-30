@@ -8,7 +8,7 @@
     @Html.HiddenFor(model => model.UserID)
     <div class="row-fluid">
         <table style="width:100%">
-            <tr>
+            <tr style="vertical-align:top">
                 <td>
                     <div>
                         @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
@@ -20,12 +20,13 @@
                 <td>
                     <div>
                         @Html.LabelFor(model => model.EmailID, new { @class = "control-label" })
+                        <span class="requiredfield"></span>
                         @Html.EditorFor(model => model.EmailID, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.EmailID)
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr style="vertical-align:top">
                 <td>
                     <div>
                         @Html.LabelFor(model => model.Password, new { @class = "control-label" })
@@ -37,12 +38,13 @@
                 <td>
                     <div>
                         @Html.LabelFor(model => model.ConfirmPassword, new { @class = "control-label" })
+                        <span class="requiredfield">*</span>
                         @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.ConfirmPassword)
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr style="vertical-align:top">
                 <td>
                     <div>
                         @Html.LabelFor(model => model.DisplayName, new { @class = "control-label" })
@@ -50,16 +52,6 @@
                         @Html.ValidationMessageFor(model => model.DisplayName)
                     </div>
                 </td>
-                <td>
-                    <div>
-                        @Html.LabelFor(model => model.PermissionID, new { @class = "control-label" })
-                        <span class="requiredfield">*</span>
-                        @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), "Please Select",new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.PermissionID)
-                    </div>
-                </td>
-            </tr>
-            <tr>
                 <td>
                     <div>
                         <label class="control-label">Languages</label>
@@ -81,8 +73,10 @@
                         </select>
                     </div>
                 </td>
-                <td>
-                    <div class="txtNotification">
+            </tr>
+            <tr style="vertical-align:top">
+                <td colspan="2">
+                    <div class="txtNotification" style="float:right;margin-right:10px;">
                         @{
                             var IsActive = true;
                             if (Model.IsActive != null)

@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 
 namespace TWI.InventoryAutomated.Controllers
@@ -13,7 +14,14 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Form
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         public ActionResult GetData()
         {
@@ -67,6 +75,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (_form.ID == 0)
                         {
                             _form.CreatedDate = DateTime.Now;
+                            _form.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Forms.Add(_form);
                             db.SaveChanges();
                             return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
@@ -75,6 +84,7 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             Form form = db.Forms.AsNoTracking().Where(x => x.ID == _form.ID).FirstOrDefault();
                             _form.CreatedDate = form.CreatedDate;
+                            _form.CreatedBy = form.CreatedBy;
                             db.Entry(_form).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);

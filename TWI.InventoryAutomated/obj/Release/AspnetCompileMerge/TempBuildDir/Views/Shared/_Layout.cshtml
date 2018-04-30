@@ -1,0 +1,49 @@
+﻿@using TWI.InventoryAutomated.Security;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - TWI Inventory Management</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+</head>
+<body>
+    <div style="max-width:100%;width:100%;">
+        <div style="background:#7E1617;width:100%;height:80px;vertical-align:top;margin-top:-50px;">
+            <div style="width:30%;float:left;">
+                <img src="~/images/TWILogo.png" width="100px" height="80px" style="vertical-align:middle;padding:5px;" />
+            </div>
+            <div style="width:65%;float:right;color:white;text-align:right;padding-top:55px;padding-right:10px;" id="@(Session["UserID"] != null ? Session["UserID"].ToString() : Url.Action("LogOut","Home"))">
+                @if (Session["DisplayName"] != null)
+                {
+                    <b>User : </b>@Session["DisplayName"].ToString();
+                }
+            </div>
+        </div>
+        <div style="margin:auto;background:#ffffff;width:98%;padding:15px;">
+            @RenderBody()
+        </div>
+        <div class="footer navbar-fixed-bottom" style="background:#7E1617;">
+            <div>
+                <div class="row justify-content-md-center" style="padding-left:1px;padding-right:2px;">
+                    <div class="col-sm-6 footertext mobileDevices">
+                        @(Session["InstanceName"] != null && Session["CompanyName"] != null ? Session["InstanceName"].ToString() + " ( " + Session["CompanyName"].ToString() + " ) " : "")
+                    </div>
+                    <div class="col-sm-6 footertext">
+                        <div class="footertext mobileDevices">&copy; Theodor Wille Intertrade LLC - 2018 </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/notify.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

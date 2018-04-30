@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 
 namespace TWI.InventoryAutomated.Controllers
@@ -13,7 +14,14 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Module
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         public ActionResult GetData()
         {
@@ -65,6 +73,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (mod.ModuleID == 0)
                         {
                             mod.CreatedDate = DateTime.Now;
+                            mod.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Modules.Add(mod);
                             db.SaveChanges();
                             return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
@@ -73,6 +82,7 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             Module module = db.Modules.AsNoTracking().Where(x => x.ModuleID == mod.ModuleID).FirstOrDefault();
                             module.CreatedDate = mod.CreatedDate;
+                            module.CreatedBy = mod.CreatedBy;
                             db.Entry(mod).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);

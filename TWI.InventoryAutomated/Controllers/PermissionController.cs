@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 
 namespace TWI.InventoryAutomated.Controllers
@@ -13,7 +14,14 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Permission
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         public ActionResult GetData()
         {
@@ -21,7 +29,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    List<Permission> dataList = db.Permissions.ToList<Permission>();
+                    List<Permission> dataList = db.Permissions.Where(x => x.PermissionDesc != "Super Admin").ToList<Permission>();
                     return Json(new { data = dataList }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -65,6 +73,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (perm.ID == 0)
                         {
                             perm.CreatedDate = DateTime.Now;
+                            perm.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Permissions.Add(perm);
                             db.SaveChanges();
                             return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
@@ -73,6 +82,7 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             Permission permission = db.Permissions.AsNoTracking().Where(x => x.ID == perm.ID).FirstOrDefault();
                             perm.CreatedDate = permission.CreatedDate;
+                            perm.CreatedBy = permission.CreatedBy;
                             db.Entry(perm).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);

@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 
 namespace TWI.InventoryAutomated.Controllers
@@ -13,7 +14,14 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Language
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         public ActionResult GetData()
         {
@@ -65,6 +73,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (lang.ID == 0)
                         {
                             lang.CreatedDate = DateTime.Now;
+                            lang.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Languages.Add(lang);
                             db.SaveChanges();
                             return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
@@ -73,6 +82,7 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             Language regdevice = db.Languages.AsNoTracking().Where(x => x.ID == lang.ID).FirstOrDefault();
                             lang.CreatedDate = regdevice.CreatedDate;
+                            lang.CreatedBy = regdevice.CreatedBy;
                             db.Entry(lang).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);

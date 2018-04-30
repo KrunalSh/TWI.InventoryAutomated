@@ -1,0 +1,176 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row"> &nbsp;</div>
+<div class="row"> &nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">User(s)</div>
+                <a style="margin-top:-25px;float: right;color: white;" href='@Url.Action("Home","Home")'><i class="fa fa-home fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="UsersTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Email Address</th>
+                            <th>Permissions</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Access</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/Content/chosen.min.css" rel="stylesheet" />
+<style>
+    table tr td:first-child {
+        width: 50%;
+    }
+    .txtNotification{
+        margin-top:30px;
+    }
+    select.input-validation-error {
+        border: 1px solid red;
+    }
+</style>
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+            dataTable = $("#UsersTable").DataTable({
+                "ajax": {
+                    "url": "/User/GetData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "UserName" },
+                    { "data": "EmailID" },
+                    { "data": "PermissionDesc" },
+                    {
+                        "data": "IsActive", "render": function (data) {
+                            if (data)
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightgreen" ></i><i data-toggle="tooltip" title="Active" class="fa fa-circle-thin fa-stack-1x icon-green"></i></span >';
+                            else
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightred" ></i><i data-toggle="tooltip" title="InActive" class="fa fa-circle-thin fa-stack-1x icon-red"></i></span >';
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    },
+                    {
+                        "data": "CreatedDate", "render": function (date) {
+                            if (date != null) return new Date(parseInt(date.replace('/Date(', '')));
+                            else return "";
+                        },
+                        "visible": false
+                    },
+                    {
+                        "data": "UserID", "render": function (data) {
+                            return "<a href='/UserAccess/Index?UserID=" + data + "'>Select</a>";
+                        }
+                    },
+                    {
+                        "data": "UserID", "render": function (data) {
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "User")/" + data + "')></i>  <i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ")></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    }
+
+
+                ],
+                "aaSorting": [[4, "desc"]] ,
+                "responsive": true,
+                "language": {
+
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                },
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_filter i').length == 0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("AddOrEdit", "User")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+        });
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+            .done(function (response) {
+                formDiv.html(response);
+
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    title: 'User Detail',
+                    width: '615px',
+                    modal: true,
+                    open: function () {
+                        $('#ListLanguages').chosen();
+                    }
+                });
+            });
+        }
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                var data = $(form).serialize();
+                var selectedlangs=$('#ListLanguages').val().join(",");
+                var finaldata = data + "&selectedlangs=" + selectedlangs;
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: finaldata,
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('destroy').remove();
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id) {
+            if (confirm('Are you sure to disable this User detail ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "User")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+
+                });
+            }
+        }
+    </script>
+}
+
+

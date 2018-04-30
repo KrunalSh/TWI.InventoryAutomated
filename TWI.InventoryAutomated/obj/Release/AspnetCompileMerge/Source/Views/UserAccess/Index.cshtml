@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row"> &nbsp;</div>
+<div class="row"> &nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">Access  - @ViewBag.UserName</div>
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","User")'><i class="fa fa-arrow-left fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="UserAccessTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Instance</th>
+                            <th>Company</th>
+                            <th>Permissions</th>
+                            <th>Devices Name</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/Content/chosen.min.css" rel="stylesheet" />
+
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script>
+        var Popup, dataTable,devices;
+        $(document).ready(function () {
+            dataTable = $("#UserAccessTable").DataTable({
+                "ajax": {
+                    "url": '/UserAccess/GetData?UserId=@ViewBag.UserID',
+                    "type": "POST"
+                },
+                "columns": [
+                    { "data": "InstanceName" },
+                    { "data": "CompanyName" },
+                    { "data": "PermissionDesc" },
+                    {
+                        "data": "ID", "render": function (data) {
+                            GetDevicesInformations(data)
+                            return devices;
+                        },
+                    },
+                    {
+                        "data": "IsActive", "render": function (data) {
+                            if (data)
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightgreen" ></i><i data-toggle="tooltip" title="Active" class="fa fa-circle-thin fa-stack-1x icon-green"></i></span >';
+                            else
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightred" ></i><i data-toggle="tooltip" title="InActive" class="fa fa-circle-thin fa-stack-1x icon-red"></i></span >';
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    },
+                    {
+                        "data": "CreatedDate", "render": function (date) {
+                            if (date != null) return new Date(parseInt(date.replace('/Date(', '')));
+                            else return "";
+                        },
+                        "visible": false
+                    },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "UserAccess")/" + data + "')></i>   <i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ")></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    }
+
+
+                ],
+                "aaSorting": [[5, "desc"]] ,
+                "responsive": true,
+                "language": {
+
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                },
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_filter i').length == 0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("AddOrEdit", "UserAccess")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+            $("#ListDevices").on({
+                change: function () {
+                    var element = $(this);
+                    var theAllOption = element.find('option[value="All"]');
+                    if (theAllOption.is(":selected")) {
+                        element.find("option").not(theAllOption).removeAttr("selected");
+                        $("#ListDevices").trigger("liszt:updated")
+                    }
+                }
+            });
+
+        });
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+            .done(function (response) {
+                formDiv.html(response);
+
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    title: 'User Access Detail',
+                    modal: true,
+                    open: function () {
+                        fetchCompanies();
+                        $('#ListDevices').chosen();
+                        $('#Instances').change(function () {
+                            fetchCompanies();
+                        });
+
+                    }
+                });
+            });
+        }
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $(form).append('<input type="hidden" name="UserID" value="@ViewBag.UserID" /> ');
+                var InstanceName = $('#Instances :selected').text();
+                $(form).append('<input type="hidden" name="InstanceName" value="' + InstanceName+'" /> ');
+                var CompanyName = $('#Companies :selected').text();
+                $(form).append('<input type="hidden" name="CompanyName" value="' + CompanyName+'" /> ');
+                var data = $(form).serialize();
+                var selectedlangs = $('#ListDevices').val().join(",");
+                if (selectedlangs.search("All") != -1) {
+                    var optVals=[];
+                    $('#ListDevices option[value]').each(function (i) {
+                        if(i!=0)
+                            optVals.push($(this).attr('value'));
+                    });
+                    selectedlangs = optVals.join(",");
+                }
+                var finaldata = data + "&selecteddevices=" + selectedlangs;
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: finaldata,
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('destroy').remove();
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id) {
+            if (confirm('Are you sure to disable this Company details ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "UserAccess")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+
+                });
+            }
+        }
+        function GetDevicesInformations(id) {
+            $.ajaxSetup({ async: false });
+            $.post('@Url.Action("GetDevicesInformations", "UserAccess")/' + id,function(data){
+                    devices = data;
+            });
+        }
+
+        function fetchCompanies() {
+            $("#Companies").empty();
+            var intInstID = $('#Instances').val();
+            $.ajaxSetup({ async: false });
+            $.post('@Url.Action("GetCompanies", "UserAccess")' +"?intInstID=" + intInstID,function(data){
+                $.each(data.message, function () {
+                    $('#Companies').append('<option value=' +
+                        this.ID + '>' + this.CompanyName + '</option>');
+                });
+            });
+
+
+        }
+    </script>
+}
+
+

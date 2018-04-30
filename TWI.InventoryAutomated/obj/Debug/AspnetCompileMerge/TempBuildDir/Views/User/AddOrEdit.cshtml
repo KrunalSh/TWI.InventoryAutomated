@@ -1,0 +1,107 @@
+﻿@model TWI.InventoryAutomated.Models.User
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("AddOrEdit", "User", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.HiddenFor(model => model.UserID)
+    <div class="row-fluid">
+        <table style="width:100%">
+            <tr style="vertical-align:top">
+                <td>
+                    <div>
+                        @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
+                        <span class="requiredfield">*</span>
+                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.UserName)
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        @Html.LabelFor(model => model.EmailID, new { @class = "control-label" })
+                        <span class="requiredfield"></span>
+                        @Html.EditorFor(model => model.EmailID, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.EmailID)
+                    </div>
+                </td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td>
+                    <div>
+                        @Html.LabelFor(model => model.Password, new { @class = "control-label" })
+                        <span class="requiredfield">*</span>
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Password)
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        @Html.LabelFor(model => model.ConfirmPassword, new { @class = "control-label" })
+                        <span class="requiredfield">*</span>
+                        @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                    </div>
+                </td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td>
+                    <div>
+                        @Html.LabelFor(model => model.DisplayName, new { @class = "control-label" })
+                        @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DisplayName)
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        @Html.LabelFor(model => model.PermissionID, new { @class = "control-label" })
+                        <span class="requiredfield">*</span>
+                        @Html.DropDownListFor(model => model.PermissionID, new SelectList(ViewBag.Permissions, "ID", "PermissionDesc"), "Please Select", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PermissionID)
+                    </div>
+                </td>
+            </tr>
+            <tr style="vertical-align:top">
+                <td>
+                    <div>
+                        <label class="control-label">Languages</label>
+                        <select id="ListLanguages" multiple="multiple" class="form-control" name="languagesname">
+                            @if (ViewBag.Languages != null)
+                            {
+                                foreach (var item in ViewBag.Languages)
+                                {
+                                    if (ViewBag.selectedLanguages != null && ViewBag.selectedLanguages.Contains(Convert.ToInt32(item.Value)))
+                                    {
+                                        <option selected="selected" value="@item.Value">@item.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div class="txtNotification">
+                        @{
+                            var IsActive = true;
+                            if (Model.IsActive != null)
+                            { IsActive = (bool)Model.IsActive; }
+                        }
+                        @Html.CheckBoxFor(x => IsActive)
+                        @Html.LabelFor(model => model.IsActive, new { @class = "control-label" })
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <br />
+
+        <div class="form-group" style="margin-right: 18px;float:right;">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            <input type="reset" value="Cancel" class="btn" onclick="Cancelbutton();" />
+        </div>
+    </div>
+}

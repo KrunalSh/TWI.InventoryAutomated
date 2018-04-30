@@ -17,7 +17,6 @@
                         <tr>
                             <th>User Name</th>
                             <th>Email Address</th>
-                            <th>Permissions</th>
                             <th>Status</th>
                             <th>Created Date</th>
                             <th>Access</th>
@@ -61,7 +60,6 @@
                 "columns": [
                     { "data": "UserName" },
                     { "data": "EmailID" },
-                    { "data": "PermissionDesc" },
                     {
                         "data": "IsActive", "render": function (data) {
                             if (data)
@@ -96,7 +94,7 @@
 
 
                 ],
-                "aaSorting": [[4, "desc"]] ,
+                "aaSorting": [[3, "desc"]] ,
                 "responsive": true,
                 "language": {
 
@@ -143,14 +141,10 @@
                         if (data.success) {
                             Popup.dialog('destroy').remove();
                             dataTable.ajax.reload();
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
                 });
             }
@@ -165,14 +159,10 @@
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
 
                 });

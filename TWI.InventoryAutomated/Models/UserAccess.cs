@@ -19,10 +19,12 @@ namespace TWI.InventoryAutomated.Models
         public Nullable<int> CompanyID { get; set; }
         public string CompanyName { get; set; }
         public Nullable<int> InstanceID { get; set; }
+        public string InstanceName { get; set; }
+        public Nullable<int> PermissionID { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<System.DateTime> ModifiedBy { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
     }
 }

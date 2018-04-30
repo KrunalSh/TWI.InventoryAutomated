@@ -17,6 +17,7 @@
                         <tr>
                             <th>Instance</th>
                             <th>Company</th>
+                            <th>Permissions</th>
                             <th>Devices Name</th>
                             <th>Status</th>
                             <th>Created Date</th>
@@ -49,6 +50,7 @@
                 "columns": [
                     { "data": "InstanceName" },
                     { "data": "CompanyName" },
+                    { "data": "PermissionDesc" },
                     {
                         "data": "ID", "render": function (data) {
                             GetDevicesInformations(data)
@@ -84,7 +86,7 @@
 
 
                 ],
-                "aaSorting": [[4, "desc"]] ,
+                "aaSorting": [[5, "desc"]] ,
                 "responsive": true,
                 "language": {
 
@@ -106,6 +108,7 @@
                     }
                 }
             });
+
         });
         function PopupForm(url) {
             var formDiv = $('<div/>');
@@ -118,7 +121,12 @@
                     title: 'User Access Detail',
                     modal: true,
                     open: function () {
+                        fetchCompanies();
                         $('#ListDevices').chosen();
+                        $('#Instances').change(function () {
+                            fetchCompanies();
+                        });
+
                     }
                 });
             });
@@ -130,6 +138,10 @@
             $.validator.unobtrusive.parse(form);
             if ($(form).valid()) {
                 $(form).append('<input type="hidden" name="UserID" value="@ViewBag.UserID" /> ');
+                var InstanceName = $('#Instances :selected').text();
+                $(form).append('<input type="hidden" name="InstanceName" value="' + InstanceName+'" /> ');
+                var CompanyName = $('#Companies :selected').text();
+                $(form).append('<input type="hidden" name="CompanyName" value="' + CompanyName+'" /> ');
                 var data = $(form).serialize();
                 var selectedlangs = $('#ListDevices').val().join(",");
                 if (selectedlangs.search("All") != -1) {
@@ -149,14 +161,10 @@
                         if (data.success) {
                             Popup.dialog('destroy').remove();
                             dataTable.ajax.reload();
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
                 });
             }
@@ -171,14 +179,10 @@
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
 
                 });
@@ -189,6 +193,20 @@
             $.post('@Url.Action("GetDevicesInformations", "UserAccess")/' + id,function(data){
                     devices = data;
             });
+        }
+
+        function fetchCompanies() {
+            $("#Companies").empty();
+            var intInstID = $('#Instances').val();
+            $.ajaxSetup({ async: false });
+            $.post('@Url.Action("GetCompanies", "UserAccess")' +"?intInstID=" + intInstID,function(data){
+                $.each(data.message, function () {
+                    $('#Companies').append('<option value=' +
+                        this.ID + '>' + this.CompanyName + '</option>');
+                });
+            });
+
+
         }
     </script>
 }

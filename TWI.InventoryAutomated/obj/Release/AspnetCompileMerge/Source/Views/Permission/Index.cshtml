@@ -1,0 +1,205 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row"> &nbsp;</div>
+<div class="row"> &nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">Permission(s)</div>
+
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("SubMenu","Home")'><i class="fa fa-home fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="PermissionsTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Permission Name/Description</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Forms</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/Content/chosen.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+
+            dataTable = $("#PermissionsTable").DataTable({
+                "ajax": {
+                    "url": "/Permission/GetData",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "PermissionDesc" },
+                    {
+                        "data": "IsActive", "render": function (data) {
+                            if (data)
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightgreen" ></i><i data-toggle="tooltip" title="Active" class="fa fa-circle-thin fa-stack-1x icon-green"></i></span >';
+                            else
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightred" ></i><i data-toggle="tooltip" title="InActive" class="fa fa-circle-thin fa-stack-1x icon-red"></i></span >';
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    },
+                    {
+                        "data": "CreatedDate", "render": function (date) {
+                            if (date != null) return new Date(parseInt(date.replace('/Date(', '')));
+                            else return "";
+                        },
+                        "visible": false
+                    },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return "<a onclick=PopupFormAssignment('@Url.Action("Index", "PermissionAssignment")/" + data + "') href='#'>Select</a>";
+                        }
+                    },
+                    {
+                        "data": "ID", "render": function (data, type, row) {
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "Permission")/" + data + "')></i>  <i class='fa fa-trash fa-lg' data-toggle='tooltip' title='Delete' style='margin-left:15px' onclick=Delete(" + data + ")></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    }
+
+
+                ],
+                "aaSorting": [[2, "desc"]] ,
+                "responsive": true,
+                "language": {
+
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                },
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_filter i').length==0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("AddOrEdit", "Permission")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+        });
+        var currentpermission = 0;
+        function PopupFormAssignment(url) {
+            var title;
+
+            if (url.search("Permission") != -1) {
+                var lastslashindex = url.lastIndexOf('/');
+                currentpermission = url.substring(lastslashindex + 1);
+                title = event.currentTarget.parentElement.previousSibling.previousSibling.textContent;
+            }
+            else
+                title = 'Permissions Details'
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        title: title,
+                        modal: true,
+                        open: function () {
+                            $('#UIPermissions').chosen();
+                        }
+                    });
+                });
+
+        }
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        title: 'Permission Detail',
+                        modal: true
+                    });
+                });
+
+            }
+
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id) {
+            if (confirm('Are you sure to disable this Permission ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Permission")/' + id,
+                    success: function (data) {
+                        if (data.success) {
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+
+                });
+            }
+        }
+        function AssignPermissionsUI() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AssignPermissionsUI", "PermissionAssignment")',
+                data: { 'Ids': $('#UIPermissions').val(), 'currentpermission': currentpermission },
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            setTimeout(function () {   //calls click event after a certain time
+                                Popup.dialog('destroy').remove();
+                            }, 3000);
+                        }
+                        else
+                            alert(data.message);
+                    }
+
+                });
+        }
+    </script>
+}
+
+

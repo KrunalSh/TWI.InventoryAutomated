@@ -2,10 +2,11 @@
 @{
     ViewBag.Title = "InstanceAuthentication";
 }
-@using (Html.BeginForm("Home", "Home", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+@using (Html.BeginForm("Home", "Home", FormMethod.Post, new { onsubmit = "return SubmitInstanceForm(this)" }))
 {
     <div class="container" style="width:110%">
         <div class="row">
+            <h6 style="color:red" id="LoginError"></h6>
             <div class="form-group">
                 @Html.LabelFor(model => model.ID, "Instance", htmlAttributes: new { @class = "control-label" })
                 @Html.DropDownListFor(Model => Model.ID, new SelectList(ViewBag.Instances, "ID", "InstanceName"), new { @class = "form-control", @id = "Instances" })
@@ -22,41 +23,5 @@
         </div>
     </div>
 }
-@section scripts{
 
-
-    <script>
-        $(document).ready(function () {
-            fetchCompanies();
-        });
-
-        $('#Instances').change(function () {
-            fetchCompanies();
-        });
-        function fetchCompanies() {
-            $.getJSON('/Home/GetCompanies', { intInstID: $('#Instances').val() }, function (data) {
-                $.each(data, function () {
-                    $('#Companies').append('<option value=' +
-                        this.ID + '>' + this.CompanyName + '</option>');
-                });
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                alert('Error getting Companies!');
-            });
-        }
-        function SubmitForm(form) {
-            if ($('#Instances').val() != null && $('#Companies').val() != null) {
-                $.ajax({
-                    type: "POST",
-                    url: form.action,
-                    data: { 'InstId': $('#Instances').val(), 'CompId': $('#Companies').val(), 'InstName': $('#Instances  option:selected').text(), 'compName': $('#Companies  option:selected').text() },
-                    success: function (data) {
-                        if (data.success)
-                            location.href = data.message;
-                    }
-                });
-            }
-            return false;
-        }
-    </script>
-}
 

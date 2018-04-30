@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
 
 namespace TWI.InventoryAutomated.Controllers
@@ -13,7 +14,14 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: UserAccess
         public ActionResult Index()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
         [HttpPost]
         public ActionResult GetData(int UserId)
@@ -25,12 +33,14 @@ namespace TWI.InventoryAutomated.Controllers
                     var dataList = (from w in db.UserAccesses
                                     join x in db.Companies on w.CompanyID equals x.ID
                                     join y in db.Instances on w.InstanceID equals y.ID
+                                    join z in db.Permissions on w.PermissionID equals z.ID
                                     where w.UserID == UserId
                                     select new
                                     {
                                         w.ID,
                                         y.InstanceName,
                                         x.CompanyName,
+                                        z.PermissionDesc,
                                         w.IsActive,
                                         w.UserID
                                     }).ToList();
@@ -74,6 +84,7 @@ namespace TWI.InventoryAutomated.Controllers
                 InventoryPortalEntities db = new InventoryPortalEntities();
                 ViewBag.Instances = db.Instances.Where(x => x.IsActive == true).ToList();
                 ViewBag.Companies = db.Companies.Where(x => x.IsActive == true).ToList();
+                ViewBag.Permissions = db.Permissions.Where(x => x.IsActive == true).ToList();
                 ViewBag.Devices = (from r in db.RegisteredDevices where r.IsActive == true select new SelectListItem { Value = r.ID.ToString(), Text = r.DeviceName }).ToList();
                 if (id == 0)
                 {
@@ -82,7 +93,12 @@ namespace TWI.InventoryAutomated.Controllers
                 else
                 {
                     ViewBag.selectedDevices = db.UserAccessDevices.Where(x => x.UserAccessID == id).Select(x => x.DeviceID).ToList();
-                    return View(db.UserAccesses.Where(x => x.ID == id).FirstOrDefault<UserAccess>());
+                    UserAccess useracc = db.UserAccesses.Where(x => x.ID == id).FirstOrDefault<UserAccess>();
+                    if (db.Permissions.Where(x => x.ID == useracc.PermissionID && x.PermissionDesc == "Super Admin").FirstOrDefault() != null)
+                        ViewBag.IsSuperUser = true;
+                    else
+                        ViewBag.IsSuperUser = null;
+                    return View(useracc);
                 }
             }
             catch (Exception)
@@ -107,6 +123,7 @@ namespace TWI.InventoryAutomated.Controllers
                         if (useraccess.ID == 0)
                         {
                             useraccess.CreatedDate = DateTime.Now;
+                            useraccess.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.UserAccesses.Add(useraccess);
                             db.SaveChanges();
                             updateDevices(useraccess, selectedval, (bool)useraccess.IsActive);
@@ -116,7 +133,9 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             UserAccess useracc = db.UserAccesses.AsNoTracking().Where(x => x.UserID == useraccess.UserID).FirstOrDefault();
                             useraccess.CreatedDate = useracc.CreatedDate;
+                            useraccess.CreatedBy = useracc.CreatedBy;
                             useraccess.ModifiedDate = DateTime.Now;
+                            useraccess.ModifiedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Entry(useraccess).State = EntityState.Modified;
                             db.SaveChanges();
                             updateDevices(useraccess, selectedval, (bool)useraccess.IsActive);
@@ -232,5 +251,20 @@ namespace TWI.InventoryAutomated.Controllers
                     return true;
             }
         }
+
+        [HttpPost]
+        public ActionResult GetCompanies(int intInstID)
+        {
+            InventoryPortalEntities db = new InventoryPortalEntities();
+            var Companies = (from b in db.Companies
+                             where b.InstanceID == intInstID
+                             select new
+                             {
+                                 b.ID,
+                                 b.CompanyName
+                             }).ToList();
+            return Json(new { success = true, message = Companies }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

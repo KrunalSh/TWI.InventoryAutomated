@@ -114,14 +114,10 @@
                         if (data.success) {
                             Popup.dialog('close');
                             dataTable.ajax.reload();
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('.txtNotification').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
                 });
             }
@@ -136,14 +132,10 @@
                     success: function (data) {
                         if (data.success) {
                             dataTable.ajax.reload();
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "success", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                         }
                         else
-                            $('#topHeading').notify(data.message, {
-                                arrowShow: false, className: "error", elementPosition: 'bottom center'
-                            });
+                            alert(data.message);
                     }
 
                 });

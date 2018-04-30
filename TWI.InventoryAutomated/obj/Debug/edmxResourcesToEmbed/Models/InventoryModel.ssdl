@@ -96,11 +96,13 @@
     <Property Name="CompanyID" Type="int" />
     <Property Name="CompanyName" Type="nvarchar" MaxLength="500" />
     <Property Name="InstanceID" Type="int" />
+    <Property Name="InstanceName" Type="nvarchar" MaxLength="500" />
+    <Property Name="PermissionID" Type="int" />
     <Property Name="IsActive" Type="bit" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
     <Property Name="ModifiedDate" Type="datetime" />
-    <Property Name="ModifiedBy" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
   </EntityType>
   <EntityType Name="UserAccessDevices">
     <Key>
@@ -131,10 +133,20 @@
     <Property Name="EmailID" Type="nvarchar" MaxLength="250" />
     <Property Name="DisplayName" Type="nvarchar" MaxLength="150" />
     <Property Name="Password" Type="nvarchar" MaxLength="20" />
-    <Property Name="PermissionID" Type="int" />
     <Property Name="IsActive" Type="bit" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="UserSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserAccessID" Type="int" />
+    <Property Name="DeviceID" Type="int" />
+    <Property Name="SessionStart" Type="datetime" />
+    <Property Name="SessionEnd" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
   </EntityType>
   <EntityContainer Name="TWIInventoryPortalModelStoreContainer">
     <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
@@ -149,5 +161,6 @@
     <EntitySet Name="UserAccessDevices" EntityType="Self.UserAccessDevices" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLanguages" EntityType="Self.UserLanguages" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserSessionLog" EntityType="Self.UserSessionLog" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

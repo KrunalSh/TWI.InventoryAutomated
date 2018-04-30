@@ -25,21 +25,6 @@ namespace TWI.InventoryAutomated.Security
                 HttpContext.Current.Session[usernameSessionvar] = value;
             }
         }
-        public static int UserID
-        {
-            get
-            {
-                if (HttpContext.Current == null)
-                    return 0;
-                var sessionVar = HttpContext.Current.Session[userid];
-                if (sessionVar != null)
-                    return (int)sessionVar;
-                return 0;
-            }
-            set
-            {
-                HttpContext.Current.Session[userid] = value;
-            }
-        }
+        
     }
 }

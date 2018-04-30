@@ -1,0 +1,38 @@
+﻿@{
+    Layout = null;
+}
+
+<div id="txtNotification">
+
+
+    <select id="UIPermissions" multiple="multiple" class="form-control" required name="permissionsname">
+        @if (ViewBag.ModuleForms != null)
+        {
+            foreach (var item in ViewBag.ModuleForms)
+            {
+                if (ViewBag.ModuleForms != null && ViewBag.selectedForms.Contains(Convert.ToInt32(item.Value)))
+                {
+                    <option selected="selected" value="@item.Value">@item.Text</option>
+                }
+                else
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            }
+        }
+    </select>
+    <br />
+    <br />
+    <input type="button" value="Save" class="btn btn-primary" onclick="AssignPermissionsUI()" />
+    <input type="reset" value="Cancel" class="btn" onclick="Cancelbutton();" />
+</div>
+<br />
+<br />
+<br />
+<script>
+    var Popup, dataTable;
+    $(document).ready(function () {
+
+
+    });
+</script>

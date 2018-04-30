@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Default";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <div class="row">
+        <img src="https://www.w3schools.com/howto/img_fjords_wide.jpg" style="width:100%">
+    </div>
+    <div class="row">
+        <br />
+        <br />
+    </div>
+    <div class="row">
+        <a href="#" style="float:right;font-size:x-large; " onclick="OpenForm();">Click to Login</a>
+    </div>
+    <div id="InstanceAuth"></div>
+</div>
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup
+        function OpenForm() {
+            var formDiv = $('<div/>');
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AuthenticateDevice", "Home")' ,
+                    success: function (data) {
+                        var title = "";
+                        if (data.indexOf('AccessDenied')!=-1) {
+                            title = "Access Denied";
+                            data = data.replace("<h4>AccessDenied</h4>","<h4>Device does not have access to the System. Please contact your administrator.</h4>")
+                        }
+                        else {
+                            title = "Login";
+                        }
+                        formDiv.html(data);
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: title,
+                            modal: true
+
+                        });
+                        $('.ui-dialog-titlebar-close').addClass('showContent');
+                    }
+
+                });
+        }
+        var track = false;
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                if ($('#IsActive').length == 0)
+                    $(form).append('<input type="hidden" id="IsActive" name="IsActive" value="' + track + '" /> ');
+                else
+                    $('#IsActive').val(track);
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (!data.success && (data.message.indexOf("Invalid") != -1 || data.message.indexOf("Unable to Login") != -1 || data.message.indexOf("Access Denied") != -1) || data.message.indexOf("Previous Sessions Terminanted")!=-1)
+                            $('#LoginError').text(data.message);
+                        else if (!data.success && data.message.indexOf("sessions")!=-1) {
+                            var r = confirm(data.message);
+                            if (r == true) {
+                                track = true;
+                                $('#Login').click();
+                            } else {
+                            }
+                        }
+                        else if (data.success && data.message.indexOf('InstanceAuthentication') != -1) {
+                            Popup.dialog('destroy').remove();
+                             $('#InstanceAuth').dialog({
+                                autoOpen: true,
+                                title: "Instance",
+                                modal: true,
+                                width:'325px',
+                                open: function () {
+                                    $(this).load("/Home/InstanceAuthentication/", function (data) {
+                                        fetchCompanies();
+                                        $('#Instances').change(function () {
+                                            fetchCompanies();
+                                        });
+                                    });
+                                },
+
+                            });
+                        }
+                        else
+                            location.href = data.message;
+                    }
+                });
+            }
+            return false;
+        }
+
+
+        function fetchCompanies() {
+            $("#Companies").empty();
+            var intInstID = $('#Instances').val();
+            $.ajaxSetup({ async: false });
+            $.post('@Url.Action("GetCompanies", "Home")' +"?intInstID=" + intInstID,function(data){
+                $.each(data.message, function () {
+                    $('#Companies').append('<option value=' +
+                        this.ID + '>' + this.CompanyName + '</option>');
+                });
+            });
+
+
+        }
+        function SubmitInstanceForm(form) {
+            if ($('#Instances').val() != null && $('#Companies').val() != null) {
+            $.ajaxSetup({ async: false });
+            $.post(form.action + "?InstId=" + $('#Instances').val() + "&CompId=" + $('#Companies').val() + "&InstName=" + $('#Instances  option:selected').text() + "&compName=" + $('#Companies  option:selected').text(),function(data){
+                if (data.success)
+                    location.href = data.message;
+                else
+                    $('#LoginError').text(data.message);
+            });
+            }
+            return false;
+        }
+    </script>
+
+}

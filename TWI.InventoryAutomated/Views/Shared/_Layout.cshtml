@@ -12,18 +12,30 @@
 <body>
     <div style="max-width:100%;width:100%;">
         <div style="background:#7E1617;width:100%;height:80px;vertical-align:top;margin-top:-50px;">
-            <img src="~/images/TWILogo.png" width="100px" height="80px" style="vertical-align:middle;padding:5px;" />
+            <div style="width:30%;float:left;">
+                <img src="~/images/TWILogo.png" width="100px" height="80px" style="vertical-align:middle;padding:5px;" />
+            </div>
+            <div style="width:65%;float:right;color:white;text-align:right;padding-top:55px;padding-right:10px;" id="@(Session["UserID"] != null ? Session["UserID"].ToString() : Url.Action("LogOut","Home"))">
+                @if (Session["DisplayName"] != null)
+                {
+                    <b>User : </b>@Session["DisplayName"].ToString();
+                }
+            </div>
         </div>
         <div style="margin:auto;background:#ffffff;width:98%;padding:15px;">
             @RenderBody()
         </div>
-        <div style="float:right;position:fixed;bottom:25px;width:100%;height:25px;background:#7E1617;">
-            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">@(Session["InstanceName"]!=null?Session["InstanceName"].ToString():"")</div>
-            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">@(Session["CompanyName"]!=null?Session["CompanyName"].ToString():"")</div>
-            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">@SessionPersister.UserName</div>
-        </div>
-        <div style="float:right;position:fixed;bottom:0;width:100%;height:25px;background:#7E1617;">
-            <div style="font-family:Arial 'Times New Roman';font-size:14px;font-weight:bold;color:white;vertical-align:middle;padding-top:5px;padding-left:15px;">&copy; Theodor Wille Intertrade LLC - 2018 </div>
+        <div class="footer navbar-fixed-bottom" style="background:#7E1617;">
+            <div>
+                <div class="row justify-content-md-center" style="padding-left:1px;padding-right:2px;">
+                    <div class="col-sm-6 footertext mobileDevices">
+                        @(Session["InstanceName"] != null && Session["CompanyName"] != null ? Session["InstanceName"].ToString() + " ( " + Session["CompanyName"].ToString() + " ) " : "")
+                    </div>
+                    <div class="col-sm-6 footertext">
+                        <div class="footertext mobileDevices">&copy; Theodor Wille Intertrade LLC - 2018 </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

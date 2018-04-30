@@ -7,13 +7,56 @@ using System.Web;
 using System.Web.Mvc;
 using TWI.InventoryAutomated.Models;
 using TWI.InventoryAutomated.Security;
+using System.Runtime.InteropServices;
+using TWI.InventoryAutomated.DataAccess;
 
 namespace TWI.InventoryAutomated.Controllers
 {
     public class HomeController : Controller
     {
         #region "Global Variables"
+        [DllImport("IpHlpApi.dll")]
+        [return: MarshalAs(UnmanagedType.U4)]
+        static extern int GetIpNetTable(IntPtr pIpNetTable,
+      [MarshalAs(UnmanagedType.U4)] ref int pdwSize, bool bOrder);
 
+        /// <summary>
+        /// Error codes GetIpNetTable returns that we recognise
+        /// </summary>
+        const int ERROR_INSUFFICIENT_BUFFER = 122;
+
+        /// <summary>
+        /// MIB_IPNETROW structure returned by GetIpNetTable
+        /// DO NOT MODIFY THIS STRUCTURE.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential)]
+        struct MIB_IPNETROW
+        {
+            [MarshalAs(UnmanagedType.U4)]
+            public int dwIndex;
+            [MarshalAs(UnmanagedType.U4)]
+            public int dwPhysAddrLen;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac0;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac1;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac2;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac3;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac4;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac5;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac6;
+            [MarshalAs(UnmanagedType.U1)]
+            public byte mac7;
+            [MarshalAs(UnmanagedType.U4)]
+            public int dwAddr;
+            [MarshalAs(UnmanagedType.U4)]
+            public int dwType;
+        }
         #endregion
 
         #region "Action Methods"
@@ -28,8 +71,18 @@ namespace TWI.InventoryAutomated.Controllers
         }
         public ActionResult SubMenu()
         {
-            return View();
+            CommonServices cs = new CommonServices();
+            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                return View();
+            else
+            {
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
+            }
         }
+
+
+
         public ActionResult Default()
         {
             return View();
@@ -41,117 +94,355 @@ namespace TWI.InventoryAutomated.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
-            InventoryPortalEntities db = new InventoryPortalEntities();
-            User _user = db.Users.Where(x => x.UserName.Equals(user.UserName) && x.Password.Equals(user.Password)).FirstOrDefault();
-            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Password) || _user == null)
+            try
             {
-                return Json(new { success = false, message = "Invalid Login Information" }, JsonRequestBehavior.AllowGet);
+                CommonServices cs = new CommonServices();
+                InventoryPortalEntities db = new InventoryPortalEntities();
+                User _user = db.Users.Where(x => x.UserName.Equals(user.UserName) && x.Password.Equals(user.Password)&&x.IsActive==true).FirstOrDefault();
+                if (_user == null)
+                {
+                    return Json(new { success = false, message = "Invalid Login Information" }, JsonRequestBehavior.AllowGet);
+                }
+                List<UserAccess> uaccess = db.UserAccesses.Where(x => x.UserID == _user.UserID).ToList();
+                if (uaccess.Count == 0)
+                    return Json(new { success = false, message = "Access Denied, Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                else
+                {
+                    if (Session["DeviceID"] != null)
+                    {
+                        int ID = Convert.ToInt32(Session["DeviceID"].ToString());
+                        SessionPersister.UserName = _user.UserName;
+                        Session["DisplayName"] = _user.DisplayName;
+                        Session["UserID"] = _user.UserID;
+                        List<int> UserAccessID = (from e in db.UserAccesses
+                                                  join f in db.UserAccessDevices on e.ID equals f.UserAccessID
+                                                  where f.DeviceID == ID && f.IsActive == true && e.UserID == _user.UserID
+                                                  select e.ID).ToList();
+                        if (UserAccessID.Count == 0)
+                            return Json(new { success = false, message = "Access Denied, Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                        if (!(bool)user.IsActive && CheckAlreadyLogin(_user))
+                        {
+                            return Json(new { success = false, message = "Session Already Logged in, Do you want to terminate existing sessions?" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else if ((bool)user.IsActive)
+                        {
+                            cs.CloseExistingSessions(_user.UserID);
+                        }
+                        if (uaccess.Count == 1)
+                        {
+                            UserAccess useraccess = uaccess.FirstOrDefault();
+                            Session["InstanceName"] = db.Instances.Where(x => x.ID == useraccess.InstanceID).Select(x => x.InstanceName).FirstOrDefault();
+                            Session["CompanyName"] = db.Companies.Where(x => x.ID == useraccess.CompanyID).Select(x => x.CompanyName).FirstOrDefault();
+                            AddEntryToSessionLog(uaccess.FirstOrDefault().ID);
+                            return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                            return Json(new { success = true, message = Url.Action("InstanceAuthentication", "Home") }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(new { success = false, message = "Unable to Login!" }, JsonRequestBehavior.AllowGet);
+                }
+                
+
             }
-            SessionPersister.UserName = _user.UserName;
-            SessionPersister.UserID = _user.UserID;
-            List<UserAccess> uaccess = db.UserAccesses.Where(x => x.UserID == _user.UserID).ToList();
-            if (uaccess.Count > 1)
+            catch (Exception ex)
             {
-                return Json(new { success = true, message = Url.Action("InstanceAuthentication", "Home") }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = ex.ToString() }, JsonRequestBehavior.AllowGet);
             }
         }
-        [HttpPost]
-        public ActionResult Home(int? InstId,int? CompId,string InstName,string compName)
+
+        public ActionResult LogOut()
         {
-            if (InstId != null && CompId != null)
+            try
             {
-                Session["InstanceName"] = InstName;
-                Session["CompanyName"] = compName;
+                CommonServices cs = new CommonServices();
+                if (Session["CurrentSession"] != null)
+                {
+                    cs.CloseCurrentSession(Convert.ToInt32(Session["CurrentSession"]));
+                }
+                cs.RemoveSessions();
+                return RedirectToAction("Default", "Home");
             }
-            return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
+            catch (Exception ex)
+            {
+                return RedirectToAction("Default", "Home");
+            }
+        }
+        
+        [HttpPost]
+        public ActionResult Home(int InstId, int CompId, string InstName, string compName)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (Session["DeviceID"] != null && Session["UserID"] != null && InstId != null && CompId != null)
+                    {
+                        int DeviceID = Convert.ToInt32(Session["DeviceID"].ToString());
+                        int UserID = Convert.ToInt32(Session["UserID"].ToString());
+                        List<UserAccess> UserAccess = (from e in db.UserAccesses
+                                                       join f in db.UserAccessDevices on e.ID equals f.UserAccessID
+                                                       where e.InstanceID == InstId && e.CompanyID == CompId && f.DeviceID == DeviceID && f.IsActive == true && e.UserID == UserID
+                                                       select e).ToList();
+                        if (UserAccess.Count > 0)
+                        {
+                            AddEntryToSessionLog(UserAccess[0].ID);
+                            Session["InstanceName"] = InstName;
+                            Session["CompanyName"] = compName;
+                            return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                            return Json(new { success = false, message = "Access Denied! Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(new { success = false, message = "Access Denied! Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public PartialViewResult AuthenticateDevice()
         {
-            string userIpAddress = this.Request.UserHostAddress;
-            System.Net.IPAddress ipaddress = System.Net.IPAddress.Parse(userIpAddress);
-            NetworkUtils nu = new NetworkUtils();
-            string MacAddress = nu.GetMacAddress(ipaddress);
+            Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
+            obj = GetAllDevicesOnLAN();
+            IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
+            string MacAddress = string.Empty, txtIPAdress = string.Empty;
+            foreach (IPAddress ip in obj.Keys)
+            {
+                if (ip.Equals(clientip))
+                {
+                    PhysicalAddress actual = obj[ip];
+                    MacAddress = Convert.ToString(actual);
+                    txtIPAdress = Convert.ToString(clientip);
+                }
+
+            }
+            //string MacAddress = "B8CA3A7A1DC6";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
-                return PartialView("Unauthorized");
+                return PartialView("AccessDenied");
 
         }
 
         private bool IsDeviceRegistered(string macAddress)
         {
-            return true;
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
-                if (db.RegisteredDevices.Where(x => x.IsActive == true && x.MacAddress == macAddress).FirstOrDefault() != null)
+                RegisteredDevice rDevices = db.RegisteredDevices.Where(x => x.IsActive == true && x.MacAddress == macAddress).FirstOrDefault();
+                if (rDevices != null)
+                {
+                    Session["DeviceID"] = rDevices.ID;
                     return true;
+                }
                 else
+                {
+                    Session["DeviceID"] = null;
                     return false;
+                }
             }
         }
 
         public ActionResult InstanceAuthentication()
         {
-            InventoryPortalEntities db = new InventoryPortalEntities();
-            ViewBag.Instances = (from a in db.UserAccesses
-                                 join b in db.Instances on a.InstanceID equals b.ID
-                                 where a.UserID == SessionPersister.UserID
+            try
+            {
+                InventoryPortalEntities db = new InventoryPortalEntities();
+                int UserID = Convert.ToInt32(Session["UserID"].ToString());
+                ViewBag.Instances = (from a in db.UserAccesses
+                                     join b in db.Instances on a.InstanceID equals b.ID
+                                     where a.UserID == UserID
+                                     select new
+                                     {
+                                         b.ID,
+                                         b.InstanceName
+                                     }).ToList();
+                return PartialView("InstanceAuthentication");
+            }
+            catch (Exception ex) { throw; }
+        }
+        [HttpPost]
+        public ActionResult GetCompanies(int intInstID)
+        {
+            try
+            {
+                InventoryPortalEntities db = new InventoryPortalEntities();
+                int userID = Convert.ToInt32(Session["UserID"].ToString());
+                var Companies = (from a in db.UserAccesses
+                                 join b in db.Companies on a.CompanyID equals b.ID
+                                 where a.UserID == userID && a.InstanceID == intInstID
                                  select new
                                  {
                                      b.ID,
-                                     b.InstanceName
+                                     b.CompanyName
                                  }).ToList();
-            return View("InstanceAuthentication");
-        }
-
-        public ActionResult GetCompanies(int intInstID)
-        {
-            InventoryPortalEntities db = new InventoryPortalEntities();
-            var Companies = (from a in db.UserAccesses
-                             join b in db.Companies on a.CompanyID equals b.ID
-                             where a.UserID == SessionPersister.UserID && a.InstanceID == intInstID
-                             select new
-                             {
-                                 b.ID,
-                                 b.CompanyName
-                             }).ToList();
-            return Json(Companies, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = Companies }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "" }, JsonRequestBehavior.AllowGet);
+            }
         }
         #endregion
 
         #region "Helper Function(s) "
-        public class NetworkUtils
+        private static Dictionary<IPAddress, PhysicalAddress> GetAllDevicesOnLAN()
         {
-            [System.Runtime.InteropServices.DllImport("iphlpapi.dll", ExactSpelling = true)]
-            static extern int SendARP(int DestIP, int SrcIP, byte[] pMacAddr, ref int PhyAddrLen);
+            Dictionary<IPAddress, PhysicalAddress> all = new Dictionary<IPAddress, PhysicalAddress>();
+            // Add this PC to the list...
+            all.Add(GetIPAddress(), GetMacAddress());
+            int spaceForNetTable = 0;
+            // Get the space needed
+            // We do that by requesting the table, but not giving any space at all.
+            // The return value will tell us how much we actually need.
+            GetIpNetTable(IntPtr.Zero, ref spaceForNetTable, false);
+            // Allocate the space
+            // We use a try-finally block to ensure release.
+            IntPtr rawTable = IntPtr.Zero;
+            try
+            {
+                rawTable = Marshal.AllocCoTaskMem(spaceForNetTable);
+                // Get the actual data
+                int errorCode = GetIpNetTable(rawTable, ref spaceForNetTable, false);
+                if (errorCode != 0)
+                {
+                    // Failed for some reason - can do no more here.
+                    throw new Exception(string.Format(
+                      "Unable to retrieve network table. Error code {0}", errorCode));
+                }
+                // Get the rows count
+                int rowsCount = Marshal.ReadInt32(rawTable);
+                IntPtr currentBuffer = new IntPtr(rawTable.ToInt64() + Marshal.SizeOf(typeof(Int32)));
+                // Convert the raw table to individual entries
+                MIB_IPNETROW[] rows = new MIB_IPNETROW[rowsCount];
+                for (int index = 0; index < rowsCount; index++)
+                {
+                    rows[index] = (MIB_IPNETROW)Marshal.PtrToStructure(new IntPtr(currentBuffer.ToInt64() +
+                                                (index * Marshal.SizeOf(typeof(MIB_IPNETROW)))
+                                               ),
+                                                typeof(MIB_IPNETROW));
+                }
+                // Define the dummy entries list (we can discard these)
+                PhysicalAddress virtualMAC = new PhysicalAddress(new byte[] { 0, 0, 0, 0, 0, 0 });
+                PhysicalAddress broadcastMAC = new PhysicalAddress(new byte[] { 255, 255, 255, 255, 255, 255 });
+                foreach (MIB_IPNETROW row in rows)
+                {
+                    IPAddress ip = new IPAddress(BitConverter.GetBytes(row.dwAddr));
+                    byte[] rawMAC = new byte[] { row.mac0, row.mac1, row.mac2, row.mac3, row.mac4, row.mac5 };
+                    PhysicalAddress pa = new PhysicalAddress(rawMAC);
+                    if (!pa.Equals(virtualMAC) && !pa.Equals(broadcastMAC) && !IsMulticast(ip))
+                    {
+                        //Console.WriteLine("IP: {0}\t\tMAC: {1}", ip.ToString(), pa.ToString());
+                        if (!all.ContainsKey(ip))
+                        {
+                            all.Add(ip, pa);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                // Release the memory.
+                Marshal.FreeCoTaskMem(rawTable);
+            }
+            return all;
+        }
+        /// <summary>
+        /// Gets the IP address of the current PC
+        /// </summary>
+        /// <returns></returns>
+        private static IPAddress GetIPAddress()
+        {
+            String strHostName = Dns.GetHostName();
+            IPHostEntry ipEntry = Dns.GetHostEntry(strHostName);
+            IPAddress[] addr = ipEntry.AddressList;
+            foreach (IPAddress ip in addr)
+            {
+                if (!ip.IsIPv6LinkLocal)
+                {
+                    return (ip);
+                }
+            }
+            return addr.Length > 0 ? addr[0] : null;
+        }
 
-            /// <summary>
-            /// Gets the MAC address (<see cref="PhysicalAddress"/>) associated with the specified IP.
-            /// </summary>
-            /// <param name="ipAddress">The remote IP address.</param>
-            /// <returns>The remote machine's MAC address.</returns>
-            public string GetMacAddress(IPAddress ipAddress)
+        /// <summary>
+        /// Gets the MAC address of the current PC.
+        /// </summary>
+        /// <returns></returns>
+        private static PhysicalAddress GetMacAddress()
+        {
+            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                // Only consider Ethernet network interfaces
+                if (nic.NetworkInterfaceType == NetworkInterfaceType.Ethernet &&
+                    nic.OperationalStatus == OperationalStatus.Up)
+                {
+                    return nic.GetPhysicalAddress();
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns true if the specified IP address is a multicast address
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        private static bool IsMulticast(IPAddress ip)
+        {
+            bool result = true;
+            if (!ip.IsIPv6Multicast)
+            {
+                byte highIP = ip.GetAddressBytes()[0];
+                if (highIP < 224 || highIP > 239)
+                {
+                    result = false;
+                }
+            }
+            return result;
+        }
+
+        private void AddEntryToSessionLog(int AccessID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 try
                 {
-                    const int MacAddressLength = 6;
-                    int length = MacAddressLength;
-                    var macBytes = new byte[MacAddressLength];
-                    SendARP(BitConverter.ToInt32(ipAddress.GetAddressBytes(), 0), 0, macBytes, ref length);
-                    return new PhysicalAddress(macBytes).ToString();
-                }
-                catch (Exception)
-                {
+                    int DeviceID = Convert.ToInt32(Session["DeviceID"].ToString());
+                    UserSessionLog usl = new UserSessionLog();
+                    usl.UserAccessID = AccessID;
+                    usl.SessionStart = DateTime.Now;
+                    usl.DeviceID = DeviceID;
+                    usl.IsActive = true;
+                    db.UserSessionLogs.Add(usl);
+                    db.SaveChanges();
 
-                    return "";
+                    Session["CurrentSession"] = usl.ID;
+                }
+                catch (Exception ex)
+                {
+                    Session["CurrentSession"] = ex.ToString();
                 }
             }
         }
+        public bool CheckAlreadyLogin(User user)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                List<int> userAccessIds = db.UserAccesses.Where(x => x.UserID == user.UserID).Select(x => x.ID).ToList();
+                foreach (var item in userAccessIds)
+                {
+                    if (db.UserSessionLogs.Where(x => x.IsActive == true && x.UserAccessID == item).FirstOrDefault() != null)
+                        return true;
+                }
+            }
+            return false;
+        }
+
         #endregion
 
     }
