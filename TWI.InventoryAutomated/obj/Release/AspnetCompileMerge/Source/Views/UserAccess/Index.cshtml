@@ -111,6 +111,8 @@
 
         });
         function PopupForm(url) {
+            $("#Instances").empty();
+
             var formDiv = $('<div/>');
             $.get(url)
             .done(function (response) {

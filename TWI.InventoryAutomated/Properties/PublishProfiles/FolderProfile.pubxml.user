@@ -22,10 +22,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/26/2018 12:06:30</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>04/30/2018 13:50:49</publishTime>
+      <publishTime>05/03/2018 11:08:55</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>04/30/2018 13:50:49</publishTime>
+      <publishTime>05/03/2018 11:08:55</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>03/26/2018 12:06:31</publishTime>
@@ -229,10 +229,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/26/2018 12:06:31</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.dll">
-      <publishTime>04/30/2018 13:50:44</publishTime>
+      <publishTime>05/03/2018 11:08:47</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.pdb">
-      <publishTime>04/30/2018 13:50:44</publishTime>
+      <publishTime>05/03/2018 11:08:47</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>03/26/2018 12:06:31</publishTime>
@@ -250,7 +250,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/05/2018 10:55:46</publishTime>
     </File>
     <File Include="Content/Site.css">
-      <publishTime>04/24/2018 11:12:03</publishTime>
+      <publishTime>05/02/2018 12:04:44</publishTime>
     </File>
     <File Include="favicon.ico">
       <publishTime>03/26/2018 12:06:31</publishTime>
@@ -280,7 +280,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/30/2018 11:07:01</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>04/30/2018 13:50:45</publishTime>
+      <publishTime>05/03/2018 11:08:48</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>03/26/2018 12:06:30</publishTime>
@@ -331,7 +331,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/17/2018 16:06:41</publishTime>
     </File>
     <File Include="Views/CurrentSessions/Index.cshtml">
-      <publishTime>04/29/2018 08:34:09</publishTime>
+      <publishTime>05/01/2018 09:22:23</publishTime>
     </File>
     <File Include="Views/Form/AddOrEdit.cshtml">
       <publishTime>04/11/2018 13:14:23</publishTime>
@@ -379,10 +379,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/11/2018 13:13:18</publishTime>
     </File>
     <File Include="Views/Permission/Index.cshtml">
-      <publishTime>04/23/2018 17:10:39</publishTime>
+      <publishTime>05/02/2018 12:15:34</publishTime>
     </File>
     <File Include="Views/PermissionAssignment/Index.cshtml">
-      <publishTime>04/05/2018 11:39:21</publishTime>
+      <publishTime>05/02/2018 11:41:43</publishTime>
     </File>
     <File Include="Views/RegisteredDevice/AddOrEdit.cshtml">
       <publishTime>04/11/2018 13:37:56</publishTime>
@@ -406,7 +406,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/30/2018 11:32:21</publishTime>
     </File>
     <File Include="Views/UserAccess/Index.cshtml">
-      <publishTime>04/29/2018 11:10:17</publishTime>
+      <publishTime>05/01/2018 11:44:53</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>03/26/2018 12:06:30</publishTime>

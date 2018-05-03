@@ -186,3 +186,4 @@ E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.pdb
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.dll
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.Collections.Immutable.dll
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojResolveAssemblyReference.cache

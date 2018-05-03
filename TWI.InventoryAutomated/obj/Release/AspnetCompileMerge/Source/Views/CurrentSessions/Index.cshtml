@@ -69,6 +69,9 @@
                     "emptyTable": "No data found, Please click on <b>Add New</b> Button"
                 }
             });
+            setInterval(function () {
+                dataTable.ajax.reload(null, false); // user paging is not reset on reload
+            }, 30000);
         });
 
         function RemoveSession(id) {

@@ -131,10 +131,11 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
-                            UserAccess useracc = db.UserAccesses.AsNoTracking().Where(x => x.UserID == useraccess.UserID).FirstOrDefault();
+                            UserAccess useracc = db.UserAccesses.AsNoTracking().Where(x => x.ID == useraccess.ID).FirstOrDefault();
                             useraccess.CreatedDate = useracc.CreatedDate;
                             useraccess.CreatedBy = useracc.CreatedBy;
                             useraccess.ModifiedDate = DateTime.Now;
+                            //useraccess.PermissionID = useracc.PermissionID;
                             useraccess.ModifiedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Entry(useraccess).State = EntityState.Modified;
                             db.SaveChanges();

@@ -32,8 +32,9 @@ namespace TWI.InventoryAutomated.Controllers
                     var List = (from a in db.UserSessionLogs
                                 join b in db.UserAccesses on a.UserAccessID equals b.ID
                                 join c in db.Users on b.UserID equals c.UserID
+                                join x in db.Permissions on b.PermissionID equals x.ID
                                 join e in db.RegisteredDevices on a.DeviceID equals e.ID
-                                where a.IsActive == true && a.ID != currentSession
+                                where a.IsActive == true && a.ID != currentSession && x.PermissionDesc != "Super Admin"
                                 select new
                                 {
                                     a.ID,
