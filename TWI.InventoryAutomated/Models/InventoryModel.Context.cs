@@ -38,5 +38,6 @@ namespace TWI.InventoryAutomated.Models
         public virtual DbSet<UserAccessDevice> UserAccessDevices { get; set; }
         public virtual DbSet<UserSessionLog> UserSessionLogs { get; set; }
         public virtual DbSet<UserAccess> UserAccesses { get; set; }
+        public virtual DbSet<ArchivedSessionLog> ArchivedSessionLogs { get; set; }
     }
 }

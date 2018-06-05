@@ -113,6 +113,7 @@
     <EntitySetMapping Name="UserLanguages">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserLanguage">
         <MappingFragment StoreEntitySet="UserLanguages">
+          <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
@@ -156,6 +157,19 @@
           <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
           <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
           <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ArchivedSessionLogs">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.ArchivedSessionLog">
+        <MappingFragment StoreEntitySet="ArchivedSessionLog">
+          <ScalarProperty Name="Exception" ColumnName="Exception" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="ActivityPerformed" ColumnName="ActivityPerformed" />
+          <ScalarProperty Name="ControlName" ColumnName="ControlName" />
+          <ScalarProperty Name="FormName" ColumnName="FormName" />
+          <ScalarProperty Name="SessionLogID" ColumnName="SessionLogID" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

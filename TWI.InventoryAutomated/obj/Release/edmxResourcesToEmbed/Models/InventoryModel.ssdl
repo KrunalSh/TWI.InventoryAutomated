@@ -1,5 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="TWIInventoryPortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ArchivedSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SessionLogID" Type="int" />
+    <Property Name="FormName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ControlName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ActivityPerformed" Type="nvarchar" MaxLength="50" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="Exception" Type="nvarchar(max)" />
+  </EntityType>
   <EntityType Name="Company">
     <Key>
       <PropertyRef Name="ID" />
@@ -121,6 +133,7 @@
     <Property Name="UserID" Type="int" Nullable="false" />
     <Property Name="LanguageID" Type="int" Nullable="false" />
     <Property Name="IsActive" Type="bit" />
+    <Property Name="IsDefault" Type="bit" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
   </EntityType>
@@ -149,6 +162,7 @@
     <Property Name="IsActive" Type="bit" />
   </EntityType>
   <EntityContainer Name="TWIInventoryPortalModelStoreContainer">
+    <EntitySet Name="ArchivedSessionLog" EntityType="Self.ArchivedSessionLog" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />

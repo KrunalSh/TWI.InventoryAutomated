@@ -22,10 +22,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/26/2018 12:06:30</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>05/03/2018 11:08:55</publishTime>
+      <publishTime>05/28/2018 10:41:52</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>05/03/2018 11:08:55</publishTime>
+      <publishTime>05/28/2018 10:41:52</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>03/26/2018 12:06:31</publishTime>
@@ -229,10 +229,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/26/2018 12:06:31</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.dll">
-      <publishTime>05/03/2018 11:08:47</publishTime>
+      <publishTime>05/28/2018 10:41:47</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.pdb">
-      <publishTime>05/03/2018 11:08:47</publishTime>
+      <publishTime>05/28/2018 10:41:47</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>03/26/2018 12:06:31</publishTime>
@@ -277,10 +277,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/26/2018 12:06:31</publishTime>
     </File>
     <File Include="Models/InventoryModel.edmx.diagram">
-      <publishTime>04/30/2018 11:07:01</publishTime>
+      <publishTime>05/24/2018 10:01:34</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>05/03/2018 11:08:48</publishTime>
+      <publishTime>05/28/2018 10:41:48</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>03/26/2018 12:06:30</publishTime>
@@ -315,6 +315,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/modernizr-2.6.2.js">
       <publishTime>03/26/2018 12:06:30</publishTime>
     </File>
+    <File Include="Scripts/moment.min.js">
+      <publishTime>05/27/2018 11:17:57</publishTime>
+    </File>
     <File Include="Scripts/notify.min.js">
       <publishTime>03/26/2018 18:11:42</publishTime>
     </File>
@@ -324,6 +327,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/respond.min.js">
       <publishTime>03/26/2018 12:06:30</publishTime>
     </File>
+    <File Include="Views/ArchivedLogs/Index.cshtml">
+      <publishTime>05/27/2018 23:13:58</publishTime>
+    </File>
     <File Include="Views/Company/AddOrEdit.cshtml">
       <publishTime>04/11/2018 13:43:09</publishTime>
     </File>
@@ -331,7 +337,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/17/2018 16:06:41</publishTime>
     </File>
     <File Include="Views/CurrentSessions/Index.cshtml">
-      <publishTime>05/01/2018 09:22:23</publishTime>
+      <publishTime>05/27/2018 23:18:51</publishTime>
     </File>
     <File Include="Views/Form/AddOrEdit.cshtml">
       <publishTime>04/11/2018 13:14:23</publishTime>
@@ -355,7 +361,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/19/2018 14:35:28</publishTime>
     </File>
     <File Include="Views/Home/SubMenu.cshtml">
-      <publishTime>04/25/2018 11:34:48</publishTime>
+      <publishTime>05/27/2018 11:45:55</publishTime>
     </File>
     <File Include="Views/Instance/AddOrEdit.cshtml">
       <publishTime>04/18/2018 13:11:23</publishTime>
@@ -367,7 +373,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/11/2018 13:44:53</publishTime>
     </File>
     <File Include="Views/Language/Index.cshtml">
-      <publishTime>04/17/2018 16:11:32</publishTime>
+      <publishTime>05/23/2018 12:43:34</publishTime>
     </File>
     <File Include="Views/Module/AddOrEdit.cshtml">
       <publishTime>04/11/2018 13:13:26</publishTime>
@@ -385,16 +391,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2018 11:41:43</publishTime>
     </File>
     <File Include="Views/RegisteredDevice/AddOrEdit.cshtml">
-      <publishTime>04/11/2018 13:37:56</publishTime>
+      <publishTime>05/21/2018 10:05:23</publishTime>
     </File>
     <File Include="Views/RegisteredDevice/Index.cshtml">
-      <publishTime>04/17/2018 16:11:32</publishTime>
+      <publishTime>05/21/2018 10:15:31</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>03/26/2018 12:06:30</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>04/24/2018 15:15:58</publishTime>
+      <publishTime>05/27/2018 11:19:24</publishTime>
     </File>
     <File Include="Views/User/AddOrEdit.cshtml">
       <publishTime>04/29/2018 10:47:55</publishTime>
@@ -406,10 +412,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/30/2018 11:32:21</publishTime>
     </File>
     <File Include="Views/UserAccess/Index.cshtml">
-      <publishTime>05/01/2018 11:44:53</publishTime>
+      <publishTime>05/22/2018 14:46:34</publishTime>
     </File>
     <File Include="Views/Web.config">
-      <publishTime>03/26/2018 12:06:30</publishTime>
+      <publishTime>05/25/2018 16:01:40</publishTime>
     </File>
     <File Include="Views/_ViewStart.cshtml">
       <publishTime>03/26/2018 12:06:30</publishTime>

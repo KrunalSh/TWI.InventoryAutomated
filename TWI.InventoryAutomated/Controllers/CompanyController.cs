@@ -100,7 +100,7 @@ namespace TWI.InventoryAutomated.Controllers
                             company.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Companies.Add(company);
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -109,17 +109,17 @@ namespace TWI.InventoryAutomated.Controllers
                             comp.CreatedBy = comp.CreatedBy;
                             db.Entry(company).State = EntityState.Modified;
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
                 }
                 else
-                    return Json(new { success = false, message = "Company record already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Unable to add Company information!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -135,13 +135,13 @@ namespace TWI.InventoryAutomated.Controllers
                     Company comp = db.Companies.Where(x => x.ID == id).FirstOrDefault<Company>();
                     comp.IsActive = false;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Deleted Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
 
-                return Json(new { success = false, message = "Unable to delete record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
         public bool isDuplicate(Company comp)

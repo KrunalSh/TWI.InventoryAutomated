@@ -186,4 +186,13 @@ E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.pdb
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.dll
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.Collections.Immutable.dll
-E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojResolveAssemblyReference.cache
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.CopyComplete
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.GenerateResource.cache
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\fr\TWI.InventoryAutomated.resources.dll
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.resources
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.fr.resources
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\fr\TWI.InventoryAutomated.resources.dll
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojAssemblyReference.cache
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\de\TWI.InventoryAutomated.resources.dll
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.de.resources
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\de\TWI.InventoryAutomated.resources.dll

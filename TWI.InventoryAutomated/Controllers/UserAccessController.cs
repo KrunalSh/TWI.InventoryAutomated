@@ -51,7 +51,6 @@ namespace TWI.InventoryAutomated.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -127,7 +126,7 @@ namespace TWI.InventoryAutomated.Controllers
                             db.UserAccesses.Add(useraccess);
                             db.SaveChanges();
                             updateDevices(useraccess, selectedval, (bool)useraccess.IsActive);
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -140,7 +139,7 @@ namespace TWI.InventoryAutomated.Controllers
                             db.Entry(useraccess).State = EntityState.Modified;
                             db.SaveChanges();
                             updateDevices(useraccess, selectedval, (bool)useraccess.IsActive);
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
@@ -148,11 +147,11 @@ namespace TWI.InventoryAutomated.Controllers
                 }
 
                 else
-                    return Json(new { success = false, message = "Record already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Unable to give access!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -192,13 +191,13 @@ namespace TWI.InventoryAutomated.Controllers
                     acc.IsActive = false;
                     db.SaveChanges();
                     DisableDevices(id);
-                    return Json(new { success = true, message = "Deleted Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
 
-                return Json(new { success = false, message = "Unable to delete record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -221,15 +220,23 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    List<string> Devices = (from w in db.UserAccessDevices
-                                            join x in db.RegisteredDevices on w.DeviceID equals x.ID
-                                            where w.UserAccessID == id
-                                            select x.DeviceName).ToList();
+                    List<RegisteredDevice> Devices = (from w in db.UserAccessDevices
+                                                      join x in db.RegisteredDevices on w.DeviceID equals x.ID
+                                                      where w.UserAccessID == id
+                                                      select x).ToList();
                     int totaldevices = (from r in db.RegisteredDevices where r.IsActive == true select r.ID).Count();
                     if (totaldevices == Devices.Count)
                         return "All";
                     else
-                        return string.Join(",", Devices);
+                    {
+                        string devices = "";
+                        foreach (var item in Devices)
+                        {
+                            devices += item.DeviceName + " (" + item.MacAddress + " ),";
+                        }
+                        return devices.TrimEnd(',');
+                    }
+
                 }
             }
             catch (Exception ex)

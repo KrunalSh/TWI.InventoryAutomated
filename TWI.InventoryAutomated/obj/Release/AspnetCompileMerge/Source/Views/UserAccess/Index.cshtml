@@ -12,7 +12,7 @@
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","User")'><i class="fa fa-arrow-left fa-2x"></i></a>
             </div>
             <div style="width:95%;margin:22px 25px;" class="table-responsive">
-                <table id="UserAccessTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                <table id="UserAccessTable" class="table table-striped dt-responsive display table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th>Instance</th>
@@ -77,7 +77,7 @@
                     },
                     {
                         "data": "ID", "render": function (data) {
-                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "UserAccess")/" + data + "')></i>   <i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ")></i>";
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "UserAccess")/" + data + "')></i>   <i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:12px' title='Delete' onclick=Delete(" + data + ")></i>";
                         },
                         "orderable": false,
                         "searchable": false,

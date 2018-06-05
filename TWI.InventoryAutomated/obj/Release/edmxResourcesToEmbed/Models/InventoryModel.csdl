@@ -27,6 +27,7 @@
     <EntitySet Name="UserAccessDevices" EntityType="TWIInventoryPortalModel.UserAccessDevice" />
     <EntitySet Name="UserSessionLogs" EntityType="TWIInventoryPortalModel.UserSessionLog" />
     <EntitySet Name="UserAccesses" EntityType="TWIInventoryPortalModel.UserAccess" />
+    <EntitySet Name="ArchivedSessionLogs" EntityType="TWIInventoryPortalModel.ArchivedSessionLog" />
   </EntityContainer>
   <EntityType Name="Company">
     <Key>
@@ -125,6 +126,7 @@
     <Property Name="IsActive" Type="Boolean" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="IsDefault" Type="Boolean" />
   </EntityType>
   <EntityType Name="UserAccessDevice">
     <Key>
@@ -162,5 +164,17 @@
     <Property Name="CreatedBy" Type="Int32" />
     <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
     <Property Name="ModifiedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="ArchivedSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SessionLogID" Type="Int32" />
+    <Property Name="FormName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ControlName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ActivityPerformed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="Exception" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

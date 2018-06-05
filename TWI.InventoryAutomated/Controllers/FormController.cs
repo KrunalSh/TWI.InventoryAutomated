@@ -78,7 +78,7 @@ namespace TWI.InventoryAutomated.Controllers
                             _form.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Forms.Add(_form);
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -87,17 +87,17 @@ namespace TWI.InventoryAutomated.Controllers
                             _form.CreatedBy = form.CreatedBy;
                             db.Entry(_form).State = EntityState.Modified;
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
                 }
                 else
-                    return Json(new { success = false, message = "MAC Address already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgMACAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Unable to add Device information!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -127,12 +127,12 @@ namespace TWI.InventoryAutomated.Controllers
                     Form form = db.Forms.Where(x => x.ID == id).FirstOrDefault<Form>();
                     form.IsActive = false;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Disabled Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgDisableRecord }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Unable to disable the record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
         

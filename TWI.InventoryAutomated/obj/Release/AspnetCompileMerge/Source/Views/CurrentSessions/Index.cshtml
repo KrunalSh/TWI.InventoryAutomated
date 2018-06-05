@@ -9,18 +9,26 @@
     <div class="container">
         <div style="margin:auto;width:80%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-                <div style="font-weight:bold">Active Sessions</div>
-
+                @if (Convert.ToBoolean(Request.Params["isActive"]))
+                {
+                    <div style="font-weight:bold">Active Sessions</div>
+                }
+                else
+                {
+                    <div style="font-weight:bold">Archived Sessions</div>
+                }
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("SubMenu","Home")'><i class="fa fa-home fa-2x"></i></a>
             </div>
             <div style="width:95%;margin:22px 25px;" class="table-responsive">
                 <table id="ActiveSessionsTable" class="table table-striped dt-responsive display nowrap table-bordered">
                     <thead>
                         <tr>
+                            <th>User Id</th>
                             <th>Name</th>
                             <th>MAC Address</th>
                             <th>Instance Name</th>
                             <th>Company Name</th>
+                            <th>Start Date</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -43,18 +51,25 @@
 
             dataTable = $("#ActiveSessionsTable").DataTable({
                 "ajax": {
-                    "url": "/CurrentSessions/GetData",
-                    "type": "GET",
+                    "url": "/CurrentSessions/GetData?isActive=@Request.Params["isActive"]",
+                    "type": "Post",
                     "datatype": "json"
                 },
                 "columns": [
+                    { "data": "UserID" },
                     { "data": "DisplayName" },
                     { "data": "MacAddress" },
                     { "data": "InstanceName" },
                     { "data": "CompanyName" },
                     {
+                        "data": "SessionStart", "render": function (date) {
+                            if (date != null) return moment(date).format("DD/MM/YYYY HH:mm:ss");
+                            else return "";
+                        }
+                    },
+                    {
                         "data": "ID", "render": function (data) {
-                            return "<i class='fa fa-trash fa-lg' data-toggle='tooltip' title='Delete' style='margin-left:15px' onclick=RemoveSession(" + data + ")></i>";
+                            return "<i class='fa fa-ban fa-lg' data-toggle='tooltip' title='Kill session' style='margin-left:15px' onclick=RemoveSession(" + data + ")></i>   <i class='fa fa-history fa-lg' data-toggle='tooltip' title='Activity Log' style='margin-left:15px' onclick=OpenActivityLogs(" + data + ")></i>";
                         },
                         "orderable": false,
                         "searchable": false,
@@ -91,7 +106,9 @@
                 });
             }
         }
-
+        function OpenActivityLogs(id) {
+            location.href = "/ArchivedLogs/Index?SessionID=" + id;
+        }
     </script>
 }
 

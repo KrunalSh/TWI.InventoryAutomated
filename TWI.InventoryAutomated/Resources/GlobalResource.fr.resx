@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Access" xml:space="preserve">
+    <value>Accès</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>actif</value>
+  </data>
+  <data name="ActiveSessions" xml:space="preserve">
+    <value>sessions actives</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="ArchivedSessions" xml:space="preserve">
+    <value>Séances archivées</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ClicktoLogin" xml:space="preserve">
+    <value>Cliquez pour vous connecter</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Entreprises</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Compagnie</value>
+  </data>
+  <data name="CompanyDetails" xml:space="preserve">
+    <value>Détails de la société</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Nom de la compagnie</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirmez le mot de passe</value>
+  </data>
+  <data name="DefaultLangConfirm" xml:space="preserve">
+    <value>Voulez-vous faire de cette langue une langue par défaut?</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>La description</value>
+  </data>
+  <data name="DeviceDetails" xml:space="preserve">
+    <value>Détails du périphérique</value>
+  </data>
+  <data name="DeviceName" xml:space="preserve">
+    <value>Nom de l'appareil</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>Dispositifs</value>
+  </data>
+  <data name="DisplayName" xml:space="preserve">
+    <value>Afficher un nom</value>
+  </data>
+  <data name="EmailID" xml:space="preserve">
+    <value>EmailID</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Mot de passe oublié</value>
+  </data>
+  <data name="FormDetails" xml:space="preserve">
+    <value>Détails du formulaire</value>
+  </data>
+  <data name="FormName" xml:space="preserve">
+    <value>Nom de forme</value>
+  </data>
+  <data name="Forms" xml:space="preserve">
+    <value>Formes</value>
+  </data>
+  <data name="Inbound" xml:space="preserve">
+    <value>Entrant</value>
+  </data>
+  <data name="Instance" xml:space="preserve">
+    <value>Exemple</value>
+  </data>
+  <data name="InstanceDetail" xml:space="preserve">
+    <value>Détail de l'instance</value>
+  </data>
+  <data name="InstanceName" xml:space="preserve">
+    <value>Nom de l'instance</value>
+  </data>
+  <data name="InstanceSelection" xml:space="preserve">
+    <value>Sélection d'instance</value>
+  </data>
+  <data name="Internal" xml:space="preserve">
+    <value>Interne</value>
+  </data>
+  <data name="LanguageDetails" xml:space="preserve">
+    <value>Détails de la langue</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>Langues</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>S'identifier</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Connectez - Out</value>
+  </data>
+  <data name="MACAddress" xml:space="preserve">
+    <value>Adresse Mac</value>
+  </data>
+  <data name="MainMenu" xml:space="preserve">
+    <value>Menu principal</value>
+  </data>
+  <data name="ModuleDetails" xml:space="preserve">
+    <value>Détails du module</value>
+  </data>
+  <data name="ModuleID" xml:space="preserve">
+    <value>ID du module</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Nom du module</value>
+  </data>
+  <data name="Modules" xml:space="preserve">
+    <value>Modules</value>
+  </data>
+  <data name="MsgAccessDenied" xml:space="preserve">
+    <value>Accès refusé, veuillez contacter votre administrateur.</value>
+  </data>
+  <data name="MsgAlreadyExist" xml:space="preserve">
+    <value>L'enregistrement existe déjà!</value>
+  </data>
+  <data name="MsgAlreadyLoggedin" xml:space="preserve">
+    <value>Session déjà connectée, Voulez-vous mettre fin à des sessions existantes?</value>
+  </data>
+  <data name="MsgDisableRecord" xml:space="preserve">
+    <value>Êtes-vous sûr de désactiver cet enregistrement?</value>
+  </data>
+  <data name="MsgErrorwhileAdding" xml:space="preserve">
+    <value>Impossible d'ajouter des informations!</value>
+  </data>
+  <data name="MsgErrorwhileDisable" xml:space="preserve">
+    <value>Impossible de désactiver l'enregistrement!</value>
+  </data>
+  <data name="MsgErrorWhileUpdate" xml:space="preserve">
+    <value>Impossible de mettre à jour l'enregistrement!</value>
+  </data>
+  <data name="MsgInvalidLoginInformation" xml:space="preserve">
+    <value>Informations de connexion incorrectes</value>
+  </data>
+  <data name="MsgMACAlreadyExist" xml:space="preserve">
+    <value>L'adresse MAC existe déjà!</value>
+  </data>
+  <data name="MsgPermissionAssigned" xml:space="preserve">
+    <value>Autorisations attribuées avec succès</value>
+  </data>
+  <data name="MsgSuccessfullyDisabled" xml:space="preserve">
+    <value>Supprimé avec succès</value>
+  </data>
+  <data name="MsgSuccessfullySaved" xml:space="preserve">
+    <value>Enregistré avec succès</value>
+  </data>
+  <data name="MsgSuccessfullyUpdated" xml:space="preserve">
+    <value>Mis à jour avec succés</value>
+  </data>
+  <data name="MsgUnabletoLogin" xml:space="preserve">
+    <value>Connection impossible!</value>
+  </data>
+  <data name="NavisionInstances" xml:space="preserve">
+    <value>Instances Navision</value>
+  </data>
+  <data name="OutBound" xml:space="preserve">
+    <value>OutBound</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="Passwordmismatch" xml:space="preserve">
+    <value>Non concordance des mots de passe</value>
+  </data>
+  <data name="PermissionDetails" xml:space="preserve">
+    <value>Détails de l'autorisation</value>
+  </data>
+  <data name="PermissionID" xml:space="preserve">
+    <value>AutorisationID</value>
+  </data>
+  <data name="PermissionName" xml:space="preserve">
+    <value>Nom de la permission</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Autorisations</value>
+  </data>
+  <data name="Proceed" xml:space="preserve">
+    <value>Procéder</value>
+  </data>
+  <data name="RegisteredDevices" xml:space="preserve">
+    <value>Appareils enregistrés</value>
+  </data>
+  <data name="RequiredField" xml:space="preserve">
+    <value>Champs requis</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="SourceFileName" xml:space="preserve">
+    <value>Nom du fichier source</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Utilisateur</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>Nom d'utilisateur</value>
+  </data>
+  <data name="ValidEmailID" xml:space="preserve">
+    <value>Veuillez fournir un identifiant email valide</value>
+  </data>
+  <data name="WebURL" xml:space="preserve">
+    <value>URL Web</value>
+  </data>
+</root>

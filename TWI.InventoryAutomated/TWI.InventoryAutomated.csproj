@@ -150,6 +150,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ArchivedLogsController.cs" />
     <Compile Include="Controllers\CompanyController.cs" />
     <Compile Include="Controllers\CurrentSessionsController.cs" />
     <Compile Include="Controllers\FormController.cs" />
@@ -162,9 +163,13 @@
     <Compile Include="Controllers\RegisteredDeviceController.cs" />
     <Compile Include="Controllers\UserAccessController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="DataAccess\ArchiveLogs.cs" />
     <Compile Include="DataAccess\CommonServices.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ArchivedSessionLog.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Company.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
@@ -222,6 +227,21 @@
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\GlobalResource.de.Designer.cs">
+      <DependentUpon>GlobalResource.de.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\GlobalResource.fr.Designer.cs">
+      <DependentUpon>GlobalResource.fr.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\GlobalResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GlobalResource.resx</DependentUpon>
+    </Compile>
     <Compile Include="Security\CustomAuthorizeAttribute.cs" />
     <Compile Include="Security\CustomPrincipal.cs" />
     <Compile Include="Security\SessionPersister.cs" />
@@ -260,8 +280,10 @@
       <DependentUpon>InventoryModel.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Scripts\French.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -310,6 +332,8 @@
     <Content Include="Views\Home\AccessDenied.cshtml" />
     <Content Include="Views\Home\InstanceAuthentication.cshtml" />
     <Content Include="Views\CurrentSessions\Index.cshtml" />
+    <Content Include="Views\ArchivedLogs\Index.cshtml" />
+    <Content Include="Scripts\German.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -330,6 +354,20 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\GlobalResource.de.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>GlobalResource.de.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GlobalResource.fr.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>GlobalResource.fr.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GlobalResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>GlobalResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

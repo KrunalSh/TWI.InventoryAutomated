@@ -22,7 +22,8 @@ namespace TWI.InventoryAutomated.Controllers
                 return RedirectToAction("Default", "Home");
             }
         }
-        public ActionResult GetData()
+        [HttpPost]
+        public ActionResult GetData(bool isActive)
         {
             try
             {
@@ -34,11 +35,13 @@ namespace TWI.InventoryAutomated.Controllers
                                 join c in db.Users on b.UserID equals c.UserID
                                 join x in db.Permissions on b.PermissionID equals x.ID
                                 join e in db.RegisteredDevices on a.DeviceID equals e.ID
-                                where a.IsActive == true && a.ID != currentSession && x.PermissionDesc != "Super Admin"
+                                where a.IsActive == isActive && a.ID != currentSession && x.PermissionDesc != "Super Admin"
                                 select new
                                 {
                                     a.ID,
+                                    c.UserID,
                                     c.DisplayName,
+                                    a.SessionStart,
                                     e.MacAddress,
                                     b.InstanceName,
                                     b.CompanyName

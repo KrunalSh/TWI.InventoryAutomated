@@ -16,14 +16,13 @@ namespace TWI.InventoryAutomated.Models
 
     public class RegisteredDeviceAttribs
     {
-        [Display(Name = "Device Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string DeviceName { get; set; }
 
-        [Display(Name = "MAC Address")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string MacAddress { get; set; }
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion
@@ -37,14 +36,13 @@ namespace TWI.InventoryAutomated.Models
 
     public class InstanceAttribs
     {
-        [Display(Name = "Instance Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string InstanceName { get; set; }
 
-        [Display(Name = "Web URL")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string WebUrl { get; set; }
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion
@@ -58,10 +56,9 @@ namespace TWI.InventoryAutomated.Models
 
     public class CompanyAttribs
     {
-        [Display(Name = "Company Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string CompanyName { get; set; }
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion
@@ -75,11 +72,12 @@ namespace TWI.InventoryAutomated.Models
 
     public class LanguageAttribs
     {
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string Code { get; set; }
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string Description { get; set; }
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion
@@ -92,10 +90,9 @@ namespace TWI.InventoryAutomated.Models
 
     public class ModuleAttribs
     {
-        [Display(Name = "Module Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string ModuleName { get; set; }
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion
@@ -108,17 +105,16 @@ namespace TWI.InventoryAutomated.Models
 
     public class FormsAttribs
     {
-        [Display(Name = "Form Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string FormName { get; set; }
-        [Display(Name = "SourceFileName")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string SourceFileName { get; set; }
         [ForeignKey("Module")]
-        [Display(Name = "Module ID")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public Nullable<bool> ModuleID { get; set; }
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion
@@ -131,8 +127,8 @@ namespace TWI.InventoryAutomated.Models
 
     public class PermissionAttribs
     {
-        [Display(Name = "Permission Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string PermissionDesc { get; set; }
     }
     #endregion
@@ -146,25 +142,26 @@ namespace TWI.InventoryAutomated.Models
 
     public class UserAttribs
     {
-        [Display(Name = "User Name")]
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string UserName { get; set; }
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
         //[StringLength(20, MinimumLength = 6, ErrorMessage = "Password must be 6 character long.")]
         public string Password { get; set; }
-        [Compare("Password", ErrorMessage = "Password mismatch")]
+        [Compare("Password", ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "Passwordmismatch")]
         [DataType(System.ComponentModel.DataAnnotations.DataType.Password)]
-        [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
         [RegularExpression(@"^([0-9a-zA-Z]([\+\-_\.][0-9a-zA-Z]+)*)+@(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]*\.)+[a-zA-Z0-9]{2,3})$",
-            ErrorMessage = "Please provide valid email id")]
-        [Display(Name = "Email ID")]
+            ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "ValidEmailID")]
         public string EmailID { get; set; }
-        [Required(ErrorMessage = "Required Field")]
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
         public string DisplayName { get; set; }
 
-        [Display(Name = "Active")]
         public Nullable<bool> IsActive { get; set; }
     }
     #endregion

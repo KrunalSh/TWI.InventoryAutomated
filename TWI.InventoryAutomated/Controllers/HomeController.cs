@@ -69,15 +69,64 @@ namespace TWI.InventoryAutomated.Controllers
         {
             return View();
         }
+
+        public string FetchUserLanguage()
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    HttpCookie cookie = Request.Cookies["Language"];
+                    List<string> StaticLang = new List<string>() { "English", "French", "German" };
+                    if (Session["UserID"] != null)
+                    {
+                        int userid = Convert.ToInt32(Session["UserID"]);
+                        string html = "";
+                        if (cookie != null && cookie.Value != null)
+                        {
+                            var userlanguages = (from a in db.Languages
+                                                 join b in db.UserLanguages on a.ID equals b.LanguageID
+                                                 where b.UserID == userid && b.IsActive == true && StaticLang.Contains(a.Description) && a.Code != cookie.Value
+                                                 select new { a.Description, b.IsDefault }).ToList();
+
+                            foreach (var item in userlanguages)
+                            {
+                                html += " <a href='#' onclick='MakeitDefault(this);' style='color:white;margin-left:2px;'><b>" + item.Description + "</b></a>   ";
+
+                            }
+                        }
+                        return html;
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ArchiveLogs.SaveActivityLogs("Layout", "Home", "FetchUserLanuguage", ex.ToString());
+            }
+            return "";
+        }
+
         public ActionResult SubMenu()
         {
-            CommonServices cs = new CommonServices();
-            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
-                return View();
-            else
+            try
             {
-                cs.RemoveSessions();
-                return RedirectToAction("Default", "Home");
+                ArchiveLogs.SaveActivityLogs("SubMenu", "Home", "FetchSubmenu", null);
+
+                CommonServices cs = new CommonServices();
+                if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                    return View();
+                else
+                {
+                    cs.RemoveSessions();
+                    return RedirectToAction("Default", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                ArchiveLogs.SaveActivityLogs("SubMenu", "Home", "FetchSubmenu", ex.ToString());
+                return null;
             }
         }
 
@@ -96,16 +145,21 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //string IP = Request.UserHostName; // Fetch Computer Name
+                //IPAddress myIP = IPAddress.Parse(IP);
+                //IPHostEntry GetIPHost = Dns.GetHostEntry(myIP);
+                //List<string> compName = GetIPHost.HostName.ToString().Split('.').ToList();
+                //return Json(new { success = false, message = IP +" _ "+ myIP + " _ " +GetIPHost + " _ " + compName.FirstOrDefault() }, JsonRequestBehavior.AllowGet);
                 CommonServices cs = new CommonServices();
                 InventoryPortalEntities db = new InventoryPortalEntities();
-                User _user = db.Users.Where(x => x.UserName.Equals(user.UserName) && x.Password.Equals(user.Password)&&x.IsActive==true).FirstOrDefault();
+                User _user = db.Users.Where(x => x.UserName.Equals(user.UserName) && x.Password.Equals(user.Password) && x.IsActive == true).FirstOrDefault();
                 if (_user == null)
                 {
-                    return Json(new { success = false, message = "Invalid Login Information" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgInvalidLoginInformation }, JsonRequestBehavior.AllowGet);
                 }
                 List<UserAccess> uaccess = db.UserAccesses.Where(x => x.UserID == _user.UserID).ToList();
                 if (uaccess.Count == 0)
-                    return Json(new { success = false, message = "Access Denied, Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
                 else
                 {
                     if (Session["DeviceID"] != null)
@@ -119,10 +173,10 @@ namespace TWI.InventoryAutomated.Controllers
                                                   where f.DeviceID == ID && f.IsActive == true && e.UserID == _user.UserID
                                                   select e.ID).ToList();
                         if (UserAccessID.Count == 0)
-                            return Json(new { success = false, message = "Access Denied, Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
                         if (!(bool)user.IsActive && CheckAlreadyLogin(_user))
                         {
-                            return Json(new { success = false, message = "Session Already Logged in, Do you want to terminate existing sessions?" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = false, message = "MsgAlreadyLoggedin" + Resources.GlobalResource.MsgAlreadyLoggedin }, JsonRequestBehavior.AllowGet);
                         }
                         else if ((bool)user.IsActive)
                         {
@@ -133,6 +187,7 @@ namespace TWI.InventoryAutomated.Controllers
                             UserAccess useraccess = uaccess.FirstOrDefault();
                             Session["InstanceName"] = db.Instances.Where(x => x.ID == useraccess.InstanceID).Select(x => x.InstanceName).FirstOrDefault();
                             Session["CompanyName"] = db.Companies.Where(x => x.ID == useraccess.CompanyID).Select(x => x.CompanyName).FirstOrDefault();
+                            LocalizationWebsite();
                             AddEntryToSessionLog(uaccess.FirstOrDefault().ID);
                             return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
                         }
@@ -140,9 +195,9 @@ namespace TWI.InventoryAutomated.Controllers
                             return Json(new { success = true, message = Url.Action("InstanceAuthentication", "Home") }, JsonRequestBehavior.AllowGet);
                     }
                     else
-                        return Json(new { success = false, message = "Unable to Login!" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = false, message = Resources.GlobalResource.MsgUnabletoLogin }, JsonRequestBehavior.AllowGet);
                 }
-                
+
 
             }
             catch (Exception ex)
@@ -161,6 +216,21 @@ namespace TWI.InventoryAutomated.Controllers
                     cs.CloseCurrentSession(Convert.ToInt32(Session["CurrentSession"]));
                 }
                 cs.RemoveSessions();
+                HttpCookie cookie = Request.Cookies["SystemLang"];
+
+                if (cookie != null && cookie.Value != null)
+                {
+                    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(cookie.Value);
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(cookie.Value);
+                    if (Request.Cookies["Language"] != null)
+                    {
+                        Response.Cookies["Language"].Expires = DateTime.Now.AddDays(-1);
+                    }
+                    if (Request.Cookies["SystemLang"] != null)
+                    {
+                        Response.Cookies["SystemLang"].Expires = DateTime.Now.AddDays(-1);
+                    }
+                }
                 return RedirectToAction("Default", "Home");
             }
             catch (Exception ex)
@@ -168,7 +238,7 @@ namespace TWI.InventoryAutomated.Controllers
                 return RedirectToAction("Default", "Home");
             }
         }
-        
+
         [HttpPost]
         public ActionResult Home(int InstId, int CompId, string InstName, string compName)
         {
@@ -189,13 +259,14 @@ namespace TWI.InventoryAutomated.Controllers
                             AddEntryToSessionLog(UserAccess[0].ID);
                             Session["InstanceName"] = InstName;
                             Session["CompanyName"] = compName;
+                            LocalizationWebsite();
                             return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
                         }
                         else
-                            return Json(new { success = false, message = "Access Denied! Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
                     }
                     else
-                        return Json(new { success = false, message = "Access Denied! Please contact your Administrator." }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -206,21 +277,21 @@ namespace TWI.InventoryAutomated.Controllers
 
         public PartialViewResult AuthenticateDevice()
         {
-            Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
-            obj = GetAllDevicesOnLAN();
-            IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
-            string MacAddress = string.Empty, txtIPAdress = string.Empty;
-            foreach (IPAddress ip in obj.Keys)
-            {
-                if (ip.Equals(clientip))
-                {
-                    PhysicalAddress actual = obj[ip];
-                    MacAddress = Convert.ToString(actual);
-                    txtIPAdress = Convert.ToString(clientip);
-                }
+            //Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
+            //obj = GetAllDevicesOnLAN();
+            //IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
+            //string MacAddress = string.Empty, txtIPAdress = string.Empty;
+            //foreach (IPAddress ip in obj.Keys)
+            //{
+            //    if (ip.Equals(clientip))
+            //    {
+            //        PhysicalAddress actual = obj[ip];
+            //        MacAddress = Convert.ToString(actual);
+            //        txtIPAdress = Convert.ToString(clientip);
+            //    }
 
-            }
-            //string MacAddress = "B8CA3A7A1DC6";
+            //}
+            string MacAddress = "B8CA3A7A1DC6";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
@@ -443,6 +514,38 @@ namespace TWI.InventoryAutomated.Controllers
             return false;
         }
 
+        public void LocalizationWebsite()
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (Session["UserID"] != null)
+                {
+                    int userid = Convert.ToInt32(Session["UserID"]);
+                    Language currentlang = (from a in db.Languages
+                                            join b in db.UserLanguages on a.ID equals b.LanguageID
+                                            where b.IsDefault == true && b.UserID == userid
+                                            select a).FirstOrDefault();
+                    if (currentlang != null)
+                    {
+                        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(currentlang.Code);
+                        System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(currentlang.Code);
+                        HttpCookie cookie = new HttpCookie("Language");
+                        cookie.Value = currentlang.Code;
+                        Response.Cookies.Add(cookie);
+                    }
+                    else
+                    {
+                        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en");
+                        System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+                    }
+                }
+                else
+                {
+                    System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en");
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+                }
+            }
+        }
         #endregion
 
     }

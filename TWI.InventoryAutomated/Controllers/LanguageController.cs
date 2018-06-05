@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using TWI.InventoryAutomated.DataAccess;
@@ -76,7 +78,7 @@ namespace TWI.InventoryAutomated.Controllers
                             lang.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Languages.Add(lang);
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -85,17 +87,19 @@ namespace TWI.InventoryAutomated.Controllers
                             lang.CreatedBy = regdevice.CreatedBy;
                             db.Entry(lang).State = EntityState.Modified;
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
                 }
                 else
-                    return Json(new { success = false, message = "Language Code already exists!" }, JsonRequestBehavior.AllowGet);
+                    //return Json(new { success = false, message = "Language Code already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Unable to add Language details!" }, JsonRequestBehavior.AllowGet);
+                //return Json(new { success = false, message = "Unable to add Language details!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -125,12 +129,53 @@ namespace TWI.InventoryAutomated.Controllers
                     Language regDevice = db.Languages.Where(x => x.ID == id).FirstOrDefault<Language>();
                     regDevice.IsActive = false;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Disabled Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Unable to disable the record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult MakeitDefault(string defaultlang, bool isdefault)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (isdefault)
+                    {
+                        if (Session["UserID"] != null)
+                        {
+                            int userid = Convert.ToInt32(Session["UserID"]);
+                            List<UserLanguage> ul = db.UserLanguages.Where(x => x.UserID == userid && x.IsActive == true).ToList();
+                            foreach (var item in ul)
+                            {
+                                item.IsDefault = false;
+                            }
+                            db.SaveChanges();
+                            UserLanguage currentlang = (from a in db.Languages
+                                                        join b in db.UserLanguages on a.ID equals b.LanguageID
+                                                        where a.Description == defaultlang && b.UserID == userid
+                                                        select b).FirstOrDefault();
+                            currentlang.IsDefault = true;
+                            db.SaveChanges();
+                        }
+                    }
+                    string deflang = db.Languages.Where(x => x.Description == defaultlang).Select(x => x.Code).FirstOrDefault();
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(deflang);
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(deflang);
+                    HttpCookie cookie = new HttpCookie("Language");
+                    cookie.Value = deflang;
+                    Response.Cookies.Add(cookie);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorWhileUpdate }, JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -91,4 +91,6 @@ E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csproj.CoreCompileInputs.cache
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.dll
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.pdb
-E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csprojResolveAssemblyReference.cache
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.Resource1.resources
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csproj.GenerateResource.cache
+E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csproj.CopyComplete

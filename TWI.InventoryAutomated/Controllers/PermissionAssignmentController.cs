@@ -69,13 +69,13 @@ namespace TWI.InventoryAutomated.Controllers
                         item.AllowAccess = false;
                     }
                     db.SaveChanges();
-                    return Json(new { success = true, message="Permissions successfully assigned" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message= Resources.GlobalResource.MsgPermissionAssigned }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
 
-                return Json(new { success = false, message = "Unable to delete record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorWhileUpdate }, JsonRequestBehavior.AllowGet);
             }
         }
     }

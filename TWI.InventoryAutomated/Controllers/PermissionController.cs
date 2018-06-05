@@ -76,7 +76,7 @@ namespace TWI.InventoryAutomated.Controllers
                             perm.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Permissions.Add(perm);
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -85,17 +85,17 @@ namespace TWI.InventoryAutomated.Controllers
                             perm.CreatedBy = permission.CreatedBy;
                             db.Entry(perm).State = EntityState.Modified;
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
                 }
                 else
-                    return Json(new { success = false, message = "MAC Address already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Unable to add Device information!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -125,12 +125,12 @@ namespace TWI.InventoryAutomated.Controllers
                     Permission perm = db.Permissions.Where(x => x.ID == id).FirstOrDefault<Permission>();
                     perm.IsActive = false;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Disabled Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Unable to disable the record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -54,7 +54,7 @@ namespace TWI.InventoryAutomated.Controllers
             try
             {
                 InventoryPortalEntities db = new InventoryPortalEntities();
-                ViewBag.Languages = (from r in db.Languages where r.IsActive==true select new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code }).ToList();
+                ViewBag.Languages = (from r in db.Languages where r.IsActive == true select new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code }).ToList();
                 if (id == 0)
                 {
                     ViewBag.selectedLanguages = db.Languages.Where(x => x.Description.Contains("English") && x.IsActive == true).Select(x => x.ID).ToList();
@@ -63,7 +63,7 @@ namespace TWI.InventoryAutomated.Controllers
                 else
                 {
                     ViewBag.selectedLanguages = db.UserLanguages.Where(x => x.UserID == id && x.IsActive == true).Select(x => x.LanguageID).ToList();
-                    User user=db.Users.Where(x => x.UserID == id).FirstOrDefault<User>();
+                    User user = db.Users.Where(x => x.UserID == id).FirstOrDefault<User>();
                     user.ConfirmPassword = user.Password;
                     return View(user);
                 }
@@ -93,7 +93,7 @@ namespace TWI.InventoryAutomated.Controllers
                             db.Users.Add(user);
                             db.SaveChanges();
                             updateLanguages(user, selectedval);
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -103,18 +103,19 @@ namespace TWI.InventoryAutomated.Controllers
                             db.Entry(user).State = EntityState.Modified;
                             db.SaveChanges();
                             updateLanguages(user, selectedval);
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
 
                 }
                 else
-                    return Json(new { success = false, message = "User Name or Email already exists!" }, JsonRequestBehavior.AllowGet);
+                    //return Json(new { success = false, message = "User Name or Email already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Unable to add User information!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -167,13 +168,13 @@ namespace TWI.InventoryAutomated.Controllers
                     user.IsActive = false;
                     user.ConfirmPassword = user.Password;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Disabled Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
 
-                return Json(new { success = false, message = "Unable to disable record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
         public bool isDuplicate(User user)

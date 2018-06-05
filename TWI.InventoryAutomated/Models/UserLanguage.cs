@@ -19,5 +19,6 @@ namespace TWI.InventoryAutomated.Models
         public Nullable<bool> IsActive { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }
+        public Nullable<bool> IsDefault { get; set; }
     }
 }

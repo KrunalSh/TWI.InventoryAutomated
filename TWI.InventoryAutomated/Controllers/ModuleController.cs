@@ -76,7 +76,7 @@ namespace TWI.InventoryAutomated.Controllers
                             mod.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Modules.Add(mod);
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
@@ -85,17 +85,17 @@ namespace TWI.InventoryAutomated.Controllers
                             module.CreatedBy = mod.CreatedBy;
                             db.Entry(mod).State = EntityState.Modified;
                             db.SaveChanges();
-                            return Json(new { success = true, message = "Updated Successfully" }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
 
                     }
                 }
                 else
-                    return Json(new { success = false, message = "Module Name already exists!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Unable to add Module information!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
 
 
@@ -125,12 +125,12 @@ namespace TWI.InventoryAutomated.Controllers
                     Module mod = db.Modules.Where(x => x.ModuleID == id).FirstOrDefault<Module>();
                     mod.IsActive = false;
                     db.SaveChanges();
-                    return Json(new { success = true, message = "Disabled Successfully" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception)
             {
-                return Json(new { success = false, message = "Unable to disable the record!" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
     }

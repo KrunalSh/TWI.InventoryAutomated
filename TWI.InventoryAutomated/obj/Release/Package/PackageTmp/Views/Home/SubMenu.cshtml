@@ -69,7 +69,15 @@
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")'">Active Sessions</button>
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")?isActive=true'">Active Sessions</button>
+                </div>
+            </div>
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin())
+        {
+            <div class="col-sm-4">
+                <div class="input-group" style="float:left;padding:11px;">
+                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")?isActive=false'">Archived Sessions</button>
                 </div>
             </div>
         }

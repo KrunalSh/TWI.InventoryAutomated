@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="TWIInventoryPortalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ArchivedSessionLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SessionLogID" Type="int" />
+          <Property Name="FormName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ControlName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ActivityPerformed" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="Exception" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="Company">
           <Key>
             <PropertyRef Name="ID" />
@@ -126,6 +138,7 @@
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="LanguageID" Type="int" Nullable="false" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDefault" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
@@ -154,6 +167,7 @@
           <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityContainer Name="TWIInventoryPortalModelStoreContainer">
+          <EntitySet Name="ArchivedSessionLog" EntityType="Self.ArchivedSessionLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
@@ -199,6 +213,7 @@
           <EntitySet Name="UserAccessDevices" EntityType="TWIInventoryPortalModel.UserAccessDevice" />
           <EntitySet Name="UserSessionLogs" EntityType="TWIInventoryPortalModel.UserSessionLog" />
           <EntitySet Name="UserAccesses" EntityType="TWIInventoryPortalModel.UserAccess" />
+          <EntitySet Name="ArchivedSessionLogs" EntityType="TWIInventoryPortalModel.ArchivedSessionLog" />
         </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -297,6 +312,7 @@
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="IsDefault" Type="Boolean" />
         </EntityType>
         <EntityType Name="UserAccessDevice">
           <Key>
@@ -334,6 +350,18 @@
           <Property Name="CreatedBy" Type="Int32" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="ArchivedSessionLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SessionLogID" Type="Int32" />
+          <Property Name="FormName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ControlName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ActivityPerformed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Exception" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -453,6 +481,7 @@
           <EntitySetMapping Name="UserLanguages">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserLanguage">
               <MappingFragment StoreEntitySet="UserLanguages">
+                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
@@ -496,6 +525,19 @@
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ArchivedSessionLogs">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.ArchivedSessionLog">
+              <MappingFragment StoreEntitySet="ArchivedSessionLog">
+                <ScalarProperty Name="Exception" ColumnName="Exception" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ActivityPerformed" ColumnName="ActivityPerformed" />
+                <ScalarProperty Name="ControlName" ColumnName="ControlName" />
+                <ScalarProperty Name="FormName" ColumnName="FormName" />
+                <ScalarProperty Name="SessionLogID" ColumnName="SessionLogID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
