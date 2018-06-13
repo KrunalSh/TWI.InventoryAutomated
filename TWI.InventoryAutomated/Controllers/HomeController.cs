@@ -18,7 +18,7 @@ namespace TWI.InventoryAutomated.Controllers
         [DllImport("IpHlpApi.dll")]
         [return: MarshalAs(UnmanagedType.U4)]
         static extern int GetIpNetTable(IntPtr pIpNetTable,
-      [MarshalAs(UnmanagedType.U4)] ref int pdwSize, bool bOrder);
+        [MarshalAs(UnmanagedType.U4)] ref int pdwSize, bool bOrder);
 
         /// <summary>
         /// Error codes GetIpNetTable returns that we recognise
