@@ -11,7 +11,7 @@
             <tr style="vertical-align:top">
                 <td>
                     <div>
-                        @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
+                        @Html.LabelFor(model => model.UserName,TWI.InventoryAutomated.Resources.GlobalResource.UserName, new { @class = "control-label" })
                         <span class="requiredfield">*</span>
                         @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.UserName)
@@ -19,7 +19,7 @@
                 </td>
                 <td>
                     <div>
-                        @Html.LabelFor(model => model.EmailID, new { @class = "control-label" })
+                        @Html.LabelFor(model => model.EmailID, TWI.InventoryAutomated.Resources.GlobalResource.EmailID, new { @class = "control-label" })
                         <span class="requiredfield"></span>
                         @Html.EditorFor(model => model.EmailID, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.EmailID)
@@ -29,7 +29,7 @@
             <tr style="vertical-align:top">
                 <td>
                     <div>
-                        @Html.LabelFor(model => model.Password, new { @class = "control-label" })
+                        @Html.LabelFor(model => model.Password, TWI.InventoryAutomated.Resources.GlobalResource.Password, new { @class = "control-label" })
                         <span class="requiredfield">*</span>
                         @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.Password)
@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     <div>
-                        @Html.LabelFor(model => model.ConfirmPassword, new { @class = "control-label" })
+                        @Html.LabelFor(model => model.ConfirmPassword, TWI.InventoryAutomated.Resources.GlobalResource.ConfirmPassword, new { @class = "control-label" })
                         <span class="requiredfield">*</span>
                         @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.ConfirmPassword)
@@ -47,14 +47,14 @@
             <tr style="vertical-align:top">
                 <td>
                     <div>
-                        @Html.LabelFor(model => model.DisplayName, new { @class = "control-label" })
+                        @Html.LabelFor(model => model.DisplayName, TWI.InventoryAutomated.Resources.GlobalResource.DisplayName, new { @class = "control-label" })
                         @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.DisplayName)
                     </div>
                 </td>
                 <td>
                     <div>
-                        <label class="control-label">Languages</label>
+                        <label class="control-label">@TWI.InventoryAutomated.Resources.GlobalResource.Languages</label>
                         <select id="ListLanguages" multiple="multiple" class="form-control" name="languagesname">
                             @if (ViewBag.Languages != null)
                             {
@@ -83,7 +83,7 @@
                             { IsActive = (bool)Model.IsActive; }
                         }
                         @Html.CheckBoxFor(x => IsActive)
-                        @Html.LabelFor(model => model.IsActive, new { @class = "control-label" })
+                        @Html.LabelFor(model => model.IsActive, TWI.InventoryAutomated.Resources.GlobalResource.Active, new { @class = "control-label" })
                     </div>
                 </td>
             </tr>
@@ -92,8 +92,8 @@
         <br />
 
         <div class="form-group" style="margin-right: 18px;float:right;">
-            <input type="submit" value="Save" class="btn btn-primary" />
-            <input type="reset" value="Cancel" class="btn" onclick="Cancelbutton();" />
+            <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
+            <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" />
         </div>
     </div>
 }

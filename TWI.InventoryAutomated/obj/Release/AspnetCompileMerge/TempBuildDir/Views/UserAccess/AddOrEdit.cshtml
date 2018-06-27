@@ -7,19 +7,19 @@
 {
     @Html.HiddenFor(model => model.ID)
     <div class="form-group">
-        @Html.LabelFor(model => model.InstanceID, "Instance Name", new { @class = "control-label" })
+        @Html.LabelFor(model => model.InstanceID, TWI.InventoryAutomated.Resources.GlobalResource.InstanceName, new { @class = "control-label" })
         <span class="requiredfield">*</span>
         @Html.DropDownListFor(model => model.InstanceID, new SelectList(ViewBag.Instances, "ID", "InstanceName"), new { @class = "form-control", @id = "Instances" })
         @Html.ValidationMessageFor(model => model.InstanceID)
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.CompanyID, "Company Name", new { @class = "control-label" })
+        @Html.LabelFor(model => model.CompanyID, TWI.InventoryAutomated.Resources.GlobalResource.CompanyName, new { @class = "control-label" })
         <span class="requiredfield">*</span>
         @Html.DropDownListFor(model => model.CompanyID, Enumerable.Empty<SelectListItem>(), new { @class = "form-control", @id = "Companies" })
         @Html.ValidationMessageFor(model => model.CompanyID)
     </div>
     <div>
-        @Html.LabelFor(model => model.PermissionID, new { @class = "control-label" })
+        @Html.LabelFor(model => model.PermissionID, TWI.InventoryAutomated.Resources.GlobalResource.PermissionID, new { @class = "control-label" })
         <span class="requiredfield">*</span>
         @if (ViewBag.IsSuperUser != null)
         {
@@ -31,7 +31,7 @@
         }@Html.ValidationMessageFor(model => model.PermissionID)
     </div>
     <div class="form-group">
-        <label class="control-label">Devices</label>
+        <label class="control-label">@TWI.InventoryAutomated.Resources.GlobalResource.Devices</label>
         <span class="requiredfield">*</span>
         <select id="ListDevices" multiple="multiple" class="form-control" required name="devices">
             @{bool IsallSelected = false;
@@ -68,13 +68,13 @@
             { IsActive = (bool)Model.IsActive; }
         }
         @Html.CheckBoxFor(x => IsActive)
-        @Html.LabelFor(model => model.IsActive, new { @class = "control-label" })
+        @Html.LabelFor(model => model.IsActive, TWI.InventoryAutomated.Resources.GlobalResource.Active, new { @class = "control-label" })
     </div>
     <br />
     <br />
 
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <input type="reset" value="Cancel" class="btn" onclick="Cancelbutton();" />
+        <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
+        <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" />
     </div>
 }

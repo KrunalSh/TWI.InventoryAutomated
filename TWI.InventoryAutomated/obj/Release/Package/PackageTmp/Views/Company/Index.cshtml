@@ -8,7 +8,7 @@
     <div class="container">
         <div style="margin:auto;width:80%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-                <div style="font-weight:bold">@ViewBag.InstanceName - Companies</div>
+                <div style="font-weight:bold">@ViewBag.InstanceName - @TWI.InventoryAutomated.Resources.GlobalResource.Companies</div>
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","Instance")'><i class="fa fa-arrow-left fa-2x"></i></a>
             </div>
             <div style="width:95%;margin:22px 25px;" class="table-responsive">
@@ -37,6 +37,8 @@
     <script>
         var Popup, dataTable;
         $(document).ready(function () {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
             dataTable = $("#CompaniesTable").DataTable({
                 "ajax": {
                     "url": '/Company/GetData?InstanceId=@ViewBag.InstanceId',
@@ -77,7 +79,8 @@
                 "responsive": true,
                 "language": {
 
-                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button",
+                    "url": Path
                 },
                 'fnDrawCallback': function (oSettings) {
                     if ($('.dataTables_filter i').length == 0)
@@ -94,7 +97,7 @@
 
                 Popup = formDiv.dialog({
                     autoOpen: true,
-                    title: 'Company Detail',
+                    title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.CompanyDetails)',
                     modal: true
                 });
             });
@@ -125,21 +128,38 @@
         }
 
         function Delete(id) {
-            if (confirm('Are you sure to disable this Company details ?')) {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Delete", "Company")/' + id,
-                    success: function (data) {
-                        if (data.success) {
-                            dataTable.ajax.reload();
-                            alert(data.message);
-                        }
-                        else
-                            alert(data.message);
-                    }
+            $('<div></div>').appendTo('body')
+                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgDisableRecord)" + "</h6></div>")
+                .dialog({
+                    modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("Delete", "Company")/' + id,
+                                success: function (data) {
+                                    if (data.success) {
+                                        dataTable.ajax.reload();
+                                        alert(data.message);
+                                    }
+                                    else
+                                        alert(data.message);
+                                }
 
+                                });
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
                 });
-            }
         }
     </script>
 }

@@ -10,7 +10,7 @@
     <div class="container">
         <div style="margin:auto;width:80%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-                <div style="font-weight:bold">Permission(s)</div>
+                <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.Permissions</div>
 
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("SubMenu","Home")'><i class="fa fa-home fa-2x"></i></a>
             </div>
@@ -47,7 +47,8 @@
     <script>
         var Popup, dataTable;
         $(document).ready(function () {
-
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
             dataTable = $("#PermissionsTable").DataTable({
                 "ajax": {
                     "url": "/Permission/GetData",
@@ -93,8 +94,8 @@
                 "aaSorting": [[2, "desc"]] ,
                 "responsive": true,
                 "language": {
-
-                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button",
+                    "url": Path
                 },
                 'fnDrawCallback': function (oSettings) {
                     if ($('.dataTables_filter i').length==0)
@@ -113,7 +114,7 @@
                 title = event.currentTarget.parentElement.previousSibling.previousSibling.textContent;
             }
             else
-                title = 'Permissions Details'
+                title = "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.PermissionDetails)";
             var formDiv = $('<div/>');
             $.get(url)
                 .done(function (response) {
@@ -139,7 +140,7 @@
 
                     Popup = formDiv.dialog({
                         autoOpen: true,
-                        title: 'Permission Detail',
+                        title: "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.PermissionDetails)",
                         modal: true
                     });
                 });
@@ -171,21 +172,38 @@
         }
 
         function Delete(id) {
-            if (confirm('Are you sure to disable this Permission ?')) {
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Delete", "Permission")/' + id,
-                    success: function (data) {
-                        if (data.success) {
-                            dataTable.ajax.reload();
-                            alert(data.message);
-                        }
-                        else
-                            alert(data.message);
-                    }
+            $('<div></div>').appendTo('body')
+                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgDisableRecord)" + "</h6></div>")
+                .dialog({
+                    modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("Delete", "Permission")/' + id,
+                                success: function (data) {
+                                    if (data.success) {
+                                        dataTable.ajax.reload();
+                                        alert(data.message);
+                                    }
+                                    else
+                                        alert(data.message);
+                                }
 
+                                });
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
                 });
-            }
         }
         function AssignPermissionsUI() {
             $.ajax({

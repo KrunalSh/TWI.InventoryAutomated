@@ -18,7 +18,7 @@
             <div style="width:65%;float:right;color:white;text-align:right;padding-top:5px;padding-right:10px;" id="@(Session["UserID"] != null ? Session["UserID"].ToString() : Url.Action("LogOut","Home"))">
                 @if (Session["DisplayName"] != null)
                 {
-                    <div style="padding-bottom: 30px;">@Html.Action("FetchUserLanguage","Home")</div>
+                    <div style="padding-bottom: 30px;">@Html.Action("FetchUserLanguage", "Home")</div>
                     <div>
                         <b>User : </b>@Session["DisplayName"].ToString()
                     </div>
@@ -50,31 +50,66 @@
     @RenderSection("scripts", required: false)
     <script>
         function MakeitDefault(currentlang) {
-            if (confirm('Do you want to make this language as a default one ?')) {
+            $('<div></div>').appendTo('body')
+                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.DefaultLangConfirm)" + "</h6></div>")
+                .dialog({
+                    modal: true, title: 'Dafault Language', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            var defaultlang = currentlang.text;
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("MakeitDefault", "Language")',
+                                data: { 'defaultlang': defaultlang, 'isdefault': true },
+                                success: function (data) {
+                                    location.reload();
+                                }
+
+                            });
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+                            var defaultlang = currentlang.text;
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("MakeitDefault", "Language")',
+                                data: { 'defaultlang': defaultlang, 'isdefault': false },
+                                success: function (data) {
+                                    location.reload();
+                                }
+
+                            });
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+
                 var defaultlang = currentlang.text;
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("MakeitDefault", "Language")',
-                    data: { 'defaultlang': defaultlang },
+                    data: { 'defaultlang': defaultlang, 'isdefault': isdefault },
                     success: function (data) {
 
                     }
 
-                });
-            }
-            //currentlang.text;
-        }
-        @*$(document).ready(function () {
-            window.addEventListener('beforeunload', recordeCloseTime);
-        });
-
-        function recordeCloseTime() {
-
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("LogOut","Home")',
             });
-        }*@
+
+        }
+        function getCookie(key) {
+            var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+            return keyValue ? keyValue[2] : null;
+        }
+        function FetchPathforCultureFile(currentCult) {
+            if (currentCult == "DE")
+                return "../Scripts/German.json";
+            if (currentCult == "FR")
+                return "../Scripts/French.json";
+        }
     </script>
 </body>
 </html>

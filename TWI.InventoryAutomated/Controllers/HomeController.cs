@@ -277,26 +277,24 @@ namespace TWI.InventoryAutomated.Controllers
 
         public PartialViewResult AuthenticateDevice()
         {
-            //Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
-            //obj = GetAllDevicesOnLAN();
-            //IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
-            //string MacAddress = string.Empty, txtIPAdress = string.Empty;
-            //foreach (IPAddress ip in obj.Keys)
-            //{
-            //    if (ip.Equals(clientip))
-            //    {
-            //        PhysicalAddress actual = obj[ip];
-            //        MacAddress = Convert.ToString(actual);
-            //        txtIPAdress = Convert.ToString(clientip);
-            //    }
-
-            //}
-            string MacAddress = "B8CA3A7A1DC6";
+            Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
+            obj = GetAllDevicesOnLAN();
+            IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
+            string MacAddress = string.Empty, txtIPAdress = string.Empty;
+            foreach (IPAddress ip in obj.Keys)
+            {
+                if (ip.Equals(clientip))
+                {
+                    PhysicalAddress actual = obj[ip];
+                    MacAddress = Convert.ToString(actual);
+                    txtIPAdress = Convert.ToString(clientip);
+                }
+            }
+            //string MacAddress = "B8CA3A7A1DC6";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
                 return PartialView("AccessDenied");
-
         }
 
         private bool IsDeviceRegistered(string macAddress)

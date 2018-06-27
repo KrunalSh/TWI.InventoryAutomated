@@ -13,33 +13,47 @@
                 <div style="font-weight:bold">Activity Logs</div>
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","CurrentSessions",new {isActive=Model.IsActive })'><i class="fa fa-arrow-left fa-2x"></i></a>
             </div>
-            <table style="width: 100%;margin: 5px;">
-                <tr>
-                    <td><b>UserName :</b></td>
-                    <td>@Html.DisplayTextFor(model => model.UserName)</td>
-                    <td><b>Instance Name :</b></td>
-                    <td>@Html.DisplayTextFor(model => model.InstanceName)</td>
-                </tr>
-                <tr>
-                    <td><b>Company Name :</b></td>
-                    <td>@Html.DisplayTextFor(model => model.CompanyName)</td>
-                    <td><b>Device Name :</b></td>
-                    <td>@Html.DisplayTextFor(model => model.DeviceName)</td>
-                </tr>
-                <tr>
-                    @if (@Model.SessionStart.HasValue)
-                    {
-                        <td><b>Session Start :</b></td>
-                        <td>@Model.SessionStart.Value.ToString("dd/mm/yyyy HH:mm:ss")</td>
-                    }
-                    @if (@Model.SessionEnd.HasValue)
-                    {
-                        <td><b>Session End :</b></td>
-                        <td>@Model.SessionEnd.Value.ToString("dd/mm/yyyy HH:mm:ss")</td>
-                    }
-                </tr>
-            </table>
-            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+            <div style="margin-left: 24px;margin-top:10px;">
+                <table style="width: 45%; float:left;">
+                    <tr>
+
+                        <td><b>UserName :</b></td>
+                        <td>@Html.DisplayTextFor(model => model.UserName)</td>
+
+                    </tr>
+                    <tr>
+                        <td><b>Company Name :</b></td>
+                        <td>@Html.DisplayTextFor(model => model.CompanyName)</td>
+                    </tr>
+                    <tr>
+                        @if (@Model.SessionStart.HasValue)
+                        {
+                            <td><b>Session Start :</b></td>
+                            <td>@Model.SessionStart.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                        }
+                    </tr>
+                </table>
+                <table style="width: 45%; float:right;">
+                    <tr>
+                        <td><b>Instance Name :</b></td>
+                        <td>@Html.DisplayTextFor(model => model.InstanceName)</td>
+                    </tr>
+                    <tr>
+                        <td><b>Device Name :</b></td>
+                        <td>@Html.DisplayTextFor(model => model.DeviceName)</td>
+                    </tr>
+                    <tr>
+                        @if (@Model.SessionEnd.HasValue)
+                        {
+                            <td><b>Session End :</b></td>
+                            <td>@Model.SessionEnd.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                        }
+                    </tr>
+                </table>
+            </div>
+            <br />
+            <br />  
+            <div style="width:95%;margin:65px 25px;" class="table-responsive">
                 <table id="LogTable" class="table table-striped dt-responsive display table-bordered" style="width:100%">
                     <thead>
                         <tr>
@@ -68,7 +82,8 @@
     <script>
         var Popup, dataTable;
         $(document).ready(function () {
-
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
             dataTable = $("#LogTable").DataTable({
                 "ajax": {
                     "url": '/ArchivedLogs/GetData?SessionID=@Request.Params["SessionID"]',
@@ -85,7 +100,7 @@
                     { "data": "ActivityPerformed" },
                     {
                         "data": "CreatedDate", "render": function (date) {
-                            if (date != null) return moment(date).format("DD/MM/YYYY HH:mm:ss");
+                            if (date != null) return moment(date).format("DD/MM/YYYY HH:mm");
                             else return "";
                         }
                     },
@@ -94,7 +109,8 @@
                 "responsive": true,
                 "language": {
 
-                    "emptyTable": "No data found"
+                    "emptyTable": "No data found",
+                    "url": Path
                 }
             });
         });

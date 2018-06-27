@@ -14,7 +14,7 @@
         <br />
     </div>
     <div class="row">
-        <a href="#" style="float:right;font-size:x-large; " onclick="OpenForm();">Click to Login</a>
+        <a href="#" style="float:right;font-size:x-large; " class="btn btn-primary" onclick="OpenForm();">@TWI.InventoryAutomated.Resources.GlobalResource.ClicktoLogin</a>
     </div>
     <div id="InstanceAuth"></div>
 </div>
@@ -37,7 +37,7 @@
                             data = data.replace("<h4>AccessDenied</h4>","<h4>Device does not have access to the System. Please contact your administrator.</h4>")
                         }
                         else {
-                            title = "Login";
+                            title = "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Login)";
                         }
                         formDiv.html(data);
                         Popup = formDiv.dialog({
@@ -66,19 +66,34 @@
                     success: function (data) {
                         if (!data.success && (data.message.indexOf("Invalid") != -1 || data.message.indexOf("Unable to Login") != -1 || data.message.indexOf("Access Denied") != -1) || data.message.indexOf("Previous Sessions Terminanted")!=-1)
                             $('#LoginError').text(data.message);
-                        else if (!data.success && data.message.indexOf("sessions")!=-1) {
-                            var r = confirm(data.message);
-                            if (r == true) {
-                                track = true;
-                                $('#Login').click();
-                            } else {
-                            }
+                        else if (!data.success && data.message.indexOf("MsgAlreadyLoggedin") != -1) {
+                            data.message = data.message.replace("MsgAlreadyLoggedin", "");
+                            $('<div></div>').appendTo('body')
+                            .html("<div><h6>" + data.message + "</h6></div>")
+                            .dialog({
+                                modal: true, title: 'Session', zIndex: 10000, autoOpen: true,
+                                width: 'auto', resizable: false,
+                                buttons: {
+                                    Yes: function () {
+                                        track = true;
+                                            $('#Login').click();
+                                        $(this).dialog("close");
+                                    },
+                                    No: function () {
+
+                                        $(this).dialog("close");
+                                    }
+                                },
+                                close: function (event, ui) {
+                                    $(this).remove();
+                                }
+                            });
                         }
                         else if (data.success && data.message.indexOf('InstanceAuthentication') != -1) {
                             Popup.dialog('destroy').remove();
                              $('#InstanceAuth').dialog({
                                 autoOpen: true,
-                                title: "Instance",
+                                title: "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.InstanceSelection)",
                                 modal: true,
                                 width:'325px',
                                 open: function () {

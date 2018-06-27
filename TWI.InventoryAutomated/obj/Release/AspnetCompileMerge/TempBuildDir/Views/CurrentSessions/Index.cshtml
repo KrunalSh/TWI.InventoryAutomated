@@ -48,7 +48,8 @@
     <script>
         var Popup, dataTable;
         $(document).ready(function () {
-
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
             dataTable = $("#ActiveSessionsTable").DataTable({
                 "ajax": {
                     "url": "/CurrentSessions/GetData?isActive=@Request.Params["isActive"]",
@@ -63,7 +64,7 @@
                     { "data": "CompanyName" },
                     {
                         "data": "SessionStart", "render": function (date) {
-                            if (date != null) return moment(date).format("DD/MM/YYYY HH:mm:ss");
+                            if (date != null) return moment(date).format("DD/MM/YYYY HH:mm");
                             else return "";
                         }
                     },
@@ -81,7 +82,8 @@
                 "responsive": true,
                 "language": {
 
-                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button",
+                    "url": Path
                 }
             });
             setInterval(function () {
