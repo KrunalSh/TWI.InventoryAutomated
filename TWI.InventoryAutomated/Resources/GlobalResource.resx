@@ -244,7 +244,7 @@
     <value>Record already exists!</value>
   </data>
   <data name="MsgAlreadyLoggedin" xml:space="preserve">
-    <value>Session Already Logged in, Do you want to terminate existing sessions?</value>
+    <value>You already have active login session(s), do you wish to terminate those before proceeding?</value>
   </data>
   <data name="MsgDisableRecord" xml:space="preserve">
     <value>Are you sure to disable this record?</value>

@@ -439,7 +439,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Session Already Logged in, Do you want to terminate existing sessions?.
+        ///   Looks up a localized string similar to You already have active login session(s), do you wish to terminate those before proceeding?.
         /// </summary>
         public static string MsgAlreadyLoggedin {
             get {
