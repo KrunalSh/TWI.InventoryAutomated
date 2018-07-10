@@ -484,6 +484,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Form Name is a Required Field.
+        /// </summary>
+        public static string MsgFormNameRequired {
+            get {
+                return ResourceManager.GetString("MsgFormNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Login Information.
         /// </summary>
         public static string MsgInvalidLoginInformation {

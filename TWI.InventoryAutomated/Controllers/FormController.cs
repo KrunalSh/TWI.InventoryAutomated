@@ -12,32 +12,71 @@ namespace TWI.InventoryAutomated.Controllers
     public class FormController : Controller
     {
         // GET: Form
-        public ActionResult Index()
-        {
-            CommonServices cs = new CommonServices();
-            if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
-                return View();
-            else
-            {
-                cs.RemoveSessions();
-                return RedirectToAction("Default", "Home");
-            }
-        }
-        public ActionResult GetData()
+        //public ActionResult Index()
+        //{
+        //    CommonServices cs = new CommonServices();
+        //    if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+        //        return View();
+        //    else
+        //    {
+        //        cs.RemoveSessions();
+        //        return RedirectToAction("Default", "Home");
+        //    }
+        //}
+        //public ActionResult GetData()
+        //{
+        //    try
+        //    {
+        //        using (InventoryPortalEntities db = new InventoryPortalEntities())
+        //        {
+        //            var List = db.Forms.ToList();
+        //            return Json(new { data = List }, JsonRequestBehavior.AllowGet);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        public ActionResult Index(int ModuleID)
         {
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    var List = db.Forms.ToList();
-                    return Json(new { data = List }, JsonRequestBehavior.AllowGet);
+                    Module _module = db.Modules.Where(x => x.ModuleID == ModuleID).FirstOrDefault();
+                    ViewBag.ModuleName = _module.ModuleName;
+                    ViewBag.ModuleId = _module.ModuleID;
+                    return View();
                 }
             }
             catch (Exception)
             {
+
                 throw;
             }
         }
+
+        [HttpPost]
+        public ActionResult GetData(int ModuleId)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    //var List = db.Forms.Where(x => x.ModuleID == ModuleId && x.IsActive == true).ToList();
+                    List<Form> formList = db.Forms.Where(x => x.ModuleID == ModuleId).ToList<Form>();
+                    return Json(new { data = formList }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
 
         [HttpGet]
@@ -47,7 +86,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 InventoryPortalEntities db = new InventoryPortalEntities();
                 //ViewBag.ModuleID = new SelectList(db.Modules, "ModuleID", "ModuleName");
-                ViewBag.Modules = db.Modules.ToList();
+                //ViewBag.Modules = db.Modules.ToList();
 
                 if (id == 0)
                     return View(new Form());
@@ -68,6 +107,10 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(_form.FormName)) {
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgFormNameRequired }, JsonRequestBehavior.AllowGet);
+                }
+
                 if (!isDuplicate(_form))
                 {
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
@@ -93,7 +136,7 @@ namespace TWI.InventoryAutomated.Controllers
                     }
                 }
                 else
-                    return Json(new { success = false, message = Resources.GlobalResource.MsgMACAlreadyExist }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

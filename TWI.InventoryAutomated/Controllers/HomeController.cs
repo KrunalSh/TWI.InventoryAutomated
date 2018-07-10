@@ -277,20 +277,21 @@ namespace TWI.InventoryAutomated.Controllers
 
         public PartialViewResult AuthenticateDevice()
         {
-            Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
-            obj = GetAllDevicesOnLAN();
-            IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
-            string MacAddress = string.Empty, txtIPAdress = string.Empty;
-            foreach (IPAddress ip in obj.Keys)
-            {
-                if (ip.Equals(clientip))
-                {
-                    PhysicalAddress actual = obj[ip];
-                    MacAddress = Convert.ToString(actual);
-                    txtIPAdress = Convert.ToString(clientip);
-                }
-            }
-            //string MacAddress = "B8CA3A7A1DC6";
+            //Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
+            //obj = GetAllDevicesOnLAN();
+            //IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
+            //string MacAddress = string.Empty, txtIPAdress = string.Empty;
+            //foreach (IPAddress ip in obj.Keys)
+            //{
+            //    if (ip.Equals(clientip))
+            //    {
+            //        PhysicalAddress actual = obj[ip];
+            //        MacAddress = Convert.ToString(actual);
+            //        txtIPAdress = Convert.ToString(clientip);
+            //    }
+            //}
+            
+            string MacAddress = "A44CC82CBE25";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
@@ -301,17 +302,25 @@ namespace TWI.InventoryAutomated.Controllers
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
-                RegisteredDevice rDevices = db.RegisteredDevices.Where(x => x.IsActive == true && x.MacAddress == macAddress).FirstOrDefault();
-                if (rDevices != null)
+                try
                 {
-                    Session["DeviceID"] = rDevices.ID;
-                    return true;
+                    RegisteredDevice rDevices = db.RegisteredDevices.Where(x => x.IsActive == true && x.MacAddress == macAddress).FirstOrDefault();
+                    if (rDevices != null)
+                    {
+                        Session["DeviceID"] = rDevices.ID;
+                        return true;
+                    }
+                    else
+                    {
+                        Session["DeviceID"] = null;
+                        return false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Session["DeviceID"] = null;
                     return false;
                 }
+                
             }
         }
 

@@ -330,4 +330,7 @@
   <data name="WebURL" xml:space="preserve">
     <value>Web URL</value>
   </data>
+  <data name="MsgFormNameRequired" xml:space="preserve">
+    <value>Form Name is a Required Field</value>
+  </data>
 </root>
