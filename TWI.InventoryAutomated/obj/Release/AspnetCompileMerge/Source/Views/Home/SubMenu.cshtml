@@ -39,14 +39,14 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("Forms") || CommonServices.IsUserSuperAdmin())
+        @*@if (CommonServices.IsUserhasAccessOnPage("Forms") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;padding:11px;">
                     <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Form")'">@TWI.InventoryAutomated.Resources.GlobalResource.Forms</button>
                 </div>
             </div>
-        }
+        }*@
         @if (CommonServices.IsUserhasAccessOnPage("Permissions") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">

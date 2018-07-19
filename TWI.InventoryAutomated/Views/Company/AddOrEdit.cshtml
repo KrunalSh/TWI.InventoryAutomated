@@ -12,9 +12,15 @@
         @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.CompanyName)
     </div>
+
+    @*@using (Html.BeginForm(""))
+    {
+
+    }*@
+
     <div class="form-group ">
         @{
-            var IsActive = true;
+                var IsActive = true;
             if (Model.IsActive != null)
             { IsActive = (bool)Model.IsActive; }
         }

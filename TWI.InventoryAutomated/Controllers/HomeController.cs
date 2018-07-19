@@ -290,7 +290,7 @@ namespace TWI.InventoryAutomated.Controllers
             //        txtIPAdress = Convert.ToString(clientip);
             //    }
             //}
-            
+
             string MacAddress = "A44CC82CBE25";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");

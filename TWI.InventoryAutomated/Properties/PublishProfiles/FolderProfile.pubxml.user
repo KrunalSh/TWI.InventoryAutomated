@@ -22,13 +22,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>07/09/2018 16:02:29</publishTime>
+      <publishTime>07/10/2018 13:18:04</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>07/09/2018 16:02:29</publishTime>
+      <publishTime>07/10/2018 13:18:04</publishTime>
     </File>
     <File Include="bin/de/TWI.InventoryAutomated.resources.dll">
-      <publishTime>07/09/2018 16:02:24</publishTime>
+      <publishTime>07/10/2018 13:17:57</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>06/05/2018 13:21:26</publishTime>
@@ -37,7 +37,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:26</publishTime>
     </File>
     <File Include="bin/fr/TWI.InventoryAutomated.resources.dll">
-      <publishTime>07/09/2018 16:02:24</publishTime>
+      <publishTime>07/10/2018 13:17:57</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>06/05/2018 13:21:26</publishTime>
@@ -235,10 +235,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:27</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.dll">
-      <publishTime>07/09/2018 16:02:24</publishTime>
+      <publishTime>07/10/2018 13:17:57</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.pdb">
-      <publishTime>07/09/2018 16:02:24</publishTime>
+      <publishTime>07/10/2018 13:17:57</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>06/05/2018 13:21:27</publishTime>
@@ -286,7 +286,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>07/09/2018 16:02:25</publishTime>
+      <publishTime>07/10/2018 13:17:58</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>06/05/2018 13:21:25</publishTime>
@@ -346,16 +346,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Views/Company/Index.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>07/10/2018 10:30:39</publishTime>
     </File>
     <File Include="Views/CurrentSessions/Index.cshtml">
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Views/Form/AddOrEdit.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>07/10/2018 12:41:07</publishTime>
     </File>
     <File Include="Views/Form/Index.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>07/10/2018 12:19:15</publishTime>
     </File>
     <File Include="Views/Home/AccessDenied.cshtml">
       <publishTime>06/05/2018 13:21:25</publishTime>
@@ -373,7 +373,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Views/Home/SubMenu.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>07/10/2018 12:49:05</publishTime>
     </File>
     <File Include="Views/Instance/AddOrEdit.cshtml">
       <publishTime>06/05/2018 13:21:25</publishTime>
@@ -391,7 +391,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Views/Module/Index.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>07/10/2018 13:00:22</publishTime>
     </File>
     <File Include="Views/Permission/AddOrEdit.cshtml">
       <publishTime>06/05/2018 13:21:25</publishTime>

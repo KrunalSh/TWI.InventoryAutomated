@@ -10,16 +10,16 @@
     <div class="container">
         <div style="margin:auto;width:80%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-                <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.Forms</div>
+                <div style="font-weight:bold">@ViewBag.ModuleName  -  @TWI.InventoryAutomated.Resources.GlobalResource.Forms</div>
 
-                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("SubMenu","Home")'><i class="fa fa-home fa-2x"></i></a>
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","Module")'><i class="fa fa-arrow-left fa-2x"></i></a>
             </div>
             <div style="width:95%;margin:22px 25px;" class="table-responsive">
                 <table id="FormsTable" class="table table-striped dt-responsive display nowrap table-bordered">
                     <thead>
                         <tr>
                             <th>Form Name</th>
-                            <th>Module</th>
+                            @*<th>Module</th>*@
                             <th>Source File Name</th>
                             <th>Status</th>
                             <th>Created Date</th>
@@ -46,18 +46,20 @@
             var Path = FetchPathforCultureFile(currentCult);
             dataTable = $("#FormsTable").DataTable({
                 "ajax": {
-                    "url": "/Form/GetData",
-                    "type": "GET",
-                    "datatype": "json"
+                    //"url": "/Form/GetData",
+                    "url": '/Form/GetData?ModuleId=@ViewBag.ModuleId',
+                    //"type": "GET",
+                    "type": "POST",
+                    //"datatype": "json"
                 },
                 "columns": [
                     { "data": "FormName" },
-                    {
-                        "data": "ModuleID", "render": function (data) {
-                            PopulateModuleName(data);
-                            return ModuleName;
-                        }
-                    },
+                    //{
+                    //    "data": "ModuleID", "render": function (data) {
+                    //        PopulateModuleName(data);
+                    //        return ModuleName;
+                    //    }
+                    //},
                     { "data": "SourceFileName" },
                     {
                         "data": "IsActive", "render": function (data) {
@@ -88,7 +90,7 @@
 
 
                 ],
-                "aaSorting": [[4, "desc"]] ,
+                "aaSorting": [[3, "desc"]] ,
                 "responsive": true,
                 "language": {
 
@@ -122,6 +124,7 @@
         function SubmitForm(form) {
             $.validator.unobtrusive.parse(form);
             if ($(form).valid()) {
+                $(form).append('<input type="hidden" name="ModuleID" value="@ViewBag.ModuleId" /> ');
                 $.ajax({
                     type: "POST",
                     url: form.action,

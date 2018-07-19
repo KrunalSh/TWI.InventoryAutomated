@@ -19,6 +19,7 @@
                     <thead>
                         <tr>
                             <th>Module Name</th>
+                            <th>Form(s)</th>
                             <th>Status</th>
                             <th>Created Date</th>
                             <th></th>
@@ -51,6 +52,12 @@
                 "columns": [
                     { "data": "ModuleName" },
                     {
+                        "data": "ModuleID", "render": function (data) {
+                            //?InstanceID = " + data + "'
+                            return "<a href='/Form/Index?ModuleId=" + data + "'>Select</a>";
+                        }
+                    },
+                    {
                         "data": "IsActive", "render": function (data) {
                             if (data)
                                 return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightgreen" ></i><i data-toggle="tooltip" title="Active" class="fa fa-circle-thin fa-stack-1x icon-green"></i></span >';
@@ -68,6 +75,7 @@
                         },
                         "visible": false
                     },
+                    
                     {
                         "data": "ModuleID", "render": function (data) {
                             return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "Module")/" + data + "')></i>  <i class='fa fa-trash fa-lg' data-toggle='tooltip' title='Delete' style='margin-left:15px' onclick=Delete(" + data + ")></i>";
