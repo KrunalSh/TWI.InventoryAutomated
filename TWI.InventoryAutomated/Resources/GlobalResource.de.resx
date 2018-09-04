@@ -330,4 +330,7 @@
   <data name="DefaultLangConfirm" xml:space="preserve">
     <value>Möchten Sie diese Sprache als Standardsprache festlegen?</value>
   </data>
+  <data name="StockCount" xml:space="preserve">
+    <value>Bestandszählung</value>
+  </data>
 </root>

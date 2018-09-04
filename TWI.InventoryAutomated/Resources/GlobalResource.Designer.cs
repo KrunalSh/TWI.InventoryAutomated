@@ -673,6 +673,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stock Count.
+        /// </summary>
+        public static string StockCount {
+            get {
+                return ResourceManager.GetString("StockCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
         public static string User {

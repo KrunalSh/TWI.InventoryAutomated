@@ -9,37 +9,45 @@
 
     <div class="row" style="padding-bottom:30px;padding-left:20px">
         @if (CommonServices.IsUserhasPermissionsOnModule("InBound") || CommonServices.IsUserSuperAdmin())
-        {
-            <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px; height:90px;">@TWI.InventoryAutomated.Resources.GlobalResource.Inbound</button>
-                </div>
+    {
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding:11px;">
+                <button type="button" class="btn" style="width:250px; height:90px;">@TWI.InventoryAutomated.Resources.GlobalResource.Inbound</button>
             </div>
-        }
+        </div>
+}
         @if (CommonServices.IsUserhasPermissionsOnModule("OutBound") || CommonServices.IsUserSuperAdmin())
-        {
-            <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;">@TWI.InventoryAutomated.Resources.GlobalResource.OutBound</button>
-                </div>
+    {
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding:11px;">
+                <button type="button" class="btn" style="width:250px;height:90px;">@TWI.InventoryAutomated.Resources.GlobalResource.OutBound</button>
             </div>
-        }
+        </div>
+}
         @if (CommonServices.IsUserhasPermissionsOnModule("Internal") || CommonServices.IsUserSuperAdmin())
-        {
-            <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;">@TWI.InventoryAutomated.Resources.GlobalResource.Internal</button>
-                </div>
+    {
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding:11px;">
+                <button type="button" class="btn" style="width:250px;height:90px;">@TWI.InventoryAutomated.Resources.GlobalResource.Internal</button>
             </div>
-        }
+        </div>
+}
         @if (CommonServices.IsUserhasPermissionsOnModule("Admin") || CommonServices.IsUserSuperAdmin())
-        {
-            <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("SubMenu", "Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.Admin</button>
-                </div>
+    {
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding:11px;">
+                <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("SubMenu", "Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.Admin</button>
             </div>
-        }
+        </div>
+}
+        @if (CommonServices.IsUserhasAccessOnPage("StockCount") || CommonServices.IsUserSuperAdmin())
+    {
+        <div class="col-sm-4">
+            <div class="input-group" style="float:left;padding:11px;">
+                <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "StockCount")?isActive=false'">@TWI.InventoryAutomated.Resources.GlobalResource.StockCount</button>
+            </div>
+        </div>
+}
         <div class="col-sm-4">
             <div class="input-group" style="float:left;padding:11px;">
                 <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("LogOut","Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.Logout</button>

@@ -333,4 +333,7 @@
   <data name="MsgFormNameRequired" xml:space="preserve">
     <value>Form Name is a Required Field</value>
   </data>
+  <data name="StockCount" xml:space="preserve">
+    <value>Stock Count</value>
+  </data>
 </root>

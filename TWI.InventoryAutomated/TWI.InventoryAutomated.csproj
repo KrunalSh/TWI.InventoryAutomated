@@ -161,6 +161,7 @@
     <Compile Include="Controllers\PermissionAssignmentController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\RegisteredDeviceController.cs" />
+    <Compile Include="Controllers\StockCountController.cs" />
     <Compile Include="Controllers\UserAccessController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataAccess\ArchiveLogs.cs" />
@@ -337,6 +338,7 @@
     <Content Include="Views\CurrentSessions\Index.cshtml" />
     <Content Include="Views\ArchivedLogs\Index.cshtml" />
     <Content Include="Scripts\German.json" />
+    <Content Include="Views\StockCount\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
