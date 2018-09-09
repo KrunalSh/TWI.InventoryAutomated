@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TWI.InventoryAutomated.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TWI_InventoryAutomated_DEVPhysicalInvJournal_PhysicalInvJournal_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_DEV/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/PhysicalInvJournal</Value>
+    </Setting>
+    <Setting Name="TWI_InventoryAutomated_TESTPhysicalInvJournal_PhysicalInvJournal_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/PhysicalInvJournal</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
