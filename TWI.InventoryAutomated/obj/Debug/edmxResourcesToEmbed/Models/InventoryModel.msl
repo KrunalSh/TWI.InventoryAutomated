@@ -174,5 +174,120 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="GetStockCountList" FunctionName="TWIInventoryPortalModel.Store.GetStockCountList">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="TWIInventoryPortalModel.GetStockCountList_Result">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="SCCode" ColumnName="SCCode" />
+          <ScalarProperty Name="SCDesc" ColumnName="SCDesc" />
+          <ScalarProperty Name="TotalItemCount" ColumnName="TotalItemCount" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="StockCountAllocations">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
+        <MappingFragment StoreEntitySet="StockCountAllocations">
+          <ScalarProperty Name="Location_Code" ColumnName="Location Code" />
+          <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+          <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
+          <ScalarProperty Name="FinalQty" ColumnName="FinalQty" />
+          <ScalarProperty Name="AuditorQty" ColumnName="AuditorQty" />
+          <ScalarProperty Name="PhysicalQty" ColumnName="PhysicalQty" />
+          <ScalarProperty Name="NAVQty" ColumnName="NAVQty" />
+          <ScalarProperty Name="Unit_Of_Measure_Code" ColumnName="Unit Of Measure Code" />
+          <ScalarProperty Name="Expiration_Date" ColumnName="Expiration Date" />
+          <ScalarProperty Name="Lot_No" ColumnName="Lot No" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Item_No_" ColumnName="Item No." />
+          <ScalarProperty Name="Bin_Code" ColumnName="Bin Code" />
+          <ScalarProperty Name="Zone_Code" ColumnName="Zone Code" />
+          <ScalarProperty Name="Whse__Document_No_" ColumnName="Whse. Document No." />
+          <ScalarProperty Name="DocType" ColumnName="DocType" />
+          <ScalarProperty Name="SearchCriteria" ColumnName="SearchCriteria" />
+          <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
+          <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
+          <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
+          <ScalarProperty Name="StockCountID" ColumnName="StockCountID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockCountDetail">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountDetail">
+        <MappingFragment StoreEntitySet="StockCountDetail">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Location_Code" ColumnName="Location Code" />
+          <ScalarProperty Name="Batch_Name" ColumnName="Batch Name" />
+          <ScalarProperty Name="Template_Name" ColumnName="Template Name" />
+          <ScalarProperty Name="NAVQty" ColumnName="NAVQty" />
+          <ScalarProperty Name="PhyicalQty" ColumnName="PhyicalQty" />
+          <ScalarProperty Name="Unit_of_Measure_Code" ColumnName="Unit of Measure Code" />
+          <ScalarProperty Name="Expiration_Date" ColumnName="Expiration Date" />
+          <ScalarProperty Name="Lot_No_" ColumnName="Lot No." />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Item_No_" ColumnName="Item No." />
+          <ScalarProperty Name="Bin_Code" ColumnName="Bin Code" />
+          <ScalarProperty Name="Zone_Code" ColumnName="Zone Code" />
+          <ScalarProperty Name="Whse__Document_No_" ColumnName="Whse. Document No." />
+          <ScalarProperty Name="SCID" ColumnName="SCID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockCountHeader">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountHeader">
+        <MappingFragment StoreEntitySet="StockCountHeader">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="TotalItemCount" ColumnName="TotalItemCount" />
+          <ScalarProperty Name="SCDesc" ColumnName="SCDesc" />
+          <ScalarProperty Name="SCCode" ColumnName="SCCode" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockCountIterations">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountIterations">
+        <MappingFragment StoreEntitySet="StockCountIterations">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="IterationName" ColumnName="IterationName" />
+          <ScalarProperty Name="IterationNo" ColumnName="IterationNo" />
+          <ScalarProperty Name="SCCode" ColumnName="SCCode" />
+          <ScalarProperty Name="SCID" ColumnName="SCID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockCountTeamDetail">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountTeamDetail">
+        <MappingFragment StoreEntitySet="StockCountTeamDetail">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="UserID" ColumnName="UserID" />
+          <ScalarProperty Name="TeamMasterID" ColumnName="TeamMasterID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StockCountTeamMaster">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountTeamMaster">
+        <MappingFragment StoreEntitySet="StockCountTeamMaster">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="TeamNAme" ColumnName="TeamNAme" />
+          <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
+          <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

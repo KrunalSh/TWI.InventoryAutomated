@@ -132,6 +132,32 @@ namespace TWI.InventoryAutomated.Models
         public string PermissionDesc { get; set; }
     }
     #endregion
+
+    #region "SockCount - NAV Data Pull"
+
+    [MetadataType(typeof(NewStockCountAttribs))]
+    public partial class NewStockCount
+    { }
+
+    public class NewStockCountAttribs
+    {
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
+        public string SCCode { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Resources.GlobalResource),
+            ErrorMessageResourceName = "RequiredField")]
+        public string SCDesc { get; set; }
+    }
+
+
+    #endregion 
+
+
+
+
+
+
     #region Users
     [MetadataType(typeof(UserAttribs))]
     public partial class User

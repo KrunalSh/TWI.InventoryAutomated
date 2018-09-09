@@ -1,0 +1,158 @@
+﻿@{
+    ViewBag.Title = "Stock Count Data Pull";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row"> &nbsp;</div>
+<div class="row"> &nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountHeader</div>
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","StockCount")'><i class="fa fa-home fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="HeaderTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>SC Code</th>
+                            <th>Description</th>
+                            <th>Item Count</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+            var currentCult = getCookie("Language");
+            var Path=FetchPathforCultureFile(currentCult);
+            dataTable = $("#HeaderTable").DataTable({
+                "ajax": {
+                    "url": "/StockCount/GetSockCountList",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "SCCode", "render": function (data, type, row) { return "<a href='/StockCount/ViewStockCountDetails?ID=" + row.ID + "'>" + data + "</a>";} },
+                    { "data": "SCDesc" },
+                    { "data": "TotalItemCount" },
+                    { "data": "Status" },
+                    {
+                        "data": "CreatedDate", "render": function (date) {
+                            if (date != null) return new Date(parseInt(date.replace('/Date(', '')));
+                            else return "";
+                        },
+                        "visible": false
+                    }
+                ],
+                "aaSorting": [[4, "desc"]] ,
+                "responsive": true,
+                "language": {
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button",
+                    "url":Path
+                },
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_filter i').length==0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("NewStockCount", "StockCount")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+        });
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+                $.get(url)
+                    .done(function (response) {
+                        formDiv.html(response);
+
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NewSCTitle)',
+                            modal: true
+                            //,
+                            //width: 'auto',
+                            //close: function () {
+                            //    Popup.dialog('destroy').remove();
+                            //}
+                            //,
+                            //create: function (event, ui) {
+                            //    $(this).css("maxWidth", "660px");
+                            //}
+
+                        });
+                    });
+            }
+
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+                });
+            }
+            return false;
+        }
+
+        @*function Delete(id) {
+            $('<div></div>').appendTo('body')
+                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgDisableRecord)" + "</h6></div>")
+                .dialog({
+                    modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("Delete", "RegisteredDevice")/' + id,
+                                success: function (data) {
+                                    if (data.success) {
+                                        dataTable.ajax.reload();
+                                        alert(data.message);
+                                    }
+                                    else
+                                        alert(data.message);
+                                }
+
+                                });
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+
+        }*@
+    </script>
+}

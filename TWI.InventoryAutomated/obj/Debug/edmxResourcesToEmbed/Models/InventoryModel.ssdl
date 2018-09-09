@@ -89,6 +89,103 @@
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
   </EntityType>
+  <EntityType Name="StockCountAllocations">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StockCountID" Type="int" />
+    <Property Name="SCIterationID" Type="int" />
+    <Property Name="SCIterationName" Type="varchar" MaxLength="50" />
+    <Property Name="TeamCode" Type="varchar" MaxLength="5" />
+    <Property Name="SearchCriteria" Type="nvarchar" MaxLength="50" />
+    <Property Name="DocType" Type="varchar" MaxLength="2" />
+    <Property Name="Whse. Document No." Type="varchar" MaxLength="50" />
+    <Property Name="Zone Code" Type="varchar" MaxLength="50" />
+    <Property Name="Bin Code" Type="varchar" MaxLength="50" />
+    <Property Name="Item No." Type="varchar" MaxLength="50" />
+    <Property Name="Description" Type="varchar" MaxLength="150" />
+    <Property Name="Lot No" Type="varchar" MaxLength="50" />
+    <Property Name="Expiration Date" Type="datetime" />
+    <Property Name="Unit Of Measure Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="NAVQty" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="PhysicalQty" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="AuditorQty" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="FinalQty" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="TemplateName" Type="varchar" MaxLength="150" />
+    <Property Name="BatchName" Type="varchar" MaxLength="50" />
+    <Property Name="Location Code" Type="varchar" MaxLength="150" />
+  </EntityType>
+  <EntityType Name="StockCountDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCID" Type="int" />
+    <Property Name="Whse. Document No." Type="nvarchar" MaxLength="20" />
+    <Property Name="Zone Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Bin Code" Type="nvarchar" MaxLength="20" />
+    <Property Name="Item No." Type="nvarchar" MaxLength="20" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="Lot No." Type="nvarchar" MaxLength="20" />
+    <Property Name="Expiration Date" Type="datetime2" Precision="7" />
+    <Property Name="Unit of Measure Code" Type="varchar" MaxLength="10" />
+    <Property Name="PhyicalQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="NAVQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="Template Name" Type="nvarchar" MaxLength="10" />
+    <Property Name="Batch Name" Type="nvarchar" MaxLength="10" />
+    <Property Name="Location Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountHeader">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCCode" Type="varchar" MaxLength="10" />
+    <Property Name="SCDesc" Type="varchar" MaxLength="150" />
+    <Property Name="TotalItemCount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Status" Type="varchar" MaxLength="1" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountIterations">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCID" Type="int" />
+    <Property Name="SCCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="IterationNo" Type="int" />
+    <Property Name="IterationName" Type="varchar" MaxLength="50" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountTeamDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TeamMasterID" Type="int" />
+    <Property Name="UserID" Type="nvarchar" MaxLength="50" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="150" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountTeamMaster">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCIterationID" Type="int" />
+    <Property Name="TeamCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="TeamNAme" Type="nvarchar" MaxLength="50" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
   <EntityType Name="UIPermissionAssignment">
     <Key>
       <PropertyRef Name="ID" />
@@ -161,6 +258,7 @@
     <Property Name="SessionEnd" Type="datetime" />
     <Property Name="IsActive" Type="bit" />
   </EntityType>
+  <Function Name="GetStockCountList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="TWIInventoryPortalModelStoreContainer">
     <EntitySet Name="ArchivedSessionLog" EntityType="Self.ArchivedSessionLog" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
@@ -170,6 +268,12 @@
     <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountDetail" EntityType="Self.StockCountDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountHeader" EntityType="Self.StockCountHeader" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountIterations" EntityType="Self.StockCountIterations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountTeamDetail" EntityType="Self.StockCountTeamDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountTeamMaster" EntityType="Self.StockCountTeamMaster" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UIPermissionAssignment" EntityType="Self.UIPermissionAssignment" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserAccess" EntityType="Self.UserAccess" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserAccessDevices" EntityType="Self.UserAccessDevices" Schema="dbo" store:Type="Tables" />

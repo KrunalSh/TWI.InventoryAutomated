@@ -1,0 +1,26 @@
+﻿@model TWI.InventoryAutomated.Models.StockCountHeader
+@{
+    Layout = null;
+}
+
+
+@using (Html.BeginForm("NewStockCount", "StockCount", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group txtNotification">
+        @Html.LabelFor(model => model.SCCode, TWI.InventoryAutomated.Resources.GlobalResource.Code, new { @class = "control-label" })
+        <span class="requiredfield">*</span>
+        @Html.EditorFor(model => model.SCCode, new { htmlAttributes = new { @class = "form-control", @maxlength = 10 } })
+        @Html.ValidationMessageFor(model => model.SCCode)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.SCDesc, TWI.InventoryAutomated.Resources.GlobalResource.Description, new { @class = "control-label" })
+        <span class="requiredfield">*</span>
+        @Html.EditorFor(model => model.SCDesc, new { htmlAttributes = new { @class = "form-control", @maxlength = 50 } })
+        @Html.ValidationMessageFor(model => model.SCDesc)
+    </div>
+    <div class="form-group">
+        <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
+        <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" />
+    </div>
+}

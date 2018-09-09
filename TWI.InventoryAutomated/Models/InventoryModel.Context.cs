@@ -12,6 +12,8 @@ namespace TWI.InventoryAutomated.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class InventoryPortalEntities : DbContext
     {
@@ -39,5 +41,16 @@ namespace TWI.InventoryAutomated.Models
         public virtual DbSet<UserSessionLog> UserSessionLogs { get; set; }
         public virtual DbSet<UserAccess> UserAccesses { get; set; }
         public virtual DbSet<ArchivedSessionLog> ArchivedSessionLogs { get; set; }
+        public virtual DbSet<StockCountAllocations> StockCountAllocations { get; set; }
+        public virtual DbSet<StockCountDetail> StockCountDetail { get; set; }
+        public virtual DbSet<StockCountHeader> StockCountHeader { get; set; }
+        public virtual DbSet<StockCountIterations> StockCountIterations { get; set; }
+        public virtual DbSet<StockCountTeamDetail> StockCountTeamDetail { get; set; }
+        public virtual DbSet<StockCountTeamMaster> StockCountTeamMaster { get; set; }
+    
+        public virtual ObjectResult<GetStockCountList_Result> GetStockCountList()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetStockCountList_Result>("GetStockCountList");
+        }
     }
 }

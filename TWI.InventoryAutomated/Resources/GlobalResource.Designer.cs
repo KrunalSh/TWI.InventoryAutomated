@@ -511,6 +511,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Records Found, cannot generate a new Stock Count.
+        /// </summary>
+        public static string MsgNoRecordsFound {
+            get {
+                return ResourceManager.GetString("MsgNoRecordsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permissions successfully assigned.
         /// </summary>
         public static string MsgPermissionAssigned {
@@ -561,6 +570,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string NavisionInstances {
             get {
                 return ResourceManager.GetString("NavisionInstances", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Stock Count.
+        /// </summary>
+        public static string NewSCTitle {
+            get {
+                return ResourceManager.GetString("NewSCTitle", resourceCulture);
             }
         }
         
@@ -664,11 +682,38 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stock Count Code.
+        /// </summary>
+        public static string SCCode {
+            get {
+                return ResourceManager.GetString("SCCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SourceFileName.
         /// </summary>
         public static string SourceFileName {
             get {
                 return ResourceManager.GetString("SourceFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stock Count.
+        /// </summary>
+        public static string StockCount {
+            get {
+                return ResourceManager.GetString("StockCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stock Count Header.
+        /// </summary>
+        public static string StockCountHeader {
+            get {
+                return ResourceManager.GetString("StockCountHeader", resourceCulture);
             }
         }
         

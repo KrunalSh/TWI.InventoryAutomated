@@ -333,4 +333,19 @@
   <data name="MsgFormNameRequired" xml:space="preserve">
     <value>Form Name is a Required Field</value>
   </data>
+  <data name="StockCount" xml:space="preserve">
+    <value>Stock Count</value>
+  </data>
+  <data name="StockCountHeader" xml:space="preserve">
+    <value>Stock Count Header</value>
+  </data>
+  <data name="MsgNoRecordsFound" xml:space="preserve">
+    <value>No Records Found, cannot generate a new Stock Count</value>
+  </data>
+  <data name="NewSCTitle" xml:space="preserve">
+    <value>New Stock Count</value>
+  </data>
+  <data name="SCCode" xml:space="preserve">
+    <value>Stock Count Code</value>
+  </data>
 </root>

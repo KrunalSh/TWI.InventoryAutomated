@@ -161,6 +161,7 @@
     <Compile Include="Controllers\PermissionAssignmentController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\RegisteredDeviceController.cs" />
+    <Compile Include="Controllers\StockCountController.cs" />
     <Compile Include="Controllers\UserAccessController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataAccess\ArchiveLogs.cs" />
@@ -175,6 +176,9 @@
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Form.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GetStockCountList_Result.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Instance.cs">
@@ -195,6 +199,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InventoryModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\InventoryModelEntities.cs" />
     <Compile Include="Models\InventoryModelExtension.cs" />
     <Compile Include="Models\Language.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
@@ -206,6 +211,25 @@
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RegisteredDevice.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountAllocations.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountDetail.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountHeader.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountIterations.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountModel.cs" />
+    <Compile Include="Models\StockCountTeamDetail.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountTeamMaster.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UIPermissionAssignment.cs">
@@ -226,10 +250,12 @@
     <Compile Include="Models\UserSessionLog.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\WH_Locations.cs">
-      <DependentUpon>InventoryModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Resources\GlobalResource.de.Designer.cs">
       <DependentUpon>GlobalResource.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -248,6 +274,16 @@
     <Compile Include="Security\CustomAuthorizeAttribute.cs" />
     <Compile Include="Security\CustomPrincipal.cs" />
     <Compile Include="Security\SessionPersister.cs" />
+    <Compile Include="Web References\DEVPhyInvJournal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\TESTPhyInvJournal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -284,6 +320,10 @@
     </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\French.json" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\moment.min.js" />
@@ -337,6 +377,26 @@
     <Content Include="Views\CurrentSessions\Index.cshtml" />
     <Content Include="Views\ArchivedLogs\Index.cshtml" />
     <Content Include="Scripts\German.json" />
+    <Content Include="Web References\DEVPhyInvJournal\PhysicalInvJournal.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Views\StockCount\Index.cshtml" />
+    <Content Include="Views\StockCount\NavDataPull.cshtml" />
+    <Content Include="Views\StockCount\NewStockCount.cshtml" />
+    <Content Include="Views\StockCount\ViewStockCountDetails.cshtml" />
+    <None Include="Web References\DEVPhyInvJournal\PhysicalInvJournal.wsdl" />
+    <Content Include="Web References\DEVPhyInvJournal\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\TESTPhyInvJournal\PhysicalInvJournal.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\TESTPhyInvJournal\PhysicalInvJournal.wsdl" />
+    <Content Include="Web References\TESTPhyInvJournal\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -371,6 +431,36 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>GlobalResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_DEV/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVPhyInvJournal\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_DEV/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVPhyInvJournal_PhysicalInvJournal_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\TESTPhyInvJournal\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_TESTPhyInvJournal_PhysicalInvJournal_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

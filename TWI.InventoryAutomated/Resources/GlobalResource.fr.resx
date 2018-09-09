@@ -330,4 +330,7 @@
   <data name="WebURL" xml:space="preserve">
     <value>URL Web</value>
   </data>
+  <data name="StockCount" xml:space="preserve">
+    <value>Nombre de stock</value>
+  </data>
 </root>
