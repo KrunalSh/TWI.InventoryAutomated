@@ -27,6 +27,52 @@ textarea {
     font-weight: bold;
 }
 
+.field_background {
+    background-color: #EEEEEE;
+    text-align: left;
+    border-bottom-width: thin;
+    border-bottom-style: solid;
+    border-bottom-color: #828282;
+    border-top-width: thin;
+    border-top-style: solid;
+    border-top-color: #828282;
+    height: 30px;
+    font-family: Calibri;
+    font-size: 14px;
+    font-weight: 600;
+    color: #828282;
+}
+
+.field_background_left {
+    background-color: #EEEEEE;
+    text-align: left;
+    border-bottom-width: thin;
+    border-bottom-style: solid;
+    border-bottom-color: #828282;
+    height: 30px;
+    font-family: Calibri;
+    font-size: 14px;
+    font-weight: 600;
+    color: #828282;
+    float: left;
+    width: 30%;
+}
+
+.field_background_right {
+    background-color: #EEEEEE;
+    text-align: left;
+    border-bottom-width: thin;
+    border-bottom-style: solid;
+    border-bottom-color: #828282;
+    height: 30px;
+    font-family: Calibri;
+    font-size: 14px;
+    font-weight: 600;
+    color: #828282;
+    float: left;
+    width: 70%;
+}
+
 
 input.input-validation-error {
     border: 1px solid #e80c4d;
@@ -90,5 +136,8 @@ input.input-validation-error {
         text-align: right;
     }
 }
+
+
+
     
     

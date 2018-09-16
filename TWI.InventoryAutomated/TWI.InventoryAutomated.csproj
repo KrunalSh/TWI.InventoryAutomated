@@ -199,7 +199,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InventoryModel.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\InventoryModelEntities.cs" />
     <Compile Include="Models\InventoryModelExtension.cs" />
     <Compile Include="Models\Language.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
@@ -210,6 +209,7 @@
     <Compile Include="Models\Permission.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PhysicalInvJournal.cs" />
     <Compile Include="Models\RegisteredDevice.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>

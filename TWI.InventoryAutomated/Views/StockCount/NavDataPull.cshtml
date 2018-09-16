@@ -1,30 +1,67 @@
-﻿@{
+﻿@model TWI.InventoryAutomated.Models.StockCountModel
+@{
     ViewBag.Title = "Stock Count Data Pull";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="row"> &nbsp;</div>
-<div class="row"> &nbsp;</div>
 <div class="row">
-    <div class="container">
-        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+        <div style="margin:auto;width:100%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
                 <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountHeader</div>
-                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","StockCount")'><i class="fa fa-home fa-2x"></i></a>
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
             </div>
-            <div style="width:95%;margin:22px 25px;" class="table-responsive">
-                <table id="HeaderTable" class="table table-striped dt-responsive display nowrap table-bordered">
-                    <thead>
-                        <tr>
-                            <th>SC Code</th>
-                            <th>Description</th>
-                            <th>Item Count</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                </table>
+            <div style="width:100% !important;padding:15px;" class="table-responsive">
+                <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
+                    <div style="float:left;">
+                    @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches" })</div>
+                    <div style="float:right;">
+                        <a class="btn btn-success" style="width:60px;" data-toggle="tooltip" title="Add New Batch" onclick="PopupForm('@Url.Action("NewStockCount", "StockCount")')"><i class="fa fa-plus fa-lg"></i></a>
+                        <input type="submit" style="width:70px;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Pull" class="btn btn-primary" title="Pull Batch Data" onclick="PullData();" />
+                        <input type="submit" style="width:70px;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Push" class="btn btn-danger" title="Push Batch Data" onclick="Cancelbutton();" />
+                    </div>
+                </div>
+                <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
+                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="SCCode">Batch Code: @Html.DisplayFor(model => model.SCCode) </div>
+                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="SCDesc">Batch Title: @Html.DisplayFor(model => model.SCDesc) </div>
+                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="TotalItem">Item Count: @Html.DisplayFor(model => model.TotalItemCount)</div>
+                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="Status">Batch Status : @Html.DisplayFor(model => model.Status)</div>
+                </div>
+                <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
+                    <table id="HeaderTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="">Item No</th>
+                                <th>Description</th>
+                                <th>Zone Code</th>
+                                <th>Bin Code</th>
+                                <th>Lot No</th>
+                                <th>Expiration Date</th>
+                                <th>Qty</th>
+                                <th>Qty (Phy. Inv)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var _std in Model._stockCountItems)
+                             {
+                                <tr>
+                                    <td>@_std.ItemNo</td>
+                                    <td>@_std.Description</td>
+                                    <td>@_std.ZoneCode</td>
+                                    <td>@_std.BinCode</td>
+                                    <td>@_std.LotNo</td>
+                                    <td>@_std.ExpirationDate</td>
+                                    <td>@_std.NAVQty</td>
+                                    <td>@_std.PhyicalQty</td>
+                                </tr>
+                             }
+
+                        </tbody>
+                    </table>
+                </div>
+                <div></div>
+                <div id="msgdialog"></div>
+             </div>
             </div>
-        </div>
-    </div>
+    
 </div>
 
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -38,8 +75,55 @@
         var Popup, dataTable;
         $(document).ready(function () {
             var currentCult = getCookie("Language");
-            var Path=FetchPathforCultureFile(currentCult);
-            dataTable = $("#HeaderTable").DataTable({
+            var Path = FetchPathforCultureFile(currentCult);
+            $("#HeaderTable").dataTable();
+            $("#ddlBatches").change(function () {
+                var selectedbatch = $("#ddlBatches").val();
+                $.ajax({
+                    url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + selectedbatch,
+                    type: "GET",
+                    datatype: "json",
+                    success: function (data) {
+                        console.log(data);
+                        if (data.data == null) {
+                            $("#SCCode").html('Batch Code : '); $("#SCDesc").html('Batch Title : ');$("#TotalItem").html('Item Count :');
+                            $("#Status").html('Batch Status : ');
+                        }
+                        else {
+                            $("#SCCode").html('Batch Code : ' + data.data.SCCode); $("#SCDesc").html('Batch Title : ' + data.data.SCDesc);
+                            $("#TotalItem").html('Item Count : ' + data.data.TotalItemCount); $("#Status").html('Batch Status : ' + data.data.Status);
+                        }
+                        
+                        datatable = $("#HeaderTable").dataTable({
+                            "destroy": true,
+                            "ajax": {
+                                "url": "/StockCount/GetSockCountDetailByID?ID=" + selectedbatch,
+                                "type": "GET",
+                                "datatype": "json"
+                            },
+                            "columns": [
+                                { "data": "ItemNo" },
+                                { "data": "Description" },
+                                { "data": "ZoneCode" },
+                                { "data": "BinCode" },
+                                { "data": "LotNo" },
+                                { "data": "ExpirationDate" },
+                                { "data": "NAVQty" },
+                                { "data": "PhyicalQty" }],
+
+                            "aaSorting": [[4, "desc"]],
+                            "responsive": true,
+                            "language": {
+                                "emptyTable": "No data found, Please click on <b>Pull</b> Button to retrieve Batch Data from NAV ERP",
+                                "url": Path
+                            }
+                        });
+                    }
+                });
+                
+            });
+
+            @*dataTable = $("#HeaderTable").DataTable({
                 "ajax": {
                     "url": "/StockCount/GetSockCountList",
                     "type": "GET",
@@ -63,13 +147,14 @@
                 "language": {
                     "emptyTable": "No data found, Please click on <b>Add New</b> Button",
                     "url":Path
-                },
+                }
+            ,
                 'fnDrawCallback': function (oSettings) {
                     if ($('.dataTables_filter i').length==0)
                         $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("NewStockCount", "StockCount")\')"><i class="fa fa-plus fa-lg"</i></a>');
                     $('[data-toggle="tooltip"]').tooltip();
                 }
-            });
+            });*@
         });
         function PopupForm(url) {
             var formDiv = $('<div/>');
@@ -94,6 +179,109 @@
                         });
                     });
             }
+
+
+        function PullData() {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            if ($("#ddlBatches").val() == -1) {
+
+                $('<div></div>').appendTo('body')
+                    .html("<div><h6>Batch selection is mandatory to pull data from NAV ERP</h6></div>")
+                    .dialog({
+                        modal: true, title: 'Batch Data Pull', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                 return;
+            }
+            $('<div></div>')
+                .appendTo('body')
+                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchExistingDataOverwrite)" + "</h6></div>")
+                .dialog({
+                    modal: true, title: 'Batch Data Pull', zIndex: 10000, autoOpen: true,
+                    width: 500, resizable: true,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("GetPhyJournalData", "StockCount")/' + $("#ddlBatches").val(),
+                                success: function (data) {
+
+                                    $('<div></div>').appendTo('body')
+                                        .html("<div><h6>" + data + "</h6></div>")
+                                        .dialog({
+                                            modal: true, title: 'Batch Data Pull', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+
+                                    $.ajax({
+                                        url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
+                                        type: "GET",
+                                        datatype: "json",
+                                        success: function (data) {
+                                            console.log(data);
+                                            if (data.data == null) {
+                                                $("#SCCode").html('Batch Code : '); $("#SCDesc").html('Batch Title : '); $("#TotalItem").html('Item Count :');
+                                                $("#Status").html('Batch Status : ');
+                                            }
+                                            else {
+                                                $("#SCCode").html('Batch Code : ' + data.data.SCCode); $("#SCDesc").html('Batch Title : ' + data.data.SCDesc);
+                                                $("#TotalItem").html('Item Count : ' + data.data.TotalItemCount); $("#Status").html('Batch Status : ' + data.data.Status);
+                                            }
+
+
+                                            datatable = $("#HeaderTable").dataTable({
+                                                "destroy": true,
+                                                "ajax": {
+                                                    "url": "/StockCount/GetSockCountDetailByID?ID=" + $("#ddlBatches").val(),
+                                                    "type": "GET",
+                                                    "datatype": "json"
+                                                },
+                                                "columns": [
+                                                    { "data": "ItemNo" },
+                                                    { "data": "Description" },
+                                                    { "data": "ZoneCode" },
+                                                    { "data": "BinCode" },
+                                                    { "data": "LotNo" },
+                                                    { "data": "ExpirationDate" },
+                                                    { "data": "NAVQty" },
+                                                    { "data": "PhyicalQty" }],
+
+                                                "aaSorting": [[4, "desc"]],
+                                                "responsive": true,
+                                                "language": {
+                                                    "emptyTable": "No data found, Please click on <b>Pull</b> Button to retrieve Batch Data from NAV ERP",
+                                                    "url": Path
+                                                }
+                                            });
+                                           
+                                        }
+                                    });
+                                   
+                                }
+                            });
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+
+        }
+
+
 
         function Cancelbutton() {
             Popup.dialog('destroy').remove();

@@ -16,19 +16,19 @@ namespace TWI.InventoryAutomated.Models
     {
         public int ID { get; set; }
         public Nullable<int> SCID { get; set; }
-        public string Whse__Document_No_ { get; set; }
-        public string Zone_Code { get; set; }
-        public string Bin_Code { get; set; }
-        public string Item_No_ { get; set; }
+        public string WhseDocumentNo { get; set; }
+        public string ZoneCode { get; set; }
+        public string BinCode { get; set; }
+        public string ItemNo { get; set; }
         public string Description { get; set; }
-        public string Lot_No_ { get; set; }
-        public Nullable<System.DateTime> Expiration_Date { get; set; }
-        public string Unit_of_Measure_Code { get; set; }
+        public string LotNo { get; set; }
+        public string ExpirationDate { get; set; }
+        public string UOMCode { get; set; }
         public Nullable<decimal> PhyicalQty { get; set; }
         public Nullable<decimal> NAVQty { get; set; }
-        public string Template_Name { get; set; }
-        public string Batch_Name { get; set; }
-        public string Location_Code { get; set; }
+        public string TemplateName { get; set; }
+        public string BatchName { get; set; }
+        public string LocationCode { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }
     }

@@ -349,6 +349,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location Code.
+        /// </summary>
+        public static string LocationCode {
+            get {
+                return ResourceManager.GetString("LocationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login.
         /// </summary>
         public static string Login {
@@ -448,6 +457,24 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure to want to pull data from navision.
+        /// </summary>
+        public static string MsgBatchDataPullConfirmation {
+            get {
+                return ResourceManager.GetString("MsgBatchDataPullConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Existing Data will be overwritten, do you wish to continue.
+        /// </summary>
+        public static string MsgBatchExistingDataOverwrite {
+            get {
+                return ResourceManager.GetString("MsgBatchExistingDataOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure to disable this record?.
         /// </summary>
         public static string MsgDisableRecord {
@@ -520,6 +547,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stock count is in progress for an existing batch, Cannot create a new batch..
+        /// </summary>
+        public static string MsgOngoingBatchError {
+            get {
+                return ResourceManager.GetString("MsgOngoingBatchError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Permissions successfully assigned.
         /// </summary>
         public static string MsgPermissionAssigned {
@@ -570,6 +606,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string NavisionInstances {
             get {
                 return ResourceManager.GetString("NavisionInstances", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New.
+        /// </summary>
+        public static string New {
+            get {
+                return ResourceManager.GetString("New", resourceCulture);
             }
         }
         
@@ -655,6 +700,24 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pull.
+        /// </summary>
+        public static string Pull {
+            get {
+                return ResourceManager.GetString("Pull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push.
+        /// </summary>
+        public static string Push {
+            get {
+                return ResourceManager.GetString("Push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Registered Devices.
         /// </summary>
         public static string RegisteredDevices {
@@ -691,6 +754,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stock Count - Item Details.
+        /// </summary>
+        public static string SCDetailTitle {
+            get {
+                return ResourceManager.GetString("SCDetailTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SourceFileName.
         /// </summary>
         public static string SourceFileName {
@@ -709,7 +781,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stock Count Header.
+        ///   Looks up a localized string similar to Stock Count - Batches.
         /// </summary>
         public static string StockCountHeader {
             get {

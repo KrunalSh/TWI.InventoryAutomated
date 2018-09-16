@@ -333,4 +333,19 @@
   <data name="StockCount" xml:space="preserve">
     <value>Bestandszählung</value>
   </data>
+  <data name="SCDetailTitle" xml:space="preserve">
+    <value>Bestandsanzahl - Artikel Details</value>
+  </data>
+  <data name="MsgOngoingBatchError" xml:space="preserve">
+    <value>Für einen vorhandenen Stapel wird eine Bestandszählung durchgeführt. Es kann kein neuer Stapel erstellt werden.</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="Pull" xml:space="preserve">
+    <value>ziehen</value>
+  </data>
+  <data name="Push" xml:space="preserve">
+    <value>drücken</value>
+  </data>
 </root>

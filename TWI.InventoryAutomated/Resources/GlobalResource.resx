@@ -337,7 +337,7 @@
     <value>Stock Count</value>
   </data>
   <data name="StockCountHeader" xml:space="preserve">
-    <value>Stock Count Header</value>
+    <value>Stock Count - Batches</value>
   </data>
   <data name="MsgNoRecordsFound" xml:space="preserve">
     <value>No Records Found, cannot generate a new Stock Count</value>
@@ -347,5 +347,29 @@
   </data>
   <data name="SCCode" xml:space="preserve">
     <value>Stock Count Code</value>
+  </data>
+  <data name="SCDetailTitle" xml:space="preserve">
+    <value>Stock Count - Item Details</value>
+  </data>
+  <data name="MsgOngoingBatchError" xml:space="preserve">
+    <value>Stock count is in progress for an existing batch, Cannot create a new batch.</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="Pull" xml:space="preserve">
+    <value>Pull</value>
+  </data>
+  <data name="Push" xml:space="preserve">
+    <value>Push</value>
+  </data>
+  <data name="LocationCode" xml:space="preserve">
+    <value>Location Code</value>
+  </data>
+  <data name="MsgBatchDataPullConfirmation" xml:space="preserve">
+    <value>Are you sure to want to pull data from navision</value>
+  </data>
+  <data name="MsgBatchExistingDataOverwrite" xml:space="preserve">
+    <value>Existing Data will be overwritten, do you wish to continue</value>
   </data>
 </root>

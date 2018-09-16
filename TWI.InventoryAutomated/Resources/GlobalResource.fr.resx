@@ -333,4 +333,19 @@
   <data name="StockCount" xml:space="preserve">
     <value>Nombre de stock</value>
   </data>
+  <data name="SCDetailTitle" xml:space="preserve">
+    <value>Stock Count - Détails de l'article</value>
+  </data>
+  <data name="MsgOngoingBatchError" xml:space="preserve">
+    <value>Le nombre de stock est en cours pour un lot existant. Impossible de créer un nouveau lot.</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nouveau</value>
+  </data>
+  <data name="Pull" xml:space="preserve">
+    <value>tirer</value>
+  </data>
+  <data name="Push" xml:space="preserve">
+    <value>Pousser</value>
+  </data>
 </root>

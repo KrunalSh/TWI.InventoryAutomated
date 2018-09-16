@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -163,6 +166,88 @@ namespace TWI.InventoryAutomated.DataAccess
                 return false;
             }
         }
+
+        public static StockCountModel GetStockCountDetailsById(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetStockCountDetailsByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", ID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    List<StockCountModel> _stockcountdata= ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).ToList();
+                    reader.NextResult();
+                    _stockcountdata[0]._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+
+                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "-- Select Status --", Value = "S" });
+                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Ongoing", Value = "O" });
+                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Freezed", Value = "F" });
+                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Posted", Value = "P" });
+
+                    return _stockcountdata[0];
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
+        public static StockCountModel GetOpenStockCountBatch()
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetOngoingStockCountBatch]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+
+                    List<StockCountModel> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).ToList();
+                    reader.NextResult();
+                    _stockcountdata[0]._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+
+                    //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "-- Select Status --", Value = "S" });
+                    //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Ongoing", Value = "O" });
+                    //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Freezed", Value = "F" });
+                    //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Posted", Value = "P" });
+
+                    return _stockcountdata[0];
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
+
+        public static List<StockCountDetail> GetStockCountDetailByID(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetStockCountDetailsByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", ID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+                    List<StockCountDetail> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+                    return _stockcountdata;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
         #endregion
     }
 }

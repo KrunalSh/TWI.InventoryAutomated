@@ -21,20 +21,22 @@ namespace TWI.InventoryAutomated.Models
         public string TeamCode { get; set; }
         public string SearchCriteria { get; set; }
         public string DocType { get; set; }
-        public string Whse__Document_No_ { get; set; }
-        public string Zone_Code { get; set; }
-        public string Bin_Code { get; set; }
-        public string Item_No_ { get; set; }
+        public string WhseDocumentNo { get; set; }
+        public string ZoneCode { get; set; }
+        public string BinCode { get; set; }
+        public string ItemNo { get; set; }
         public string Description { get; set; }
-        public string Lot_No { get; set; }
-        public Nullable<System.DateTime> Expiration_Date { get; set; }
-        public string Unit_Of_Measure_Code { get; set; }
+        public string LotNo { get; set; }
+        public Nullable<System.DateTime> ExpirationDate { get; set; }
+        public string UOMCode { get; set; }
         public Nullable<decimal> NAVQty { get; set; }
         public Nullable<decimal> PhysicalQty { get; set; }
         public Nullable<decimal> AuditorQty { get; set; }
         public Nullable<decimal> FinalQty { get; set; }
         public string TemplateName { get; set; }
         public string BatchName { get; set; }
-        public string Location_Code { get; set; }
+        public string LocationCode { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace TWI.InventoryAutomated.Models
 {
-    public class InventoryModelEntities
+    public class PhysicalInvJournal
     {
     }
 }
