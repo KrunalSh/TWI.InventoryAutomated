@@ -372,4 +372,13 @@
   <data name="MsgBatchExistingDataOverwrite" xml:space="preserve">
     <value>Existing Data will be overwritten, do you wish to continue</value>
   </data>
+  <data name="StockBatchIterations" xml:space="preserve">
+    <value>Stock Batch Iteration</value>
+  </data>
+  <data name="StockCountSheet" xml:space="preserve">
+    <value>Stock Count Sheet</value>
+  </data>
+  <data name="StockCountSheetAdmin" xml:space="preserve">
+    <value>Stock Count Sheet - Admin</value>
+  </data>
 </root>

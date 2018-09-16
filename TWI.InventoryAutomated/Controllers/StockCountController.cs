@@ -15,9 +15,11 @@ namespace TWI.InventoryAutomated.Controllers
     {
         #region "Global Variables"
             object _service;
-        #endregion 
+        #endregion
 
-        // GET: StockCount
+        #region "Form Event(s)"
+
+        // GET: StockCount Module Home Page 
         public ActionResult Index()
         {
             return View();
@@ -36,22 +38,6 @@ namespace TWI.InventoryAutomated.Controllers
                     if (ID == 0) { return View(CommonServices.GetOpenStockCountBatch()); }
                     else { return Json(new { data = CommonServices.GetStockCountDetailsById(ID) }, JsonRequestBehavior.AllowGet); }
                 }
-        }
-
-        public ActionResult GetSockCountList()
-        {
-            try
-            {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
-                {
-                    List<GetStockCountList_Result> _scList = db.GetStockCountList().ToList<GetStockCountList_Result>();
-                    return Json(new { data = _scList }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         [HttpGet]
@@ -183,11 +169,6 @@ namespace TWI.InventoryAutomated.Controllers
             }
             //return View();
         }
-
-        //public ActionResult ViewStockCountDetails(int ID)
-        //{
-        //    return View(CommonServices.GetStockCountDetailsById(ID));
-        //}
         
         public ActionResult GetPhyJournalData(int ID)
         {
@@ -258,23 +239,17 @@ namespace TWI.InventoryAutomated.Controllers
             
         }
 
-
         public JsonResult GetSockCountDetailByID(int ID)
         {
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
-            {
-                return Json(new { data = CommonServices.GetStockCountDetailByID(ID) }, JsonRequestBehavior.AllowGet);
-            }
+            return Json(new { data = CommonServices.GetStockCountDetailByID(ID) }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetStockCountHeaderDetailByID(int ID)
         {
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
-            {
-                StockCountHeader _schd = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault<StockCountHeader>();
-                return Json(new { data = _schd }, JsonRequestBehavior.AllowGet);
-            }
+            return Json(new { data = CommonServices.GetStockCountHeaderByID(ID) }, JsonRequestBehavior.AllowGet);
         }
+
+        #endregion
 
         #region "Helper Function(s)"
 
@@ -337,5 +312,6 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         #endregion
+
     }
 }

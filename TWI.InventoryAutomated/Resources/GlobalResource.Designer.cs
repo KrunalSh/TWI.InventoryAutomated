@@ -772,6 +772,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stock Batch Iteration.
+        /// </summary>
+        public static string StockBatchIterations {
+            get {
+                return ResourceManager.GetString("StockBatchIterations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stock Count.
         /// </summary>
         public static string StockCount {
@@ -786,6 +795,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string StockCountHeader {
             get {
                 return ResourceManager.GetString("StockCountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stock Count Sheet.
+        /// </summary>
+        public static string StockCountSheet {
+            get {
+                return ResourceManager.GetString("StockCountSheet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stock Count Sheet - Admin.
+        /// </summary>
+        public static string StockCountSheetAdmin {
+            get {
+                return ResourceManager.GetString("StockCountSheetAdmin", resourceCulture);
             }
         }
         

@@ -248,6 +248,27 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
+        public static StockCountHeader GetStockCountHeaderByID(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetStockCountHeaderByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", ID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+                    StockCountHeader _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountHeader>(reader).FirstOrDefault();
+                    return _stockcountdata;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
         #endregion
     }
 }

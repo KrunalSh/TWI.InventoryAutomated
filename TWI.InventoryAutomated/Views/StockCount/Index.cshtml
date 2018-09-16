@@ -7,38 +7,39 @@
 <div class="container">
 
     <div class="row" style="padding-bottom:30px;padding-left:20px;">
-        @if (CommonServices.IsUserhasAccessOnPage("NAVDataPull") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("StockBatches") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px; height:90px;" onclick="location.href='@Url.Action("NavDataPull", "StockCount")'">NAV Data Pull</button>
+                    <button type="button" class="btn" style="width:250px; height:90px;" onclick="location.href='@Url.Action("NavDataPull", "StockCount")'">Stock Count Batches</button>
                 </div>
             </div>
         }
-        @*@if (CommonServices.IsUserhasAccessOnPage("Instances") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("BatchIterations") || CommonServices.IsUserSuperAdmin())
             {
                 <div class="col-sm-4">
                     <div class="input-group" style="float:left;padding:11px;">
-                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Instance")'">@TWI.InventoryAutomated.Resources.GlobalResource.Instance</button>
+                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("StockCountIterations", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.StockBatchIterations
+                        </button>
                     </div>
                 </div>
-            }*@
-        @*@if (CommonServices.IsUserhasAccessOnPage("Languages") || CommonServices.IsUserSuperAdmin())
+            }
+       @if (CommonServices.IsUserhasAccessOnPage("AdminStockCountSheet") || CommonServices.IsUserSuperAdmin())
             {
                 <div class="col-sm-4">
                     <div class="input-group" style="float:left;padding:11px;">
-                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Language")'">@TWI.InventoryAutomated.Resources.GlobalResource.Languages</button>
+                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("AdminStockCountSheet", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin</button>
                     </div>
                 </div>
-            }*@
-        @*@if (CommonServices.IsUserhasAccessOnPage("Modules") || CommonServices.IsUserSuperAdmin())
+            }
+        @if (CommonServices.IsUserhasAccessOnPage("StockCountSheet") || CommonServices.IsUserSuperAdmin())
             {
                 <div class="col-sm-4">
                     <div class="input-group" style="float:left;padding:11px;">
-                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Module")'">@TWI.InventoryAutomated.Resources.GlobalResource.Modules</button>
+                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("StockCountSheet", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet</button>
                     </div>
                 </div>
-            }*@
+            }
         @*@if (CommonServices.IsUserhasAccessOnPage("Forms") || CommonServices.IsUserSuperAdmin())
             {
                 <div class="col-sm-4">
