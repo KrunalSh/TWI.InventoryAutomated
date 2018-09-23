@@ -336,7 +336,6 @@ namespace TWI.InventoryAutomated.Controllers
 
         #endregion
 
-
         #region "Counts & Iterations Event(s)"
         
         //Counts / Iteration Event(s)
@@ -675,7 +674,18 @@ namespace TWI.InventoryAutomated.Controllers
             return Json(result,JsonRequestBehavior.AllowGet);
         }
 
+
         #endregion
+
+        #region "Stock Count Allocation(s) / Admin Stock Count Sheet"
+
+        public ActionResult AdminStockCountSheet()
+        {
+            return View();
+        }
+
+        #endregion 
+
 
         #endregion
 

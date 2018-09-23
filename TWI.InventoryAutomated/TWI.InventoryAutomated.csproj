@@ -292,7 +292,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="images\logo.gif" />
-    <Content Include="images\TWILogo.png" />
+    <Content Include="images\TWILogo.jpg" />
     <Content Include="Models\InventoryModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>InventoryModel.Context.cs</LastGenOutput>
