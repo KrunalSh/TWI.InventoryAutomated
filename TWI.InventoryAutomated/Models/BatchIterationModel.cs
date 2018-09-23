@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 
 namespace TWI.InventoryAutomated.Models
 {
-    public class StockCountModel
+    public class BatchIterationModel
     {
         public int ID { get; set; }
         public string SCCode { get; set; }
@@ -23,19 +22,9 @@ namespace TWI.InventoryAutomated.Models
 
         public int CreatedBy { get; set; }
 
-        public List<StockCountDetail> _stockCountItems { get; set; }
+        public List<StockCountIterations> Iterations { get; set; }
+
+        public List<StockCountTeams> Teams { get; set; }
+
     }
-
-
-
-    
-
-
-
-
-
-
-
-
-
 }

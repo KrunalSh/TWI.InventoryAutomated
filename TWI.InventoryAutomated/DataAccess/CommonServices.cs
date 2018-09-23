@@ -174,22 +174,35 @@ namespace TWI.InventoryAutomated.DataAccess
                 try
                 {
                     var command = db.Database.Connection.CreateCommand();
-                    command.CommandText = "[dbo].[GetStockCountDetailsByID]";
+                    command.CommandText = "[dbo].[GetStockCountDetailByID]";
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@ID", ID));
                     db.Database.Connection.Open();
                     var reader = command.ExecuteReader();
 
-                    List<StockCountModel> _stockcountdata= ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).ToList();
-                    reader.NextResult();
-                    _stockcountdata[0]._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+                    /*List<StockCountModel> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).ToList()*/
+                    StockCountModel _scm = new StockCountModel();
 
-                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "-- Select Status --", Value = "S" });
-                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Ongoing", Value = "O" });
-                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Freezed", Value = "F" });
-                    _stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Posted", Value = "P" });
+                    if (((IObjectContextAdapter)db).ObjectContext.Translate<StockCountHeader>(reader).Count() > 0)
+                    {
+                        
+                        StockCountHeader _scHeader = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountHeader>(reader).ToList().FirstOrDefault();
+                        //_scm._scheader = _scHeader;
+                        reader.NextResult();
+                        _scm._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+                        
+                        //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "-- Select Status --", Value = "S" });
+                        //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Ongoing", Value = "O" });
+                        //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Freezed", Value = "F" });
+                        //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Posted", Value = "P" });
 
-                    return _stockcountdata[0];
+                        return _scm;
+                    }
+                    else { 
+                        //_scm._scheader = new StockCountHeader();
+                        _scm._stockCountItems = new List<StockCountDetail>();
+                        return _scm;
+                    }
                 }
                 catch (Exception ex)
                 { throw; }
@@ -209,23 +222,43 @@ namespace TWI.InventoryAutomated.DataAccess
                     db.Database.Connection.Open();
                     var reader = command.ExecuteReader();
 
-                    List<StockCountModel> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).ToList();
-                    reader.NextResult();
-                    _stockcountdata[0]._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+
+                    if (((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).Count() > 0)
+                    {
+                        //List<StockCountModel> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).ToList<StockCountModel>();
+                        StockCountModel _sc1 = new StockCountModel();
+                        _sc1.ID = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().ID;
+                        _sc1.SCCode = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().SCCode;
+                        _sc1.SCDesc = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().SCDesc;
+                        _sc1.TotalItemCount = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().TotalItemCount;
+                        _sc1.Status = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().Status;
+                        _sc1.LocationCode = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().LocationCode;
+                        _sc1.CreatedDate = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().CreatedDate;
+                        _sc1.CreatedBy = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault().CreatedBy;
+
+                        reader.NextResult();
+                        _sc1._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+                        //_stockcountdata[0]._stockCountItems = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+                        return _sc1;
+                    }
+                    else {
+                        StockCountModel _sc = new StockCountModel();
+                        _sc._stockCountItems = new List<StockCountDetail>();
+                        return _sc;
+                    }
+
+                    
 
                     //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "-- Select Status --", Value = "S" });
                     //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Ongoing", Value = "O" });
                     //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Freezed", Value = "F" });
                     //_stockcountdata[0]._statusList.Add(new System.Web.Mvc.SelectListItem { Text = "Posted", Value = "P" });
-
-                    return _stockcountdata[0];
                 }
                 catch (Exception ex)
                 { throw; }
                 finally { db.Database.Connection.Close(); }
             }
         }
-
 
         public static List<StockCountDetail> GetStockCountDetailByID(int ID)
         {

@@ -1,56 +1,62 @@
 ﻿@model TWI.InventoryAutomated.Models.StockCountModel
 @{
-    ViewBag.Title = "Stock Count Data Pull";
+    ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle  + " - Batch(es)";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="row">
-        <div style="margin:auto;width:100%;border:2px #808080 solid;">
+<div class="row table-responsive">
+        <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
             <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-                <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountHeader</div>
+                <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle - Batch(es)</div>
                 <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
             </div>
-            <div style="width:100% !important;padding:15px;" class="table-responsive">
+            <div style="width:100% !important;padding:10px;">
                 <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
                     <div style="float:left;">
-                    @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches" })</div>
-                    <div style="float:right;">
-                        <a class="btn btn-success" style="width:60px;" data-toggle="tooltip" title="Add New Batch" onclick="PopupForm('@Url.Action("NewStockCount", "StockCount")')"><i class="fa fa-plus fa-lg"></i></a>
-                        <input type="submit" style="width:70px;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Pull" class="btn btn-primary" title="Pull Batch Data" onclick="PullData();" />
-                        <input type="submit" style="width:70px;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Push" class="btn btn-danger" title="Push Batch Data" onclick="Cancelbutton();" />
+                    @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })</div>
+                    <div style="float:left !important;margin-left:5px !important;" class="col-sm-8">
+                        <div class="field_background" style="width:100% !important" >
+                            <div class="col-sm-4" style="padding-top:7px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                            <div class="col-sm-2" style="padding-top:7px;" id="LocationCode">
+                                Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
+                            <div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
+                                Item Lines: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TotalItemCount) </span></div>
+                            <div class="col-sm-3" style="padding-top:7px;" id="Status">`
+                                Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
+                        </div>
+                    </div>
+                    <div style="float:right !important;">
+                        <a class="btn btn-success" style="width:70px;" data-toggle="tooltip" title="Add New Batch" onclick="PopupForm('@Url.Action("NewStockCount", "StockCount")')">@TWI.InventoryAutomated.Resources.GlobalResource.Create</a>
+                        <input type="submit" style="width:70px;margin-left:5px !important;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Pull" class="btn btn-primary" title="Pull Data From NAV" onclick="PullData();" />
+                        <input type="submit" style="width:70px;margin-left:5px !important;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Push" class="btn btn-warning" title="Push Data To NAV" onclick="PushData();" />
+                        <input type="submit" style="width:70px;margin-left:5px  !important;" value="@TWI.InventoryAutomated.Resources.GlobalResource.DeleteBatch" class="btn btn-danger" title="Remove Batch" onclick="Delete();" />
                     </div>
                 </div>
-                <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
-                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="SCCode">Batch Code: @Html.DisplayFor(model => model.SCCode) </div>
-                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="SCDesc">Batch Title: @Html.DisplayFor(model => model.SCDesc) </div>
-                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="TotalItem">Item Count: @Html.DisplayFor(model => model.TotalItemCount)</div>
-                    <div class="col-sm-3 field_background" style="padding-top:5px;" id="Status">Batch Status : @Html.DisplayFor(model => model.Status)</div>
-                </div>
-                <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
-                    <table id="HeaderTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                <div class="row col-sm-12 table-responsive" style="margin:auto;padding-bottom:10px;width:100% !important;overflow:scroll">
+                    <table id="HeaderTable" class="table table-striped table-responsive display nowrap table-bordered">
                         <thead>
                             <tr>
-                                <th style="">Item No</th>
-                                <th>Description</th>
-                                <th>Zone Code</th>
-                                <th>Bin Code</th>
-                                <th>Lot No</th>
-                                <th>Expiration Date</th>
-                                <th>Qty</th>
-                                <th>Qty (Phy. Inv)</th>
+                                <th class="datatable_col10PercH">Item No</th>
+                                <th class="datatable_col30PercH">Description</th>
+                                <th class="datatable_col10PercH">Zone Code</th>
+                                <th class="datatable_col10PercH">Bin Code</th>
+                                <th class="datatable_col10PercH">Lot No</th>
+                                <th class="datatable_col10PercH">Expiry Date</th>
+                                <th class="datatable_col10PercH" >Qty</th>
+                                <th class="datatable_col10PercH"> Phy. Qty</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var _std in Model._stockCountItems)
-                             {
+                                {
                                 <tr>
-                                    <td>@_std.ItemNo</td>
-                                    <td>@_std.Description</td>
-                                    <td>@_std.ZoneCode</td>
-                                    <td>@_std.BinCode</td>
-                                    <td>@_std.LotNo</td>
-                                    <td>@_std.ExpirationDate</td>
-                                    <td>@_std.NAVQty</td>
-                                    <td>@_std.PhyicalQty</td>
+                                    <td class="datatable_col10PercR"> @_std.ItemNo</td>
+                                    <td class="datatable_col30PercR"> @_std.Description</td>
+                                    <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                                    <td class="datatable_col10PercR">@_std.BinCode</td>
+                                    <td class="datatable_col10PercR">@_std.LotNo</td>
+                                    <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                                    <td class="datatable_col10PercR">@_std.NAVQty</td>
+                                    <td class="datatable_col10PercR">@_std.PhyicalQty</td>
                                 </tr>
                              }
 
@@ -61,7 +67,6 @@
                 <div id="msgdialog"></div>
              </div>
             </div>
-    
 </div>
 
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -74,54 +79,13 @@
     <script>
         var Popup, dataTable;
         $(document).ready(function () {
-            var currentCult = getCookie("Language");
+                                    var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             $("#HeaderTable").dataTable();
             $("#ddlBatches").change(function () {
-                var selectedbatch = $("#ddlBatches").val();
-                $.ajax({
-                    url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + selectedbatch,
-                    type: "GET",
-                    datatype: "json",
-                    success: function (data) {
-                        console.log(data);
-                        if (data.data == null) {
-                            $("#SCCode").html('Batch Code : '); $("#SCDesc").html('Batch Title : ');$("#TotalItem").html('Item Count :');
-                            $("#Status").html('Batch Status : ');
-                        }
-                        else {
-                            $("#SCCode").html('Batch Code : ' + data.data.SCCode); $("#SCDesc").html('Batch Title : ' + data.data.SCDesc);
-                            $("#TotalItem").html('Item Count : ' + data.data.TotalItemCount); $("#Status").html('Batch Status : ' + data.data.Status);
-                        }
-                        
-                        datatable = $("#HeaderTable").dataTable({
-                            "destroy": true,
-                            "ajax": {
-                                "url": "/StockCount/GetSockCountDetailByID?ID=" + selectedbatch,
-                                "type": "GET",
-                                "datatype": "json"
-                            },
-                            "columns": [
-                                { "data": "ItemNo" },
-                                { "data": "Description" },
-                                { "data": "ZoneCode" },
-                                { "data": "BinCode" },
-                                { "data": "LotNo" },
-                                { "data": "ExpirationDate" },
-                                { "data": "NAVQty" },
-                                { "data": "PhyicalQty" }],
-
-                            "aaSorting": [[4, "desc"]],
-                            "responsive": true,
-                            "language": {
-                                "emptyTable": "No data found, Please click on <b>Pull</b> Button to retrieve Batch Data from NAV ERP",
-                                "url": Path
-                            }
-                        });
-                    }
-                });
-                
-            });
+                                        var selectedbatch = $("#ddlBatches").val();
+                                        RefreshData(selectedbatch);
+                                    });
 
             @*dataTable = $("#HeaderTable").DataTable({
                 "ajax": {
@@ -178,7 +142,79 @@
 
                         });
                     });
+        }
+
+        function PushData() {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            if ($("#ddlBatches").val() == -1) {
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                return;
             }
+
+            $('<div></div>')
+                .appendTo('body')
+                .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchDataPushConfirmation)" + "</h5></div>")
+                .dialog({
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
+                    width: 500, resizable: true,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("PushPhyJournalData", "StockCount")/' + $("#ddlBatches").val(),
+                                success: function (data) {
+
+                                    $('<div></div>').appendTo('body')
+                                        .html("<div><h5>" + data + "</h5></div>")
+                                        .dialog({
+                                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                            buttons: {
+                                                Ok: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                            }
+                                        });
+                                    $.ajax({
+                                        url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
+                                        type: "GET",
+                                        datatype: "json",
+                                        success: function (data) {
+                                            //console.log(data);
+                                            if (data.data == null) {
+                                                $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                                                $("#Status").html('Status : ');
+                                            }
+                                            else {
+                                                $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                                                $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                                                $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                                                $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+        }
 
 
         function PullData() {
@@ -187,9 +223,9 @@
             if ($("#ddlBatches").val() == -1) {
 
                 $('<div></div>').appendTo('body')
-                    .html("<div><h6>Batch selection is mandatory to pull data from NAV ERP</h6></div>")
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
                     .dialog({
-                        modal: true, title: 'Batch Data Pull', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Pull From NAV")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                         buttons: {
                             Ok: function () {
                                 $(this).dialog("close");
@@ -200,9 +236,9 @@
             }
             $('<div></div>')
                 .appendTo('body')
-                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchExistingDataOverwrite)" + "</h6></div>")
+                .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchExistingDataOverwrite)" + "</h5></div>")
                 .dialog({
-                    modal: true, title: 'Batch Data Pull', zIndex: 10000, autoOpen: true,
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Pull From NAV")', zIndex: 10000, autoOpen: true,
                     width: 500, resizable: true,
                     buttons: {
                         Yes: function () {
@@ -212,60 +248,16 @@
                                 success: function (data) {
 
                                     $('<div></div>').appendTo('body')
-                                        .html("<div><h6>" + data + "</h6></div>")
+                                        .html("<div><h5>" + data + "</h5></div>")
                                         .dialog({
-                                            modal: true, title: 'Batch Data Pull', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Pull From NAV")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                                             buttons: {
                                                 Ok: function () {
                                                     $(this).dialog("close");
                                                 }
                                             }
                                         });
-
-                                    $.ajax({
-                                        url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
-                                        type: "GET",
-                                        datatype: "json",
-                                        success: function (data) {
-                                            console.log(data);
-                                            if (data.data == null) {
-                                                $("#SCCode").html('Batch Code : '); $("#SCDesc").html('Batch Title : '); $("#TotalItem").html('Item Count :');
-                                                $("#Status").html('Batch Status : ');
-                                            }
-                                            else {
-                                                $("#SCCode").html('Batch Code : ' + data.data.SCCode); $("#SCDesc").html('Batch Title : ' + data.data.SCDesc);
-                                                $("#TotalItem").html('Item Count : ' + data.data.TotalItemCount); $("#Status").html('Batch Status : ' + data.data.Status);
-                                            }
-
-
-                                            datatable = $("#HeaderTable").dataTable({
-                                                "destroy": true,
-                                                "ajax": {
-                                                    "url": "/StockCount/GetSockCountDetailByID?ID=" + $("#ddlBatches").val(),
-                                                    "type": "GET",
-                                                    "datatype": "json"
-                                                },
-                                                "columns": [
-                                                    { "data": "ItemNo" },
-                                                    { "data": "Description" },
-                                                    { "data": "ZoneCode" },
-                                                    { "data": "BinCode" },
-                                                    { "data": "LotNo" },
-                                                    { "data": "ExpirationDate" },
-                                                    { "data": "NAVQty" },
-                                                    { "data": "PhyicalQty" }],
-
-                                                "aaSorting": [[4, "desc"]],
-                                                "responsive": true,
-                                                "language": {
-                                                    "emptyTable": "No data found, Please click on <b>Pull</b> Button to retrieve Batch Data from NAV ERP",
-                                                    "url": Path
-                                                }
-                                            });
-                                           
-                                        }
-                                    });
-                                   
+                                    RefreshData($("#ddlBatches").val());
                                 }
                             });
                             $(this).dialog("close");
@@ -295,36 +287,67 @@
                     data: $(form).serialize(),
                     success: function (data) {
                         if (data.success) {
+                            ShowDialog(data.message);
+                            RefreshBatchList();
+                            //alert(data.message);
                             Popup.dialog('close');
-                            dataTable.ajax.reload();
-                            alert(data.message);
                         }
-                        else
-                            alert(data.message);
+                        else {
+                            ShowDialog(data.message);
+                            //alert(data.message);
+                        }
                     }
                 });
             }
             return false;
         }
 
-        @*function Delete(id) {
+        function ShowDialog(data) {
             $('<div></div>').appendTo('body')
-                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgDisableRecord)" + "</h6></div>")
+                            .html("<div><h5>" + data + "</h5></div>")
                 .dialog({
-                    modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                            buttons: {
+                                       Ok: function () {
+                                       $(this).dialog("close");
+                                     }
+                            }
+                           });
+        }
+        function Delete() {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            $('<div></div>').appendTo('body')
+                .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgDeleteRecord)" + "</h5></div>")
+                .dialog({
+                    modal: true, title:  '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Remove Batch")', zIndex: 10000, autoOpen: true,
                     width: 'auto', resizable: false,
                     buttons: {
                         Yes: function () {
                             $.ajax({
                                 type: "POST",
-                                url: '@Url.Action("Delete", "RegisteredDevice")/' + id,
+                                url: '@Url.Action("DeleteStockCountBatch", "StockCount")/' + $("#ddlBatches").val(),
                                 success: function (data) {
                                     if (data.success) {
-                                        dataTable.ajax.reload();
-                                        alert(data.message);
+                                        //dataTable.ajax.reload();
+                                         $('<div></div>').appendTo('body')
+                                            .html("<div><h5>" + data + "</h5></div>")
+                                            .dialog({
+                                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Remove Batch")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                buttons: {
+                                                    Ok: function () {
+                                                $(this).dialog("close");
+                                                }
+                                            }
+                                            });
+
+                                        RefreshBatchList();
+                                        //RefreshData(-1);
+                                        //alert(data.message);
                                     }
                                     else
-                                        alert(data.message);
+                                        ShowDialog(data.message);
+                                        //alert(data.message);
                                 }
 
                                 });
@@ -341,6 +364,75 @@
                     }
                 });
 
-        }*@
+        }
+
+        function RefreshData(ID) {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            $.ajax({
+                url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + ID,
+                type: "GET",
+                datatype: "json",
+                success: function (data) {
+                    //console.log(data);
+                    if (data.data == null) {
+                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                        $("#Status").html('Status : ');
+                    }
+                    else {
+                        $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                        $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                        $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                        $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                    }
+
+                    datatable = $("#HeaderTable").dataTable({
+                        "destroy": true,
+                        "ajax": {
+                            "url": "/StockCount/GetSockCountDetailByID?ID=" + ID,
+                            "type": "GET",
+                            "datatype": "json"
+                        },
+                        "columns": [
+                            { "data": "ItemNo","orderable" : false },
+                            { "data": "Description" },
+                            { "data": "ZoneCode" },
+                            { "data": "BinCode" },
+                            { "data": "LotNo" },
+                            { "data": "ExpirationDate" },
+                            { "data": "NAVQty" },
+                            { "data": "PhyicalQty" }],
+
+                        "aaSorting": [[4, "desc"]],
+                        "responsive": true,
+                        "language": {
+                            "emptyTable": "No data found, Please click on <b>Pull</b> Button to retrieve Batch Data from NAV ERP",
+                            "url": Path
+                        }
+                    });
+                }
+            });
+        }
+
+        function RefreshBatchList() {
+            $.ajax({
+                url: "/StockCount/GetBatchList",
+                Type : "GET",
+                datatype: "json",
+                success: function (data) {
+                    //console.log(data);
+                    $("#ddlBatches").empty();
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].SCCode, data[i].ID);
+                        $("#ddlBatches").append(opt);
+                        RefreshData(-1);
+                    }
+                    
+                }
+            });
+
+
+        }
+
     </script>
 }

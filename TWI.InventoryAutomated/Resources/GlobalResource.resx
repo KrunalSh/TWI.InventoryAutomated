@@ -340,10 +340,10 @@
     <value>Stock Count - Batches</value>
   </data>
   <data name="MsgNoRecordsFound" xml:space="preserve">
-    <value>No Records Found, cannot generate a new Stock Count</value>
+    <value>No records found for the selected batch</value>
   </data>
   <data name="NewSCTitle" xml:space="preserve">
-    <value>New Stock Count</value>
+    <value>NAV Data - New Stock Count Batch</value>
   </data>
   <data name="SCCode" xml:space="preserve">
     <value>Stock Count Code</value>
@@ -370,15 +370,90 @@
     <value>Are you sure to want to pull data from navision</value>
   </data>
   <data name="MsgBatchExistingDataOverwrite" xml:space="preserve">
-    <value>Existing Data will be overwritten, do you wish to continue</value>
+    <value>Existing Data will be overwritten if any, do you wish to continue ?</value>
   </data>
   <data name="StockBatchIterations" xml:space="preserve">
-    <value>Stock Batch Iteration</value>
+    <value>Counts &amp; Teams</value>
   </data>
   <data name="StockCountSheet" xml:space="preserve">
     <value>Stock Count Sheet</value>
   </data>
   <data name="StockCountSheetAdmin" xml:space="preserve">
     <value>Stock Count Sheet - Admin</value>
+  </data>
+  <data name="MsgBatchSelectionError" xml:space="preserve">
+    <value>Batch selection is mandatory to pull data from NAV ERP</value>
+  </data>
+  <data name="MsgBatchTitle" xml:space="preserve">
+    <value>NAV Data</value>
+  </data>
+  <data name="MsgItemsFromERP" xml:space="preserve">
+    <value> Items for the selected batch from NAV ERP</value>
+  </data>
+  <data name="MsgSuccessfullyPulled" xml:space="preserve">
+    <value>Successfully pulled </value>
+  </data>
+  <data name="DeleteBatch" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="MsgClosedBatchPull" xml:space="preserve">
+    <value>Cannot Pull Data from NAV for a Closed Batch.</value>
+  </data>
+  <data name="MsgCreateValidBatch" xml:space="preserve">
+    <value>Please check the Whse. Document no &amp; location code, no Item Lines found for this selected NAV Batch.</value>
+  </data>
+  <data name="MsgDeleteRecord" xml:space="preserve">
+    <value>All existing Item Lines with be deleted from the system for the selected NAV Batch, &lt;br /&gt; click 'Yes' to proceed Or  'No' to Cancel.</value>
+  </data>
+  <data name="MsgNAVNonZeroPhyQtyMsg" xml:space="preserve">
+    <value>Items of the selected batch in NAV contains Non-Zero Values in Qty (Phy. Inventory) Field, Kindly rectify in NAV. </value>
+  </data>
+  <data name="MsgOngoingBatchDeletionRestriction" xml:space="preserve">
+    <value>Cannot Delete an Batch with Posted Data</value>
+  </data>
+  <data name="MsgSuccessfullDeletion" xml:space="preserve">
+    <value>Successfully Deleted the selected Batch</value>
+  </data>
+  <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
+    <value>Are you sure to push selected batch data to NAV ? </value>
+  </data>
+  <data name="MsgBatchSavedSuccessfully" xml:space="preserve">
+    <value>Batch Created Successfully</value>
+  </data>
+  <data name="MsgClosedBatchPush" xml:space="preserve">
+    <value>Cannot Push Data for a Closed Batch, Kindly select a valid Batch</value>
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="MsgBatchIterationTitle" xml:space="preserve">
+    <value>Counts &amp; Teams</value>
+  </data>
+  <data name="CreateIteration" xml:space="preserve">
+    <value>Create Count(s)</value>
+  </data>
+  <data name="CreateIterationConfirmation" xml:space="preserve">
+    <value>Are you sure to create a new iteration ? </value>
+  </data>
+  <data name="MsgClosedBatchIterationRestriction" xml:space="preserve">
+    <value>This batch is already closed, cannot create an iteration for it</value>
+  </data>
+  <data name="MsgSuccessfullIterationCreation" xml:space="preserve">
+    <value>Successfully created new count.</value>
+  </data>
+  <data name="IterationName" xml:space="preserve">
+    <value>Iteration Name</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="MsgTeamDeletionConfirm" xml:space="preserve">
+    <value>Are you sure to delete  the selected team. Click 'Yes' to Proceed Or 'No' to Cancel</value>
+  </data>
+  <data name="MsgTeamDeletionSuccessfull" xml:space="preserve">
+    <value>Successfully Deleted the selected team.</value>
+  </data>
+  <data name="MsgCountDeletionConfirm" xml:space="preserve">
+    <value>Are you sure to delete  the selected count?  Click 'Yes' to Proceed Or 'No' to Cancel</value>
   </data>
 </root>

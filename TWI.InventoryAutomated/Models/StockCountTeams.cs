@@ -12,12 +12,15 @@ namespace TWI.InventoryAutomated.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class StockCountTeamMaster
+    public partial class StockCountTeams
     {
         public int ID { get; set; }
         public Nullable<int> SCIterationID { get; set; }
+        public Nullable<int> SCID { get; set; }
+        public Nullable<int> TeamNo { get; set; }
         public string TeamCode { get; set; }
-        public string TeamNAme { get; set; }
+        public Nullable<int> UserID { get; set; }
+        public string UserName { get; set; }
         public Nullable<bool> Status { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }

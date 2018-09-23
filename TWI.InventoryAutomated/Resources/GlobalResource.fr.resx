@@ -343,9 +343,36 @@
     <value>Nouveau</value>
   </data>
   <data name="Pull" xml:space="preserve">
-    <value>tirer</value>
+    <value>Tirez De NAV</value>
   </data>
   <data name="Push" xml:space="preserve">
-    <value>Pousser</value>
+    <value>Push to NAV</value>
+  </data>
+  <data name="MsgBatchIterationTitle" xml:space="preserve">
+    <value>Itération (s) en lots</value>
+  </data>
+  <data name="CreateIteration" xml:space="preserve">
+    <value>Créer des itérations</value>
+  </data>
+  <data name="CreateIterationConfirmation" xml:space="preserve">
+    <value>Êtes-vous sûr de créer une nouvelle itération?</value>
+  </data>
+  <data name="MsgClosedBatchIterationRestriction" xml:space="preserve">
+    <value>Ce lot est déjà fermé, impossible de créer une itération pour ce lot</value>
+  </data>
+  <data name="MsgSuccessfullIterationCreation" xml:space="preserve">
+    <value>Création réussie d'une nouvelle itération</value>
+  </data>
+  <data name="IterationName" xml:space="preserve">
+    <value>Nom de l'itération</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Effacer</value>
+  </data>
+  <data name="MsgTeamDeletionConfirm" xml:space="preserve">
+    <value>Etes-vous sûr de supprimer l'équipe sélectionnée? Cliquez sur "Oui" pour continuer ou sur "Non" pour annuler</value>
+  </data>
+  <data name="MsgTeamDeletionSuccessfull" xml:space="preserve">
+    <value>Supprimé avec succès l'équipe sélectionnée.</value>
   </data>
 </root>

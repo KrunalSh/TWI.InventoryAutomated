@@ -178,11 +178,56 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string Create {
+            get {
+                return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Count(s).
+        /// </summary>
+        public static string CreateIteration {
+            get {
+                return ResourceManager.GetString("CreateIteration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure to create a new iteration ? .
+        /// </summary>
+        public static string CreateIterationConfirmation {
+            get {
+                return ResourceManager.GetString("CreateIterationConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to make this language as a default one ?.
         /// </summary>
         public static string DefaultLangConfirm {
             get {
                 return ResourceManager.GetString("DefaultLangConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string DeleteBatch {
+            get {
+                return ResourceManager.GetString("DeleteBatch", resourceCulture);
             }
         }
         
@@ -331,6 +376,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Iteration Name.
+        /// </summary>
+        public static string IterationName {
+            get {
+                return ResourceManager.GetString("IterationName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language Details.
         /// </summary>
         public static string LanguageDetails {
@@ -466,11 +520,110 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Existing Data will be overwritten, do you wish to continue.
+        ///   Looks up a localized string similar to Are you sure to push selected batch data to NAV ? .
+        /// </summary>
+        public static string MsgBatchDataPushConfirmation {
+            get {
+                return ResourceManager.GetString("MsgBatchDataPushConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Existing Data will be overwritten if any, do you wish to continue ?.
         /// </summary>
         public static string MsgBatchExistingDataOverwrite {
             get {
                 return ResourceManager.GetString("MsgBatchExistingDataOverwrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Counts &amp; Teams.
+        /// </summary>
+        public static string MsgBatchIterationTitle {
+            get {
+                return ResourceManager.GetString("MsgBatchIterationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Batch Created Successfully.
+        /// </summary>
+        public static string MsgBatchSavedSuccessfully {
+            get {
+                return ResourceManager.GetString("MsgBatchSavedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Batch selection is mandatory to pull data from NAV ERP.
+        /// </summary>
+        public static string MsgBatchSelectionError {
+            get {
+                return ResourceManager.GetString("MsgBatchSelectionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NAV Data.
+        /// </summary>
+        public static string MsgBatchTitle {
+            get {
+                return ResourceManager.GetString("MsgBatchTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This batch is already closed, cannot create an iteration for it.
+        /// </summary>
+        public static string MsgClosedBatchIterationRestriction {
+            get {
+                return ResourceManager.GetString("MsgClosedBatchIterationRestriction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot Pull Data from NAV for a Closed Batch..
+        /// </summary>
+        public static string MsgClosedBatchPull {
+            get {
+                return ResourceManager.GetString("MsgClosedBatchPull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot Push Data for a Closed Batch, Kindly select a valid Batch.
+        /// </summary>
+        public static string MsgClosedBatchPush {
+            get {
+                return ResourceManager.GetString("MsgClosedBatchPush", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure to delete  the selected count?  Click &apos;Yes&apos; to Proceed Or &apos;No&apos; to Cancel.
+        /// </summary>
+        public static string MsgCountDeletionConfirm {
+            get {
+                return ResourceManager.GetString("MsgCountDeletionConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please check the Whse. Document no &amp; location code, no Item Lines found for this selected NAV Batch..
+        /// </summary>
+        public static string MsgCreateValidBatch {
+            get {
+                return ResourceManager.GetString("MsgCreateValidBatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All existing Item Lines with be deleted from the system for the selected NAV Batch, &lt;br /&gt; click &apos;Yes&apos; to proceed Or  &apos;No&apos; to Cancel..
+        /// </summary>
+        public static string MsgDeleteRecord {
+            get {
+                return ResourceManager.GetString("MsgDeleteRecord", resourceCulture);
             }
         }
         
@@ -529,6 +682,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  Items for the selected batch from NAV ERP.
+        /// </summary>
+        public static string MsgItemsFromERP {
+            get {
+                return ResourceManager.GetString("MsgItemsFromERP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MAC Address already exists!.
         /// </summary>
         public static string MsgMACAlreadyExist {
@@ -538,11 +700,29 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Records Found, cannot generate a new Stock Count.
+        ///   Looks up a localized string similar to Items of the selected batch in NAV contains Non-Zero Values in Qty (Phy. Inventory) Field, Kindly rectify in NAV. .
+        /// </summary>
+        public static string MsgNAVNonZeroPhyQtyMsg {
+            get {
+                return ResourceManager.GetString("MsgNAVNonZeroPhyQtyMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No records found for the selected batch.
         /// </summary>
         public static string MsgNoRecordsFound {
             get {
                 return ResourceManager.GetString("MsgNoRecordsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot Delete an Batch with Posted Data.
+        /// </summary>
+        public static string MsgOngoingBatchDeletionRestriction {
+            get {
+                return ResourceManager.GetString("MsgOngoingBatchDeletionRestriction", resourceCulture);
             }
         }
         
@@ -565,11 +745,38 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successfully Deleted the selected Batch.
+        /// </summary>
+        public static string MsgSuccessfullDeletion {
+            get {
+                return ResourceManager.GetString("MsgSuccessfullDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully created new count..
+        /// </summary>
+        public static string MsgSuccessfullIterationCreation {
+            get {
+                return ResourceManager.GetString("MsgSuccessfullIterationCreation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deleted Successfully.
         /// </summary>
         public static string MsgSuccessfullyDisabled {
             get {
                 return ResourceManager.GetString("MsgSuccessfullyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully pulled .
+        /// </summary>
+        public static string MsgSuccessfullyPulled {
+            get {
+                return ResourceManager.GetString("MsgSuccessfullyPulled", resourceCulture);
             }
         }
         
@@ -588,6 +795,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string MsgSuccessfullyUpdated {
             get {
                 return ResourceManager.GetString("MsgSuccessfullyUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure to delete  the selected team. Click &apos;Yes&apos; to Proceed Or &apos;No&apos; to Cancel.
+        /// </summary>
+        public static string MsgTeamDeletionConfirm {
+            get {
+                return ResourceManager.GetString("MsgTeamDeletionConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully Deleted the selected team..
+        /// </summary>
+        public static string MsgTeamDeletionSuccessfull {
+            get {
+                return ResourceManager.GetString("MsgTeamDeletionSuccessfull", resourceCulture);
             }
         }
         
@@ -619,7 +844,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Stock Count.
+        ///   Looks up a localized string similar to NAV Data - New Stock Count Batch.
         /// </summary>
         public static string NewSCTitle {
             get {
@@ -772,7 +997,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stock Batch Iteration.
+        ///   Looks up a localized string similar to Counts &amp; Teams.
         /// </summary>
         public static string StockBatchIterations {
             get {
