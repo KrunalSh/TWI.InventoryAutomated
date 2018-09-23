@@ -350,8 +350,12 @@ namespace TWI.InventoryAutomated.Controllers
                 if (db.StockCountHeader.Count() > 0)
                 {
                     if (db.StockCountHeader.Where(x => x.Status == "O").Count() > 0)
-                    { _sch = db.StockCountHeader.Where(x => x.Status == "O").FirstOrDefault(); }
-                    else { _sch = db.StockCountHeader.Where(x => x.Status == "C").FirstOrDefault(); }
+                    {
+                        _sch = db.StockCountHeader.Where(x => x.Status == "O").FirstOrDefault();
+                    }
+                    else {
+                        _sch = db.StockCountHeader.Where(x => x.Status == "C").FirstOrDefault();
+                    }
 
                     _bim.ID = _sch.ID;
                     _bim.SCCode = _sch.SCCode;
@@ -399,10 +403,10 @@ namespace TWI.InventoryAutomated.Controllers
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 if (db.StockCountHeader.Where(x => x.ID == ID && x.Status == "C").Count() > 0)
-                    return Json(new { success = false, message = "cannot create an iteration for a closed batch, kindly check your selection" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = "cannot create a count for a closed batch, kindly check your selection" }, JsonRequestBehavior.AllowGet);
 
                 if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
-                    return Json(new { success = false, message = "Kindly first pull data from NAV to proceed and create iterations" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = false, message = "Kindly first pull data from NAV and then create count(s) to proceed" }, JsonRequestBehavior.AllowGet);
             }
             return Json(new { success = true, message = "" }, JsonRequestBehavior.AllowGet);
         }
@@ -513,12 +517,15 @@ namespace TWI.InventoryAutomated.Controllers
                     if (db.StockCountIterations.Where(x => x.ID == ID && x.Status == true).Count() > 0)
                         return Json(new { success = false, message = "Cannot delete an ongoing count, kindly select a valid count" }, JsonRequestBehavior.AllowGet);
 
+
+
+
                     db.StockCountIterations.Remove(db.StockCountIterations.Where(x => x.ID == ID).FirstOrDefault());
                     db.StockCountTeams.RemoveRange(db.StockCountTeams.Where(x => x.SCIterationID == ID));
                     db.SaveChanges();
 
-                    List<StockCountIterations> _itrlist = db.StockCountIterations.Where(x => x.SCID == SCID).ToList();
 
+                    List<StockCountIterations> _itrlist = db.StockCountIterations.Where(x => x.SCID == SCID).ToList();
                     int count = 1;
                     foreach (StockCountIterations x in _itrlist)
                     {
@@ -558,7 +565,7 @@ namespace TWI.InventoryAutomated.Controllers
                     if (db.StockCountIterations.Where(x => x.ID == ItrID && x.Status == true).Count() > 0)
                         return Json(new { success = false, message = "Cannot delete team of an ongoing count, kindly select a valid iteration" }, JsonRequestBehavior.AllowGet);
 
-                    //check to validate whether the selected team is allocated items  to count or not
+                    //check to validate whether the selected team is allocated items to count or not
                     //to implement this check once allocation screen is completed.
                     
                     db.StockCountTeams.Remove(db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault());
@@ -621,17 +628,22 @@ namespace TWI.InventoryAutomated.Controllers
                     {
                         _scounts = db.StockCountIterations.Where(x => x.SCID == SCID).ToList();
                         result = new string[_scounts.Count()];
-                        //int _newrow = 1;
                         foreach (StockCountIterations _std in _scounts)
                         {
-                            //if (_newrow > 5) { _newrow = 1; }
-                            //if (_newrow == 1) { itrstring += "<div class='row'>"; }
-
                             itrstring += "<div class='col-lg-2' style='margin-left:10px;margin-top:20px;'><div style='border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;'>";
                             itrstring += "<div style='width:100%;padding-left:10px;background-color:#eae7e7 !important;min-height:40px !important;max-height:80px !important;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom:solid 2px #808080;'>";
-                            itrstring += "<div style='float:left;color:black;font-family:Calibri;font-size:20px;height:auto;padding-top:3px'>";
+                            itrstring += "<div style='float:left;color:black;font-family:Calibri;font-size:18px;font-weight:bold;height:auto;padding-top:3px'>";
                             itrstring += _std.IterationNo + " - " + _std.IterationName + "</div>";
-                            itrstring += "<div style='float:right;margin-right:5px;margin-top:7px;'><a class='btn btn-primary fa fa-lock' style='width:20px !important;height:20px !important;vertical-align:middle !important;margin-right:5px;padding-left:4px;padding-top:2px;' onclick='PopupForm(/StockCount/NewIterationStatus?IterationID=" + _std.ID + ");'></a>";
+                            itrstring += "<div style='float:right;margin-right:5px;margin-top:7px;'>";
+                            if (_std.Status == false)
+                            {
+                                itrstring += "<a class='btn btn-primary fa fa-lock' style='width:20px !important;height:20px !important;vertical-align:middle !important;margin-right:5px;padding-left:4px;padding-top:2px;' onclick='ChangeCountStatus("+ @_std.ID + ");'></a>";
+                            }
+                            else
+                            {
+                                itrstring += "<a class='btn btn-primary fa fa-unlock' style='width:20px !important;height:20px !important;vertical-align:middle !important;margin-right:5px;padding-left:4px;padding-top:2px;' onclick='ChangeCountStatus(" + @_std.ID + ");'></a>";
+                            }
+                                
                             itrstring += "<a class='btn btn-success fa fa-plus-circle' data-toggle='tooltip' style='width:20px !important;height:20px !important;padding-left:4px;padding-top:2px;vertical-align:middle !important;margin-right:5px;' onclick='CreateNewTeam(" + _std.ID + ");'></a>";
                             itrstring += "<a class='btn btn-danger fa fa-trash' style='width:20px !important;height:20px !important;vertical-align:middle !important;padding-top:2px;padding-left:4px;' onclick='DeleteIteration(" + _std.ID + ");'></a>";
                             itrstring += "</div></div>";
@@ -650,30 +662,59 @@ namespace TWI.InventoryAutomated.Controllers
                                 }
                             }
                             else {
-                                itrstring += "<div style='margin:5px;padding:5px 0px 5px 10px;border:solid 1px #808080;border-radius:3px;background-color: #808080 !important;color:white;height:30px !important;width:98% !important;font-family:Calibri;font-size:14px;font-weight:600;'>No Teams Registered</div>";
+                                itrstring += "<div style='margin:5px;padding:5px 5px 5px 10px;border:solid 1px #808080;border-radius:3px;background-color: #808080 !important;color:white;height:30px !important;width:98% !important;font-family:Calibri;font-size:14px;font-weight:600;'>No Teams Registered</div>";
                             }
 
-                            //if (_newrow == 5) { itrstring += "</div>";}
-                            //_newrow++;
                             result[count] = itrstring;
                             count++;
                             itrstring = string.Empty;
                         }
-                        //if (_newrow >1  && _newrow <=5) { result[result.Length - 1] = result[result.Length - 1] += "</div>"; }
                     }
                     else {
                         result = new string[1];
-                        result[0] = "<div style='margin:15px;padding:5px 0px 5px 10px;border:solid 1px #808080;border-radius:10px;background-color: #eae7e7!important;color:black;height:40px !important;width:98% !important;font-family:Calibri;font-size:18px;font-weight:400;'>No Counts Registered for this batch.</ div >";
+                        result[0] = "<div style='margin:15px;padding:5px 5px 5px 10px;border:solid 1px #808080;border-radius:10px;background-color: #eae7e7!important;color:black;height:40px !important;width:98% !important;font-family:Calibri;font-size:18px;font-weight:400;'>No Counts Registered for this batch.</ div >";
                     }
                 }
                 else {
                     result = new string[1];
-                    result[0] = "<div style='margin:15px;padding:5px 0px 5px 10px;border:solid 1px #808080;border-radius:10px;background-color: #eae7e7!important;color:black;height:40px !important;width:98% !important;font-family:Calibri;font-size:18px;font-weight:400;'>No Counts Registered for this batch.</ div >";
+                    result[0] = "<div style='margin:15px;padding:5px 5px 5px 10px;border:solid 1px #808080;border-radius:10px;background-color: #eae7e7!important;color:black;height:40px !important;width:98% !important;font-family:Calibri;font-size:18px;font-weight:400;'>No Counts Registered for this batch.</ div >";
                 }
             }
             return Json(result,JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult ChangeCountStatus(int CountID)
+        {
+            int SCID = -1;
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                SCID = db.StockCountIterations.Where(x => x.ID == CountID).FirstOrDefault().SCID.Value;
+                if(db.StockCountHeader.Where(x=>x.ID == SCID && x.Status == "C").Count() > 0)
+                    return Json(new { success = false, message = "Cannot lock or release count(s) of a closed Batch" }, JsonRequestBehavior.AllowGet);
+
+                //Status of selected Count is Release
+                if (db.StockCountIterations.Where(x => x.ID == CountID && x.Status == true).Count() > 0)
+                {
+                    
+
+                }
+                //Stats=us of selected Count is locked
+                else {
+                    if (db.StockCountIterations.Where(x => x.SCID == SCID && x.Status == true && x.ID != CountID).Count() > 0)
+                        return Json(new { success = false, message = "Cannot release this count as another count is in progress" }, JsonRequestBehavior.AllowGet);
+                }
+
+                StockCountIterations _scitr = db.StockCountIterations.Where(x => x.ID == CountID).FirstOrDefault();
+                bool _currentStatus = _scitr.Status.Value;
+                _scitr.Status = !_currentStatus;
+
+                db.StockCountIterations.Attach(_scitr);
+                db.Entry(_scitr).Property(x => x.Status).IsModified = true;
+                db.SaveChanges();
+            }
+
+            return Json(new { success = true, message = "Count Status Changed Successfully" }, JsonRequestBehavior.AllowGet);
+        }
 
         #endregion
 
@@ -685,8 +726,7 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         #endregion 
-
-
+        
         #endregion
 
         #region "Helper Function(s)"

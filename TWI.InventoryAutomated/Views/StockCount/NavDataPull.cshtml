@@ -375,7 +375,7 @@
                 datatype: "json",
                 success: function (data) {
                     //console.log(data);
-                    if (data.data == null) {
+                    if (data.data === null) {
                         $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
                         $("#Status").html('Status : ');
                     }
