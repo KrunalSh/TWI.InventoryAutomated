@@ -94,6 +94,36 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
+        <EntityType Name="StockCountAllocations">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StockCountID" Type="int" />
+          <Property Name="SCIterationID" Type="int" />
+          <Property Name="SCIterationName" Type="varchar" MaxLength="50" />
+          <Property Name="TeamID" Type="int" />
+          <Property Name="TeamCode" Type="varchar" MaxLength="5" />
+          <Property Name="SearchCriteria" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocType" Type="varchar" MaxLength="2" />
+          <Property Name="WhseDocumentNo" Type="nvarchar" MaxLength="20" />
+          <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
+          <Property Name="ExpirationDate" Type="datetime2" Precision="7" />
+          <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAVQty" Type="decimal" Precision="38" Scale="20" />
+          <Property Name="PhysicalQty" Type="decimal" Precision="38" Scale="20" />
+          <Property Name="AuditorQty" Type="decimal" Precision="38" Scale="20" />
+          <Property Name="FinalQty" Type="decimal" Precision="38" Scale="20" />
+          <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
+          <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
+          <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="int" />
+        </EntityType>
         <EntityType Name="StockCountDetail">
           <Key>
             <PropertyRef Name="ID" />
@@ -239,6 +269,7 @@
           <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockCountDetail" EntityType="Self.StockCountDetail" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockCountHeader" EntityType="Self.StockCountHeader" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockCountIterations" EntityType="Self.StockCountIterations" Schema="dbo" store:Type="Tables" />
@@ -287,6 +318,7 @@
           <EntitySet Name="StockCountIterations" EntityType="TWIInventoryPortalModel.StockCountIterations" />
           <EntitySet Name="StockCountDetail" EntityType="TWIInventoryPortalModel.StockCountDetail" />
           <EntitySet Name="StockCountTeams" EntityType="TWIInventoryPortalModel.StockCountTeams" />
+          <EntitySet Name="StockCountAllocations" EntityType="TWIInventoryPortalModel.StockCountAllocations" />
         </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -504,6 +536,36 @@
           <Property Name="UserID" Type="Int32" />
           <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="StockCountAllocations">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockCountID" Type="Int32" />
+          <Property Name="SCIterationID" Type="Int32" />
+          <Property Name="SCIterationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TeamID" Type="Int32" />
+          <Property Name="TeamCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="SearchCriteria" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocType" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="WhseDocumentNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ZoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BinCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LotNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="7" />
+          <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAVQty" Type="Decimal" Precision="38" Scale="20" />
+          <Property Name="PhysicalQty" Type="Decimal" Precision="38" Scale="20" />
+          <Property Name="AuditorQty" Type="Decimal" Precision="38" Scale="20" />
+          <Property Name="FinalQty" Type="Decimal" Precision="38" Scale="20" />
+          <Property Name="TemplateName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
         </EntityType>
@@ -761,6 +823,37 @@
                 <ScalarProperty Name="TeamNo" ColumnName="TeamNo" />
                 <ScalarProperty Name="SCID" ColumnName="SCID" />
                 <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockCountAllocations">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
+              <MappingFragment StoreEntitySet="StockCountAllocations">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+                <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+                <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
+                <ScalarProperty Name="FinalQty" ColumnName="FinalQty" />
+                <ScalarProperty Name="AuditorQty" ColumnName="AuditorQty" />
+                <ScalarProperty Name="PhysicalQty" ColumnName="PhysicalQty" />
+                <ScalarProperty Name="NAVQty" ColumnName="NAVQty" />
+                <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="LotNo" ColumnName="LotNo" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
+                <ScalarProperty Name="BinCode" ColumnName="BinCode" />
+                <ScalarProperty Name="ZoneCode" ColumnName="ZoneCode" />
+                <ScalarProperty Name="WhseDocumentNo" ColumnName="WhseDocumentNo" />
+                <ScalarProperty Name="DocType" ColumnName="DocType" />
+                <ScalarProperty Name="SearchCriteria" ColumnName="SearchCriteria" />
+                <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
+                <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+                <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
+                <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
+                <ScalarProperty Name="StockCountID" ColumnName="StockCountID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

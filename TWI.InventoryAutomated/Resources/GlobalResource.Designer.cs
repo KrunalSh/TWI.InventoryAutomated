@@ -493,6 +493,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Admin Stock Count Sheet.
+        /// </summary>
+        public static string MsgAdminSheetTitle {
+            get {
+                return ResourceManager.GetString("MsgAdminSheetTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Record already exists!.
         /// </summary>
         public static string MsgAlreadyExist {

@@ -369,6 +369,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                     if (db.StockCountTeams.Where(x => x.SCID == _sch.ID).Count() > 0) _bim.Teams = db.StockCountTeams.Where(x => x.SCID == _sch.ID).ToList();
                     else _bim.Teams = new List<StockCountTeams>();
+
                     //if (db.StockCountTeams.Where(x => x.SCID == _sch.ID).Count() > 0) _bim.Iterations = db.StockCountIterations.Where(x => x.SCID == _sch.ID).ToList();
                     //else _bim.Iterations = new List<StockCountIterations>();
                 }
@@ -382,6 +383,7 @@ namespace TWI.InventoryAutomated.Controllers
                     _bim.TotalItemCount = 0;
                     _bim.Iterations = new List<StockCountIterations>();
                     _bim.Teams = new List<StockCountTeams>();
+                    //_bim.TeamAllocationSummary = new List<CountItemsSummary>();
                 }
             return View(_bim);
             }
@@ -720,8 +722,58 @@ namespace TWI.InventoryAutomated.Controllers
 
         #region "Stock Count Allocation(s) / Admin Stock Count Sheet"
 
-        public ActionResult AdminStockCountSheet()
+        public ActionResult AdminStockCountSheet(int TeamID = -1)
         {
+            int SCID = -1;
+            int CountID = -1;
+
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                List<StockCountHeader> _batchlist = new List<StockCountHeader>();
+                if (db.StockCountHeader.Where(x => x.Status == "O").Count() > 0) { _batchlist = db.StockCountHeader.Where(x => x.Status == "O").ToList(); }
+                StockCountHeader _row0 = new StockCountHeader();
+                _row0.ID = -1; _row0.SCCode = "-- Select Batch -- "; _batchlist.Insert(0, _row0);
+                ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
+
+                List<StockCountIterations> _countList = new List<StockCountIterations>();
+                List<StockCountTeams> _teamlist = new List<StockCountTeams>();
+                AdminStockCountSheetModel _adminsheet = new AdminStockCountSheetModel();
+                if (TeamID != -1)
+                {
+                    SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+                    CountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
+
+                    if (db.StockCountIterations.Where(x => x.SCID == SCID).Count() > 0)
+                        _countList = db.StockCountIterations.Where(x => x.SCID == SCID).ToList();
+
+                    if (db.StockCountTeams.Where(x => x.SCIterationID == CountID).Count() > 0)
+                        _teamlist = db.StockCountTeams.Where(x => x.SCIterationID == CountID).ToList();
+
+                    _adminsheet.ID = SCID;
+                    _adminsheet.LocationCode = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().LocationCode;
+                    _adminsheet.SCCode = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().SCCode;
+                    _adminsheet.SCDesc = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().SCDesc;
+                    _adminsheet.Status = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().Status;
+                    _adminsheet.TotalItemCount = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().TotalItemCount.Value;
+
+                    _adminsheet.AllocatedItems = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).ToList();
+                }
+
+                ViewBag.SCID = SCID;
+                ViewBag.CountID = CountID;
+
+                StockCountIterations _sct = new StockCountIterations();
+                _sct.ID = -1;
+                _sct.IterationName = "-- Select Count --";
+                _countList.Insert(0, _sct);
+                ViewBag.CountList = new SelectList(_countList, "ID", "IterationName");
+
+                StockCountTeams _team = new StockCountTeams();
+                _team.ID = -1;
+                _team.TeamCode = "-- Select Team --";
+                _teamlist.Insert(0, _team);
+                ViewBag.TeamList = new SelectList(_teamlist, "ID", "TeamCode");
+            }
             return View();
         }
 

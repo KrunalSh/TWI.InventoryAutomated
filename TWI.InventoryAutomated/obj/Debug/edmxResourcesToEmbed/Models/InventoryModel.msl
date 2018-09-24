@@ -253,5 +253,36 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="StockCountAllocations">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
+        <MappingFragment StoreEntitySet="StockCountAllocations">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+          <ScalarProperty Name="BatchName" ColumnName="BatchName" />
+          <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
+          <ScalarProperty Name="FinalQty" ColumnName="FinalQty" />
+          <ScalarProperty Name="AuditorQty" ColumnName="AuditorQty" />
+          <ScalarProperty Name="PhysicalQty" ColumnName="PhysicalQty" />
+          <ScalarProperty Name="NAVQty" ColumnName="NAVQty" />
+          <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />
+          <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+          <ScalarProperty Name="LotNo" ColumnName="LotNo" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
+          <ScalarProperty Name="BinCode" ColumnName="BinCode" />
+          <ScalarProperty Name="ZoneCode" ColumnName="ZoneCode" />
+          <ScalarProperty Name="WhseDocumentNo" ColumnName="WhseDocumentNo" />
+          <ScalarProperty Name="DocType" ColumnName="DocType" />
+          <ScalarProperty Name="SearchCriteria" ColumnName="SearchCriteria" />
+          <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
+          <ScalarProperty Name="TeamID" ColumnName="TeamID" />
+          <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
+          <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
+          <ScalarProperty Name="StockCountID" ColumnName="StockCountID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

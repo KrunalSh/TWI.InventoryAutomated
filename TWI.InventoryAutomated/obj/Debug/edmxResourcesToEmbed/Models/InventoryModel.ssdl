@@ -89,6 +89,36 @@
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
   </EntityType>
+  <EntityType Name="StockCountAllocations">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StockCountID" Type="int" />
+    <Property Name="SCIterationID" Type="int" />
+    <Property Name="SCIterationName" Type="varchar" MaxLength="50" />
+    <Property Name="TeamID" Type="int" />
+    <Property Name="TeamCode" Type="varchar" MaxLength="5" />
+    <Property Name="SearchCriteria" Type="nvarchar" MaxLength="50" />
+    <Property Name="DocType" Type="varchar" MaxLength="2" />
+    <Property Name="WhseDocumentNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
+    <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="ExpirationDate" Type="datetime2" Precision="7" />
+    <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="NAVQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="PhysicalQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="AuditorQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="FinalQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
+    <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
+    <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
   <EntityType Name="StockCountDetail">
     <Key>
       <PropertyRef Name="ID" />
@@ -234,6 +264,7 @@
     <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocations" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="StockCountDetail" EntityType="Self.StockCountDetail" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="StockCountHeader" EntityType="Self.StockCountHeader" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="StockCountIterations" EntityType="Self.StockCountIterations" Schema="dbo" store:Type="Tables" />

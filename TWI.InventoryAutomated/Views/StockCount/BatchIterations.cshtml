@@ -126,9 +126,26 @@
         var currentCult = getCookie("Language");
         var Path = FetchPathforCultureFile(currentCult);
         $("#ddlBatches").change(function () {
-            //var selectedbatch = $("#ddlBatches").val();
-            //if (selectedbatch === -1) { $("#datamainrow").Empty(); }
+            
             RefreshData($("#ddlBatches").val());
+            $.ajax({
+                url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
+                type: "GET",
+                datatype: "json",
+                success: function (data) {
+                    //console.log(data);
+                    if (data.data === null) {
+                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                        $("#Status").html('Status : ');
+                    }
+                    else {
+                        $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                        $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                        $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                        $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                    }
+                }
+            });
         });
     });
 

@@ -456,4 +456,7 @@
   <data name="MsgCountDeletionConfirm" xml:space="preserve">
     <value>Are you sure to delete  the selected count?  Click 'Yes' to Proceed Or 'No' to Cancel</value>
   </data>
+  <data name="MsgAdminSheetTitle" xml:space="preserve">
+    <value>Admin Stock Count Sheet</value>
+  </data>
 </root>

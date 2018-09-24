@@ -169,6 +169,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AdminStockCountSheetModel.cs" />
     <Compile Include="Models\ArchivedSessionLog.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
@@ -212,6 +213,9 @@
     </Compile>
     <Compile Include="Models\PhysicalInvJournal.cs" />
     <Compile Include="Models\RegisteredDevice.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StockCountAllocations.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StockCountDetail.cs">
@@ -393,6 +397,7 @@
     <Content Include="Views\StockCount\BatchIterations.cshtml" />
     <Content Include="Views\StockCount\NewIterationTeam.cshtml" />
     <Content Include="Views\StockCount\CreateNewIteration.cshtml" />
+    <Content Include="Views\StockCount\AdminStockCountSheet.cshtml" />
     <None Include="Web References\DEVPhyInvJournal\PhysicalInvJournal.wsdl" />
     <Content Include="Web References\DEVPhyInvJournal\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
