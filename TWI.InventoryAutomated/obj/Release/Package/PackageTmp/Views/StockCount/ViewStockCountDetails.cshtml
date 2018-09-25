@@ -1,0 +1,85 @@
+﻿@model TWI.InventoryAutomated.Models.StockCountModel
+
+@{ ViewBag.Title = "Stock Count Detail(s)";}
+
+
+<div class="row">
+    <div style="width:100%;border:2px #808080 solid;">
+        <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+            <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.SCDetailTitle </div>
+            <a style="float: right;color: white;margin-top:-24px;" href='@Url.Action("NavDataPull","StockCount")'><i class="fa fa-arrow-left  fa-2x"></i></a>
+        </div>
+        <div class="row col-sm-12">
+            <div class="col-sm-2" style="padding:15px 10px 15px 25px;">
+                <div class="row">
+                    <div class="col-md-3 field_background_left" style="padding-top:5px;">Code</div>
+                    <div class="col-md-9 field_background_right" style="padding-top:5px;">@Html.DisplayFor(model => model.SCCode)</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 field_background_left" style="padding-top:5px;">Title</div>
+                    <div class="col-md-9 field_background_right" style="padding-top:5px;">@Html.DisplayFor(model => model.SCDesc)</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 field_background_left" style="padding-top:5px;">Items</div>
+                    <div class="col-md-9 field_background_right" style="padding-top:5px;">@Html.DisplayFor(model => model.TotalItemCount)</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 field_background_left" style="padding-top:5px;height:47px !important;">Status</div>
+                    <div class="col-md-9 field_background_right" style="padding-top:5px;height:47px !important;">
+                        @Html.DropDownListFor(model => model.Status, Model._statusList, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <div style="width:100%;margin:15px auto " class="table-responsive">
+                    <table id="ItemTable" class="datatable  table table-striped dt-responsive display nowrap table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item No</th>
+                                <th>Description</th>
+                                <th>Zone Code</th>
+                                <th>Bin Code</th>
+                                <th>Lot No</th>
+                                <th>Expiration Date</th>
+                                <th>Qty</th>
+                                <th>Qty (Phy. Inv)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var _std in Model._stockCountItems)
+                            {
+                                <tr>
+                                    <td>@_std.ItemNo</td>
+                                    <td>@_std.Description</td>
+                                    <td>@_std.ZoneCode</td>
+                                    <td>@_std.BinCode</td>
+                                    <td>@_std.LotNo</td>
+                                    <td>@_std.ExpirationDate</td>
+                                    <td>@_std.NAVQty</td>
+                                    <td>@_std.PhyicalQty</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        @*<div class="table">
+
+            </div>*@
+    </div>
+</div>
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#ItemTable").DataTable();
+        });
+    </script>
+}

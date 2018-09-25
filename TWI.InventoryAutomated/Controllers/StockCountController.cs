@@ -757,6 +757,7 @@ namespace TWI.InventoryAutomated.Controllers
                     _adminsheet.TotalItemCount = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().TotalItemCount.Value;
 
                     _adminsheet.AllocatedItems = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).ToList();
+
                 }
 
                 ViewBag.SCID = SCID;

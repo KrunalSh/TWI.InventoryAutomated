@@ -196,4 +196,6 @@ D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutoma
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csproj.CopyComplete
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.pdb
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csprojResolveAssemblyReference.cache
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\TWI.InventoryAutomated.XmlSerializers.dll
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.XmlSerializers.dll
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Release\TWI.InventoryAutomated.csprojAssemblyReference.cache

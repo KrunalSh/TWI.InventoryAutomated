@@ -1,0 +1,16 @@
+﻿@model TWI.InventoryAutomated.Models.StockCountTeams
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("NewIterationTeam", "StockCount", FormMethod.Post, new { onsubmit = "return SubmitTeamForm(this)" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group txtNotification">
+    @Html.DropDownListFor(model => model.UserID, ViewBag.MemberList as SelectList,new { @class = "form-control" })
+    </div>
+    <div class="form-group" style="float:right !important;">
+        <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
+        <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" />
+    </div>
+}

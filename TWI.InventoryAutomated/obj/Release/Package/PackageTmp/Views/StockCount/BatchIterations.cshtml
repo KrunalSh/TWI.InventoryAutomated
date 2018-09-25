@@ -1,0 +1,420 @@
+﻿@model TWI.InventoryAutomated.Models.BatchIterationModel
+@{
+    ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/font-awesome.css" rel="stylesheet" />
+<div class="row table-responsive">
+    <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
+        <div  style="background-color: #808080;color: #ffffff;padding:5px;height:30px;" id="topHeading">
+            <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle</div>
+            <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
+        </div>
+        <div style="width:100% !important;padding:10px;">
+            <div class="row" style="margin:auto;padding-bottom:10px;width:100% !important">
+                <div style="float:left;">
+                    @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control customwidth100px", @id = "ddlBatches", @name = "ddlBatches" })
+                </div>
+                <div style="float:left !important;margin-left:5px !important;" class="col-sm-8">
+                    <div class="field_background" style="width:100% !important">
+                        <div class="col-sm-4" style="padding-top:7px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                        <div class="col-sm-2" style="padding-top:7px;" id="LocationCode">
+                            Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+                        </div>
+                        <div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
+                            Item Lines: <span style="padding-left:3px;font-weight:400 !important">
+                            @{ 
+                                var ItemLines = Convert.ToInt32(Model.TotalItemCount);
+                            }
+                            @Html.DisplayFor(model => ItemLines) </span>
+                        </div>
+                        <div class="col-sm-3" style="padding-top:7px;" id="Status">
+                            `
+                            Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="float:left;" class="col-sm-2">
+                    <a class="btn btn-success" style="width:130px;" data-toggle="tooltip" title="New Batch Iteration" onclick="CreateIteration();">@TWI.InventoryAutomated.Resources.GlobalResource.CreateIteration</a>
+                </div>
+            </div>
+            <div style="float:left;height:3px;width:100% !important;border-bottom:solid 2px #808080;">&nbsp;</div>
+            <div class="row" style="margin-bottom:10px;" id="datamainrow">
+                @{
+                    int count = 1;
+
+                    if (Model.Iterations.Count() > 0)
+                    {
+                        foreach (var _std in Model.Iterations)
+                        {
+                            if (count > 5) { count = 1; }
+
+                            if (count == 1)
+                            { @Html.Raw("<div class='row' style='margin-left:25px;'>");
+                            }
+                            <div class="col-lg-2" style="margin-left:10px;margin-top: 20px;">
+                                    <div style="border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;">
+                                        <div style="width:100%;padding-left:10px;background-color:#eae7e7 !important;min-height:40px !important;max-height:80px !important;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom:solid 2px #808080;">
+                                            <div style="float:left;color:black;font-family:Calibri;font-size:18px;font-weight:bold;height:auto;padding-top:3px">
+                                                @_std.IterationNo - @_std.IterationName
+                                            </div>
+                                            <div style="float:right;margin-right:5px;margin-top:7px;">
+                                                @{
+                                                    if (_std.Status == false)
+                                                    {
+                                                        <a class="btn btn-primary fa fa-lock" style="width:20px !important;height:20px !important;vertical-align:middle !important;margin-right:5px;padding-left:4px;padding-top:2px;" onclick="ChangeCountStatus(@_std.ID)"></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="btn btn-primary fa fa-unlock" style="width:20px !important;height:20px !important;vertical-align:middle !important;margin-right:5px;padding-left:4px;padding-top:2px;" onclick="ChangeCountStatus(@_std.ID)"></a>
+                                                    }
+                                                }
+                                                <a class="btn btn-success fa fa-plus-circle" data-toggle="tooltip" style="width:20px !important;height:20px !important;padding-left:4px;padding-top:2px;vertical-align:middle !important;margin-right:5px;" onclick="CreateNewTeam(@_std.ID);"></a>
+                                                <a class="btn btn-danger fa fa-trash" style="width:20px !important;height:20px !important;vertical-align:middle !important;padding-top:2px;padding-left:4px;" onclick="DeleteIteration(@_std.ID);"></a>
+                                            </div>
+                                        </div>
+                                        <div style="width:100%;">
+
+                                            @{
+                                                if (Model.Teams.Where(x => x.SCIterationID == _std.ID).Count() == 0)
+                                                {
+                                                    <div style='margin:5px;padding:5px 0px 5px 10px;border:solid 1px #808080;border-radius:3px;background-color: #808080 !important;color:white;height:30px !important;width:98% !important;font-family:Calibri;font-size:14px;font-weight:600;'>No Teams Registered</div>
+                                                }
+                                                else
+                                                {
+                                                    foreach (var _steam in Model.Teams)
+                                                    {
+                                                        if (_steam.SCIterationID == _std.ID)
+                                                        {
+                                                            <div class="row" style="height:30px !important;margin-left:5px;margin-right:7px;margin-bottom:7px;border-bottom:solid 1px #808080;">
+                                                                <div style="float:left;font-family:Calibri;font-size:20px;color:black;">@_steam.TeamCode - @_steam.UserName</div>
+                                                                <div style="float:right;margin-top:5px;"><a class="btn btn-danger fa fa-trash" style="padding-top:2px;  padding-left:4px;width:20px !important;height:20px !important;vertical-align:middle !important;margin-left:10px;" onclick="DeleteIterationTeam(@_steam.ID);"></a></div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            if (count == 5) {@Html.Raw("</div>"); }
+                            count++;
+                        }
+                        if (count > 1 && count <= 5){  @Html.Raw("</div>");}
+                    }
+                    else
+                    {
+                        <div style="background-color:#eae7e7 !important;min-height:40px !important;max-height:80px !important;height:30px !important;width:100% !important;font-family:Calibri;font-size:18px;">No Counts Registered for this batch.</div>
+                    }
+                 }
+            </div>
+        </div>
+        <div></div>
+    </div>
+</div>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+<script>
+
+    var Popup, datatable;
+
+    $(document).ready(function () {
+        var currentCult = getCookie("Language");
+        var Path = FetchPathforCultureFile(currentCult);
+        $("#ddlBatches").change(function () {
+            
+            RefreshData($("#ddlBatches").val());
+            $.ajax({
+                url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
+                type: "GET",
+                datatype: "json",
+                success: function (data) {
+                    //console.log(data);
+                    if (data.data === null) {
+                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                        $("#Status").html('Status : ');
+                    }
+                    else {
+                        $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                        $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                        $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                        $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                    }
+                }
+            });
+        });
+    });
+
+
+    function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+                .done(function (response) {
+                    formDiv.html(response);
+
+                    Popup = formDiv.dialog({
+                        autoOpen: true,
+                        title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - New Count")',
+                        modal: true
+                    });
+                });
+        }
+
+    function CreateNewTeam(ID)
+    {
+        Popup = PopupForm('/StockCount/NewIterationTeam?IterationID=' + ID);
+    }
+   
+    function Cancelbutton() {
+        Popup.dialog('destroy').remove();
+    }
+    function SubmitForm(form) {
+        $.validator.unobtrusive.parse(form);
+        if ($(form).valid()) {
+            $.ajax({
+                type: "POST",
+                url: form.action,
+                data: $(form).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        @*$('<div></div>').appendTo('body')
+                            .html("<div><h5>" + data.message + "</h5></div>")
+                         .dialog({
+                             modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                            });*@
+                        RefreshData($("#ddlBatches").val());
+                        Popup.dialog('close');
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+        return false;
+    }
+
+
+    function SubmitTeamForm(form) {
+        $.validator.unobtrusive.parse(form);
+        if ($(form).valid()) {
+            $.ajax({
+                type: "POST",
+                url: form.action,
+                data: $(form).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        @*$('<div></div>').appendTo('body')
+                            .html("<div><h5>" + data.message + "</h5></div>")
+                         .dialog({
+                             modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                             buttons: {
+                                 Ok: function () {
+                                     $(this).dialog("close");
+                                 }
+                             }
+                            });*@
+
+                        RefreshData($("#ddlBatches").val());
+                        //alert(data.message);
+                        Popup.dialog('close');
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+        return false;
+    }
+
+        function CreateIteration() {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            if ($("#ddlBatches").val() === -1) {
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+            }
+            else {
+                $.ajax({
+                    url: '/StockCount/CheckBatchStatus?ID=' + $("#ddlBatches").val(),
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success) {
+                            Popup = PopupForm('/StockCount/CreateNewIteration?ID=' + $("#ddlBatches").val());
+                        }
+                        else {
+                            $('<div></div>').appendTo('body')
+                                .html("<div><h5>" + data.message + "</h5></div>")
+                                .dialog({
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create + " Count")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+           
+    }
+    
+    function RefreshData(BatchID) {
+        $.ajax({
+            url: "/StockCount/GetBatchCountAndTeams?SCID=" + BatchID,
+            type: "GET",
+            datatype: "json",
+            success: function (data) {
+                $("#datamainrow").empty();
+                var count = 1;
+                for (var i = 0; i < data.length; i++)
+                {
+                    if (count > 5) { count = 1; }
+                    if (count === 1) { $("#datamainrow").append("<div class='row' style='margin-left:25px;'>"); }
+                    $("#datamainrow").append(data[i]);
+                    if (count === 5) { $("#datamainrow").append("</div>"); }
+                    count++;
+                }
+                if (count > 1 && count <= 5) { $("#datamainrow").append("</div>"); }
+            }
+        });
+    }
+
+    function ChangeCountStatus(CountID) {
+        var batchId = $("#ddlBatches").val();
+        $.ajax({
+            url: "/StockCount/ChangeCountStatus?CountID=" + CountID,
+            type: "GET",
+            datatype: "Json",
+            success: function (data) {
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + data.message + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - Count Status Change")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+            }
+        });
+        
+        RefreshData(batchId);
+    }
+
+    function DeleteIterationTeam(TeamID) {
+         $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgTeamDeletionConfirm)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Yes: function () {
+                                $.ajax({
+                                    url: "/StockCount/DeleteTeam?ID=" + TeamID,
+                                    type: "GET",
+                                    datatype: "JSON",
+                                    success: function (data) {
+                                        if (data.success) {
+                                            $('<div></div>').appendTo('body')
+                                                .html("<div><h5>" + data.message + "</h5></div>")
+                                                .dialog({
+                                                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                            RefreshData($("#ddlBatches").val());
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                        else {
+                                            $('<div></div>').appendTo('body')
+                                                .html("<div><h5>" + data.message + "</h5></div>")
+                                                .dialog({
+                                                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    }
+                                });
+                                $(this).dialog("close");
+                            },
+                            No: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+    }
+
+
+
+    function DeleteIteration(IterationID)
+    {
+
+         $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgCountDeletionConfirm)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Yes: function () {
+                                $.ajax({
+                                    url: "/StockCount/DeleteIteration?ID=" + IterationID,
+                                    type: "GET",
+                                    datatype: "JSON",
+                                    success: function (data) {
+                                        if (data.success) {
+                                            
+                                           $('<div></div>').appendTo('body')
+                                            .html("<div><h5>" + data.message + "</h5></div>")
+                                            .dialog({
+                                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                buttons: {
+                                                    Ok: function () {
+                                                        $(this).dialog("close");
+                                                        RefreshData($("#ddlBatches").val());
+                                                    }
+                                                }
+                                                });
+                                        }
+                                    }
+                                });
+                                $(this).dialog("close");
+                            },
+                            No: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+
+
+        
+    }
+</script>
+
+}
