@@ -38,7 +38,13 @@
                     <input type="submit" style="width:70px;margin-left:5px  !important;" value="@TWI.InventoryAutomated.Resources.GlobalResource.DeleteBatch" class="btn btn-danger" title="Remove Batch" onclick="Delete();" />
                 </div>
             </div>
-            <div style="float:right;width:100% !important;margin-bottom:15px;">
+            <div style="width:100% !important;">
+                    <select name="state" id="maxRows" class="form-control" style="width:80px;margin-left:15px;float:left;margin-bottom:15px !important;">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50" selected="selected">50</option>
+                        <option value="100">100</option>
+                    </select>
                 <input class="form-control" id="Search" type="text" placeholder="Search.." style="float:right;margin-right:15px;" />
             </div>
             <div class="row col-sm-12 table-responsive" style="margin:auto;padding-bottom:10px;width:100% !important;">
@@ -72,8 +78,13 @@
 
                     </tbody>
                 </table>
+                <div class="pagination-container">
+                    <nav>
+                        <ul class="pagination"></ul>
+                    </nav>
+                </div>
+
             </div>
-            <div id="pages" class="col-lg-12" style="float:right !important;"></div>
             <div></div>
         </div>
     </div>
@@ -89,29 +100,78 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <style type="text/css" >
-        .focus {
-            background-color: #ff00ff;
-            color: #fff;
-            cursor: pointer;
-            font-weight: bold;
+        /*.container {
+            margin-top: 20px;
+        }*/
+
+        /*.page {
+            display: none;
         }
 
-        .pageNumber {
-            padding: 5px;
-        }
+        .page-active {
+            display: block;
+        }*/
     </style>
 
 
     <script>
         var Popup, dataTable;
+        var table = '#HeaderTable';
+       
+
+
         $(document).ready(function () {
-                                    var currentCult = getCookie("Language");
+            var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             //dataTable = $("#HeaderTable").dataTable();
             $("#ddlBatches").change(function () {
-                                        var selectedbatch = $("#ddlBatches").val();
-                                        RefreshData(selectedbatch);
-                                    });
+                var selectedbatch = $("#ddlBatches").val();
+                RefreshData(selectedbatch);
+                $('.pagination').empty();
+            });
+
+            $('#maxRows').on('change', function () {
+                $('.pagination').html('');
+                var trnum = 0;
+                var maxRows = parseInt($(this).val());
+                var totalRows = $(table + ' tbody tr').length;
+                $(table + ' tr:gt(0)').each(function () {
+                    trnum++;
+                    if (trnum > maxRows) { $(this).hide(); }
+                    if (trnum <= maxRows) { $(this).show(); }
+                });
+
+                if (totalRows > maxRows) {
+                    var pagenum = Math.ceil(totalRows / maxRows);
+                    for (var i = 1; i <= pagenum;) {
+                        $('.pagination').append('<li data-page="' + i + '">\<span>' + i++ + '<span class="sr-only">(current)</span></span>\</li>').show();
+                    }
+                }
+
+                $('.pagination li:first-child').addClass('active');
+                $('.pagination li').on('click', function () {
+                    var pageNum = $(this).attr('data-page');
+                    var trIndex = 0;
+                    $('.pagination li').removeClass('active');
+                    $(this).addClass('active');
+                    $(table + ' tr:gt(0)').each(function () {
+                        trIndex++;
+                        if (trIndex > (maxRows * pageNum) || trIndex <= ((maxRows * pageNum) - maxRows)) {
+                            $(this).hide();
+                        } else { $(this).show(); }
+                    });
+                });
+            });
+
+
+            $(function () {
+                $('table tr:eq(0)').prepend('<th>ID</th>');
+                var id = 0;
+                $('table tr:gt(0)').each(function () {
+                    id++;
+                    $(this).prepend('<td>' + id + '</td>');
+                });
+            });
 
             $("#Search").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
@@ -120,72 +180,12 @@
                 });
             });
 
+            $("#maxRows").val('50');
 
-            var totalRows = $('#HeaderTable').find('tbody tr:has(td)').length;
-            var recordPerPage = 25;
-            var totalPages = Math.ceil(totalRows / recordPerPage);
-            var $pages = $('<div id="pages"></div>');
-            for (i = 0; i < totalPages; i++) {
-                $('<span class="pageNumber">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
-            }
-            $pages.appendTo('#HeaderTable');
-
-            $('.pageNumber').hover(
-                function () {
-                    $(this).addClass('focus');
-                },
-                function () {
-                    $(this).removeClass('focus');
-                }
-            );
-
-            $('table').find('tbody tr:has(td)').hide();
-            var tr = $('table tbody tr:has(td)');
-            for (var i = 0; i <= recordPerPage - 1; i++) {
-                $(tr[i]).show();
-            }
-            $('span').click(function (event) {
-                $('#HeaderTable').find('tbody tr:has(td)').hide();
-                var nBegin = ($(this).text() - 1) * recordPerPage;
-                var nEnd = $(this).text() * recordPerPage - 1;
-                for (var i = nBegin; i <= nEnd; i++) {
-                    $(tr[i]).show();
-                }
-            });
-
-            @*dataTable = $("#HeaderTable").DataTable({
-                "ajax": {
-                    "url": "/StockCount/GetSockCountList",
-                    "type": "GET",
-                    "datatype": "json"
-                },
-                "columns": [
-                    { "data": "SCCode", "render": function (data, type, row) { return "<a href='/StockCount/ViewStockCountDetails?ID=" + row.ID + "'>" + data + "</a>";} },
-                    { "data": "SCDesc" },
-                    { "data": "TotalItemCount" },
-                    { "data": "Status" },
-                    {
-                        "data": "CreatedDate", "render": function (date) {
-                            if (date != null) return new Date(parseInt(date.replace('/Date(', '')));
-                            else return "";
-                        },
-                        "visible": false
-                    }
-                ],
-                "aaSorting": [[4, "desc"]] ,
-                "responsive": true,
-                "language": {
-                    "emptyTable": "No data found, Please click on <b>Add New</b> Button",
-                    "url":Path
-                }
-            ,
-                'fnDrawCallback': function (oSettings) {
-                    if ($('.dataTables_filter i').length==0)
-                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("NewStockCount", "StockCount")\')"><i class="fa fa-plus fa-lg"</i></a>');
-                    $('[data-toggle="tooltip"]').tooltip();
-                }
-            });*@
         });
+
+
+
         function PopupForm(url) {
             var formDiv = $('<div/>');
                 $.get(url)
@@ -464,7 +464,9 @@
 
                             for (var i = 0; i <= result.data.length - 1;i++)
                             {
-                                htmlcontent += '<tr><td class="datatable_col10PercR">' + result.data[i].ItemNo + '</td>';
+                                htmlcontent += '<tr>';
+                                htmlcontent += '<td class="datatable_col10PercR"> ' + (i + 1) + '</td>';
+                                htmlcontent += '<td class="datatable_col10PercR"> ' + result.data[i].ItemNo + '</td > ';
                                 htmlcontent += '<td class="datatable_col30PercR">' + result.data[i].Description + '</td>';
                                 htmlcontent += '<td class="datatable_col10PercR">' + result.data[i].ZoneCode + '</td>';
                                 htmlcontent += '<td class="datatable_col10PercR" >' + result.data[i].BinCode + '</td>';
@@ -472,7 +474,7 @@
                                 htmlcontent += '<td class="datatable_col10PercR">' + result.data[i].ExpirationDate + '</td>';
                                 htmlcontent += '<td class="datatable_col10PercR">' + result.data[i].NAVQty + '</td>';
                                 htmlcontent += '<td class="datatable_col10PercR">' + result.data[i].PhyicalQty + '</td>';
-                                htmlcontent += '</tr >';
+                                htmlcontent += '</tr>';
                                 $("#HeaderTable tbody").append(htmlcontent);
                                 htmlcontent = '';
                             }

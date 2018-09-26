@@ -22,13 +22,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>09/25/2018 09:45:10</publishTime>
+      <publishTime>09/25/2018 14:02:44</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>09/25/2018 09:45:10</publishTime>
+      <publishTime>09/25/2018 14:02:44</publishTime>
     </File>
     <File Include="bin/de/TWI.InventoryAutomated.resources.dll">
-      <publishTime>09/25/2018 09:45:03</publishTime>
+      <publishTime>09/25/2018 14:02:37</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>06/05/2018 13:21:26</publishTime>
@@ -37,7 +37,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:26</publishTime>
     </File>
     <File Include="bin/fr/TWI.InventoryAutomated.resources.dll">
-      <publishTime>09/25/2018 09:45:03</publishTime>
+      <publishTime>09/25/2018 14:02:37</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>06/05/2018 13:21:26</publishTime>
@@ -235,13 +235,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:27</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.dll">
-      <publishTime>09/25/2018 09:45:02</publishTime>
+      <publishTime>09/25/2018 14:02:36</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.pdb">
-      <publishTime>09/25/2018 09:45:02</publishTime>
+      <publishTime>09/25/2018 14:02:36</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.XmlSerializers.dll">
-      <publishTime>09/25/2018 09:45:03</publishTime>
+      <publishTime>09/25/2018 14:02:36</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>06/05/2018 13:21:27</publishTime>
@@ -325,7 +325,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/24/2018 10:36:06</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>09/25/2018 09:45:04</publishTime>
+      <publishTime>09/25/2018 14:02:38</publishTime>
+    </File>
+    <File Include="Scripts/bootstrap-table.js">
+      <publishTime>09/25/2018 10:27:11</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>06/05/2018 13:21:25</publishTime>
@@ -466,7 +469,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/24/2018 14:23:33</publishTime>
     </File>
     <File Include="Views/StockCount/NavDataPull.cshtml">
-      <publishTime>09/25/2018 09:41:06</publishTime>
+      <publishTime>09/25/2018 12:37:59</publishTime>
     </File>
     <File Include="Views/StockCount/NewIterationTeam.cshtml">
       <publishTime>09/20/2018 11:32:08</publishTime>

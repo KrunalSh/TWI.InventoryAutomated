@@ -28,7 +28,7 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         #region "NAV DATA Form Event(s)"
-
+        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
         public ActionResult NavDataPull(int ID =0)
         {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
@@ -135,7 +135,7 @@ namespace TWI.InventoryAutomated.Controllers
                     if (_sc.Status == "C") { return Content(Resources.GlobalResource.MsgClosedBatchPull); }
                     int ItemCount = 0;
                     //Code to be moved to detail screen where pull, push everything will happen
-                    if (Convert.ToString(Session["InstanceName"]).ToLower() == "live")
+                    if (Convert.ToString(Session["InstanceName"]).ToLower() == "test" && Convert.ToString(Session["CompanyName"]).ToLower() == "twigmbh")
                     {
                         _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
                         ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
@@ -162,7 +162,7 @@ namespace TWI.InventoryAutomated.Controllers
                         { db.StockCountDetail.Add(NewStockCountDetail(obj,ID)); }
                         ItemCount = _obj.Count;
                     }
-                    else
+                    else if(Convert.ToString(Session["InstanceName"]).ToLower() == "dev" && Convert.ToString(Session["CompanyName"]).ToLower() == "twigmbh")
                     {
                         _service = new DEVPhyInvJournal.PhysicalInvJournal_Service();
                         ((DEVPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
@@ -632,7 +632,7 @@ namespace TWI.InventoryAutomated.Controllers
                         result = new string[_scounts.Count()];
                         foreach (StockCountIterations _std in _scounts)
                         {
-                            itrstring += "<div class='col-lg-2' style='margin-left:10px;margin-top:20px;'><div style='border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;'>";
+                            itrstring += "<div class='col-lg-2' style='margin-top:20px;'><div style='border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;'>";
                             itrstring += "<div style='width:100%;padding-left:10px;background-color:#eae7e7 !important;min-height:40px !important;max-height:80px !important;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom:solid 2px #808080;'>";
                             itrstring += "<div style='float:left;color:black;font-family:Calibri;font-size:18px;font-weight:bold;height:auto;padding-top:3px'>";
                             itrstring += _std.IterationNo + " - " + _std.IterationName + "</div>";
