@@ -6,82 +6,83 @@
 @using TWI.InventoryAutomated.DataAccess;
 <div class="container">
 
-    <div class="row" style="padding-bottom:30px;padding-left:20px;">
+    @*padding-left:20px;*@
+    <div class="row" style="padding-bottom:30px;">
         @if (CommonServices.IsUserhasAccessOnPage("Registered Devices") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px; height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "RegisteredDevice")'">@TWI.InventoryAutomated.Resources.GlobalResource.RegisteredDevices</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px; height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "RegisteredDevice")'">@TWI.InventoryAutomated.Resources.GlobalResource.RegisteredDevices</button>
                 </div>
             </div>
         }
         @if (CommonServices.IsUserhasAccessOnPage("Instances") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Instance")'">@TWI.InventoryAutomated.Resources.GlobalResource.Instance</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Instance")'">@TWI.InventoryAutomated.Resources.GlobalResource.Instance</button>
                 </div>
             </div>
         }
         @if (CommonServices.IsUserhasAccessOnPage("Languages") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Language")'">@TWI.InventoryAutomated.Resources.GlobalResource.Languages</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Language")'">@TWI.InventoryAutomated.Resources.GlobalResource.Languages</button>
                 </div>
             </div>
         }
         @if (CommonServices.IsUserhasAccessOnPage("Modules") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Module")'">@TWI.InventoryAutomated.Resources.GlobalResource.Modules</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Module")'">@TWI.InventoryAutomated.Resources.GlobalResource.Modules</button>
                 </div>
             </div>
         }
         @*@if (CommonServices.IsUserhasAccessOnPage("Forms") || CommonServices.IsUserSuperAdmin())
-        {
-            <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Form")'">@TWI.InventoryAutomated.Resources.GlobalResource.Forms</button>
+            {
+                <div class="col-sm-4">
+                    <div class="input-group" style="float:left;padding:11px;">
+                        <button type="button" class="btn" style="width:250px;height:90px;" onclick="location.href='@Url.Action("Index", "Form")'">@TWI.InventoryAutomated.Resources.GlobalResource.Forms</button>
+                    </div>
                 </div>
-            </div>
-        }*@
+            }*@
         @if (CommonServices.IsUserhasAccessOnPage("Permissions") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Permission")'">@TWI.InventoryAutomated.Resources.GlobalResource.Permissions</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "Permission")'">@TWI.InventoryAutomated.Resources.GlobalResource.Permissions</button>
                 </div>
             </div>
         }
         @if (CommonServices.IsUserhasAccessOnPage("Users") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "User")'">@TWI.InventoryAutomated.Resources.GlobalResource.User</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "User")'">@TWI.InventoryAutomated.Resources.GlobalResource.User</button>
                 </div>
             </div>
         }
         @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")?isActive=true'">@TWI.InventoryAutomated.Resources.GlobalResource.ActiveSessions</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")?isActive=true'">@TWI.InventoryAutomated.Resources.GlobalResource.ActiveSessions</button>
                 </div>
             </div>
         }
         @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin())
         {
             <div class="col-sm-4">
-                <div class="input-group" style="float:left;padding:11px;">
-                    <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")?isActive=false'">@TWI.InventoryAutomated.Resources.GlobalResource.ArchivedSessions</button>
+                <div class="input-group" style="float:left;margin:5px;">
+                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Index", "CurrentSessions")?isActive=false'">@TWI.InventoryAutomated.Resources.GlobalResource.ArchivedSessions</button>
                 </div>
             </div>
         }
         <div class="col-sm-4">
-            <div class="input-group" style="float:left;padding:11px;">
-                <button type="button" class="btn" style="width:250px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Home", "Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.MainMenu</button>
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Home", "Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.MainMenu</button>
             </div>
         </div>
 

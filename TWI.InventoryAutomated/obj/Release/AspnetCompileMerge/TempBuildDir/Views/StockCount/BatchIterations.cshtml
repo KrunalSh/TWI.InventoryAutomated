@@ -11,7 +11,7 @@
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         <div style="width:100% !important;padding:10px;">
-            <div class="row" style="margin:auto;padding-bottom:10px;width:100% !important">
+            <div class="row" style="margin:5px 10px 10px 0px;padding-bottom:10px;width:100% !important">
                 <div style="float:left;">
                     @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control customwidth100px", @id = "ddlBatches", @name = "ddlBatches" })
                 </div>
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div style="float:left;height:3px;width:100% !important;border-bottom:solid 2px #808080;">&nbsp;</div>
-            <div class="row" style="margin-bottom:10px;" id="datamainrow">
+            <div class="row" style="margin:5px 10px 10px 0px;" id="datamainrow">
                 @{
                     int count = 1;
 
@@ -50,7 +50,7 @@
                             if (count > 5) { count = 1; }
 
                             if (count == 1)
-                            { @Html.Raw("<div class='row' style='margin-left:25px;'>");
+                            { @Html.Raw("<div class='row'>");
                             }
                             <div class="col-lg-2" style="margin-left:10px;margin-top: 20px;">
                                     <div style="border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;">
@@ -291,7 +291,7 @@
                 for (var i = 0; i < data.length; i++)
                 {
                     if (count > 5) { count = 1; }
-                    if (count === 1) { $("#datamainrow").append("<div class='row' style='margin-left:25px;'>"); }
+                    if (count === 1) { $("#datamainrow").append("<div class='row'>"); }
                     $("#datamainrow").append(data[i]);
                     if (count === 5) { $("#datamainrow").append("</div>"); }
                     count++;

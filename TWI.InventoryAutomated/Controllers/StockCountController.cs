@@ -135,7 +135,7 @@ namespace TWI.InventoryAutomated.Controllers
                     if (_sc.Status == "C") { return Content(Resources.GlobalResource.MsgClosedBatchPull); }
                     int ItemCount = 0;
                     //Code to be moved to detail screen where pull, push everything will happen
-                    if (Convert.ToString(Session["InstanceName"]).ToLower() == "test" && Convert.ToString(Session["CompanyName"]).ToLower() == "twigmbh")
+                    if (Convert.ToString(Session["InstanceName"]).ToLower() == "live")
                     {
                         _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
                         ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
@@ -162,7 +162,7 @@ namespace TWI.InventoryAutomated.Controllers
                         { db.StockCountDetail.Add(NewStockCountDetail(obj,ID)); }
                         ItemCount = _obj.Count;
                     }
-                    else if(Convert.ToString(Session["InstanceName"]).ToLower() == "dev" && Convert.ToString(Session["CompanyName"]).ToLower() == "twigmbh")
+                    else if(Convert.ToString(Session["InstanceName"]).ToLower() == "dev")
                     {
                         _service = new DEVPhyInvJournal.PhysicalInvJournal_Service();
                         ((DEVPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
