@@ -1042,7 +1042,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stock Count Sheet - Admin.
+        ///   Looks up a localized string similar to Admin Stock Count Sheet .
         /// </summary>
         public static string StockCountSheetAdmin {
             get {

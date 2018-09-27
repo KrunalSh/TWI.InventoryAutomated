@@ -400,6 +400,7 @@
     <Content Include="Views\StockCount\NewIterationTeam.cshtml" />
     <Content Include="Views\StockCount\CreateNewIteration.cshtml" />
     <Content Include="Views\StockCount\AdminStockCountSheet.cshtml" />
+    <Content Include="Views\StockCount\SelectStockCountItems.cshtml" />
     <None Include="Web References\DEVPhyInvJournal\PhysicalInvJournal.wsdl" />
     <Content Include="Web References\DEVPhyInvJournal\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

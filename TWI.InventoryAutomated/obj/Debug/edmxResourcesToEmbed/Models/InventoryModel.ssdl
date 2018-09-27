@@ -150,6 +150,8 @@
     <Property Name="SCDesc" Type="varchar" MaxLength="150" />
     <Property Name="LocationCode" Type="varchar" MaxLength="10" />
     <Property Name="TotalItemCount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="InstanceName" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
     <Property Name="Status" Type="varchar" MaxLength="1" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />

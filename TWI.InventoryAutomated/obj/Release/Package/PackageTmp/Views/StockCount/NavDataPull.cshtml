@@ -86,7 +86,8 @@
         $(document).ready(function () {
                                     var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
-           dataTable = $("#HeaderTable").dataTable();
+            dataTable = $("#HeaderTable").dataTable();
+
             $("#ddlBatches").change(function () {
                                         var selectedbatch = $("#ddlBatches").val();
                                         RefreshData(selectedbatch);

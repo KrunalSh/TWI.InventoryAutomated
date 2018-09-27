@@ -29,11 +29,11 @@
     <EntitySet Name="UserAccesses" EntityType="TWIInventoryPortalModel.UserAccess" />
     <EntitySet Name="ArchivedSessionLogs" EntityType="TWIInventoryPortalModel.ArchivedSessionLog" />
     <FunctionImport Name="GetStockCountList" ReturnType="Collection(TWIInventoryPortalModel.GetStockCountList_Result)" />
-    <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
     <EntitySet Name="StockCountIterations" EntityType="TWIInventoryPortalModel.StockCountIterations" />
     <EntitySet Name="StockCountDetail" EntityType="TWIInventoryPortalModel.StockCountDetail" />
     <EntitySet Name="StockCountTeams" EntityType="TWIInventoryPortalModel.StockCountTeams" />
     <EntitySet Name="StockCountAllocations" EntityType="TWIInventoryPortalModel.StockCountAllocations" />
+    <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
   </EntityContainer>
   <EntityType Name="Company">
     <Key>
@@ -191,19 +191,6 @@
     <Property Type="String" Name="Status" Nullable="true" MaxLength="7" />
     <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
   </ComplexType>
-  <EntityType Name="StockCountHeader">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="SCCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-    <Property Name="SCDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-    <Property Name="TotalItemCount" Type="Decimal" Precision="18" Scale="2" />
-    <Property Name="Status" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-    <Property Name="CreatedBy" Type="Int32" />
-    <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-  </EntityType>
   <EntityType Name="StockCountIterations">
     <Key>
       <PropertyRef Name="ID" />
@@ -281,6 +268,21 @@
     <Property Name="TemplateName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="BatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="StockCountHeader">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SCCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="SCDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="TotalItemCount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="InstanceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
   </EntityType>

@@ -155,6 +155,8 @@
           <Property Name="SCDesc" Type="varchar" MaxLength="150" />
           <Property Name="LocationCode" Type="varchar" MaxLength="10" />
           <Property Name="TotalItemCount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="InstanceName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
           <Property Name="Status" Type="varchar" MaxLength="1" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
@@ -314,11 +316,11 @@
           <EntitySet Name="UserAccesses" EntityType="TWIInventoryPortalModel.UserAccess" />
           <EntitySet Name="ArchivedSessionLogs" EntityType="TWIInventoryPortalModel.ArchivedSessionLog" />
           <FunctionImport Name="GetStockCountList" ReturnType="Collection(TWIInventoryPortalModel.GetStockCountList_Result)" />
-          <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
           <EntitySet Name="StockCountIterations" EntityType="TWIInventoryPortalModel.StockCountIterations" />
           <EntitySet Name="StockCountDetail" EntityType="TWIInventoryPortalModel.StockCountDetail" />
           <EntitySet Name="StockCountTeams" EntityType="TWIInventoryPortalModel.StockCountTeams" />
           <EntitySet Name="StockCountAllocations" EntityType="TWIInventoryPortalModel.StockCountAllocations" />
+          <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
         </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -476,19 +478,6 @@
           <Property Type="String" Name="Status" Nullable="true" MaxLength="7" />
           <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
         </ComplexType>
-        <EntityType Name="StockCountHeader">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SCCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="SCDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-          <Property Name="TotalItemCount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Status" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="Int32" />
-          <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="StockCountIterations">
           <Key>
             <PropertyRef Name="ID" />
@@ -566,6 +555,21 @@
           <Property Name="TemplateName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="StockCountHeader">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SCDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="TotalItemCount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="InstanceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
         </EntityType>
@@ -760,20 +764,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <EntitySetMapping Name="StockCountHeader">
-            <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountHeader">
-              <MappingFragment StoreEntitySet="StockCountHeader">
-                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="TotalItemCount" ColumnName="TotalItemCount" />
-                <ScalarProperty Name="SCDesc" ColumnName="SCDesc" />
-                <ScalarProperty Name="SCCode" ColumnName="SCCode" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="StockCountIterations">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountIterations">
               <MappingFragment StoreEntitySet="StockCountIterations">
@@ -854,6 +844,22 @@
                 <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
                 <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
                 <ScalarProperty Name="StockCountID" ColumnName="StockCountID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StockCountHeader">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountHeader">
+              <MappingFragment StoreEntitySet="StockCountHeader">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
+                <ScalarProperty Name="TotalItemCount" ColumnName="TotalItemCount" />
+                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+                <ScalarProperty Name="SCDesc" ColumnName="SCDesc" />
+                <ScalarProperty Name="SCCode" ColumnName="SCCode" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

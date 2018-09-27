@@ -41,11 +41,11 @@ namespace TWI.InventoryAutomated.Models
         public virtual DbSet<UserSessionLog> UserSessionLogs { get; set; }
         public virtual DbSet<UserAccess> UserAccesses { get; set; }
         public virtual DbSet<ArchivedSessionLog> ArchivedSessionLogs { get; set; }
-        public virtual DbSet<StockCountHeader> StockCountHeader { get; set; }
         public virtual DbSet<StockCountIterations> StockCountIterations { get; set; }
         public virtual DbSet<StockCountDetail> StockCountDetail { get; set; }
         public virtual DbSet<StockCountTeams> StockCountTeams { get; set; }
         public virtual DbSet<StockCountAllocations> StockCountAllocations { get; set; }
+        public virtual DbSet<StockCountHeader> StockCountHeader { get; set; }
     
         public virtual ObjectResult<GetStockCountList_Result> GetStockCountList()
         {

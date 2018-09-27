@@ -17,10 +17,12 @@ namespace TWI.InventoryAutomated.Models
         public int ID { get; set; }
         public string SCCode { get; set; }
         public string SCDesc { get; set; }
+        public string LocationCode { get; set; }
         public Nullable<decimal> TotalItemCount { get; set; }
+        public string InstanceName { get; set; }
+        public string CompanyName { get; set; }
         public string Status { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }
-        public string LocationCode { get; set; }
     }
 }

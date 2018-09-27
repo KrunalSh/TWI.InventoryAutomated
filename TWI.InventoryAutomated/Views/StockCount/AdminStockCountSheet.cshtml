@@ -4,40 +4,30 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
-<div class="row table-responsive">
-    <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
+<div class="row">
+    <div style="margin:15px auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
             <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle </div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
-        <div style="width:100% !important;padding:10px;">
-            <div class="row col-sm-12" style="margin:auto;padding-bottom:10px;width:100% !important">
-                <div style="float:left;">
-                    @{ int SCID = ViewBag.SCID;}
+        <div  style="width:100% !important;margin:15px;">
+            <div class="row" style="margin:10px !important;">
+                <div style="float:left;margin-right:10px;">
+                    @{ int SCID = ViewBag.SCID; int CountID = ViewBag.CountID; int TeamID = ViewBag.TeamID;}
                     @Html.DropDownListFor(model => SCID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })
                 </div>
-                <div style="float:right !important;">
-                    <a class="btn btn-success" style="width:70px;" data-toggle="tooltip" title="Add Source Data" onclick="PopupForm('@Url.Action("NewStockCount", "StockCount")')">Get Data</a>
+                <div style="float:left;margin-right:10px;">
+                    @Html.DropDownListFor(model => CountID, ViewBag.CountList as SelectList, new { @class = "form-control", @id = "ddlCounts", @name = "ddlCounts" })
                 </div>
-                @*<div style="float:left !important;margin-left:5px !important;" class="col-sm-8">
-                    <div class="field_background" style="width:100% !important">
-                        <div class="col-sm-4" style="padding-top:7px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                        <div class="col-sm-2" style="padding-top:7px;" id="LocationCode">
-                            Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
-                        </div>
-                        <div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
-                            Item Lines: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TotalItemCount) </span>
-                        </div>
-                        <div class="col-sm-3" style="padding-top:7px;" id="Status">
-                            `
-                            Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
-                        </div>
-                    </div>
-                </div>*@
-
+                <div style="float:left;margin-right:10px;">
+                    @Html.DropDownListFor(model => TeamID, ViewBag.TeamList as SelectList, new { @class = "form-control", @id = "ddlTeams", @name = "ddlTeams" })
+                </div>
+                <div style="float:right !important;margin-right:30px;margin-bottom:10px;">
+                    <a class="btn btn-success" style="width:80px;" data-toggle="tooltip" title="Add Source Data" onclick="PopupForm('@Url.Action("SelectStockCountItems", "StockCount")')">Get Data</a>
+                </div>
             </div>
-            <div class="row col-sm-12 table-responsive" style="margin:auto;padding-bottom:10px;width:100% !important;overflow:scroll">
-                <table id="HeaderTable" class="table table-striped table-responsive display nowrap table-bordered">
+            <div class="row" style="margin:10px 35px 10px 10px;">
+                <table id="HeaderTable" class="table table-striped table-responsive table-bordered">
                     <thead>
                         <tr>
                             <th class="datatable_col10PercH">Item No</th>
@@ -50,10 +40,69 @@
                             <th class="datatable_col10PercH"> Phy. Qty</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+
+<link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+
+        var Popup, dataTable;
+        $(document).ready(function () {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            dataTable = $("#HeaderTable").dataTable();
+
+            $("#ddlBatches").change(function () {
+                var selectedbatch = $("#ddlBatches").val();
+                RefreshData(selectedbatch);
+            });
+
+
+            $("#ddlCounts").change(function () {
+
+            });
+
+
+            $("#ddlTeams").change(function () {
+
+            });
+
+        });
+
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+                $.get(url)
+                    .done(function (response) {
+                        formDiv.html(response);
+
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - Select Item(s)")',
+                            modal: true
+                            //,
+                            //width: 'auto',
+                            //close: function () {
+                            //    Popup.dialog('destroy').remove();
+                            //}
+                            //,
+                            //create: function (event, ui) {
+                            //    $(this).css("maxWidth", "660px");
+                            //}
+
+                        });
+                    });
+        }
+
+
+    </script>
+
+}
