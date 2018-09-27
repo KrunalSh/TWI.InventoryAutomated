@@ -28,20 +28,23 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         #region "NAV DATA Form Event(s)"
-        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "None")]
+
         public ActionResult NavDataPull(int ID =0)
         {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
+            string InstanceName = Convert.ToString(Session["InstanceName"]);
+            string CompanyName = Convert.ToString(Session["CompanyName"]);
+
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     List<StockCountHeader> _batchlist = GetBatchListing();
                     ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
                     StockCountModel _scm = new StockCountModel();
                     StockCountHeader _sch = new StockCountHeader();
-                    if (db.StockCountHeader.Count() > 0)
+                    if (db.StockCountHeader.Where(x=> x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
                     {
-                            if (db.StockCountHeader.Where(x => x.Status == "O").Count() > 0)
-                            { _sch = db.StockCountHeader.Where(x => x.Status == "O").FirstOrDefault(); }
-                            else  { _sch = db.StockCountHeader.Where(x => x.Status == "C").FirstOrDefault(); }
+                            if (db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
+                            { _sch = db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault(); }
+                            else  { _sch = db.StockCountHeader.Where(x => x.Status == "C" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault(); }
 
                         _scm.ID = _sch.ID;
                         _scm.SCCode = _sch.SCCode;
@@ -101,6 +104,8 @@ namespace TWI.InventoryAutomated.Controllers
                 _sc.CreatedDate = DateTime.Now;
                 _sc.CreatedBy = Convert.ToInt32(Session["UserID"]);
                 _sc.TotalItemCount = 0;
+                _sc.InstanceName = Convert.ToString(Session["InstanceName"]);
+                _sc.CompanyName = Convert.ToString(Session["CompanyName"]);
                 _sc.Status = "O";
 
                     try
@@ -108,12 +113,13 @@ namespace TWI.InventoryAutomated.Controllers
                         db.StockCountHeader.Add(_sc);
                         db.SaveChanges();
 
-                        List<StockCountHeader> _batchlist = db.StockCountHeader.ToList();
-                        StockCountHeader _row0 = new StockCountHeader();
-                        _row0.ID = -1;
-                        _row0.SCCode = "-- Select Batch -- ";
-                        _batchlist.Insert(0, _row0);
-                        ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
+                        //List<StockCountHeader> _batchlist = db.StockCountHeader.ToList();
+                        //StockCountHeader _row0 = new StockCountHeader();
+                        //_row0.ID = -1;
+                        //_row0.SCCode = "-- Select Batch -- ";
+                        //_batchlist.Insert(0, _row0);
+                        //ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
+
                     return Json(new { success = true, message = Resources.GlobalResource.MsgBatchSavedSuccessfully }, JsonRequestBehavior.AllowGet);
                     }
                     catch (Exception ex)
@@ -126,173 +132,53 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult GetPhyJournalData(int ID)
         {
+            string _resultMsg = string.Empty;
+            int ItemCount = 0;
             try
             {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                //Code to be moved to detail screen where pull, push everything will happen
+                switch (Convert.ToString(Session["InstanceName"]).ToLower())
                 {
-                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Content(Resources.GlobalResource.MsgNoRecordsFound);
-                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
-                    if (_sc.Status == "C") { return Content(Resources.GlobalResource.MsgClosedBatchPull); }
-                    int ItemCount = 0;
-                    //Code to be moved to detail screen where pull, push everything will happen
-                    if (Convert.ToString(Session["InstanceName"]).ToLower() == "live")
-                    {
-                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential("vendorportal", "Twivp2015", "twi");
-
-                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        if (_obj.Count == 0) {   return Content(Resources.GlobalResource.MsgCreateValidBatch); }
-
-                        if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                            return Content(_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.");
-
-                        if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                            return Content(Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg);
-
-                        DeleteStockCountDetail(ID);
-
-                        foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        { db.StockCountDetail.Add(NewStockCountDetail(obj,ID)); }
-                        ItemCount = _obj.Count;
-                    }
-                    else if(Convert.ToString(Session["InstanceName"]).ToLower() == "dev")
-                    {
-                        _service = new DEVPhyInvJournal.PhysicalInvJournal_Service();
-                        ((DEVPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        ((DEVPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential("vendorportal", "Twivp2015", "twi");
-
-                        ((List<DEVPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new DEVPhyInvJournal.PhysicalInvJournal_Filter { Field = DEVPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        ((List<DEVPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new DEVPhyInvJournal.PhysicalInvJournal_Filter { Field = DEVPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        DEVPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((DEVPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(null, string.Empty, 0);
-                        List<DEVPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.Where(x => x.Whse_Document_No == _sc.SCCode).ToList();
-
-                        if (_obj.Count == 0) { return Content(Resources.GlobalResource.MsgCreateValidBatch); }
-
-                        if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                            return Content(_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.");
-
-                        if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                            return Content(Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg);
-
-                        DeleteStockCountDetail(ID);
-
-                        foreach (DEVPhyInvJournal.PhysicalInvJournal obj in _obj)
-                            db.StockCountDetail.Add(NewStockCountDetail(obj, ID));
-                        ItemCount = _obj.Count;
-                        //_sc.TotalItemCount = _obj.Count;
-                        //db.StockCountHeader.Attach(_sc);
-                        //db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
-                        //db.SaveChanges();
-                        //return Content(Resources.GlobalResource.MsgSuccessfullyPulled + _obj.Count.ToString() + Resources.GlobalResource.MsgItemsFromERP);
-                    }
-
-                    _sc.TotalItemCount = ItemCount;
-                    db.StockCountHeader.Attach(_sc);
-                    db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
-                    db.SaveChanges();
-                    return Content(Resources.GlobalResource.MsgSuccessfullyPulled + ItemCount.ToString() + Resources.GlobalResource.MsgItemsFromERP);
-
+                    case "live":
+                        _resultMsg = ConnectAndPullDataFromLive(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                        break;
+                    case "dev": _resultMsg = ConnectAndPullDataFromDev(ID,Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                        break;
+                    case "test": _resultMsg = ConnectAndPullFromTest(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                        break;
                 }
+                return Content(_resultMsg);
             }
             catch (Exception ex)
             {
                 return Content(ex.Message);
             }
-            
         }
 
         public ActionResult PushPhyJournalData(int ID)
         {
+            string _resultMsg = string.Empty;
             try
             {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                //Code to be moved to detail screen where pull, push everything will happen
+                switch (Convert.ToString(Session["InstanceName"]).ToLower())
                 {
-                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Content(Resources.GlobalResource.MsgNoRecordsFound);
-                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
-                    if (_sc.Status == "C") { return Content(Resources.GlobalResource.MsgClosedBatchPush); }
-
-                    if (Convert.ToString(Session["InstanceName"]).ToLower() == "live")
-                    {
-                        //Validation to check whether records pulled from NAV.
-                        if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0) 
-                            return Content("No Data Pulled for the selected Batch, cannot proceed.");
-
-                        //Validation to check whether physical Qty entered for Items is having Negative Values
-                        if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
-                            return Content(db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further");
-
-                        //Validation to check whether physical Qty entered for all items or not
-                        if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
-                            return Content("Final Value not posted for all Item Lines, cannot push data to NAV");
-
-                        //Connect to PhysicalInvJournal Service To Post Data
-                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential("vendorportal", "Twivp2015", "twi");
-
-                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        string ItemNo = string.Empty;
-                        string BinCode = string.Empty;
-                        string locationcode = string.Empty;
-                        string LotNo = string.Empty;
-                        int itemcount = 0;
-
-
-                        for (int i = 0; i <= _phyjournal.Length - 1; i++)
-                        {
-                            ItemNo = _phyjournal[i].Item_No;
-                            BinCode = _phyjournal[i].Bin_Code;
-                            locationcode = _phyjournal[i].Location_Code;
-                            LotNo = _phyjournal[i].Lot_No;
-
-                            StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
-                            _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                            itemcount++;
-                        }
-
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
-
-                        //List<StockCountDetail> _scd = db.StockCountDetail.Where(x => x.SCID == ID).ToList();
-                        
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _obj = new TESTPhyInvJournal.PhysicalInvJournal[_scd.Count];
-
-                        //for(int i = 0; i <= _scd.Count -1; i++)
-                        //{ _obj[i] = NewPhyInvJournal(_scd[i]); }
-
-
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _obj);
-
-
-
-                        //After successfull data push to NAV, Close the batch in our Web App System.
-                        _sc.Status = "C";
-                        db.StockCountHeader.Attach(_sc);
-                        db.Entry(_sc).Property(x => x.Status).IsModified = true;
-                        db.SaveChanges();
-                        return Content("Data Successfully Pushed to NAV");
-                    }
-                    else { return Content("Data Successfully Pushed to NAV"); }
+                    case "live":
+                        _resultMsg = ConnectAndPushDataToLive(ID, Convert.ToString(Session["CompanyName"]));
+                        break;
+                    case "dev":
+                        _resultMsg = ConnectAndPushDataToDEV(ID, Convert.ToString(Session["CompanyName"]));
+                        break;
+                    case "test":
+                        _resultMsg = ConnectAndPushDataToTest(ID, Convert.ToString(Session["CompanyName"]));
+                        break;
                 }
+                return Content(_resultMsg);
             }
             catch (Exception ex)
             {
                 return Content(ex.Message);
             }
-
         }
 
         public JsonResult GetSockCountDetailByID(int ID)
@@ -341,20 +227,23 @@ namespace TWI.InventoryAutomated.Controllers
         //Counts / Iteration Event(s)
         public ActionResult BatchIterations()
         {
+            string InstanceName = Convert.ToString(Session["InstanceName"]);
+            string CompanyName = Convert.ToString(Session["CompanyName"]);
+
             List<StockCountHeader> _batchlist = GetBatchListing();
             ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
             BatchIterationModel _bim = new BatchIterationModel();
             StockCountHeader _sch = new StockCountHeader();
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             { 
-                if (db.StockCountHeader.Count() > 0)
+                if (db.StockCountHeader.Where(x=> x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
                 {
-                    if (db.StockCountHeader.Where(x => x.Status == "O").Count() > 0)
+                    if (db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
                     {
-                        _sch = db.StockCountHeader.Where(x => x.Status == "O").FirstOrDefault();
+                        _sch = db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault();
                     }
                     else {
-                        _sch = db.StockCountHeader.Where(x => x.Status == "C").FirstOrDefault();
+                        _sch = db.StockCountHeader.Where(x => x.Status == "C" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault();
                     }
 
                     _bim.ID = _sch.ID;
@@ -797,6 +686,732 @@ namespace TWI.InventoryAutomated.Controllers
                 
         }
 
+        #region "Helper Function(s) To Pull Data"
+        private string ConnectAndPullDataFromLive(int ID,string CompanyName,ref int ItemCount)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
+                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+                    if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPull; }
+
+                    if (CompanyName.ToLower() == "theodor wille intertrade usa")
+                    {
+                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                        //DeleteStockCountDetail(ID);
+
+                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                        //ItemCount = _obj.Count;
+
+                    }
+                    else if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+                    {
+                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                        List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                        if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                        if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                            return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                        if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                            return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                        DeleteStockCountDetail(ID);
+
+                        foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                        { db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                        ItemCount = _obj.Count;
+
+                    }
+                    else if ((CompanyName.ToLower() == "twi gmbh switzerland"))
+                    {
+                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                        //DeleteStockCountDetail(ID);
+
+                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                        //ItemCount = _obj.Count;
+                    }
+
+                    //_sc.TotalItemCount = ItemCount;
+                    //db.StockCountHeader.Attach(_sc);
+                    //db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
+                    //db.SaveChanges();
+                    return Resources.GlobalResource.MsgSuccessfullyPulled + ItemCount.ToString() + Resources.GlobalResource.MsgItemsFromERP;
+                }
+            }
+            catch (Exception ex) { return ex.Message; }
+        }
+
+        private string ConnectAndPullDataFromDev(int ID,string CompanyName,  ref int ItemCount)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
+                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+                    if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPull; }
+
+                    if (CompanyName.ToLower() == "theodor wille intertrade usa")
+                    {
+                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                        //DeleteStockCountDetail(ID);
+
+                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                        //ItemCount = _obj.Count;
+
+                    }
+                    else if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+                    {
+                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                        List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                        if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                        if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                            return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                        if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                            return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                        DeleteStockCountDetail(ID);
+
+                        foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                        { db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                        ItemCount = _obj.Count;
+
+                    }
+                    else if ((CompanyName.ToLower() == "twi gmbh switzerland"))
+                    {
+                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                        //DeleteStockCountDetail(ID);
+
+                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                        //ItemCount = _obj.Count;
+                    }
+
+                    //_sc.TotalItemCount = ItemCount;
+                    //db.StockCountHeader.Attach(_sc);
+                    //db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
+                    //db.SaveChanges();
+                    return Resources.GlobalResource.MsgSuccessfullyPulled + ItemCount.ToString() + Resources.GlobalResource.MsgItemsFromERP;
+                }
+            }
+            catch (Exception ex) { return ex.Message; }
+        }
+
+        private string ConnectAndPullFromTest(int ID, string CompanyName, ref int ItemCount)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
+                StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+                if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPull; }
+
+                if (CompanyName.ToLower() == "theodor wille intertrade usa")
+                {
+                    //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                    //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                    //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                    //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                    //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                    //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                    //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                    //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                    //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                    //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                    //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                    //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                    //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                    //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                    //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                    //DeleteStockCountDetail(ID);
+
+                    //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                    //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                    //ItemCount = _obj.Count;
+
+                }
+                else if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+                {
+                    _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                    ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                    ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                    _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                    ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                    ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                    TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                    List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                    if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                    if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                        return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                    if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                        return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                    DeleteStockCountDetail(ID);
+
+                    foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                    { db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                    ItemCount = _obj.Count;
+
+                }
+                else if ((CompanyName.ToLower() == "twi gmbh switzerland"))
+                {
+                    //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                    //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                    //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                    //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                    //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                    //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                    //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                    //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                    //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                    //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
+
+                    //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
+
+                    //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
+                    //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
+
+                    //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
+                    //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
+
+                    //DeleteStockCountDetail(ID);
+
+                    //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
+                    //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
+                    //ItemCount = _obj.Count;
+                }
+
+                _sc.TotalItemCount = ItemCount;
+                db.StockCountHeader.Attach(_sc);
+                db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
+                db.SaveChanges();
+                return Resources.GlobalResource.MsgSuccessfullyPulled + ItemCount.ToString() + Resources.GlobalResource.MsgItemsFromERP;
+            }
+            }
+            catch (Exception ex) { return ex.Message; }
+        }
+
+        #endregion
+
+        #region "Helper Function(s) To Push Data"
+
+        string ConnectAndPushDataToLive(int ID, string CompanyName)
+        {
+            return "";
+            //string ItemNo = string.Empty;
+            //string BinCode = string.Empty;
+            //string locationcode = string.Empty;
+            //string LotNo = string.Empty;
+            //int itemcount = 0;
+            //try
+            //{
+            //    using (InventoryPortalEntities db = new InventoryPortalEntities())
+            //    {
+            //        if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
+            //        StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+            //        if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPush; }
+
+            //        //Validation to check whether records pulled from NAV.
+            //        if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+            //            return "No Data Pulled for the selected Batch, cannot proceed.";
+
+            //        //Validation to check whether physical Qty entered for Items is having Negative Values
+            //        if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
+            //            return db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further";
+
+            //        //Validation to check whether physical Qty entered for all items or not
+            //        if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
+            //            return "Final Value not posted for all Item Lines, cannot push data to NAV";
+
+            //        if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+            //        {
+            //            //Connect to PhysicalInvJournal Service To Post Data
+            //            _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+            //            ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+            //            ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //                , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //                , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //            _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+            //            ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+            //            ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+            //            TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //            for (int i = 0; i <= _phyjournal.Length - 1; i++)
+            //            {
+            //                ItemNo = _phyjournal[i].Item_No;
+            //                BinCode = _phyjournal[i].Bin_Code;
+            //                locationcode = _phyjournal[i].Location_Code;
+            //                LotNo = _phyjournal[i].Lot_No;
+
+            //                StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+            //                _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+            //                itemcount++;
+            //            }
+
+            //            ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+            //        }
+            //        else if (CompanyName.ToLower() == "theodor wille intertrade usa")
+            //        {
+            //            ////Connect to PhysicalInvJournal Service To Post Data
+            //            //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //            //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+            //            //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //            //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+            //            //{
+            //            //    ItemNo = _phyjournal[i].Item_No;
+            //            //    BinCode = _phyjournal[i].Bin_Code;
+            //            //    locationcode = _phyjournal[i].Location_Code;
+            //            //    LotNo = _phyjournal[i].Lot_No;
+
+            //            //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+            //            //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+            //            //    itemcount++;
+            //            //}
+
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+            //        }
+            //        else if (CompanyName.ToLower() == "twi gmbh switzerland")
+            //        {
+            //            ////Connect to PhysicalInvJournal Service To Post Data
+            //            //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //            //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+            //            //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //            //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+            //            //{
+            //            //    ItemNo = _phyjournal[i].Item_No;
+            //            //    BinCode = _phyjournal[i].Bin_Code;
+            //            //    locationcode = _phyjournal[i].Location_Code;
+            //            //    LotNo = _phyjournal[i].Lot_No;
+
+            //            //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+            //            //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+            //            //    itemcount++;
+            //            //}
+
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+            //        }
+
+            //        //After successfull data push to NAV, Close the batch in our Web App System.
+            //        _sc.Status = "C";
+            //        db.StockCountHeader.Attach(_sc);
+            //        db.Entry(_sc).Property(x => x.Status).IsModified = true;
+            //        db.SaveChanges();
+            //        return "Data Successfully Pushed to NAV";
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return ex.Message;
+            //}
+        }
+
+        string ConnectAndPushDataToTest(int ID, string CompanyName)
+        {
+            string ItemNo = string.Empty;
+            string BinCode = string.Empty;
+            string locationcode = string.Empty;
+            string LotNo = string.Empty;
+            int itemcount = 0;
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
+                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+                    if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPush; }
+
+                    //Validation to check whether records pulled from NAV.
+                    if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+                        return "No Data Pulled for the selected Batch, cannot proceed.";
+
+                    //Validation to check whether physical Qty entered for Items is having Negative Values
+                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
+                        return db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further";
+
+                    //Validation to check whether physical Qty entered for all items or not
+                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
+                        return "Final Value not posted for all Item Lines, cannot push data to NAV";
+
+                    if (CompanyName.ToLower()  == "theodor wille intertrade gmbh")
+                    {
+                        //Connect to PhysicalInvJournal Service To Post Data
+                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+                        for (int i = 0; i <= _phyjournal.Length - 1; i++)
+                        {
+                            ItemNo = _phyjournal[i].Item_No;
+                            BinCode = _phyjournal[i].Bin_Code;
+                            locationcode = _phyjournal[i].Location_Code;
+                            LotNo = _phyjournal[i].Lot_No;
+
+                            StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+                            _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+                            itemcount++;
+                        }
+
+                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+                    }
+                    else if (CompanyName.ToLower() == "theodor wille intertrade usa")
+                    {
+                        ////Connect to PhysicalInvJournal Service To Post Data
+                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+                        //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+                        //{
+                        //    ItemNo = _phyjournal[i].Item_No;
+                        //    BinCode = _phyjournal[i].Bin_Code;
+                        //    locationcode = _phyjournal[i].Location_Code;
+                        //    LotNo = _phyjournal[i].Lot_No;
+
+                        //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+                        //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+                        //    itemcount++;
+                        //}
+
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+                    }
+                    else if (CompanyName.ToLower() == "twi gmbh switzerland")
+                    {
+                        ////Connect to PhysicalInvJournal Service To Post Data
+                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+                        //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+                        //{
+                        //    ItemNo = _phyjournal[i].Item_No;
+                        //    BinCode = _phyjournal[i].Bin_Code;
+                        //    locationcode = _phyjournal[i].Location_Code;
+                        //    LotNo = _phyjournal[i].Lot_No;
+
+                        //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+                        //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+                        //    itemcount++;
+                        //}
+
+                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+                    }
+
+                    //After successfull data push to NAV, Close the batch in our Web App System.
+                    _sc.Status = "C";
+                    db.StockCountHeader.Attach(_sc);
+                    db.Entry(_sc).Property(x => x.Status).IsModified = true;
+                    db.SaveChanges();
+                    return "Data Successfully Pushed to NAV";
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        private string ConnectAndPushDataToDEV(int ID, string CompanyName)
+        {
+            //string ItemNo = string.Empty;
+            //string BinCode = string.Empty;
+            //string locationcode = string.Empty;
+            //string LotNo = string.Empty;
+            //int itemcount = 0;
+            //try
+            //{
+            //    using (InventoryPortalEntities db = new InventoryPortalEntities())
+            //    {
+            //        if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
+            //        StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+            //        if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPush; }
+
+            //        //Validation to check whether records pulled from NAV.
+            //        if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+            //            return "No Data Pulled for the selected Batch, cannot proceed.";
+
+            //        //Validation to check whether physical Qty entered for Items is having Negative Values
+            //        if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
+            //            return db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further";
+
+            //        //Validation to check whether physical Qty entered for all items or not
+            //        if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
+            //            return "Final Value not posted for all Item Lines, cannot push data to NAV";
+
+            //        if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+            //        {
+            //            //Connect to PhysicalInvJournal Service To Post Data
+            //            _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+            //            ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+            //            ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //                , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //                , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //            _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+            //            ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+            //            ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+            //            TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //            for (int i = 0; i <= _phyjournal.Length - 1; i++)
+            //            {
+            //                ItemNo = _phyjournal[i].Item_No;
+            //                BinCode = _phyjournal[i].Bin_Code;
+            //                locationcode = _phyjournal[i].Location_Code;
+            //                LotNo = _phyjournal[i].Lot_No;
+
+            //                StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+            //                _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+            //                itemcount++;
+            //            }
+
+            //            ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+            //        }
+            //        else if (CompanyName.ToLower() == "theodor wille intertrade usa")
+            //        {
+            //            ////Connect to PhysicalInvJournal Service To Post Data
+            //            //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //            //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+            //            //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //            //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+            //            //{
+            //            //    ItemNo = _phyjournal[i].Item_No;
+            //            //    BinCode = _phyjournal[i].Bin_Code;
+            //            //    locationcode = _phyjournal[i].Location_Code;
+            //            //    LotNo = _phyjournal[i].Lot_No;
+
+            //            //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+            //            //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+            //            //    itemcount++;
+            //            //}
+
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+            //        }
+            //        else if (CompanyName.ToLower() == "twi gmbh switzerland")
+            //        {
+            //            ////Connect to PhysicalInvJournal Service To Post Data
+            //            //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //            //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+            //            //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+            //            //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //            //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+            //            //{
+            //            //    ItemNo = _phyjournal[i].Item_No;
+            //            //    BinCode = _phyjournal[i].Bin_Code;
+            //            //    locationcode = _phyjournal[i].Location_Code;
+            //            //    LotNo = _phyjournal[i].Lot_No;
+
+            //            //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+            //            //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+            //            //    itemcount++;
+            //            //}
+
+            //            //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+            //        }
+
+            //        //After successfull data push to NAV, Close the batch in our Web App System.
+            //        _sc.Status = "C";
+            //        db.StockCountHeader.Attach(_sc);
+            //        db.Entry(_sc).Property(x => x.Status).IsModified = true;
+            //        db.SaveChanges();
+            //        return "Data Successfully Pushed to NAV";
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return ex.Message;
+            //}
+            return "";
+        }
+
+        #endregion 
+
         StockCountDetail NewStockCountDetail(DEVPhyInvJournal.PhysicalInvJournal obj,int ID)
         {
             StockCountDetail _std = new StockCountDetail();
@@ -864,9 +1479,11 @@ namespace TWI.InventoryAutomated.Controllers
         List<StockCountHeader> GetBatchListing()
         {
             List<StockCountHeader> _batchList = new List<StockCountHeader>();
+            string InstanceName = Convert.ToString(Session["InstanceName"]);
+            string CompanyName = Convert.ToString(Session["CompanyName"]);
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
-                if (db.StockCountHeader.Count() > 0) { _batchList = db.StockCountHeader.ToList(); }
+                if (db.StockCountHeader.Where(x => x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0) { _batchList = db.StockCountHeader.Where(x => x.InstanceName == InstanceName && x.CompanyName == CompanyName).ToList(); }
                 StockCountHeader _row0 = new StockCountHeader();
                 _row0.ID = -1;
                 _row0.SCCode = "-- Select Batch -- ";
