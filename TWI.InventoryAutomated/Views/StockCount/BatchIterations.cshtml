@@ -11,30 +11,43 @@
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         <div style="width:100% !important;padding:10px;">
-            <div class="row" style="margin:5px 10px 10px 0px;padding-bottom:10px;width:100% !important">
+            <div class="row" style="margin:5px 10px 10px 5px;padding-bottom:10px;width:100% !important">
                 <div style="float:left;">
                     @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control customwidth100px", @id = "ddlBatches", @name = "ddlBatches" })
                 </div>
-                <div style="float:left !important;margin-left:5px !important;" class="col-sm-8">
-                    <div class="field_background" style="width:100% !important">
-                        <div class="col-sm-4" style="padding-top:7px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                        <div class="col-sm-2" style="padding-top:7px;" id="LocationCode">
+                <div style="float:left !important;margin-left:5px !important;" class="col-sm-9">
+                    <div class="field_background1" style="width:100% !important;margin-bottom:5px;">
+                        <div class="col-sm-6" style="padding-top:4px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                        <div class="col-sm-6" style="padding-top:4px;" id="LocationCode">
                             Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
                         </div>
-                        <div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
+                        @*<div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
+                    Item Lines: <span style="padding-left:3px;font-weight:400 !important">
+                    @{
+                        var ItemLines = Convert.ToInt32(Model.TotalItemCount);
+                    }
+                    @Html.DisplayFor(model => ItemLines) </span>
+                </div>
+                <div class="col-sm-3" style="padding-top:7px;" id="Status">
+                    Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
+                </div>*@
+                    </div>
+                    <div class="field_background1" style="width:100% !important;">
+                        <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
                             Item Lines: <span style="padding-left:3px;font-weight:400 !important">
-                            @{ 
-                                var ItemLines = Convert.ToInt32(Model.TotalItemCount);
-                            }
-                            @Html.DisplayFor(model => ItemLines) </span>
+                                @{
+                                    var ItemLines = Convert.ToInt32(Model.TotalItemCount);
+                                }
+                                @Html.DisplayFor(model => ItemLines)
+                            </span>
                         </div>
-                        <div class="col-sm-3" style="padding-top:7px;" id="Status">
-                            `
+                        <div class="col-sm-6" style="padding-top:4px;" id="Status">
                             Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
                         </div>
                     </div>
                 </div>
-                <div style="float:left;" class="col-sm-2">
+                @*class="col-sm-2"*@
+                <div style="float:left;">
                     <a class="btn btn-success" style="width:130px;" data-toggle="tooltip" title="New Batch Iteration" onclick="CreateIteration();">@TWI.InventoryAutomated.Resources.GlobalResource.CreateIteration</a>
                 </div>
             </div>

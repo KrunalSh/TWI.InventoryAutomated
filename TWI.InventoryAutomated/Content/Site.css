@@ -42,19 +42,18 @@ textarea {
     color: black;
 }
 
-.field_background_left {
+.field_background1 {
     background-color: #EEEEEE;
     text-align: left;
-    border-bottom-width: thin;
-    border-bottom-style: solid;
-    border-bottom-color: #828282;
-    height: 30px;
+    border-width: thin;
+    border-style: solid;
+    border-color: #828282;
+    border-radius: 3px;
+    height: 25px;
     font-family: Calibri;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
-    color: #828282;
-    float: left;
-    width: 30%;
+    color: black;
 }
 
 .field_background_right {
