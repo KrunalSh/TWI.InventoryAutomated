@@ -334,10 +334,9 @@ namespace TWI.InventoryAutomated.Controllers
                                      join b in db.Instances on a.InstanceID equals b.ID
                                      where a.UserID == UserID
                                      select new
-                                     {
-                                         b.ID,
+                                     {   b.ID,
                                          b.InstanceName
-                                     }).ToList();
+                                     }).Distinct().ToList();
                 return PartialView("InstanceAuthentication");
             }
             catch (Exception ex) { throw; }

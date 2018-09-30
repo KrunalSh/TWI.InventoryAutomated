@@ -134,7 +134,7 @@ namespace TWI.InventoryAutomated.Controllers
                             useraccess.CreatedDate = useracc.CreatedDate;
                             useraccess.CreatedBy = useracc.CreatedBy;
                             useraccess.ModifiedDate = DateTime.Now;
-                            //useraccess.PermissionID = useracc.PermissionID;
+                            useraccess.PermissionID = useracc.PermissionID;
                             useraccess.ModifiedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.Entry(useraccess).State = EntityState.Modified;
                             db.SaveChanges();

@@ -12,7 +12,7 @@ namespace TWI.InventoryAutomated.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -42,6 +42,17 @@ namespace TWI.InventoryAutomated.Properties {
         public string TWI_InventoryAutomated_TESTPhyInvJournal_PhysicalInvJournal_Service {
             get {
                 return ((string)(this["TWI_InventoryAutomated_TESTPhyInvJournal_PhysicalInvJournal_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%20Wille%20Intertrade%20GMB" +
+            "H/Page/ItemsList")]
+        public string TWI_InventoryAutomated_TestItemList_ItemsList_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_TestItemList_ItemsList_Service"]));
             }
         }
     }

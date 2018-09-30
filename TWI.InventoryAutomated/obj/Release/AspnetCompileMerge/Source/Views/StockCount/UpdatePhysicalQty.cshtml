@@ -1,0 +1,18 @@
+﻿@model TWI.InventoryAutomated.Models.StockCountAllocations
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("UpdatePhysicalQty", "StockCount", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    //Model.SCID = Convert.ToInt32(ViewBag.SCID);
+<div class="form-group txtNotification">
+    @Html.Label("Enter Quantity", new { @class = "control-label" })
+    @Html.EditorFor(model => model.PhysicalQty, new { htmlAttributes = new { @class = "form-control" } })
+</div>
+    <div class="form-group" style="float:right !important;">
+        <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
+        <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" />
+    </div>
+}

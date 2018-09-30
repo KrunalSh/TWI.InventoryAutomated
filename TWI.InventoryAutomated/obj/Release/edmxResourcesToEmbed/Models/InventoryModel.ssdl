@@ -107,12 +107,12 @@
     <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
     <Property Name="Description" Type="nvarchar" MaxLength="50" />
     <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
-    <Property Name="ExpirationDate" Type="datetime2" Precision="7" />
+    <Property Name="ExpirationDate" Type="varchar" MaxLength="20" />
     <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
-    <Property Name="NAVQty" Type="decimal" Precision="38" Scale="20" />
-    <Property Name="PhysicalQty" Type="decimal" Precision="38" Scale="20" />
-    <Property Name="AuditorQty" Type="decimal" Precision="38" Scale="20" />
-    <Property Name="FinalQty" Type="decimal" Precision="38" Scale="20" />
+    <Property Name="NAVQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="PhysicalQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="AuditorQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="FinalQty" Type="decimal" Precision="38" Scale="2" />
     <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
     <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
     <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
@@ -150,6 +150,8 @@
     <Property Name="SCDesc" Type="varchar" MaxLength="150" />
     <Property Name="LocationCode" Type="varchar" MaxLength="10" />
     <Property Name="TotalItemCount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="InstanceName" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
     <Property Name="Status" Type="varchar" MaxLength="1" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />

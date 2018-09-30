@@ -1,0 +1,163 @@
+﻿@model TWI.InventoryAutomated.Models.AdminStockCountSheetModel
+@{
+    ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/font-awesome.css" rel="stylesheet" />
+<div class="row" style="width:100% !important;margin:auto;border:2px #808080 solid;">
+    <div style="width:100% !important;">
+        <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+            <div style="font-weight:bold">Stock Count Sheet </div>
+            <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
+        </div>
+    </div>
+    <div style="float:left !important;margin:10px 30px 20px 10px !important;" class="col-sm-12">
+        <div class="field_background1" style="margin-bottom:5px;">
+            <div class="col-sm-4" style="padding-top:4px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
+            <div class="col-sm-4" style="padding-top:4px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+            <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
+        </div>
+        <div class="field_background1" style="">
+            <div class="col-sm-4" style="padding-top:4px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
+            <div class="col-sm-4" style="padding-top:4px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
+            <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
+        </div>
+    </div>
+    <div class="row" style="width:100% !important; margin:auto;">
+
+
+
+    </div>
+    <div class="col-sm-12" style="width:100% !important;margin:auto;width:100% !important;">
+        <div class="row" style="margin:10px 35px 10px 10px;">
+            <table id="HeaderTable" class="table table-striped table-responsive table-bordered">
+                <thead>
+                    <tr>
+                        <th>Doc Type</th>
+                        <th>Zone Code</th>
+                        <th>Bin Code</th>
+                        <th>Item No</th>
+                        <th>Description</th>
+                        <th>Lot No</th>
+                        <th>Expiry Date</th>
+                        <th>Phy. Qty</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+
+        var Popup, dataTable;
+        $(document).ready(function () {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
+        });
+
+        function UpdatePhysicalQty(ID)
+        {
+            Popup = PopupForm('/StockCount/UpdatePhysicalQty?ID=' + ID);
+        }
+
+        function RefreshAllocationList(TeamID) {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            datatable = $("#HeaderTable").dataTable({
+                "destroy" : true,
+                "ajax": {
+                    "url": "/StockCount/GetAllocatedItemsByTeamID?TeamID=" + TeamID,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "DocType", "orderable": false, "searchable": false,"width":"5%" },
+                    { "data": "ZoneCode", "orderable": false, "searchable": true, "width": "10%" },
+                    { "data": "BinCode", "orderable": false, "searchable": true, "width": "10%"},
+                    { "data": "ItemNo", "orderable": false, "searchable": true, "width": "10%" },
+                    { "data": "Description", "orderable": false, "searchable": true, "width": "32%"  },
+                    { "data": "LotNo", "orderable": false, "searchable": false, "width": "10%"},
+                    { "data": "ExpirationDate", "orderable": false, "searchable": false, "width": "10%"},
+                    { "data": "PhysicalQty", "orderable": false, "searchable": false, "width": "10%"},
+                    {
+                        "data": "ID", "render": function (data) {
+                            return '<a class="btn btn-primary fa fa-edit" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" onclick="UpdatePhysicalQty(' + data + ');"></a>';
+                        }
+                        , "orderable": false, "searchable": false, "width": "3%"
+                    }
+                ],
+                "aaSorting": [[4, "desc"]],
+                "responsive": true,
+                "language": {
+                    "emptyTable": "No Items allocated to this team, Kindly contact your administrator",
+                    "url": Path
+                }
+            });
+        }
+
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+                $.get(url)
+                    .done(function (response) {
+                        formDiv.html(response);
+
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - Select Item(s)")',
+                            modal: true,
+                           //,
+                            //width: 'auto',
+                            //close: function () {
+                            //    Popup.dialog('destroy').remove();
+                            //}
+                            //,
+                            //create: function (event, ui) {
+                            //    $(this).css("maxWidth", "660px");
+                            //}
+
+                        });
+                    });
+        }
+
+
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            alert(data.message);
+                            Popup.dialog('close');
+                            RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
+                        }
+                        else {
+                            //ShowDialog(data.message);
+                            alert(data.message);
+                        }
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+
+    </script>
+}

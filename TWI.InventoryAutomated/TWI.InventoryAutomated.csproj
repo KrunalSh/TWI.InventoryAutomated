@@ -278,6 +278,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web References\TestItemList\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\TESTPhyInvJournal\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -411,6 +416,14 @@
     <Content Include="Web References\TESTPhyInvJournal\PhysicalInvJournal.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="Web References\TestItemList\ItemsList.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\TestItemList\ItemsList.wsdl" />
+    <Content Include="Web References\TestItemList\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
     <None Include="Web References\TESTPhyInvJournal\PhysicalInvJournal.wsdl" />
     <Content Include="Web References\TESTPhyInvJournal\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -468,6 +481,17 @@
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>TWI_InventoryAutomated_DEVPhyInvJournal_PhysicalInvJournal_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/ItemsList">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\TestItemList\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/ItemsList</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_TestItemList_ItemsList_Service</CachedSettingsPropName>
     </WebReferenceUrl>
     <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal">
       <UrlBehavior>Dynamic</UrlBehavior>
