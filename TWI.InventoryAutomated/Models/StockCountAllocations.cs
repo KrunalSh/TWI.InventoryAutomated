@@ -28,7 +28,7 @@ namespace TWI.InventoryAutomated.Models
         public string ItemNo { get; set; }
         public string Description { get; set; }
         public string LotNo { get; set; }
-        public Nullable<System.DateTime> ExpirationDate { get; set; }
+        public string ExpirationDate { get; set; }
         public string UOMCode { get; set; }
         public Nullable<decimal> NAVQty { get; set; }
         public Nullable<decimal> PhysicalQty { get; set; }

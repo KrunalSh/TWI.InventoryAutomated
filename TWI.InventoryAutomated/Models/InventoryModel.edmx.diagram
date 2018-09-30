@@ -22,8 +22,8 @@
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountIterations" Width="1.5" PointX="4.125" PointY="10.25" />
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountDetail" Width="1.5" PointX="2.5" PointY="10.25" />
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountTeams" Width="1.5" PointX="5.75" PointY="10.25" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountAllocations" Width="1.5" PointX="7.375" PointY="10.25" />
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountHeader" Width="1.5" PointX="0.75" PointY="10.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountAllocations" Width="1.5" PointX="7.375" PointY="10.25" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -44,8 +44,8 @@ namespace TWI.InventoryAutomated.Models
         public virtual DbSet<StockCountIterations> StockCountIterations { get; set; }
         public virtual DbSet<StockCountDetail> StockCountDetail { get; set; }
         public virtual DbSet<StockCountTeams> StockCountTeams { get; set; }
-        public virtual DbSet<StockCountAllocations> StockCountAllocations { get; set; }
         public virtual DbSet<StockCountHeader> StockCountHeader { get; set; }
+        public virtual DbSet<StockCountAllocations> StockCountAllocations { get; set; }
     
         public virtual ObjectResult<GetStockCountList_Result> GetStockCountList()
         {

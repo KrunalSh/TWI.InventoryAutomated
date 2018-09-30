@@ -22,7 +22,11 @@ namespace TWI.InventoryAutomated.Models
 
         public int CreatedBy { get; set; }
 
-        public List<StockCountAllocations> AllocatedItems;
+        public string CountName { get; set; } 
+
+        public string TeamCode { get; set; }
+
+        public List<StockCountAllocations> AllocatedItems { get; set; }
 
     }
 }

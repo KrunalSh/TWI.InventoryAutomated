@@ -691,6 +691,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure to delete the selected item?  &lt;br/&gt; Click &apos;Yes&apos; to proceed or &apos;No&apos; to cancel..
+        /// </summary>
+        public static string MsgItemDeletionRecord {
+            get {
+                return ResourceManager.GetString("MsgItemDeletionRecord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  Items for the selected batch from NAV ERP.
         /// </summary>
         public static string MsgItemsFromERP {

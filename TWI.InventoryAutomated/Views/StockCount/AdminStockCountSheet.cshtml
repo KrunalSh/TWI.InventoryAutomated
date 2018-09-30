@@ -13,17 +13,21 @@
         <div  style="width:100% !important;margin:15px;">
             <div class="row" style="margin:10px !important;">
                 <div style="float:left;margin-right:10px;">
+                    @Html.Label("Batch Code", new { @class = "control-label"})
                     @{ int SCID = ViewBag.SCID; int CountID = ViewBag.CountID; int TeamID = ViewBag.TeamID;}
                     @Html.DropDownListFor(model => SCID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })
                 </div>
                 <div style="float:left;margin-right:10px;">
+                    @Html.Label("Count",new { @class = "control-label"})
                     @Html.DropDownListFor(model => CountID, ViewBag.CountList as SelectList, new { @class = "form-control", @id = "ddlCounts", @name = "ddlCounts" })
                 </div>
                 <div style="float:left;margin-right:10px;">
+                    @Html.Label("Team Code", new { @class = "control-label" })
                     @Html.DropDownListFor(model => TeamID, ViewBag.TeamList as SelectList, new { @class = "form-control", @id = "ddlTeams", @name = "ddlTeams" })
                 </div>
-                <div style="float:right !important;margin-right:30px;margin-bottom:10px;">
-                    <a class="btn btn-success" style="width:80px;" data-toggle="tooltip" title="Add Source Data" onclick="PopupForm('@Url.Action("SelectStockCountItems", "StockCount")')">Get Data</a>
+                <div style="float:left !important;margin-top:25px;margin-right:30px;margin-bottom:10px;">
+                    @*onclick="PopupForm('@Url.Action("SelectStockCountItems", "StockCount")')"*@
+                    <a class="btn btn-success" style="width:110px;" data-toggle="tooltip" title="Add Source Data" onclick="SelectItems();">Select Item(s)</a>
                 </div>
             </div>
             <div class="row" style="margin:10px 35px 10px 10px;">
@@ -38,10 +42,28 @@
                             <th class="datatable_col10PercH">Expiry Date</th>
                             <th class="datatable_col10PercH">Qty</th>
                             <th class="datatable_col10PercH"> Phy. Qty</th>
+                            <th></th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @foreach (var _std in Model.AllocatedItems)
+                                {
+                                    <tr>
+                                        <td class="datatable_col10PercR">@_std.ItemNo</td>
+                                        <td class="datatable_col30PercR"> @_std.Description</td>
+                                        <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                                        <td class="datatable_col10PercR">@_std.BinCode</td>
+                                        <td class="datatable_col10PercR">@_std.LotNo</td>
+                                        <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                                        <td class="datatable_col10PercR">@_std.NAVQty</td>
+                                        <td class="datatable_col10PercR">@_std.PhysicalQty</td>
+                                        <td><a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" onclick="DeleteAllocatedItem(@_std.ID);"></a></td>
+                                    </tr>
+                                }
+                    </tbody>
                 </table>
             </div>
+            <div></div>
         </div>
     </div>
 </div>
@@ -59,24 +81,178 @@
         $(document).ready(function () {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
-            dataTable = $("#HeaderTable").dataTable();
+            dataTable = $("#HeaderTable").DataTable();
 
             $("#ddlBatches").change(function () {
                 var selectedbatch = $("#ddlBatches").val();
-                RefreshData(selectedbatch);
-            });
+                if (selectedbatch === "-1") {
+                    $("#ddlCounts").empty();
+                    $("#ddlTeams").empty();
+                    var countopt = new Option("-- Select Count --", "-1");
+                    $("#ddlCounts").append(countopt);
 
+                    var teamopt = new Option("-- Select Team Code --", "-1");
+                    $("#ddlTeams").append(teamopt);
+
+                    RefreshAllocationList(-1);
+                }
+                else {
+
+                    $.ajax({
+                        url: "/StockCount/GetBatchCounts?ID=" + $("#ddlBatches").val(),
+                        type: "POST",
+                        datatype: "json",
+                        success: function (data) {
+                            console.log(data);
+                            $("#ddlCounts").empty();
+                            for (var i = 0; i < data.length; i++)
+                            {
+                                var countopt = new Option(data[i].IterationName, data[i].ID);
+                                $("#ddlCounts").append(countopt);
+                            }
+
+                            $("#ddlTeams").empty();
+                            var teamopt = new Option("-- Select Team Code --", "-1");
+                            $("#ddlTeams").append(teamopt);
+
+                            RefreshAllocationList(-1);
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+                    });
+                }
+
+                //$.ajax({
+                //    url: "/StockCount/GetBatchList?ID=" + selectedbatch,
+                //    type: "GET",
+                //    datatype: "Json",
+                //    success: function () {
+
+                //    }
+                //});
+            });
 
             $("#ddlCounts").change(function () {
+                var countid = $("#ddlCounts").val();
 
+                if (countid === "-1") {
+                    $("#ddlTeams").empty();
+                    var teamopt = new Option("-- Select Team Code --", "-1");
+                    $("#ddlTeams").append(teamopt);
+                    RefreshAllocationList(-1);
+                }
+                else {
+                    $.ajax({
+                        url: "/StockCount/GetTeamsByCountID?ID=" + $("#ddlCounts").val(),
+                        type: "GET",
+                        datatype: "json",
+                        async : true,
+                        success: function (data) {
+                            $("#ddlTeams").empty();
+                            for (var i = 0; i < data.length; i++) {
+                                var teamopt = new Option(data[i].TeamCode, data[i].ID);
+                                $("#ddlTeams").append(teamopt);
+                            }
+                            RefreshAllocationList(-1);
+                        },
+                        error: function (data) {
+                            alert(data);
+                        }
+                    });
+                }
             });
-
 
             $("#ddlTeams").change(function () {
-
+                alert($("#ddlTeams").val());
+                var teamId = $("#ddlTeams").val();
+                RefreshAllocationList(teamId);
             });
-
         });
+
+
+        function RefreshAllocationList(teamid) {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+          
+            datatable = $("#HeaderTable").dataTable({
+                "destroy": true,
+                "ajax": {
+                    "url": "/StockCount/GetAllocatedItemsByTeamID?TeamID=" + teamid,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "ItemNo", "orderable": false,"searchable":true},
+                    { "data": "Description", "orderable": false , "searchable": true },
+                    { "data": "ZoneCode", "orderable": false, "searchable": true },
+                    { "data": "BinCode", "orderable": false, "searchable": true },
+                    { "data": "LotNo", "orderable": false, "searchable": false },
+                    { "data": "ExpirationDate", "orderable": false, "searchable": false },
+                    { "data": "NAVQty", "orderable": false, "searchable": false },
+                    { "data": "PhysicalQty", "orderable": false, "searchable": false },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return '<a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" onclick="DeleteAllocatedItem('+ data + ');"></a>'
+                        }
+                        ,"orderable" :false,"searchable":false
+                    }
+                     ],
+
+                "aaSorting": [[4, "desc"]],
+                "responsive": true,
+                "language": {
+                    "emptyTable": "No Items allocated to this team, Please click on <b>Select Item(s)</b> Button to allocate item(s)",
+                    "url": Path
+                }
+            });
+          
+        }
+
+        function DeleteAllocatedItem(itemid) {
+            $('<div></div>').appendTo('body')
+                .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemDeletionRecord)" + "</h5></div>")
+                .dialog({
+                    modal: true, title:  '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Delete Item")', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("DeleteAllocation", "StockCount")/' + itemid,
+                                success: function (data) {
+                                    if (data.success) {
+                                        $('<div></div>').appendTo('body')
+                                            .html("<div><h5>" + data.message + "</h5></div>")
+                                            .dialog({
+                                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Delete Item")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                buttons: {
+                                                    Ok: function () {
+                                                $(this).dialog("close");
+                                                }
+                                            }
+                                            });
+                                        RefreshAllocationList($("#ddlTeams").val());
+                                    }
+                                    else
+                                        ShowDialog(data.message);
+                                        //alert(data.message);
+                                }
+
+                                });
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+        }
 
         function PopupForm(url) {
             var formDiv = $('<div/>');
@@ -87,8 +263,8 @@
                         Popup = formDiv.dialog({
                             autoOpen: true,
                             title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - Select Item(s)")',
-                            modal: true
-                            //,
+                            modal: true,
+                           //,
                             //width: 'auto',
                             //close: function () {
                             //    Popup.dialog('destroy').remove();
@@ -101,6 +277,26 @@
                         });
                     });
         }
+
+        function SelectItems()
+        {
+            var selectedteam = $("#ddlTeams").val();
+            if (selectedteam === "-1") {
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>Team selection is mandatory</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - Select Item(s)")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: { Ok: function () { $(this).dialog("close"); } }
+                    });
+            }
+            else {
+                var url = '/StockCount/SelectStockCountItems?ID=' + $("#ddlTeams").val();
+                window.location.href = url;
+            }
+        }
+
+
+
 
 
     </script>

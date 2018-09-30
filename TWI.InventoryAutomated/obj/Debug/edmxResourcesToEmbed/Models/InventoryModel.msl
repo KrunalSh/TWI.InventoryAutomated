@@ -239,6 +239,22 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="StockCountHeader">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountHeader">
+        <MappingFragment StoreEntitySet="StockCountHeader">
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+          <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
+          <ScalarProperty Name="TotalItemCount" ColumnName="TotalItemCount" />
+          <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+          <ScalarProperty Name="SCDesc" ColumnName="SCDesc" />
+          <ScalarProperty Name="SCCode" ColumnName="SCCode" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="StockCountAllocations">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
         <MappingFragment StoreEntitySet="StockCountAllocations">
@@ -266,22 +282,6 @@
           <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
           <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
           <ScalarProperty Name="StockCountID" ColumnName="StockCountID" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="StockCountHeader">
-      <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountHeader">
-        <MappingFragment StoreEntitySet="StockCountHeader">
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-          <ScalarProperty Name="Status" ColumnName="Status" />
-          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-          <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
-          <ScalarProperty Name="TotalItemCount" ColumnName="TotalItemCount" />
-          <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
-          <ScalarProperty Name="SCDesc" ColumnName="SCDesc" />
-          <ScalarProperty Name="SCCode" ColumnName="SCCode" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
