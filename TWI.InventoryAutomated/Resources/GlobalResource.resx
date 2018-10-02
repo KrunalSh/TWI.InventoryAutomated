@@ -442,7 +442,7 @@
     <value>Successfully created new count.</value>
   </data>
   <data name="IterationName" xml:space="preserve">
-    <value>Iteration Name</value>
+    <value>Count Name</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
@@ -461,5 +461,8 @@
   </data>
   <data name="MsgItemDeletionRecord" xml:space="preserve">
     <value>Are you sure to delete the selected item?  &lt;br/&gt; Click 'Yes' to proceed or 'No' to cancel.</value>
+  </data>
+  <data name="SCManagerView" xml:space="preserve">
+    <value>Manager View</value>
   </data>
 </root>

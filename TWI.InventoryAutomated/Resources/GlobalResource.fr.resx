@@ -375,4 +375,7 @@
   <data name="MsgTeamDeletionSuccessfull" xml:space="preserve">
     <value>Supprimé avec succès l'équipe sélectionnée.</value>
   </data>
+  <data name="SCManagerView" xml:space="preserve">
+    <value>Vue du gestionnaire</value>
+  </data>
 </root>

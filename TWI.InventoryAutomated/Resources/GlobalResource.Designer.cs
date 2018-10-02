@@ -376,7 +376,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Iteration Name.
+        ///   Looks up a localized string similar to Count Name.
         /// </summary>
         public static string IterationName {
             get {
@@ -1002,6 +1002,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string SCDetailTitle {
             get {
                 return ResourceManager.GetString("SCDetailTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manager View.
+        /// </summary>
+        public static string SCManagerView {
+            get {
+                return ResourceManager.GetString("SCManagerView", resourceCulture);
             }
         }
         

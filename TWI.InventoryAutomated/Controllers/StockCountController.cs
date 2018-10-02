@@ -11,6 +11,8 @@ using TWI.InventoryAutomated.TestItemList;
 using System.Net;
 using System.Globalization;
 using TWI.InventoryAutomated.Security;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace TWI.InventoryAutomated.Controllers
 {
@@ -877,6 +879,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             string[] ItemId = ID.Split(',');
             int ItemID = 0;
+            int CountID = 0;
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
@@ -887,6 +890,11 @@ namespace TWI.InventoryAutomated.Controllers
                         StockCountAllocations _item = new StockCountAllocations();
 
                         StockCountDetail _std = db.StockCountDetail.Where(x => x.ID == ItemID).FirstOrDefault();
+
+                        CountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
+                        if(db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.ItemNo == _std.ItemNo && x.BinCode == _std.BinCode && x.ZoneCode == _std.ZoneCode && x.LotNo == _std.LotNo && x.ExpirationDate == _std.ExpirationDate).Count() > 0)
+                            continue;
+
                         _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
                         _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
                         _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
@@ -1089,6 +1097,83 @@ namespace TWI.InventoryAutomated.Controllers
                 db.SaveChanges();
                 return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        #endregion
+
+
+        #region "Manager View"
+
+        public JsonResult ManagerViewValidation()
+        {
+            string InstanceName = Convert.ToString(Session["InstanceName"]);
+            string CompanyName = Convert.ToString(Session["CompanyName"]);
+            int SCID = 0;
+            string BatchName = "";
+
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() == 0)
+                        return Json(new { success = false, message = "No Open Batches found for this company, Contact your administrator" }, JsonRequestBehavior.AllowGet);
+
+                    SCID = db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault().ID;
+                    BatchName = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().SCCode;
+
+                    if (db.StockCountIterations.Where(x => x.SCID == SCID).Count() == 0)
+                        return Json(new { success = false, message = "No Count(s) are registered for " + BatchName + "  Batch, Contact your administrator" }, JsonRequestBehavior.AllowGet);
+
+                    if (db.StockCountAllocations.Where(x => x.StockCountID == SCID).Count() == 0)
+                        return Json(new { success = false, message = "No Item(s)  allocation are made for " + BatchName + "  Batch, Contact your administrator" }, JsonRequestBehavior.AllowGet);
+
+                    return Json(new { success = true, message = SCID }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult ManagerStockCountSheet(int ID)
+        {
+            StockCountHeader _sch = new StockCountHeader();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            { _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault(); }
+            ViewBag.BatchID = ID;
+            return View(_sch);
+        }
+
+        public JsonResult GetManagerViewData(int ID)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection("Data Source=AE01LP83\\SQL2014EXP;Initial Catalog=TWIInventoryPortal;User ID=itsupport;Password=saSql2014"))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetManagerViewByBatch", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@SCID", ID));
+                    con.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(dt);
+                    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                    List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+                    Dictionary<string, object> row;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        row = new Dictionary<string, object>();
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            row.Add(col.ColumnName, dr[col]);
+                        }
+                        rows.Add(row);
+                    }
+                    return Json( rows , JsonRequestBehavior.AllowGet);
+                }
+            }
+
+           
         }
 
         #endregion 

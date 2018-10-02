@@ -21,16 +21,6 @@
                         <div class="col-sm-6" style="padding-top:4px;" id="LocationCode">
                             Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
                         </div>
-                        @*<div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
-                            Item Lines: <span style="padding-left:3px;font-weight:400 !important">
-                            @{
-                                var ItemLines = Convert.ToInt32(Model.TotalItemCount);
-                            }
-                            @Html.DisplayFor(model => ItemLines) </span>
-                        </div>
-                        <div class="col-sm-3" style="padding-top:7px;" id="Status">
-                            Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
-                        </div>*@
                     </div>
                     <div class="field_background1" style="width:100% !important;">
                         <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
@@ -68,7 +58,7 @@
                             <div class="col-lg-2" style="margin-left:10px;margin-top: 20px;">
                                     <div style="border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;">
                                         <div style="width:100%;padding-left:10px;background-color:#eae7e7 !important;min-height:40px !important;max-height:80px !important;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom:solid 2px #808080;">
-                                            <div style="float:left;color:black;font-family:Calibri;font-size:18px;font-weight:bold;height:auto;padding-top:3px">
+                                            <div style="float:left;color:black;font-family:Calibri;font-size:14px;font-weight:bold;height:auto;padding-top:8px">
                                                 @_std.IterationNo - @_std.IterationName
                                             </div>
                                             <div style="float:right;margin-right:5px;margin-top:7px;">
@@ -99,10 +89,11 @@
                                                     {
                                                         if (_steam.SCIterationID == _std.ID)
                                                         {
-                                                            <div class="row" style="height:30px !important;margin-left:5px;margin-right:7px;margin-bottom:7px;border-bottom:solid 1px #808080;">
-                                                                <div style="float:left;font-family:Calibri;font-size:20px;color:black;">@_steam.TeamCode - @_steam.UserName</div>
-                                                                <div style="float:right;margin-top:5px;"><a class="btn btn-danger fa fa-trash" style="padding-top:2px;  padding-left:4px;width:20px !important;height:20px !important;vertical-align:middle !important;margin-left:10px;" onclick="DeleteIterationTeam(@_steam.ID);"></a></div>
-                                                            </div>
+                                                    <div class="row" style="height:30px !important;margin-left:5px;margin-right:7px;margin-bottom:7px;border-bottom:solid 1px #808080;">
+                                                        <div style="float:left;font-family:Calibri;font-size:14px;color:black;">@_steam.TeamCode - @_steam.UserName</div>
+                                                        <div style="float:right;"><a class="btn btn-danger fa fa-trash" style="padding-top:2px;  padding-left:4px;width:20px !important;height:20px !important;vertical-align:middle !important;margin-left:10px;" onclick="DeleteIterationTeam(@_steam.ID);"></a></div>
+                                                        @*margin-top:5px;*@
+                                                    </div>
                                                         }
                                                     }
                                                 }
@@ -171,7 +162,7 @@
 
                     Popup = formDiv.dialog({
                         autoOpen: true,
-                        title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - New Count")',
+                        title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.CreateIteration)',
                         modal: true
                     });
                 });
@@ -185,6 +176,7 @@
     function Cancelbutton() {
         Popup.dialog('destroy').remove();
     }
+
     function SubmitForm(form) {
         $.validator.unobtrusive.parse(form);
         if ($(form).valid()) {

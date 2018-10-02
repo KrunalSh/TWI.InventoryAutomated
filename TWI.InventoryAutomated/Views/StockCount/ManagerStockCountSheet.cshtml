@@ -1,0 +1,86 @@
+﻿@model TWI.InventoryAutomated.Models.StockCountHeader
+@{
+    ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/font-awesome.css" rel="stylesheet" />
+<div class="row" style="border:2px #808080 solid;">
+    <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
+        <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+            <div style="font-weight:bold">Stock Count - Manager's View </div>
+            <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
+        </div>
+        <div style="float:left !important;width:100% !important;margin:15px;">
+            <div class="row col-sm-12" style="float:left !important;width:100% !important;">
+                <div class="field_background" style="margin-bottom:5px;">
+                    <div class="col-sm-3" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
+                    <div class="col-sm-3" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
+                    <div class="col-sm-3" style="padding-top:5px;" id="TotalItem">
+                        Total Item: <span style="padding-left:3px;font-weight:400 !important">
+                            @{ var totitems = Convert.ToInt32(Model.TotalItemCount); } @Html.DisplayFor(model => totitems)
+                        </span>
+                    </div>
+                    <div class="col-sm-3" style="padding-top:3px;" id="Status">
+                        Status : <span style="padding-left:3px;font-weight:400 !important">
+                            @{ var bstatus = "";
+                                if (Model.Status == "O") { bstatus = "Open"; }
+                                else { bstatus = "Closed"; }
+                            }  @Html.DisplayFor(model => bstatus)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="float:left !important;width:100% !important;margin:15px;">&nbsp;</div>
+        <div style="float:left;width:100% !important;margin:15px;">
+                <div class="row col-sm-12">
+                    <table id="HeaderTable" class="table table-striped table-responsive table-bordered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var datatable;
+        var dataset;
+        var my_columns = [];
+        
+        $(document).ready(function () {
+
+                $.ajax({
+                url: "/StockCount/GetManagerViewData?ID=" + '@Convert.ToInt32(ViewBag.BatchID)',
+                datatype: "json",
+                type: "GET",
+                success: function (data) {
+                    //console.log(data);
+                    //if (data.length === 0) { alert("No Data Found"); }
+
+                    dataset = data;
+                    $.each(data[0], function (key, value) {
+                        var my_item = {};
+                        my_item.data = key;
+                        my_item.title = key;
+                        my_columns.push(my_item);
+                    });
+                    //console.log(my_columns);
+
+                    $('#HeaderTable').DataTable({
+                        data: dataset,
+                        "columns": my_columns
+                    });
+                }
+            });
+
+                 
+            });
+    </script>
+}

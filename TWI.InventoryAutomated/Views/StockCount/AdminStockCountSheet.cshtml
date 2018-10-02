@@ -103,7 +103,7 @@
                         type: "POST",
                         datatype: "json",
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             $("#ddlCounts").empty();
                             for (var i = 0; i < data.length; i++)
                             {
@@ -122,15 +122,6 @@
                         }
                     });
                 }
-
-                //$.ajax({
-                //    url: "/StockCount/GetBatchList?ID=" + selectedbatch,
-                //    type: "GET",
-                //    datatype: "Json",
-                //    success: function () {
-
-                //    }
-                //});
             });
 
             $("#ddlCounts").change(function () {
@@ -164,7 +155,7 @@
             });
 
             $("#ddlTeams").change(function () {
-                alert($("#ddlTeams").val());
+                //alert($("#ddlTeams").val());
                 var teamId = $("#ddlTeams").val();
                 RefreshAllocationList(teamId);
             });
@@ -280,6 +271,7 @@
 
         function SelectItems()
         {
+            //alert($("#ddlTeams").val());
             var selectedteam = $("#ddlTeams").val();
             if (selectedteam === "-1") {
                 $('<div></div>').appendTo('body')

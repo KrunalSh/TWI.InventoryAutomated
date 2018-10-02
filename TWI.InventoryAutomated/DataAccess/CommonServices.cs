@@ -302,6 +302,29 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
+        public static object GetManagerViewData(int ID)
+        {
+            System.Data.Entity.Core.Objects.ObjectResult<System.Data.Entity.Core.Objects.ObjectResult> _obj;
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetStockCountHeaderByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", ID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+                    _obj = ((IObjectContextAdapter)db).ObjectContext.Translate<System.Data.Entity.Core.Objects.ObjectResult>(reader);
+                    return _obj;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+            
+        }
+
         #endregion
     }
 }
