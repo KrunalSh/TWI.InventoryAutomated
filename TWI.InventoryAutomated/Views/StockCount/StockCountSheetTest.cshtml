@@ -1,0 +1,142 @@
+﻿@model List<TWI.InventoryAutomated.Models.StockCountAllocations>
+
+@{
+    ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var grid = new WebGrid(canPage: true, rowsPerPage: 5);
+    grid.Bind(source: Model, rowCount: ViewBag.TotalRows, autoSortAndPage: false);
+}
+
+<link href="~/Content/font-awesome.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+<div class="row" style="border:2px #808080 solid;">
+    <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
+        <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+            <div style="font-weight:bold">Stock Count Sheet </div>
+            <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
+        </div>
+        @*<div style="float:left !important;width:100% !important;margin:15px;">
+                <div class="row col-sm-12" style="float:left !important;width:100% !important;">
+                    <div class="field_background1" style="margin-bottom:5px;">
+                        <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
+                        <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                        <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
+                    </div>
+                    <div class="field_background1" style="">
+                        <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
+                        <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
+                        <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
+                    </div>
+                </div>
+            </div>
+            <div style="float:left;width:100% !important;margin:15px;">
+                <div class="row" style="margin:10px !important;">
+                    <div style="float:left;margin-right:10px;">
+                        @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
+                    </div>
+                    <div style="float:left;margin-right:10px;">
+                        @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
+                    </div>
+                    <div style="float:left;margin-right:10px;">
+
+                        <input type="text" class="form-control" placeholder="Enter Item No" id="txtItemNo" name="txtItemNo" width="175" />
+                    </div>
+                    <div style="float:left;margin-right:10px;">
+                        <input type="text" class="form-control" placeholder="Enter Lot Not" id="txtLotNo" name="txtLotNo" width="175" />
+                    </div>
+                    <div style="float:left;margin-right:10px;">
+                        <input type="text" class="form-control" placeholder="Enter Expiry Date" id="txtExpDate" name="txtExpDate" width="175" />
+                    </div>
+                    <div style="float:left;margin-right:10px;">
+                        <input type="text" class="form-control" placeholder="Enter Qty found" id="txtPhyQty" name="txtLotNo" width="80" />
+                    </div>
+                    <div style="float:left;">
+                        <a class="btn btn-primary fa fa-save fa-2x" style="width:50px;height:33px;padding-top:2px;" data-toggle="tooltip" title="" onclick="SaveAdjustments();"></a>
+                    </div>
+                </div>
+            </div>*@
+
+        <div class="collapse navbar-collapse">
+            @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
+            {
+                <div class="form-group">
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" />
+                </div>
+                <button type="submit" value="Search" class="btn btn-success">Search</button>
+            }
+        </div>
+        <div style="float:left;width:100% !important;margin:15px;">
+            <div class="row col-sm-12">
+                @grid.Table(
+                    tableStyle: "table table-responsive table-bordered",
+                    columns: grid.Columns(
+                      grid.Column(columnName: "DocType", header: "Doc Type"),
+                      grid.Column(columnName: "ZoneCode", header: "Zone Code"),
+                      grid.Column(columnName: "BinCode", header: "Bin Code"),
+                      grid.Column(columnName: "ItemNo", header: "Item No"),
+                      grid.Column(columnName: "Description", header: "Description"),
+                      grid.Column(columnName: "LotNo", header: "Lot No"),
+                      grid.Column(columnName: "ExpirationDate", header: "Expiry Date"),
+                      grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
+                 )
+               )
+                <div class="row">
+                    <div class="col-sm-6">
+                        @grid.PagerList(mode: WebGridPagerModes.All, paginationStyle: "pagination pagination-small pagination-right")
+                    </div>
+                </div>
+
+                @Html.Hidden("dir", grid.SortDirection)
+                @Html.Hidden("col", grid.SortColumn)
+                @Html.HiddenFor(x => x.FirstOrDefault().TeamID);
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+    {
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script ssrc="https://www.appelsiini.net/download/jquery.jeditable.js"></script>
+
+    <script>
+        $(function () {
+                var dir = $('#dir').val();
+                var col = $('#col').val();
+                var header = $("th a[href*=" + col + "]");
+                if (dir === "Ascending") {
+                    header.text(header.text() + "  ▲");
+                }
+                if (dir === "Descending") {
+                    header.text(header.text() + "  ▼");
+                }
+        });
+
+        $(document).ready(function () {
+            var oldvalue = '';
+            $('.edit').editable('/StockCount/UpdateQty', {
+                cssclass: 'jeditForm', tooltip: 'click to edit me..', width: 'none', height: 'none',
+                onsubmit: function (settings, original) { oldvalue = original.revert; },
+                submitdata: function () {
+                    return { id: $(this.data('id'), PropertyName: $(this).data('propertyname')) },
+                        callback: function(value, settings) {
+                            var jsonData = $.parseJSON(value);
+                            if (jsonData.status) { $(this).text(jsonData.value); }
+                            else {
+                                $(this).text(oldvalue);
+                            }
+                        }
+                }
+            });
+
+
+
+        });
+
+
+
+    </script>
+}

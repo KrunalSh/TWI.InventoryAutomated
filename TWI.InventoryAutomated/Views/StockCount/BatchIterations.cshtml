@@ -136,6 +136,7 @@
                 url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
                 type: "GET",
                 datatype: "json",
+                async : true,
                 success: function (data) {
                     //console.log(data);
                     if (data.data === null) {

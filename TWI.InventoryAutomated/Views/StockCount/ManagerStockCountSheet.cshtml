@@ -12,22 +12,31 @@
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         <div style="float:left !important;width:100% !important;margin:15px;">
-            <div class="row col-sm-12" style="float:left !important;width:100% !important;">
-                <div class="field_background" style="margin-bottom:5px;">
-                    <div class="col-sm-3" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
-                    <div class="col-sm-3" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
-                    <div class="col-sm-3" style="padding-top:5px;" id="TotalItem">
-                        Total Item: <span style="padding-left:3px;font-weight:400 !important">
-                            @{ var totitems = Convert.ToInt32(Model.TotalItemCount); } @Html.DisplayFor(model => totitems)
+            <div style="float:left !important;">
+                <div style="float:left;margin-left:15px;">
+                    @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })
+                </div>
+            </div> 
+            <div style="float:left !important;margin-left:5px !important;" class="col-sm-8">
+                <div class="field_background1" style="width:100% !important;margin-bottom:5px;">
+                    <div class="col-sm-6" style="padding-top:4px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                    <div class="col-sm-6" style="padding-top:4px;" id="LocationCode">
+                        Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+                    </div>
+                </div>
+                <div class="field_background1" style="width:100% !important;">
+                    <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
+                        Item Lines: <span style="padding-left:3px;font-weight:400 !important">
+                            @{
+                                var ItemLines = Convert.ToInt32(Model.TotalItemCount);
+                            }
+                            @Html.DisplayFor(model => ItemLines)
                         </span>
                     </div>
-                    <div class="col-sm-3" style="padding-top:3px;" id="Status">
+                    <div class="col-sm-6" style="padding-top:4px;" id="Status">
                         Status : <span style="padding-left:3px;font-weight:400 !important">
-                            @{ var bstatus = "";
-                                if (Model.Status == "O") { bstatus = "Open"; }
-                                else { bstatus = "Closed"; }
-                            }  @Html.DisplayFor(model => bstatus)
-                        </span>
+                        @{ var status = ""; status = Model.Status == "O" ? "Open" : "Closed"; }
+                        @Html.DisplayFor(model => status) </span>
                     </div>
                 </div>
             </div>
@@ -51,36 +60,96 @@
 
     <script>
         var datatable;
-        var dataset;
-        var my_columns = [];
+        var editor;
         
         $(document).ready(function () {
 
+            var selectedbatch = $("#ddlBatches").val();
+            RefreshManagerView(selectedbatch);
+
+
+            $("#ddlBatches").change(function () {
                 $.ajax({
-                url: "/StockCount/GetManagerViewData?ID=" + '@Convert.ToInt32(ViewBag.BatchID)',
+                    url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
+                    type: "GET",
+                    datatype: "json",
+                    async: true,
+                    success: function (data) {
+                        //console.log(data);
+                        if (data.data === null) {
+                            $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                            $("#Status").html('Status : ');
+                        }
+                        else {
+                            $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                            $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                            $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                            $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                        }
+                        RefreshManagerView($("#ddlBatches").val());
+                    }
+                });
+               
+            });
+
+            $('#HeaderTable').on('click', 'tbody td:not(:first-child)', function (e) {
+                editor.inline(this, { buttons: { label: '&gt;', fn: function () { this.submit(); }}});
+            });
+
+
+
+        });
+
+        function RefreshManagerView(batchId) {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            var dataset;
+            var my_columns = [];
+
+            $.ajax({
+                url: "/StockCount/GetManagerViewData?ID=" + batchId,
                 datatype: "json",
                 type: "GET",
                 success: function (data) {
                     //console.log(data);
-                    //if (data.length === 0) { alert("No Data Found"); }
+                    if (data.length === 0) {
+                        //alert("hi");
+                        datatable.table().clear();
+                        datatable = $("#HeaderTable").DataTable({
+                            "destroy": true, data: dataset,
+                            "language": {
+                                "emptyTable": "No data found for the selected batch",
+                                "url" : Path
+                            } });
+                    }
+                    else {
 
-                    dataset = data;
-                    $.each(data[0], function (key, value) {
-                        var my_item = {};
-                        my_item.data = key;
-                        my_item.title = key;
-                        my_columns.push(my_item);
-                    });
-                    //console.log(my_columns);
+                        console.log(data);
+                        dataset = data;
+                        $.each(data[0], function (key, value) {
+                            var my_item = {};
+                            my_item.data = key;
+                            my_item.title = key;
+                            my_columns.push(my_item);
+                        });
+                        console.log(my_columns);
 
-                    $('#HeaderTable').DataTable({
-                        data: dataset,
-                        "columns": my_columns
-                    });
+                        //editor = new $.fn.DataTable.Editor({
+                        //    "ajax": "/StockCount/GetManagerViewData?ID=" + batchId,
+                        //    "table": "#HeaderTable",
+                        //    "fields": [{ label: "Final Qty:", name: "FinalQty" }]
+                        //});
+
+                        datatable = $('#HeaderTable').DataTable({
+                            "destroy": true,
+                            data: dataset,
+                            "columns": my_columns
+                        });
+
+                        
+                    }
                 }
             });
-
-                 
-            });
+        }
     </script>
 }
