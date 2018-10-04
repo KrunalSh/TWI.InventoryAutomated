@@ -140,6 +140,16 @@ input.input-validation-error {
     color: black !important;
 }
 
+.datatable_col5PercH {
+    width: 5% !important;
+    text-align: center !important;
+    font-family: 'Calibri';
+    font-size: 14px;
+    font-weight: bold;
+    height: 15px !important;
+    color: black !important;
+}
+
 .datatable_col30PercH {
     width: 30% !important;
     text-align: left !important;

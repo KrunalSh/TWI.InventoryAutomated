@@ -10,8 +10,9 @@
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 
+@**@
 <div class="row" style="border:2px #808080 solid;">
-    <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
+    <div style="margin:auto;width:100% !important;max-width:100%;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
             <div style="font-weight:bold">Stock Count Sheet </div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
@@ -29,33 +30,33 @@
                         <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
                     </div>
                 </div>
-            </div>
-            <div style="float:left;width:100% !important;margin:15px;">
-                <div class="row" style="margin:10px !important;">
-                    <div style="float:left;margin-right:10px;">
-                        @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
-                    </div>
-                    <div style="float:left;margin-right:10px;">
-                        @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
-                    </div>
-                    <div style="float:left;margin-right:10px;">
-
-                        <input type="text" class="form-control" placeholder="Enter Item No" id="txtItemNo" name="txtItemNo" width="175" />
-                    </div>
-                    <div style="float:left;margin-right:10px;">
-                        <input type="text" class="form-control" placeholder="Enter Lot Not" id="txtLotNo" name="txtLotNo" width="175" />
-                    </div>
-                    <div style="float:left;margin-right:10px;">
-                        <input type="text" class="form-control" placeholder="Enter Expiry Date" id="txtExpDate" name="txtExpDate" width="175" />
-                    </div>
-                    <div style="float:left;margin-right:10px;">
-                        <input type="text" class="form-control" placeholder="Enter Qty found" id="txtPhyQty" name="txtLotNo" width="80" />
-                    </div>
-                    <div style="float:left;">
-                        <a class="btn btn-primary fa fa-save fa-2x" style="width:50px;height:33px;padding-top:2px;" data-toggle="tooltip" title="" onclick="SaveAdjustments();"></a>
-                    </div>
-                </div>
             </div>*@
+        <div style="float:left;width:100% !important;margin:15px;">
+            <div class="row" style="margin:10px !important;">
+                <div style="float:left;margin-right:10px;">
+                    @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
+                </div>
+                <div style="float:left;margin-right:10px;">
+                    @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
+                </div>
+                <div style="float:left;margin-right:10px;">
+
+                    <input type="text" class="form-control" placeholder="Enter Item No" id="txtItemNo" name="txtItemNo" width="175" />
+                </div>
+                <div style="float:left;margin-right:10px;">
+                    <input type="text" class="form-control" placeholder="Enter Lot Not" id="txtLotNo" name="txtLotNo" width="175" />
+                </div>
+                <div style="float:left;margin-right:10px;">
+                    <input type="text" class="form-control" placeholder="Enter Expiry Date" id="txtExpDate" name="txtExpDate" width="175" />
+                </div>
+                <div style="float:left;margin-right:10px;">
+                    <input type="text" class="form-control" placeholder="Enter Qty found" id="txtPhyQty" name="txtLotNo" width="80" />
+                </div>
+                <div style="float:left;">
+                    <a class="btn btn-primary fa fa-save fa-2x" style="width:50px;height:33px;padding-top:2px;" data-toggle="tooltip" title="" onclick="SaveAdjustments();"></a>
+                </div>
+            </div>
+        </div>
 
         <div class="collapse navbar-collapse">
             @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
@@ -67,7 +68,7 @@
             }
         </div>
         <div style="float:left;width:100% !important;margin:15px;">
-            <div class="row col-sm-12">
+            <div style="margin:10px 15px 20px 10px !important;">
                 @grid.Table(
                     tableStyle: "table table-responsive table-bordered",
                     columns: grid.Columns(
@@ -78,9 +79,9 @@
                       grid.Column(columnName: "Description", header: "Description"),
                       grid.Column(columnName: "LotNo", header: "Lot No"),
                       grid.Column(columnName: "ExpirationDate", header: "Expiry Date"),
-                      grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
-                 )
-               )
+                      grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text ><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
+)
+)
                 <div class="row">
                     <div class="col-sm-6">
                         @grid.PagerList(mode: WebGridPagerModes.All, paginationStyle: "pagination pagination-small pagination-right")
@@ -98,45 +99,88 @@
 
 @section scripts
     {
+    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <script ssrc="https://www.appelsiini.net/download/jquery.jeditable.js"></script>
+    <script src="https://www.appelsiini.net/download/jquery.jeditable.js"></script>
 
     <script>
         $(function () {
-                var dir = $('#dir').val();
-                var col = $('#col').val();
-                var header = $("th a[href*=" + col + "]");
-                if (dir === "Ascending") {
-                    header.text(header.text() + "  ▲");
-                }
-                if (dir === "Descending") {
-                    header.text(header.text() + "  ▼");
-                }
+            var dir = $('#dir').val();
+            var col = $('#col').val();
+            var header = $("th a[href*=" + col + "]");
+            if (dir === "Ascending") {
+                header.text(header.text() + "  ▲");
+            }
+            if (dir === "Descending") {
+                header.text(header.text() + "  ▼");
+            }
         });
 
         $(document).ready(function () {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
             var oldvalue = '';
             $('.edit').editable('/StockCount/UpdateQty', {
-                cssclass: 'jeditForm', tooltip: 'click to edit me..', width: 'none', height: 'none',
-                onsubmit: function (settings, original) { oldvalue = original.revert; },
+                cssclass: 'jeditForm',
+                tooltip: 'click to edit me..',
+                width: '50px',
+                height: 'none',
+                onsubmit: function (settings, original) {
+                    oldvalue = original.revert;
+                },
                 submitdata: function () {
-                    return { id: $(this.data('id'), PropertyName: $(this).data('propertyname')) },
-                        callback: function(value, settings) {
-                            var jsonData = $.parseJSON(value);
-                            if (jsonData.status) { $(this).text(jsonData.value); }
-                            else {
-                                $(this).text(oldvalue);
-                            }
-                        }
+                    return {
+                        id: $(this).data('id'),
+                        PropertyName: $(this).data('propertyname')
+                    };
+                },
+                callback: function (value, settings) {
+                    var jsonData = $.parseJSON(value);
+                    if (jsonData.status) { $(this).text(jsonData.value); }
+                    else {
+                        $(this).text(oldvalue);
+                    }
                 }
-            });
+            }
+            );
 
+            //$("#txtExpDate").datepicker({
+            //    changeMonth: true,
+            //    changeYear: true,
+            //    dateFormat: 'dd/mm/yy'
+            //});
 
 
         });
 
-
+         function SaveAdjustments() {
+            var zonecode = $("#ddlZoneCodes").val();
+            var bincode = $("#ddlBinCodes").val();
+            var itemno = $("#txtItemNo").val();
+            var lotno = $("#txtLotNo").val();
+            var expdate = $("#txtExpDate").val();
+            var teamId = '@Convert.ToInt32(Session["TeamID"])';
+            var Qty = $("#txtPhyQty").val();
+            $.ajax({
+                url: "/StockCount/SaveAdjustments",
+                datatype: "json",
+                type: "GET",
+                async: true,
+                data: { TeamID: teamId, Zonecode: zonecode, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
+                success: function (data) {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = "/StockCount/StockCountSheetTest";
+                        @*RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');*@
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
 
     </script>
 }

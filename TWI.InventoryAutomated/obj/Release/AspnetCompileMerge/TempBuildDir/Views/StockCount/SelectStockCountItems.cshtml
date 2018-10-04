@@ -79,7 +79,7 @@
         var datatable; var rows_selected = [];
 
                 $(document).ready(function () {
-                    alert("hi");
+                    //alert("hi");
                     datatable = $("#ItemTable").DataTable();
                     $("#ddlSearchField").change(function () {
                         var searchval = $("#ddlSearchField").val();
@@ -294,6 +294,9 @@
                     //data: { TeamID : TeamID,ID : RowID },
                     success: function (data) {
                         if (data.success) { window.location.href = "/StockCount/AdminSTockCountSheet?TeamID=" + TeamID; }
+                        else {
+                            alert(data.message);
+                        }
                     }
 
                 });

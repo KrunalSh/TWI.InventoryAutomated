@@ -10,50 +10,58 @@
     <div class="row" style="padding-bottom:30px;">
         @*@if (CommonServices.IsUserhasAccessOnPage("StockBatches") || CommonServices.IsUserSuperAdmin())
         {*@
-            <div class="col-sm-4">
-                @*padding:11px;*@
-                <div class="input-group" style="float:left;margin:5px;">
-                    <button type="button" class="btn" style="width:200px; height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("NavDataPull", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle</button>
-                </div>
+        <div class="col-sm-4">
+            @*padding:11px;*@
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px; height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("NavDataPull", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle</button>
             </div>
+        </div>
         @*}
         @if (CommonServices.IsUserhasAccessOnPage("BatchIterations") || CommonServices.IsUserSuperAdmin())
         {*@
-            <div class="col-sm-4">
-                @*padding:11px;*@
-                <div class="input-group" style="float:left;margin:5px;">
-                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("BatchIterations", "StockCount")'">
-                        @TWI.InventoryAutomated.Resources.GlobalResource.StockBatchIterations
-                    </button>
-                </div>
+        <div class="col-sm-4">
+            @*padding:11px;*@
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("BatchIterations", "StockCount")'">
+                    @TWI.InventoryAutomated.Resources.GlobalResource.StockBatchIterations
+                </button>
             </div>
+        </div>
         @*}
         @if (CommonServices.IsUserhasAccessOnPage("AdminStockCountSheet") || CommonServices.IsUserSuperAdmin())
         {*@
-            <div class="col-sm-4">
-                @*padding:11px;*@
-                <div class="input-group" style="float:left;margin:5px;">
-                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("AdminStockCountSheet", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin</button>
-                </div>
+        <div class="col-sm-4">
+            @*padding:11px;*@
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("AdminStockCountSheet", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin</button>
             </div>
-            @*}
-            @if (CommonServices.IsUserhasAccessOnPage("StockCountSheet") || CommonServices.IsUserSuperAdmin())
-            {*@
-            <div class="col-sm-4">
-                @*padding:11px;*@
-                <div class="input-group" style="float:left;margin:5px;">
-                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="ValidateStockCount();">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet</button>
-                </div>
-            </div>
-            @*}*@
-            <div class="col-sm-4">
-                @*padding:11px;*@
-                <div class="input-group" style="float:left;margin:5px;">
-                    <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Home", "Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.MainMenu</button>
-                </div>
-            </div>
-            <div></div>
         </div>
+        @*}
+        @if (CommonServices.IsUserhasAccessOnPage("StockCountSheet") || CommonServices.IsUserSuperAdmin())
+        {*@
+        <div class="col-sm-4">
+            @*padding:11px;*@
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="ValidateStockCount();">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet</button>
+            </div>
+        </div>
+        @*}
+        @if (CommonServices.IsUserhasAccessOnPage("StockCountSheet") || CommonServices.IsUserSuperAdmin())
+        {*@
+        <div class="col-sm-4">
+            @*padding:11px;*@
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="ValidateCountAllocations();">@TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView</button>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            @*padding:11px;*@
+            <div class="input-group" style="float:left;margin:5px;">
+                <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("Home", "Home")'">@TWI.InventoryAutomated.Resources.GlobalResource.MainMenu</button>
+            </div>
+        </div>
+        <div></div>
+    </div>
 
 </div>
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -72,7 +80,8 @@
                type: "GET",
                dataType: "json",
                success: function (data) {
-                   if (data.success) { window.location.href = "/StockCount/StockCountSheet?TeamID=" + data.message; }
+                   //if (data.success) { window.location.href = "/StockCount/StockCountSheet?TeamID=" + data.message; }
+                   if (data.success) { window.location.href = "/StockCount/StockCountSheetTest";  }
                    else {
                          $('<div></div>').appendTo('body')
                                             .html("<div><h5>" + data.message + "</h5></div>")
@@ -89,6 +98,35 @@
                }
            });
        }
+
+
+       function ValidateCountAllocations() {
+
+           $.ajax({
+               url: "/StockCount/ManagerViewValidation",
+               type: "GET",
+               dataType: "json",
+               success: function (data) {
+                   if (data.success) { window.location.href = "/StockCount/ManagerStockCountSheet?ID=" + data.message; }
+                   else {
+                       $('<div></div>').appendTo('body')
+                           .html("<div><h5>" + data.message + "</h5></div>")
+                           .dialog({
+                               modal: true, title: 'Stock Count - Manager View', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                               buttons: {
+                                   Ok: function () {
+                                       $(this).dialog("close");
+                                   }
+                               }
+                           });
+                   }
+
+               }
+           });
+       }
+
+
+
 
    </script>
 

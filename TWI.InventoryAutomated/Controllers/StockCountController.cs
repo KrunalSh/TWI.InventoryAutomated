@@ -13,6 +13,7 @@ using System.Globalization;
 using TWI.InventoryAutomated.Security;
 using System.Data;
 using System.Data.SqlClient;
+using Newtonsoft.Json.Linq;
 
 namespace TWI.InventoryAutomated.Controllers
 {
@@ -1082,8 +1083,23 @@ namespace TWI.InventoryAutomated.Controllers
                 CountID = db.StockCountIterations.Where(x => x.SCID == SCID && x.Status == true).FirstOrDefault().ID;
                 //SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
                 //CountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
-
+                
                 int TeamID = db.StockCountTeams.Where(x => x.SCIterationID == CountID && x.SCID == SCID && x.UserName == UserID).FirstOrDefault().ID;
+                Session["TeamID"] = TeamID;
+                List<string> _zonecodes = (from e in db.StockCountAllocations
+                                           where e.TeamID == TeamID
+                                           select e.ZoneCode).Distinct().ToList();
+
+                _zonecodes.Insert(0, "--Select Zone --");
+
+                List<string> _bincode = (from q in db.StockCountAllocations
+                                         where q.TeamID == TeamID
+                                         select q.BinCode).Distinct().ToList();
+
+                _bincode.Insert(0, "-- Select Bin Code");
+
+                ViewBag.ZoneCodes = new SelectList(_zonecodes);
+                ViewBag.BinCodes = new SelectList(_bincode);
 
                 if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).Count() > 0)
                 {
@@ -1093,12 +1109,10 @@ namespace TWI.InventoryAutomated.Controllers
 
                 //var v = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).ToList();
 
-
                 var data = (from e in v
                             where e.ItemNo.Contains(search) ||
                                    e.ZoneCode.Contains(search) ||
                                    e.BinCode.Contains(search) select e);
-
 
 
                 totalRecord = data.Count();
@@ -1116,11 +1130,25 @@ namespace TWI.InventoryAutomated.Controllers
             bool status =false;
             string message = "";
             //Update data to database
-
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                StockCountAllocations _sct = db.StockCountAllocations.Find(id);
+                if (_sct != null)
+                {
+                    _sct.PhysicalQty = Convert.ToDecimal(value);
+                    db.StockCountAllocations.Attach(_sct);
+                    db.Entry(_sct).Property(x => x.PhysicalQty).IsModified = true;
+                    db.SaveChanges();
+                    status = true;
+                }
+                else {
+                    message = "error!";
+                }
+            }
 
             var response = new { value = value, status = status, message = message };
-
-            return Content("");
+            JObject o = JObject.FromObject(response);
+            return Content(o.ToString()); 
         }
 
 
@@ -1154,57 +1182,63 @@ namespace TWI.InventoryAutomated.Controllers
             string InstanceName = Session["InstanceName"].ToString();
             string CompanyName = Session["CompanyName"].ToString();
             List<TestItemList.ItemsList> _obj= new List<ItemsList>();
-
-            if (InstanceName.ToLower() == "test" && CompanyName.ToLower() == "theodor wille intertrade gmbh")
+            try
             {
-                _service = new TestItemList.ItemsList_Service();
-                ((TestItemList.ItemsList_Service)_service).UseDefaultCredentials = false;
-                ((TestItemList.ItemsList_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+                if (InstanceName.ToLower() == "test" && CompanyName.ToLower() == "theodor wille intertrade gmbh")
+                {
+                    _service = new TestItemList.ItemsList_Service();
+                    ((TestItemList.ItemsList_Service)_service).UseDefaultCredentials = false;
+                    ((TestItemList.ItemsList_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
 
-                _servicefilters = new List<TestItemList.ItemsList_Filter>();
-                ((List<TestItemList.ItemsList_Filter>)_servicefilters).Add(new TestItemList.ItemsList_Filter { Field = TestItemList.ItemsList_Fields.No, Criteria = ItemNo });
+                    _servicefilters = new List<TestItemList.ItemsList_Filter>();
+                    ((List<TestItemList.ItemsList_Filter>)_servicefilters).Add(new TestItemList.ItemsList_Filter { Field = TestItemList.ItemsList_Fields.No, Criteria = ItemNo });
 
-                TestItemList.ItemsList[] _phyjournal = ((TestItemList.ItemsList_Service)_service).ReadMultiple(((List<TestItemList.ItemsList_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                _obj = _phyjournal.ToList();
+                    TestItemList.ItemsList[] _phyjournal = ((TestItemList.ItemsList_Service)_service).ReadMultiple(((List<TestItemList.ItemsList_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+                    _obj = _phyjournal.ToList();
 
-                if (_obj.Count == 0) { return Json(new { success = false, message = "Item not Found in the Item Master, Kindly check" }, JsonRequestBehavior.AllowGet); }
+                    if (_obj.Count == 0) { return Json(new { success = false, message = "Item not Found in the Item Master, Kindly check" }, JsonRequestBehavior.AllowGet); }
+                }
+
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    int SCID = 0;
+                    StockCountAllocations _sca = new StockCountAllocations();
+                    SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+
+                    StockCountDetail _std = db.StockCountDetail.Where(x => x.SCID == SCID).FirstOrDefault();
+                    _sca.StockCountID = SCID;
+                    _sca.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
+                    _sca.SCIterationName = db.StockCountIterations.Where(x => x.ID == _sca.SCIterationID).FirstOrDefault().IterationName;
+                    _sca.AuditorQty = 0;
+                    _sca.BatchName = _std.BatchName;
+                    _sca.BinCode = BinCode;
+                    _sca.CreatedBy = Convert.ToInt32(Session["UserID"]);
+                    _sca.CreatedDate = DateTime.Now;
+                    _sca.Description = _obj[0].Description;
+                    _sca.DocType = "ADJ";
+                    _sca.ExpirationDate = ExpDate;
+                    //_sca.FinalQty = 0;
+                    _sca.ItemNo = ItemNo;
+                    _sca.LocationCode = _std.LocationCode;
+                    _sca.LotNo = LotNo;
+                    _sca.NAVQty = 0;
+                    _sca.PhysicalQty = Convert.ToDecimal(Qty);
+                    _sca.TeamID = TeamID;
+                    _sca.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
+                    _sca.TemplateName = _std.TemplateName;
+                    _sca.UOMCode = _obj[0].Base_Unit_of_Measure;
+                    _sca.WhseDocumentNo = _std.WhseDocumentNo;
+                    _sca.ZoneCode = ZoneCode;
+                    db.StockCountAllocations.Add(_sca);
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                }
             }
-
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            catch (Exception ex)
             {
-                int SCID = 0;
-                StockCountAllocations _sca = new StockCountAllocations();
-                 SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
-
-                StockCountDetail _std = db.StockCountDetail.Where(x => x.SCID == SCID).FirstOrDefault();
-                _sca.StockCountID = SCID;
-                _sca.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
-                _sca.SCIterationName = db.StockCountIterations.Where(x => x.ID == _sca.SCIterationID).FirstOrDefault().IterationName;
-                _sca.AuditorQty = 0;
-                _sca.BatchName = _std.BatchName;
-                _sca.BinCode = BinCode;
-                _sca.CreatedBy = Convert.ToInt32(Session["UserID"]);
-                _sca.CreatedDate = DateTime.Now;
-                _sca.Description = _obj[0].Description;
-                _sca.DocType = "ADJ";
-                _sca.ExpirationDate = ExpDate;
-                _sca.FinalQty = 0;
-                _sca.ItemNo = ItemNo;
-                _sca.LocationCode = _std.LocationCode;
-                _sca.LotNo = LotNo;
-                _sca.NAVQty = 0;
-                _sca.PhysicalQty = Convert.ToDecimal(Qty);
-                _sca.TeamID = TeamID;
-                _sca.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
-                _sca.TemplateName = _std.TemplateName;
-                _sca.UOMCode = _obj[0].Base_Unit_of_Measure;
-                _sca.WhseDocumentNo = _std.WhseDocumentNo;
-                _sca.ZoneCode = ZoneCode;
-                db.StockCountAllocations.Add(_sca);
-                db.SaveChanges();
-                return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
