@@ -152,13 +152,13 @@
             $.ajax({
                 url: "/StockCount/SaveAdjustments",
                 datatype: "json",
-                type: "GET",
+                type: "POST",
                 async: true,
                 data: { TeamID: teamId, Zonecode: zonecode, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
                 success: function (data) {
                     if (data.success) {
                         alert(data.message);
-                        RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
+                        @*RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');*@
                     }
                     else {
                         alert(data.message);
