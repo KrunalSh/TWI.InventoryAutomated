@@ -277,6 +277,7 @@
           <ScalarProperty Name="WhseDocumentNo" ColumnName="WhseDocumentNo" />
           <ScalarProperty Name="DocType" ColumnName="DocType" />
           <ScalarProperty Name="SearchCriteria" ColumnName="SearchCriteria" />
+          <ScalarProperty Name="MemberName" ColumnName="MemberName" />
           <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
           <ScalarProperty Name="TeamID" ColumnName="TeamID" />
           <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />

@@ -1214,12 +1214,13 @@ namespace TWI.InventoryAutomated.Controllers
                     _sca.AuditorQty = 0;
                     _sca.BatchName = _std.BatchName;
                     _sca.BinCode = BinCode;
+                    _sca.MemberName = SessionPersister.UserName;
                     _sca.CreatedBy = Convert.ToInt32(Session["UserID"]);
                     _sca.CreatedDate = DateTime.Now;
                     _sca.Description = _obj[0].Description;
                     _sca.DocType = "ADJ";
                     _sca.ExpirationDate = ExpDate;
-                    //_sca.FinalQty = 0;
+                    //_sca.FinalQty =;
                     _sca.ItemNo = ItemNo;
                     _sca.LocationCode = _std.LocationCode;
                     _sca.LotNo = LotNo;

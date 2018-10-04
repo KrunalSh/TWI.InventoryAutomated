@@ -20,6 +20,7 @@ namespace TWI.InventoryAutomated.Models
         public string SCIterationName { get; set; }
         public Nullable<int> TeamID { get; set; }
         public string TeamCode { get; set; }
+        public string MemberName { get; set; }
         public string SearchCriteria { get; set; }
         public string DocType { get; set; }
         public string WhseDocumentNo { get; set; }

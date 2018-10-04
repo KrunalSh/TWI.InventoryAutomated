@@ -67,7 +67,6 @@
             var selectedbatch = $("#ddlBatches").val();
             RefreshManagerView(selectedbatch);
 
-
             $("#ddlBatches").change(function () {
                 $.ajax({
                     url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
@@ -91,11 +90,6 @@
                 });
                
             });
-
-           
-
-
-
         });
 
         function RefreshManagerView(batchId) {
@@ -143,8 +137,6 @@
                             data: dataset,
                             "columns": my_columns
                         });
-
-                        
                     }
                 }
             });

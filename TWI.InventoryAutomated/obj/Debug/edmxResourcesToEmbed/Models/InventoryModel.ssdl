@@ -99,8 +99,9 @@
     <Property Name="SCIterationName" Type="varchar" MaxLength="50" />
     <Property Name="TeamID" Type="int" />
     <Property Name="TeamCode" Type="varchar" MaxLength="5" />
+    <Property Name="MemberName" Type="nvarchar" MaxLength="50" />
     <Property Name="SearchCriteria" Type="nvarchar" MaxLength="50" />
-    <Property Name="DocType" Type="varchar" MaxLength="2" />
+    <Property Name="DocType" Type="varchar" MaxLength="5" />
     <Property Name="WhseDocumentNo" Type="nvarchar" MaxLength="20" />
     <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
     <Property Name="BinCode" Type="nvarchar" MaxLength="20" />

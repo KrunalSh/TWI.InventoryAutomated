@@ -104,8 +104,9 @@
           <Property Name="SCIterationName" Type="varchar" MaxLength="50" />
           <Property Name="TeamID" Type="int" />
           <Property Name="TeamCode" Type="varchar" MaxLength="5" />
+          <Property Name="MemberName" Type="nvarchar" MaxLength="50" />
           <Property Name="SearchCriteria" Type="nvarchar" MaxLength="50" />
-          <Property Name="DocType" Type="varchar" MaxLength="2" />
+          <Property Name="DocType" Type="varchar" MaxLength="5" />
           <Property Name="WhseDocumentNo" Type="nvarchar" MaxLength="20" />
           <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
           <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
@@ -553,8 +554,9 @@
           <Property Name="SCIterationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TeamID" Type="Int32" />
           <Property Name="TeamCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="MemberName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SearchCriteria" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DocType" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+          <Property Name="DocType" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="WhseDocumentNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ZoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BinCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -855,6 +857,7 @@
                 <ScalarProperty Name="WhseDocumentNo" ColumnName="WhseDocumentNo" />
                 <ScalarProperty Name="DocType" ColumnName="DocType" />
                 <ScalarProperty Name="SearchCriteria" ColumnName="SearchCriteria" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
                 <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
                 <ScalarProperty Name="TeamID" ColumnName="TeamID" />
                 <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
