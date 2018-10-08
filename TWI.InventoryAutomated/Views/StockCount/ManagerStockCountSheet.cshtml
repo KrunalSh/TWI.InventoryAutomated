@@ -62,8 +62,6 @@
                 <div style="float:left;margin-bottom:10px;margin-left:10px">
                     <a class="btn btn-primary" style="width:70px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Fill Qty</a>
                 </div>
-
-
                 <div style="float:right;margin-bottom:10px;margin-right:25px;">
                     <a class="btn btn-primary fa fa-search" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title=""></a>
                 </div>
@@ -160,12 +158,23 @@
 
                         console.log(data);
                         dataset = data;
+                        //var chkcol = {};
+                        //chkcol.data = '<input type=checkbox name="select_all" checked=value>';
+                        //chkcol.title = '';
+                        //my_columns.push(chkcol);
+
+
+
                         $.each(data[0], function (key, value) {
                             var my_item = {};
                             my_item.data = key;
                             my_item.title = key;
                             my_columns.push(my_item);
                         });
+
+                        
+
+
 
                         //editor = new $.fn.DataTable.Editor({
                         //    "ajax": "/StockCount/GetManagerViewData?ID=" + batchId,
@@ -176,6 +185,20 @@
                         datatable = $('#HeaderTable').DataTable({
                             "destroy": true,
                             data: dataset,
+                            //'columnDefs': [
+                            //    {
+                            //        'targets': [0],
+                            //        'searchable': false,
+                            //        'orderable': false,
+                            //        'width': '1%',
+                            //        'className': 'dt-body-center',
+                            //        'data': "ID",
+                            //        'render': function (data, type, full, meta) {
+                            //            return '<input type="checkbox" checked value>&nbsp;<input id="ID" type="hidden" value="' + data + '">';
+                            //        }
+                            //    }],
+                            //'select': { 'style': 'multi' },
+                            'order': [[1, 'asc']],
                             "columns": my_columns
                         });
                     }
