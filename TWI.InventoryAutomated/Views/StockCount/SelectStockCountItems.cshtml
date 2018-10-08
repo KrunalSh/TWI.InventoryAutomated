@@ -7,19 +7,27 @@
 
 @**@
 
-<div class="row" style="margin:auto;width:80% !important">
+<div class="row" style="margin:auto;width:85% !important">
     <div style="margin:15px auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-            <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle - Select Item(s)</div>
+            <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle - Select Item(s) For @ViewBag.IterationName & Team: @ViewBag.TeamCode</div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("AdminStockCountSheet", "StockCount",Convert.ToInt32(Session["TeamID"]))'><i class="fa fa-arrow-circle-o-right fa-2x"></i></a>
         </div>
-
         <div class="row">
             <div style="margin:15px auto;width:100% !important;max-width:100%;">
                 <div style="width:100% !important;margin:15px;">
                     <div class="row" style="margin:10px !important;">
                         <div style="float:left;margin-right:10px;">
-                            @Html.Label("Count", new { @class = "control-label" })
+                            @Html.Label("Source", new { @class = "control-label" })
+                            <select id="ddlAllocationSource" class="form-control">
+                                <option value="0">Select Source</option>
+                                <option value="1">Navision Inventory</option>
+                                <option value="2">Deviations Only</option>
+                                <option value="3">Adjustment(s)</option>
+                            </select>
+                        </div>
+                        <div style="float:left;margin-right:10px;display:none;" id="countsource">
+                            @Html.Label("Count Source", new { @class = "control-label" })
                             @Html.DropDownList("SourceCounts", ViewBag.CountList as SelectList, new { @class = "form-control", @id = "ddlCounts" })
                         </div>
                         <div style="float:left;margin-right:10px;">
@@ -34,11 +42,11 @@
                             @Html.Label("Search Criteria", new { @class = "control-label" })
                             <input type="text" class="form-control" readonly="readonly" placeholder="Enter search value" id="txtSearch" name="txtSearch" width="175" />
                         </div>
-                         <div style="float:left !important;margin-top:25px;margin-right:30px;margin-bottom:10px;">
-                            <a class="btn btn-primary fa fa-search fa-2x"  style="width:50px;height:33px;padding-top:2px;" data-toggle="tooltip" title="Add Source Data" onclick="GetSearchItem();"></a>
-                         </div>
                         <div style="float:left !important;margin-top:25px;margin-right:10px;margin-bottom:10px;">
-                            <a class="btn btn-success fa fa-save fa-2x" style="width:50px;height:33px;padding-top:3px;" data-toggle="tooltip" title="" onclick="AllocateIems();"></a>
+                            <a class="btn btn-primary fa fa-search fa-2x" style="width:45px;height:33px;padding-left:10px;padding-top:1px;" data-toggle="tooltip" title="Add Source Data" onclick="GetSearchItem();"></a>
+                        </div>
+                        <div style="float:left !important;margin-top:25px;margin-right:10px;margin-bottom:10px;">
+                            <a class="btn btn-primary fa fa-save fa-2x" style="width:45px;height:33px;padding-left:10px;padding-top:1px;padding-bottom:3px;" data-toggle="tooltip" title="" onclick="AllocateIems();"></a>
                         </div>
                     </div>
                     <div class="row" style="margin:10px 35px 10px 10px;">
@@ -79,7 +87,7 @@
         var datatable; var rows_selected = [];
 
                 $(document).ready(function () {
-                    //alert("hi");
+
                     datatable = $("#ItemTable").DataTable();
                     $("#ddlSearchField").change(function () {
                         var searchval = $("#ddlSearchField").val();
@@ -93,6 +101,35 @@
                         }
 
                         //$("#btnSearch").trigger("click");
+                    });
+
+                    $("#ddlAllocationSource").change(function () {
+                        var selectedval = $("#ddlAllocationSource").val();
+
+                        if (selectedval >= 2) {
+                            $('#countsource').show();
+                            var teamid = '@Convert.ToInt32(Session["TeamID"])';
+
+                            $.ajax({
+                                "url" : "/StockCount/GetPreviousCounts?TeamID=" + teamid,
+                                "datatype": 'json',
+                                "type": 'GET',
+                                success: function (data) {
+                                    console.log(data);
+                                    if (data.success) {
+                                        $("#ddlCounts").empty();
+                                        for (var i = 0; i < data.data.length; i++) {
+                                            var opt = new Option(data.data[i].IterationName,data.data[i].ID);
+                                            $("#ddlCounts").append(opt);
+                                        }
+                                        $("#ddlCounts").val = "0";
+                                    }
+                                },
+                                error: function (error) {
+                                }
+                            });
+                        }
+                        else { $('#countsource').hide(); }
                     });
 
                     $("#ddlCounts").change(function () {
@@ -188,16 +225,23 @@
 
 
 
-                function GetSearchItem() {
-                    var countId = $("#ddlCounts").val();
-                    var SearchField = $("#ddlSearchField").val();
-                    var searchCriteria = $("#txtSearch").val();
+        function GetSearchItem() {
 
-                    datatable = $("#ItemTable").DataTable({
+            var allocsource = $('#ddlAllocationSource').val();
+            var countId = $("#ddlCounts").val();
+            var SearchField = $("#ddlSearchField").val();
+            var searchCriteria = $("#txtSearch").val();
+
+
+            if (allocsource === "0") {
+                alert("Kindly select a source to allocate item(s)");
+            }
+            else {
+                 datatable = $("#ItemTable").DataTable({
                         "destroy": true,
                         "ajax": {
                             "url": "/StockCount/GetSearchItem",
-                            "data": {TeamID: '@Convert.ToInt32(Session["TeamID"])',  PrevCount: countId, searchfield: SearchField, searchcriteria: searchCriteria },
+                            "data": { TeamID: '@Convert.ToInt32(Session["TeamID"])', source: allocsource, PrevCount: countId, searchfield: SearchField, searchcriteria: searchCriteria },
                             "type": "GET",
                             "datatype": "json"
                         },
@@ -258,6 +302,7 @@
                             "emptyTable": "No Items found for the selected selections"
                         }
                     });
+            }
         }
 
         function AllocateIems() {
@@ -268,6 +313,7 @@
             
             $('#ItemTable tbody').find('tr').each(function () {
                 var row = $(this);
+
                 if (row.find('input[type="checkbox"]').is(':checked')) {
                     count++;
                 }
@@ -276,13 +322,25 @@
             if (count > 0) {
                 RowID.length = count;
                 //alert(RowID.length);
+                var colcount = 0; var rowdata = '';
                 count = 0;
                 $('#ItemTable tbody').find('tr').each(function () {
                     var row = $(this);
                     if (row.find('input[type="checkbox"]').is(':checked')) {
                         //itemid = row.find('input[type="hidden"]').val();
-                        RowID[count] = row.find('input[type="hidden"]').val();
-                        //alert(itemid);
+
+                        //RowID[count] = row.find('input[type="hidden"]').val();
+                        colcount = 0;
+                        rowdata = '';
+                        row.find('td').each(function () {
+                            var col = $(this);
+                            if (colcount >= 1) {
+                                rowdata += col.html() + ':';
+                            }
+                            colcount++;
+                        });
+                        RowID[count] = row.find('input[type="hidden"]').val() + ':' + rowdata;
+                        alert(RowID[count]);
                         count++;
                     }
                 });
@@ -293,7 +351,10 @@
                     dataType: "json",
                     //data: { TeamID : TeamID,ID : RowID },
                     success: function (data) {
-                        if (data.success) { window.location.href = "/StockCount/AdminSTockCountSheet?TeamID=" + TeamID; }
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.href = "/StockCount/AdminSTockCountSheet?TeamID=" + TeamID;
+                        }
                         else {
                             alert(data.message);
                         }

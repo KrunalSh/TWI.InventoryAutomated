@@ -258,6 +258,7 @@
     <EntitySetMapping Name="StockCountAllocations">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
         <MappingFragment StoreEntitySet="StockCountAllocations">
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
           <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />

@@ -708,28 +708,94 @@ namespace TWI.InventoryAutomated.Controllers
         public ActionResult SelectStockCountItems(int ID)
         {
             Session["TeamID"] = ID;
+            //int CurrCountID = 0;
+            //int SCID = 0;
+            //string IterationName = "";
+            //string TeamCode = "";
+            List<StockCountIterations> _countlist = new List<StockCountIterations>();
+            _countlist = GetCountListByTeam(ID, "D");
+
+            #region "Commented Code - Moved to GetCountListByTeam Function"
+            //using (InventoryPortalEntities db = new InventoryPortalEntities())
+            //{
+            //    if (db.StockCountTeams.Where(x => x.ID == ID).Count() > 0)
+            //    {
+            //        CurrCountID = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().SCIterationID.Value;
+            //        TeamCode = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().TeamCode;
+            //        IterationName = db.StockCountIterations.Where(x => x.ID == CurrCountID).FirstOrDefault().IterationName;
+            //        SCID = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().SCID.Value;
+
+            //        //if (db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).Count() > 0)
+            //        //    _countlist = db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).ToList();
+            //    }
+
+            //    StockCountIterations _scitr = new StockCountIterations();
+            //    _scitr.ID = 0;
+            //    _scitr.IterationName = "-- Prev. Count --";
+            //    _countlist.Insert(0, _scitr);
+
+            //    ViewBag.CountList = new SelectList(_countlist, "ID", "IterationName");
+            //    ViewBag.IterationName = IterationName;
+            //    ViewBag.TeamCode = TeamCode;
+            //}
+            #endregion
+
+            return View();
+        }
+
+        public ActionResult GetPreviousCounts(int TeamID)
+        {
+            try
+            {
+                List<StockCountIterations> _countlist = GetCountListByTeam(TeamID,"P");
+                return Json(new { success = true, data = _countlist }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, data = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public List<StockCountIterations> GetCountListByTeam(int TeamID,string filter = "A")
+        {
             int CurrCountID = 0;
             int SCID = 0;
+            string IterationName = "";
+            string TeamCode = "";
+
             List<StockCountIterations> _countlist = new List<StockCountIterations>();
 
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
-                if (db.StockCountTeams.Where(x => x.ID == ID).Count() > 0)
+                if (db.StockCountTeams.Where(x => x.ID == TeamID).Count() > 0)
                 {
-                    CurrCountID = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().SCIterationID.Value;
-                    SCID = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().SCID.Value;
+                    CurrCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
+                    TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
+                    IterationName = db.StockCountIterations.Where(x => x.ID == CurrCountID).FirstOrDefault().IterationName;
+                    SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
 
-                    if (db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).Count() > 0)
-                        _countlist = db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).ToList();
+                    if (filter == "P")
+                    {
+                        if (db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).Count() > 0)
+                            _countlist = db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).ToList();
+                    }
+                    else if (filter == "A")
+                    {
+                        if (db.StockCountIterations.Where(x => x.SCID == SCID).Count() > 0)
+                            _countlist = db.StockCountIterations.Where(x => x.SCID == SCID).ToList();
+                    }
                 }
 
                 StockCountIterations _scitr = new StockCountIterations();
                 _scitr.ID = 0;
-                _scitr.IterationName = "Count0";
+                _scitr.IterationName = "-- Select Count --";
                 _countlist.Insert(0, _scitr);
+
                 ViewBag.CountList = new SelectList(_countlist, "ID", "IterationName");
+                ViewBag.IterationName = IterationName;
+                ViewBag.TeamCode = TeamCode;
             }
-            return View();
+            return _countlist;
         }
 
         public ActionResult GetAllocatedItemsByTeamID(int TeamID)
@@ -835,120 +901,147 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-        public JsonResult GetSearchItem(int TeamID, int PrevCount, string searchfield, string searchcriteria)
+        public JsonResult GetSearchItem(int TeamID,string source,int PrevCount, string searchfield, string searchcriteria)
         {
             int SCID = 0;
+            int ItrID = 0;
+            List<StockCountAllocations> _allocatedItems = new List<StockCountAllocations>();
+            List<StockCountAllocations> _ItemsList = new List<StockCountAllocations>();
             List<StockCountDetail> _items = new List<StockCountDetail>();
+
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
-                if (PrevCount == 0)
+                //if(db.StockCountAllocations.Where(x => x.TeamID == TeamID).Count() > 0)
+                //_allocatedItems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).ToList() ;
+
+                if (db.StockCountTeams.Where(x => x.ID == TeamID).Count() > 0)
                 {
-                    if (db.StockCountTeams.Where(x => x.ID == TeamID).Count() > 0)
-                        SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+                    SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+                    ItrID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
 
-                    //select all items from stockcountdetail table
-                    if (searchfield == "0")
-                    _items = db.StockCountDetail.Where(x => x.SCID == SCID).ToList();
+                    _allocatedItems = db.StockCountAllocations.Where(x => x.SCIterationID == ItrID).Distinct().ToList();
 
-                    //filter by zone code
-                    if (searchfield == "1" && !string.IsNullOrEmpty(searchcriteria))
+                    switch (source)
                     {
-                        if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ZoneCode.Contains(searchcriteria)).Count() > 0)
-                        {
-                            _items = (from e in db.StockCountDetail
-                                      where e.SCID == SCID && e.ZoneCode.Contains(searchcriteria)
-                                      select e).ToList();
-                        }
+                        case "1": _items = GetItemsFromNavision(TeamID, SCID, searchfield, searchcriteria, _allocatedItems); break;
+                        case "2": _ItemsList = GetDeviationsEntries(TeamID, SCID, PrevCount, searchfield, searchcriteria, _allocatedItems); break;
+                        case "3": _ItemsList = GetAdjustmentEntries(TeamID, SCID, PrevCount, searchfield, searchcriteria, _allocatedItems); break;
                     }
 
-                    //filter by bin code
-                    if (searchfield == "2" && !string.IsNullOrEmpty(searchcriteria))
-                    {
-                        string[] binfilter = searchcriteria.Split('|');
-                        string searchfilter = "";
-                        List<string> bins = new List<string>();
-                        if (binfilter.Count() == 1)
-                        {
-                            if (binfilter[0].Contains(","))
-                            {
-                                //search Items from particular bins separated by comma's
-                                bins = searchcriteria.Split(',').ToList(); ;
-                                if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).Count() > 0)
-                                    _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).ToList();
-                            }
-                            else if (binfilter[0].Contains("?"))
-                            {
-                                //search Items of a particular bin series
-                                searchfilter = binfilter[0].Substring(0, 4).Replace('?', ' ').Trim();
-                                if (db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).Count() > 0)
-                                    _items = db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).ToList();
-                            }
-                            else
-                            {
-                                //search Items of a particular bin
-                                searchfilter = binfilter[0].Trim();
-                                if (db.StockCountDetail.Where(x => x.BinCode == searchfilter).Count() > 0)
-                                    _items = db.StockCountDetail.Where(x => x.BinCode == searchfilter).ToList();
-                            }
-                        }
-                        else {
-                            //Search Items in a series of bins
-                            bins = searchcriteria.Split('|').ToList();
-                            for(int i=0; i <= bins.Count -1; i++) { bins[i] = bins[i].Replace('?', ' ').Trim(); }
-
-                            if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).Count() > 0)
-                                _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).ToList();
-                        }
-                    }
+                   
                 }
-            }
 
-            return Json(new { data = _items }, JsonRequestBehavior.AllowGet);
+
+                if (source == "1") { return Json(new { data = _items }, JsonRequestBehavior.AllowGet); }
+                else { return Json(new { data = _ItemsList }, JsonRequestBehavior.AllowGet); }
+                //if (PrevCount == 0)
+                //{
+                //    if (db.StockCountTeams.Where(x => x.ID == TeamID).Count() > 0)
+                //        SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+
+                //    //select all items from stockcountdetail table
+                //    if (searchfield == "0")
+                //    _items = db.StockCountDetail.Where(x => x.SCID == SCID).ToList();
+
+                //    //filter by zone code
+                //    if (searchfield == "1" && !string.IsNullOrEmpty(searchcriteria))
+                //    {
+                //        if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ZoneCode.Contains(searchcriteria)).Count() > 0)
+                //        {
+                //            _items = (from e in db.StockCountDetail
+                //                      where e.SCID == SCID && e.ZoneCode.Contains(searchcriteria)
+                //                      select e).ToList();
+                //        }
+                //    }
+
+                //    //filter by bin code
+                //    if (searchfield == "2" && !string.IsNullOrEmpty(searchcriteria))
+                //    {
+                //        string[] binfilter = searchcriteria.Split('|');
+                //        string searchfilter = "";
+                //        List<string> bins = new List<string>();
+                //        if (binfilter.Count() == 1)
+                //        {
+                //            if (binfilter[0].Contains(","))
+                //            {
+                //                //search Items from particular bins separated by comma's
+                //                bins = searchcriteria.Split(',').ToList(); ;
+                //                if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).Count() > 0)
+                //                    _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).ToList();
+                //            }
+                //            else if (binfilter[0].Contains("?"))
+                //            {
+                //                //search Items of a particular bin series
+                //                searchfilter = binfilter[0].Substring(0, 4).Replace('?', ' ').Trim();
+                //                if (db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).Count() > 0)
+                //                    _items = db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).ToList();
+                //            }
+                //            else
+                //            {
+                //                //search Items of a particular bin
+                //                searchfilter = binfilter[0].Trim();
+                //                if (db.StockCountDetail.Where(x => x.BinCode == searchfilter).Count() > 0)
+                //                    _items = db.StockCountDetail.Where(x => x.BinCode == searchfilter).ToList();
+                //            }
+                //        }
+                //        else {
+                //            //Search Items in a series of bins
+                //            bins = searchcriteria.Split('|').ToList();
+                //            for(int i=0; i <= bins.Count -1; i++) { bins[i] = bins[i].Replace('?', ' ').Trim(); }
+
+                //            if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).Count() > 0)
+                //                _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).ToList();
+                //        }
+                //    }
+                //}
+            }
         }
 
         public JsonResult AllocateItems(int TeamID, string ID)
-        {
-            string[] ItemId = ID.Split(',');
-            int ItemID = 0;
-            int CountID = 0;
+         {
+            string[] ItemId = ID.Split(new string[] { "::" },StringSplitOptions.None);
+            string[] Item;int ItemID = 0;string itemno;string zonecode; string bincode;string lotno;int CountID = 0;
+            StockCountAllocations _prevalloc;
+            StockCountDetail _std;
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     for (int i = 0; i <= ItemId.Length - 1; i++)
                     {
-                        ItemID = Convert.ToInt32(ItemId[i].Replace('\"', ' ').Trim());
-                        StockCountAllocations _item = new StockCountAllocations();
-
-                        StockCountDetail _std = db.StockCountDetail.Where(x => x.ID == ItemID).FirstOrDefault();
+                        Item = ItemId[i].Split(':');
+                        ItemID = Convert.ToInt32(Item[0].Replace(',', ' ').Trim());
+                        itemno = Convert.ToString(Item[1].Trim());
+                        zonecode = Convert.ToString(Item[3].Trim());
+                        bincode = Convert.ToString(Item[4].Trim());
+                        if (Item.Length >= 6)
+                            lotno = Convert.ToString(Item[5].Trim());
+                        else lotno = "";
 
                         CountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
-                        if(db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.ItemNo == _std.ItemNo && x.BinCode == _std.BinCode && x.ZoneCode == _std.ZoneCode && x.LotNo == _std.LotNo && x.ExpirationDate == _std.ExpirationDate).Count() > 0)
-                            continue;
 
-                        _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
-                        _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
-                        _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
-                        _item.AuditorQty = 0;
-                        _item.BatchName = _std.BatchName;
-                        _item.BinCode = _std.BinCode;
-                        _item.CreatedBy = Convert.ToInt32(Session["UserID"]);
-                        _item.CreatedDate = DateTime.Now;
-                        _item.Description = _std.Description;
-                        _item.DocType = "IN";
-                        _item.ExpirationDate = _std.ExpirationDate;
-                        //_item.FinalQty = 0;
-                        _item.ItemNo = _std.ItemNo;
-                        _item.LocationCode = _std.LocationCode;
-                        _item.LotNo = _std.LotNo;
-                        _item.NAVQty = _std.NAVQty;
-                        //_item.PhysicalQty = _std.PhyicalQty;
-                        _item.TeamID = TeamID;
-                        _item.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
-                        _item.TemplateName = _std.TemplateName;
-                        _item.UOMCode = _std.UOMCode;
-                        _item.WhseDocumentNo = _std.WhseDocumentNo;
-                        _item.ZoneCode = _std.ZoneCode;
+                        StockCountAllocations _item = new StockCountAllocations();
+
+                        if (db.StockCountDetail.Where(x => x.ID == ItemID && x.ItemNo == itemno && x.ZoneCode == zonecode && x.BinCode == bincode).Count() > 0)
+                        {
+                             //&& x.LotNo == lotno
+                            _std = db.StockCountDetail.Where(x => x.ID == ItemID).FirstOrDefault();
+
+                            if (db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.ItemNo == _std.ItemNo && x.BinCode == _std.BinCode && x.ZoneCode == _std.ZoneCode && x.LotNo == _std.LotNo && x.ExpirationDate == _std.ExpirationDate).Count() > 0)
+                                continue;
+
+                            _item = CreateAllocationRecord(TeamID, _std);
+                        }
+                        else if (db.StockCountAllocations.Where(x => x.ID == ItemID && x.ItemNo == itemno && x.ZoneCode == zonecode && x.BinCode == bincode).Count() > 0)
+                        {
+                            //&& x.LotNo == lotno
+                            _prevalloc = db.StockCountAllocations.Where(x => x.ID == ItemID).FirstOrDefault();
+                            if (db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.ItemNo == _prevalloc.ItemNo && x.BinCode == _prevalloc.BinCode && x.ZoneCode == _prevalloc.ZoneCode && x.LotNo == _prevalloc.LotNo && x.ExpirationDate == _prevalloc.ExpirationDate).Count() > 0)
+                                continue;
+
+                            _item = CreateAllocationRecord(TeamID, _prevalloc);
+                        }
+
                         db.StockCountAllocations.Add(_item);
                     }
                     db.SaveChanges();
@@ -959,9 +1052,75 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
-            
+            //return Json(new { success = false, message = "" }, JsonRequestBehavior.AllowGet);
         }
 
+        private StockCountAllocations CreateAllocationRecord(int TeamID,StockCountAllocations _allocitem)
+        {
+            StockCountAllocations _item = new StockCountAllocations();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
+                _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
+                _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
+                //_item.AuditorQty = 0;
+                _item.BatchName = _allocitem.BatchName;
+                _item.BinCode = _allocitem.BinCode;
+                _item.MemberName = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().UserName;
+                _item.CreatedBy = Convert.ToInt32(Session["UserID"]);
+                _item.CreatedDate = DateTime.Now;
+                _item.Description = _allocitem.Description;
+                _item.DocType = _allocitem.DocType;
+                _item.ExpirationDate = _allocitem.ExpirationDate;
+                //_item.FinalQty = 0;
+                _item.ItemNo = _allocitem.ItemNo;
+                _item.LocationCode = _allocitem.LocationCode;
+                _item.LotNo = _allocitem.LotNo;
+                _item.NAVQty = _allocitem.NAVQty;
+                //_item.PhysicalQty = _std.PhyicalQty;
+                _item.TeamID = TeamID;
+                _item.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
+                _item.TemplateName = _allocitem.TemplateName;
+                _item.UOMCode = _allocitem.UOMCode;
+                _item.WhseDocumentNo = _allocitem.WhseDocumentNo;
+                _item.ZoneCode = _allocitem.ZoneCode;
+            }
+            return _item;
+        }
+
+        private StockCountAllocations CreateAllocationRecord(int TeamID,StockCountDetail _std)
+        {
+            StockCountAllocations _item = new StockCountAllocations();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
+                _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
+                _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
+                //_item.AuditorQty = 0;
+                _item.BatchName = _std.BatchName;
+                _item.BinCode = _std.BinCode;
+                _item.MemberName = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().UserName;
+                _item.CreatedBy = Convert.ToInt32(Session["UserID"]);
+                _item.CreatedDate = DateTime.Now;
+                _item.Description = _std.Description;
+                _item.DocType = "INV";
+                _item.ExpirationDate = _std.ExpirationDate;
+                //_item.FinalQty = 0;
+                _item.ItemNo = _std.ItemNo;
+                _item.LocationCode = _std.LocationCode;
+                _item.LotNo = _std.LotNo;
+                _item.NAVQty = _std.NAVQty;
+                //_item.PhysicalQty = _std.PhyicalQty;
+                _item.TeamID = TeamID;
+                _item.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
+                _item.TemplateName = _std.TemplateName;
+                _item.UOMCode = _std.UOMCode;
+                _item.WhseDocumentNo = _std.WhseDocumentNo;
+                _item.ZoneCode = _std.ZoneCode;
+            }
+            return _item;
+        }
+        
         #endregion
 
         #region "Stock Count Sheet"
@@ -1123,7 +1282,6 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult UpdateQty(int id, string propertyName, string value)
         {
@@ -1136,8 +1294,10 @@ namespace TWI.InventoryAutomated.Controllers
                 if (_sct != null)
                 {
                     _sct.PhysicalQty = Convert.ToDecimal(value);
+                    _sct.UpdatedDate = DateTime.Now;
                     db.StockCountAllocations.Attach(_sct);
                     db.Entry(_sct).Property(x => x.PhysicalQty).IsModified = true;
+                    db.Entry(_sct).Property(x => x.UpdatedDate).IsModified = true;
                     db.SaveChanges();
                     status = true;
                 }
@@ -1150,7 +1310,6 @@ namespace TWI.InventoryAutomated.Controllers
             JObject o = JObject.FromObject(response);
             return Content(o.ToString()); 
         }
-
 
         public ActionResult UpdatePhysicalQty(int ID)
         {
@@ -1246,7 +1405,6 @@ namespace TWI.InventoryAutomated.Controllers
         #endregion
 
         #region "Manager View"
-
         public JsonResult ManagerViewValidation()
         {
             string InstanceName = Convert.ToString(Session["InstanceName"]);
@@ -1287,7 +1445,23 @@ namespace TWI.InventoryAutomated.Controllers
         {
             StockCountHeader _sch = new StockCountHeader();
             using (InventoryPortalEntities db = new InventoryPortalEntities())
-            { _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault(); }
+            { _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+
+                List<string> _zonecodes = (from e in db.StockCountAllocations
+                                           where e.StockCountID == ID
+                                           select e.ZoneCode).Distinct().ToList();
+
+                _zonecodes.Insert(0, "--Select Zone --");
+
+                List<string> _bincode = (from q in db.StockCountAllocations
+                                         where q.StockCountID == ID
+                                         select q.BinCode).Distinct().ToList();
+
+                _bincode.Insert(0, "-- Select Bin Code");
+
+                ViewBag.ZoneCodes = new SelectList(_zonecodes);
+                ViewBag.BinCodes = new SelectList(_bincode);
+            }
             List<StockCountHeader> _batchlist = GetBatchListing();
             ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
             ViewBag.BatchID = ID;
@@ -1324,10 +1498,11 @@ namespace TWI.InventoryAutomated.Controllers
                         int colcount = ds.Tables[0].Columns.Count;
                         bool status = false;
                         string countstatusbtn = "";
+                        string colvalue = "";
                         //int colcount = dt.Columns.Count;
                         foreach (DataColumn col in ds.Tables[0].Columns)
                         {
-                            if (count >= 7 && col.ColumnName.ToLower() != "final qty") {
+                            if (count >= 8 && col.ColumnName.ToLower() != "final qty") {
                                 DataRow[] dr1 = ds.Tables[1].Select("IterationName ='" + col.ColumnName + "'");
                                 if (dr1.Length == 1)
                                 {
@@ -1336,7 +1511,6 @@ namespace TWI.InventoryAutomated.Controllers
                                         status = true;
                                         countstatusbtn = " <a class='btn btn-primary fa fa-unlock' style='margin-left:5px;width:20px;height:20px;padding-left:3px;padding-top:2px;'></a>";
                                     }
-
                                     else { countstatusbtn = " <a class='btn btn-primary fa fa-lock' style='margin-left:5px;width:17px;height:20px;padding-left:3px; padding-top:2px;'></a>"; }
                                 }
 
@@ -1346,9 +1520,17 @@ namespace TWI.InventoryAutomated.Controllers
                                     countstatusbtn += "<br /><span style'float:left;margin:auto;font-family:'Calibri';font-size:9px;color:blue;'>" + Convert.ToString(dr2[0]["ItemsCounted"]) + " / "+ Convert.ToString(dr2[0]["TotalItems"]) + " counted</span>";
                                 }
                                 colhead = col.ColumnName + countstatusbtn;
+                                colvalue = Convert.ToString(dr[col]);
+                                string[] splitvalues = Convert.ToString(dr[col]).Split('|');
+                                if (splitvalues.Length > 1)
+                                {
+                                    colvalue = "<span style='font-family:Calibri;font-size:14px !important;font-weight:bold;'>" + splitvalues[0] + "</span><br /><span style='font-family:Calibri;font-size:12px !important;'>" + splitvalues[1] + "</span>";
+                                }
+                                else { colvalue = Convert.ToString(dr[col]); }
+                                
                             }
-                            else { colhead = col.ColumnName; }
-                            row.Add(colhead, dr[col]);
+                            else { colhead = col.ColumnName; colvalue = Convert.ToString(dr[col]); }
+                            row.Add(colhead, colvalue);
                             count++;
                         }
                         rows.Add(row);
@@ -1359,7 +1541,6 @@ namespace TWI.InventoryAutomated.Controllers
 
            
         }
-
         #endregion 
 
         #endregion
@@ -1472,6 +1653,202 @@ namespace TWI.InventoryAutomated.Controllers
                 _userList.Insert(0, _row0);
             }
             return _userList;
+        }
+
+        List<StockCountDetail> GetItemsFromNavision(int TeamID, int SCID, string searchfield, string searchcriteria,List<StockCountAllocations> _allocatedItems)
+        {
+            List<StockCountDetail> _items = new List<StockCountDetail>();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                //select all items from stockcountdetail table
+                if (searchfield == "0")
+                    _items = db.StockCountDetail.Where(x => x.SCID == SCID).ToList();
+
+                //filter by zone code
+                if (searchfield == "1" && !string.IsNullOrEmpty(searchcriteria))
+                {
+                    if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ZoneCode.Contains(searchcriteria)).Count() > 0)
+                    {
+                        _items = (from e in db.StockCountDetail
+                                  where e.SCID == SCID && e.ZoneCode.Contains(searchcriteria)
+                                  select e).ToList();
+                    }
+                }
+
+                //filter by bin code
+                if (searchfield == "2" && !string.IsNullOrEmpty(searchcriteria))
+                {
+                    string[] binfilter = searchcriteria.Split('|');
+                    string searchfilter = "";
+                    List<string> bins = new List<string>();
+                    if (binfilter.Count() == 1)
+                    {
+                        if (binfilter[0].Contains(","))
+                        {
+                            //search Items from particular bins separated by comma's
+                            bins = searchcriteria.Split(',').ToList(); ;
+                            if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).Count() > 0)
+                                _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).ToList();
+                        }
+                        else if (binfilter[0].Contains("?"))
+                        {
+                            //search Items of a particular bin series
+                            searchfilter = binfilter[0].Substring(0, 4).Replace('?', ' ').Trim();
+                            if (db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).Count() > 0)
+                                _items = db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).ToList();
+                        }
+                        else
+                        {
+                            //search Items of a particular bin
+                            searchfilter = binfilter[0].Trim();
+                            if (db.StockCountDetail.Where(x => x.BinCode == searchfilter).Count() > 0)
+                                _items = db.StockCountDetail.Where(x => x.BinCode == searchfilter).ToList();
+                        }
+                    }
+                    else
+                    {
+                        //Search Items in a series of bins
+                        bins = searchcriteria.Split('|').ToList();
+                        for (int i = 0; i <= bins.Count - 1; i++) { bins[i] = bins[i].Replace('?', ' ').Trim(); }
+
+                        if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).Count() > 0)
+                            _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).ToList();
+                    }
+                }
+
+
+
+                foreach (StockCountDetail _scd in _items.ToList())
+                {
+                    if (_allocatedItems.Where(x => x.ItemNo == _scd.ItemNo && x.BinCode == _scd.BinCode && x.ZoneCode == _scd.ZoneCode && x.LotNo == _scd.LotNo && x.ExpirationDate == _scd.ExpirationDate).Count() > 0)
+                    {
+                        _items.Remove(_scd);
+                    }
+                }
+            }
+            return _items;
+        }
+
+        List<StockCountAllocations> GetDeviationsEntries(int TeamID,int SCID ,int PrevCount, string searchfield, string searchcriteria,List<StockCountAllocations> _allocatedItems)
+        {
+            List<StockCountAllocations> _prevcountalloc = new List<StockCountAllocations>();
+
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (PrevCount > 0)
+                {
+                    // Get Selected Previous Count all deviations
+                    if (searchfield == "0")
+                        _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0)).ToList();
+
+                    // Get Selected Previous Count deviations for selected Zones
+                    if (searchfield == "1")
+                    {
+                        _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && x.ZoneCode.Contains(searchcriteria) && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0)).ToList();
+                    }
+
+                    if (searchfield == "2")
+                    {
+                        string[] binfilter = searchcriteria.Split('|');
+                        string searchfilter = "";
+                        List<string> bins = new List<string>();
+                        if (binfilter.Count() == 1)
+                        {
+                            if (binfilter[0].Contains(","))
+                            {
+                                //search Items from particular bins separated by comma's
+                                bins = searchcriteria.Split(',').ToList();
+                                if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && bins.Contains(x.BinCode)).Count() > 0)
+                                    _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && bins.Contains(x.BinCode)).ToList();
+                            }
+                            else if (binfilter[0].Contains("?"))
+                            {
+                                //search Items of a particular bin series
+                                searchfilter = binfilter[0].Substring(0, 4).Replace('?', ' ').Trim();
+                                if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).Count() > 0)
+                                    _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).ToList();
+                            }
+                            else
+                            {
+                                //search Items of a particular bin
+                                searchfilter = binfilter[0].Trim();
+                                if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && x.BinCode == searchfilter).Count() > 0)
+                                    _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && x.BinCode == searchfilter).ToList();
+                            }
+                        }
+                        else
+                        {
+                            //Search Items in a series of bins
+                            bins = searchcriteria.Split('|').ToList();
+                            for (int i = 0; i <= bins.Count - 1; i++) { bins[i] = bins[i].Replace('?', ' ').Trim(); }
+
+                            if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0) && bins.Contains(x.BinCode.Substring(0, 4))).Count() > 0)
+                                _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "INV" && ((x.NAVQty - x.PhysicalQty) > 0 || (x.NAVQty - x.PhysicalQty) < 0)  && bins.Contains(x.BinCode.Substring(0, 4))).ToList();
+                        }
+                    }
+                }
+            }
+
+            return _prevcountalloc;
+        }
+
+        List<StockCountAllocations> GetAdjustmentEntries(int TeamID, int SCID,int PrevCount, string searchfield, string searchcriteria, List<StockCountAllocations> _allocatedItems)
+        {
+            List<StockCountAllocations> _prevcountalloc = new List<StockCountAllocations>();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (PrevCount > 0)
+                {
+                    if (searchfield == "0")
+                        _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ").ToList();
+
+                    if (searchfield == "1")
+                    {
+                        _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && x.ZoneCode.Contains(searchcriteria)).ToList();
+                    }
+
+                    if (searchfield == "2")
+                    {
+                        string[] binfilter = searchcriteria.Split('|');
+                        string searchfilter = "";
+                        List<string> bins = new List<string>();
+                        if (binfilter.Count() == 1)
+                        {
+                            if (binfilter[0].Contains(","))
+                            {
+                                //search Items from particular bins separated by comma's
+                                bins = searchcriteria.Split(',').ToList();
+                                if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && bins.Contains(x.BinCode)).Count() > 0)
+                                    _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && bins.Contains(x.BinCode)).ToList();
+                            }
+                            else if (binfilter[0].Contains("?"))
+                            {
+                                //search Items of a particular bin series
+                                searchfilter = binfilter[0].Substring(0, 4).Replace('?', ' ').Trim();
+                                if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).Count() > 0)
+                                    _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).ToList();
+                            }
+                            else
+                            {
+                                //search Items of a particular bin
+                                searchfilter = binfilter[0].Trim();
+                                if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && x.BinCode == searchfilter).Count() > 0)
+                                    _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && x.BinCode == searchfilter).ToList();
+                            }
+                        }
+                        else
+                        {
+                            //Search Items in a series of bins
+                            bins = searchcriteria.Split('|').ToList();
+                            for (int i = 0; i <= bins.Count - 1; i++) { bins[i] = bins[i].Replace('?', ' ').Trim(); }
+
+                            if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && bins.Contains(x.BinCode.Substring(0, 4))).Count() > 0)
+                                _prevcountalloc = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == PrevCount && x.DocType == "ADJ" && bins.Contains(x.BinCode.Substring(0, 4))).ToList();
+                        }
+                    }
+                }
+            }
+            return _prevcountalloc;
         }
 
         #endregion
@@ -2200,9 +2577,8 @@ namespace TWI.InventoryAutomated.Controllers
             return "";
         }
 
-        #endregion 
+        #endregion
 
-       
         #endregion
 
     }

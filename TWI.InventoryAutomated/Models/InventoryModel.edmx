@@ -123,6 +123,7 @@
           <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
           <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
           <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
         <EntityType Name="StockCountDetail">
@@ -574,6 +575,7 @@
           <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -838,6 +840,7 @@
           <EntitySetMapping Name="StockCountAllocations">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
               <MappingFragment StoreEntitySet="StockCountAllocations">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />

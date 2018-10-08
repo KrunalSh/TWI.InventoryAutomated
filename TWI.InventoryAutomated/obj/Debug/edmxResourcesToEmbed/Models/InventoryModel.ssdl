@@ -118,6 +118,7 @@
     <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
     <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
     <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
   </EntityType>
   <EntityType Name="StockCountDetail">

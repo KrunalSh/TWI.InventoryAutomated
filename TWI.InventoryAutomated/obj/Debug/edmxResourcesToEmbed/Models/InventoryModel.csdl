@@ -286,5 +286,6 @@
     <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>
