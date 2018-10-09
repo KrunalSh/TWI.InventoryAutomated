@@ -266,8 +266,9 @@
     <Property Name="SCIterationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="TeamID" Type="Int32" />
     <Property Name="TeamCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="MemberName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="SearchCriteria" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="DocType" Type="String" MaxLength="2" FixedLength="false" Unicode="false" />
+    <Property Name="DocType" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
     <Property Name="WhseDocumentNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="ZoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="BinCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -285,5 +286,6 @@
     <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>

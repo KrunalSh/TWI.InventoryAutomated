@@ -258,6 +258,7 @@
     <EntitySetMapping Name="StockCountAllocations">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
         <MappingFragment StoreEntitySet="StockCountAllocations">
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
           <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
@@ -277,6 +278,7 @@
           <ScalarProperty Name="WhseDocumentNo" ColumnName="WhseDocumentNo" />
           <ScalarProperty Name="DocType" ColumnName="DocType" />
           <ScalarProperty Name="SearchCriteria" ColumnName="SearchCriteria" />
+          <ScalarProperty Name="MemberName" ColumnName="MemberName" />
           <ScalarProperty Name="TeamCode" ColumnName="TeamCode" />
           <ScalarProperty Name="TeamID" ColumnName="TeamID" />
           <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />

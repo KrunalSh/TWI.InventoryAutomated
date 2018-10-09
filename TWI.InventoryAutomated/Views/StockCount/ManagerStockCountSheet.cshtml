@@ -79,7 +79,7 @@
                 </div>
             </div>
         </div>
-        <div style="float:left;width:100% !important;margin:auto 15px;">
+        <div style="float:left;width:100%;margin:auto 15px;padding-right:13px;">
                 <div class="row col-sm-12 table-responsive" style="max-width:100% !important;">
                     <table id="HeaderTable" class="table table-striped table-responsive table-bordered"></table>
                 </div>
@@ -96,7 +96,7 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
 
     <script>
-        var datatable;
+        var datatable; var rows_selected = [];
         var editor;
         
         $(document).ready(function () {
@@ -126,6 +126,61 @@
                     }
                 });
             });
+
+            //$('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
+            //    var $row = $(this).closest('tr');
+
+            //    // Get row data
+            //    var data = datatable.row($row).data();
+
+            //    // Get row ID
+            //    var rowId = data[0];
+
+            //    // Determine whether row ID is in the list of selected row IDs 
+            //    var index = $.inArray(rowId, rows_selected);
+
+            //    // If checkbox is checked and row ID is not in list of selected row IDs
+            //    if (this.checked && index === -1) {
+            //        rows_selected.push(rowId);
+
+            //        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+            //    } else if (!this.checked && index !== -1) {
+            //        rows_selected.splice(index, 1);
+            //    }
+
+            //    if (this.checked) {
+            //        $row.addClass('selected');
+            //    } else {
+            //        $row.removeClass('selected');
+            //    }
+
+            //    // Update state of "Select all" control
+            //    updateDataTableSelectAllCtrl(datatable);
+
+            //    // Prevent click event from propagating to parent
+            //    e.stopPropagation();
+            //});
+
+            //// Handle click on table cells with checkboxes
+            //$('#HeaderTable').on('click', 'tbody td, thead th:first-child', function (e) {
+            //    $(this).parent().find('input[type="checkbox"]').trigger('click');
+            //});
+
+            //$('thead input[name="select_all"]', datatable.table().container()).on('click', function (e) {
+            //    if (this.checked) {
+            //        $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+            //    } else {
+            //        $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
+            //    }
+
+            //    // Prevent click event from propagating to parent
+            //    e.stopPropagation();
+            //});
+
+            //datatable.on('draw', function () {
+            //    // Update state of "Select all" control
+            //    updateDataTableSelectAllCtrl(datatable);
+            //});
         });
 
         function RefreshManagerView(batchId) {
@@ -141,7 +196,6 @@
                 success: function (data) {
                     //console.log(data);
                     if (data.length === 0) {
-                        //alert("hi");
                         datatable.table().clear();
                         datatable = $("#HeaderTable").DataTable({
                             "destroy": true, data: dataset,
@@ -156,14 +210,8 @@
                     }
                     else {
 
-                        console.log(data);
+                        //console.log(data);
                         dataset = data;
-                        //var chkcol = {};
-                        //chkcol.data = '<input type=checkbox name="select_all" checked=value>';
-                        //chkcol.title = '';
-                        //my_columns.push(chkcol);
-
-
 
                         $.each(data[0], function (key, value) {
                             var my_item = {};
@@ -172,32 +220,39 @@
                             my_columns.push(my_item);
                         });
 
-                        
-
-
-
-                        //editor = new $.fn.DataTable.Editor({
-                        //    "ajax": "/StockCount/GetManagerViewData?ID=" + batchId,
-                        //    "table": "#HeaderTable",
-                        //    "fields": [{ label: "Final Qty:", name: "FinalQty" }]
-                        //});
-
                         datatable = $('#HeaderTable').DataTable({
                             "destroy": true,
                             data: dataset,
-                            //'columnDefs': [
-                            //    {
-                            //        'targets': [0],
-                            //        'searchable': false,
-                            //        'orderable': false,
-                            //        'width': '1%',
-                            //        'className': 'dt-body-center',
-                            //        'data': "ID",
-                            //        'render': function (data, type, full, meta) {
-                            //            return '<input type="checkbox" checked value>&nbsp;<input id="ID" type="hidden" value="' + data + '">';
-                            //        }
-                            //    }],
-                            //'select': { 'style': 'multi' },
+                            'columnDefs': [
+                                {
+                                    'targets': [0],
+                                    'searchable': false,
+                                    'orderable': false,
+                                    'width': '1%',
+                                    'className': 'dt-body-center'
+                                },
+                                {
+                                    'targets': [1],
+                                    'searchable': false,
+                                    'orderable': false,
+                                    'width': '5%',
+                                    'className': 'dt-body-center'
+                                },
+                                {
+                                    'targets': [5],
+                                    'searchable': false,
+                                    'orderable': false,
+                                    'width': '25%'
+                                },
+                                {
+                                    'targets': [my_columns.length-1],
+                                    'searchable': false,
+                                    'orderable': false,
+                                    'width': '5%',
+                                    'className': 'dt-body-center'
+                                }
+                            ],
+                            'select': { 'style': 'multi' },
                             'order': [[1, 'asc']],
                             "columns": my_columns
                         });
@@ -205,5 +260,35 @@
                 }
             });
         }
+
+        //function updateDataTableSelectAllCtrl(table) {
+        //    var $table = table.table().node();
+        //    var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+        //    var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+        //    var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+
+        //    // If none of the checkboxes are checked
+        //    if ($chkbox_checked.length === 0) {
+        //        chkbox_select_all.checked = false;
+        //        if ('indeterminate' in chkbox_select_all) {
+        //            chkbox_select_all.indeterminate = false;
+        //        }
+
+        //        // If all of the checkboxes are checked
+        //    } else if ($chkbox_checked.length === $chkbox_all.length) {
+        //        chkbox_select_all.checked = true;
+        //        if ('indeterminate' in chkbox_select_all) {
+        //            chkbox_select_all.indeterminate = false;
+        //        }
+
+        //        // If some of the checkboxes are checked
+        //    } else {
+        //        chkbox_select_all.checked = true;
+        //        if ('indeterminate' in chkbox_select_all) {
+        //            chkbox_select_all.indeterminate = true;
+        //        }
+        //    }
+        //}
+
     </script>
 }

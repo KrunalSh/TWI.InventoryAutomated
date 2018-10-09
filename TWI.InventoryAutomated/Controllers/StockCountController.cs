@@ -1485,10 +1485,15 @@ namespace TWI.InventoryAutomated.Controllers
                     System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
                     List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
                     Dictionary<string, object> row;
-
+                    int rowNo = 1;
 
                     if (ds.Tables.Count == 0)
                     { /*row = new Dictionary<string, object>(); rows.Add(row);*/ return Json(rows, JsonRequestBehavior.AllowGet); }
+
+                    
+
+                    //ds.Tables[0].Columns.Add("ID", Type.GetType("System.String"));
+                    //ds.Tables[0].AcceptChanges();
 
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
@@ -1499,10 +1504,15 @@ namespace TWI.InventoryAutomated.Controllers
                         bool status = false;
                         string countstatusbtn = "";
                         string colvalue = "";
-                        //int colcount = dt.Columns.Count;
+                        
                         foreach (DataColumn col in ds.Tables[0].Columns)
                         {
-                            if (count >= 8 && col.ColumnName.ToLower() != "final qty") {
+                            if (count == 0)
+                            {
+                                colhead = "<input type='checkbox' name='select_all' checked=value>";
+                                colvalue = "<input type='checkbox' checked=value>&nbsp;<input id='ID' type='hidden' value='" + rowNo + "'>";
+                            }
+                            else if (count >= 8 && col.ColumnName.ToLower() != "final qty") {
                                 DataRow[] dr1 = ds.Tables[1].Select("IterationName ='" + col.ColumnName + "'");
                                 if (dr1.Length == 1)
                                 {
@@ -1534,6 +1544,7 @@ namespace TWI.InventoryAutomated.Controllers
                             count++;
                         }
                         rows.Add(row);
+                        rowNo++;
                     }
                     return Json( rows , JsonRequestBehavior.AllowGet);
                 }

@@ -9,6 +9,7 @@
 
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 
 @**@
 <div class="row" style="border:2px #808080 solid;">
@@ -52,7 +53,7 @@
                     <input type="text" class="form-control" placeholder="Qty found" id="txtPhyQty" name="txtPhyQty" width="80" />
                 </div>
                 <div style="float:left;margin-bottom:10px;">
-                    <a class="btn btn-primary fa fa-save fa-2x" style="width:50px;height:33px;padding-top:2px;" data-toggle="tooltip" title="" onclick="SaveAdjustments();"></a>
+                    <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="SaveAdjustments();">Save</a>
                 </div>
             </div>
         </div>
@@ -63,7 +64,7 @@
                 <div class="form-group">
                     <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" />
                 </div>
-                <button type="submit" value="Search" class="btn btn-success">Search</button>
+                <button type="submit" value="Search" class="btn btn-primary" style="font-weight:600;">Search</button>
             }
         </div>
         <div style="float:left;width:100% !important;margin:15px;">
@@ -100,7 +101,7 @@
     {
     <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    @*<script src="~/Scripts/jquery-1.10.2.js"></script>*@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="https://www.appelsiini.net/download/jquery.jeditable.js"></script>
 
@@ -144,11 +145,11 @@
             }
             );
 
-            //$("#txtExpDate").datepicker({
-            //    changeMonth: true,
-            //    changeYear: true,
-            //    dateFormat: 'dd/mm/yy'
-            //});
+            $("#txtExpDate").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'dd/mm/yy'
+            });
 
 
         });
