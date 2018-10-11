@@ -33,13 +33,12 @@ namespace TWI.InventoryAutomated.Models
         public string UOMCode { get; set; }
         public Nullable<decimal> NAVQty { get; set; }
         public Nullable<decimal> PhysicalQty { get; set; }
-        public Nullable<decimal> AuditorQty { get; set; }
         public Nullable<decimal> FinalQty { get; set; }
         public string TemplateName { get; set; }
         public string BatchName { get; set; }
         public string LocationCode { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<int> CreatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
     }
 }

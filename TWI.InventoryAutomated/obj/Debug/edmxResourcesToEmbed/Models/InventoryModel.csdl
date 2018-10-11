@@ -268,7 +268,7 @@
     <Property Name="TeamCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
     <Property Name="MemberName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="SearchCriteria" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="DocType" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="DocType" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
     <Property Name="WhseDocumentNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="ZoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="BinCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -279,13 +279,12 @@
     <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="NAVQty" Type="Decimal" Precision="38" Scale="2" />
     <Property Name="PhysicalQty" Type="Decimal" Precision="38" Scale="2" />
-    <Property Name="AuditorQty" Type="Decimal" Precision="38" Scale="2" />
     <Property Name="FinalQty" Type="Decimal" Precision="38" Scale="2" />
     <Property Name="TemplateName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="BatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-    <Property Name="CreatedBy" Type="Int32" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
   </EntityType>
 </Schema>

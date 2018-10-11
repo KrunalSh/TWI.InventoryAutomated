@@ -58,9 +58,9 @@
                     </div>
                 </div>
             </div>
-            <div style="float:left;margin-bottom:10px;margin-left:5px !important;">
+            @*<div style="float:left;margin-bottom:10px;margin-left:5px !important;">
                 <a class="btn btn-primary" style="width:70px;height:55px;padding-left:7px;padding-top:13px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Post</a>
-            </div>
+            </div>*@
         </div>
         <div style="float:left !important;width:100% !important;margin:0 15px 5px 30px;padding-right:35px;">
             <div class="row">
@@ -482,9 +482,9 @@
         }
 
         function PushFinalQty() {
-            alert("Push Final Qty");
+            //alert("Push Final Qty");
             var RowID = []; var count = 0;
-            
+            //var selectedbatch = $("#ddlBatches").val();
             $('#HeaderTable tbody').find('tr').each(function () {
                 var row = $(this);
                 if (row.find('input[type="checkbox"]').is(':checked')) {
@@ -500,7 +500,7 @@
                 if ($("#rdbSingle").is(':checked')) {
                     itemstringstart = $("#ddlBatches").val() + ':' + 'S:' + $("#ddlCounts").val() + ':';
                     if ($("#chkIncludeZero").is(':checked')) { itemstringstart += '1:'; } else { itemstringstart += '0:'; }
-                    alert(itemstringstart);
+                    //alert(itemstringstart);
                 }
                 else {
                     var checkboxcount = 0;
@@ -520,7 +520,7 @@
                     if ($("#chkIncludeZero").is(':checked')) { itemstringstart += '1:'; } else { itemstringstart += '0:'; }
 
                     itemstringstart += iterationvalues.substring(0, iterationvalues.length - 2) + ':'; 
-                    alert(itemstringstart);
+                    //alert(itemstringstart);
                 }
 
                 $('#HeaderTable tbody').find('tr').each(function () {
@@ -548,7 +548,7 @@
                     datatype: "Json",
                     success: function (data) {
                         alert(data);
-                        RefreshManagerView($("ddlBatches").val(), "%", "%", "%");
+                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
                     }
                 });
 

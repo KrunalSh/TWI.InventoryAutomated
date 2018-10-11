@@ -1079,7 +1079,6 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
                 _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
                 _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
-                //_item.AuditorQty = 0;
                 _item.BatchName = _allocitem.BatchName;
                 _item.BinCode = _allocitem.BinCode;
                 _item.MemberName = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().UserName;
@@ -1088,12 +1087,10 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.Description = _allocitem.Description;
                 _item.DocType = _allocitem.DocType;
                 _item.ExpirationDate = _allocitem.ExpirationDate;
-                //_item.FinalQty = 0;
                 _item.ItemNo = Convert.ToString(_allocitem.ItemNo);
                 _item.LocationCode = Convert.ToString(_allocitem.LocationCode);
                 _item.LotNo = Convert.ToString(_allocitem.LotNo);
                 _item.NAVQty = _allocitem.NAVQty;
-                //_item.PhysicalQty = _std.PhyicalQty;
                 _item.TeamID = TeamID;
                 _item.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
                 _item.TemplateName = _allocitem.TemplateName;
@@ -1112,7 +1109,6 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
                 _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
                 _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
-                //_item.AuditorQty = 0;
                 _item.BatchName = _std.BatchName;
                 _item.BinCode = _std.BinCode;
                 _item.MemberName = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().UserName;
@@ -1121,12 +1117,10 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.Description = _std.Description;
                 _item.DocType = "INV";
                 _item.ExpirationDate = _std.ExpirationDate;
-                //_item.FinalQty = 0;
                 _item.ItemNo = Convert.ToString(_std.ItemNo);
                 _item.LocationCode = Convert.ToString(_std.LocationCode);
                 _item.LotNo =Convert.ToString(_std.LotNo);
                 _item.NAVQty = _std.NAVQty;
-                //_item.PhysicalQty = _std.PhyicalQty;
                 _item.TeamID = TeamID;
                 _item.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
                 _item.TemplateName = _std.TemplateName;
@@ -1386,16 +1380,15 @@ namespace TWI.InventoryAutomated.Controllers
                     _sca.StockCountID = SCID;
                     _sca.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
                     _sca.SCIterationName = db.StockCountIterations.Where(x => x.ID == _sca.SCIterationID).FirstOrDefault().IterationName;
-                    _sca.AuditorQty = 0;
+                    //_sca.AuditorQty = 0;
                     _sca.BatchName = _std.BatchName;
                     _sca.BinCode = BinCode;
                     _sca.MemberName = SessionPersister.UserName;
                     _sca.CreatedBy = Convert.ToInt32(Session["UserID"]);
                     _sca.CreatedDate = DateTime.Now;
                     _sca.Description = _obj[0].Description;
-                    _sca.DocType = "ADJ";
+                    _sca.DocType = "ADJUST";
                     _sca.ExpirationDate = ExpDate;
-                    //_sca.FinalQty =;
                     _sca.ItemNo = ItemNo;
                     _sca.LocationCode = _std.LocationCode;
                     _sca.LotNo = LotNo;
@@ -1491,10 +1484,10 @@ namespace TWI.InventoryAutomated.Controllers
             DataSet ds = new DataSet();
             using (SqlConnection con = new SqlConnection("Data Source=AE01LP83\\SQL2014EXP;Initial Catalog=TWIInventoryPortal;User ID=itsupport;Password=saSql2014"))
             {
-                using (SqlCommand cmd = new SqlCommand("GetManagerViewByBatch", con))
+                using (SqlCommand cmd = new SqlCommand("GetManagerViewByBatch_Test", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add(new SqlParameter("@SCID", ID));
+                    cmd.Parameters.Add(new SqlParameter("@SCID", ID)); 
                     cmd.Parameters.Add(new SqlParameter("@Zone", Zone));
                     cmd.Parameters.Add(new SqlParameter("@Bin", Bin));
                     cmd.Parameters.Add(new SqlParameter("@Item", Item));
@@ -1954,8 +1947,9 @@ namespace TWI.InventoryAutomated.Controllers
             string bincode = ""; string itemcode = "";
             string lotno = null;
             string expirydate = "";
+            StockCountDetail _scd;
 
-            
+
             BatchID = Convert.ToInt32(Item[0].Trim());
             sourcemode = Item[1].Trim();
 
@@ -1975,11 +1969,29 @@ namespace TWI.InventoryAutomated.Controllers
                     if (db.StockCountAllocations.Where(x => x.StockCountID == BatchID && x.SCIterationID == CountID && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).Count() > 0)
                     {
                         StockCountAllocations _sca = db.StockCountAllocations.Where(x => x.StockCountID == BatchID && x.SCIterationID == CountID && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
-                        _sca.FinalQty = _sca.PhysicalQty;
+                        //_sca.FinalQty = _sca.PhysicalQty;
 
-                        db.StockCountAllocations.Attach(_sca);
-                        db.Entry(_sca).Property(x => x.FinalQty).IsModified = true;
-                        db.SaveChanges();
+                        if (doctype == "ADJUST")
+                        {
+                            _scd = new StockCountDetail();
+                            _scd.SCID = BatchID; _scd.BatchName = _sca.BatchName; _scd.BinCode = bincode; _scd.CreatedBy = Convert.ToInt32( Session["UserID"]);
+                            _scd.CreatedDate = DateTime.Now; _scd.Description = _sca.Description; _scd.ExpirationDate = _sca.ExpirationDate;
+                            _scd.ItemNo = itemcode;_scd.LocationCode = _sca.LocationCode; _scd.LotNo = _sca.LotNo; _scd.NAVQty = _sca.NAVQty;
+                            _scd.PhyicalQty = _sca.PhysicalQty; _scd.TemplateName = "ADJUST"; _scd.UOMCode = _sca.UOMCode;
+                            _scd.WhseDocumentNo = db.StockCountHeader.Where(x => x.ID == BatchID).FirstOrDefault().SCCode; _scd.ZoneCode = _sca.ZoneCode;
+
+                            db.StockCountDetail.Add(_scd);
+                            db.SaveChanges();
+                        }
+                        else {
+                            _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
+                            _scd.PhyicalQty = _sca.PhysicalQty;
+                            db.StockCountDetail.Attach(_scd);
+                            db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
+                            db.SaveChanges();
+                        }
+                        //db.StockCountAllocations.Attach(_sca);
+                        //db.Entry(_sca).Property(x => x.FinalQty).IsModified = true;
                     }
                 }
             }
@@ -2006,6 +2018,9 @@ namespace TWI.InventoryAutomated.Controllers
                         case "ma": finalqty = GetMaxValue(BatchID, _ItrIDs, doctype, zonecode, bincode, itemcode, lotno, expirydate); break;
                         case "av": finalqty = GetAVGValue(BatchID, _ItrIDs, doctype, zonecode, bincode, itemcode, lotno, expirydate); break;
                     }
+
+                    _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
+                    _scd.PhyicalQty = finalqty;
                 }
             }
         }
