@@ -798,6 +798,23 @@ namespace TWI.InventoryAutomated.Controllers
             return _countlist;
         }
 
+        public List<StockCountIterations> GetActualCountsByBatchID(int ID)
+        {
+            List<StockCountIterations> _counts = new List<StockCountIterations>();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (db.StockCountAllocations.Where(x => x.StockCountID == ID).Distinct().Count() > 0)
+                    _counts = db.StockCountIterations.Where(x => x.SCID == ID).ToList();
+
+                StockCountIterations _sct = new StockCountIterations();
+                _sct.ID = -1;
+                _sct.IterationName = "-- Select Count --";
+                _counts.Insert(0, _sct);
+
+                return _counts;
+            }
+        }
+
         public ActionResult GetAllocatedItemsByTeamID(int TeamID)
         {
             List<StockCountAllocations> _allocateditems = new List<StockCountAllocations>();
@@ -848,7 +865,6 @@ namespace TWI.InventoryAutomated.Controllers
 
                 return _counts;
             }
-
         }
 
         public JsonResult GetTeamsByCountID(int ID)
@@ -1073,9 +1089,9 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.DocType = _allocitem.DocType;
                 _item.ExpirationDate = _allocitem.ExpirationDate;
                 //_item.FinalQty = 0;
-                _item.ItemNo = _allocitem.ItemNo;
-                _item.LocationCode = _allocitem.LocationCode;
-                _item.LotNo = _allocitem.LotNo;
+                _item.ItemNo = Convert.ToString(_allocitem.ItemNo);
+                _item.LocationCode = Convert.ToString(_allocitem.LocationCode);
+                _item.LotNo = Convert.ToString(_allocitem.LotNo);
                 _item.NAVQty = _allocitem.NAVQty;
                 //_item.PhysicalQty = _std.PhyicalQty;
                 _item.TeamID = TeamID;
@@ -1106,9 +1122,9 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.DocType = "INV";
                 _item.ExpirationDate = _std.ExpirationDate;
                 //_item.FinalQty = 0;
-                _item.ItemNo = _std.ItemNo;
-                _item.LocationCode = _std.LocationCode;
-                _item.LotNo = _std.LotNo;
+                _item.ItemNo = Convert.ToString(_std.ItemNo);
+                _item.LocationCode = Convert.ToString(_std.LocationCode);
+                _item.LotNo =Convert.ToString(_std.LotNo);
                 _item.NAVQty = _std.NAVQty;
                 //_item.PhysicalQty = _std.PhyicalQty;
                 _item.TeamID = TeamID;
@@ -1451,13 +1467,14 @@ namespace TWI.InventoryAutomated.Controllers
                                            where e.StockCountID == ID
                                            select e.ZoneCode).Distinct().ToList();
 
-                _zonecodes.Insert(0, "--Select Zone --");
+                _zonecodes.Insert(0, "-- Select Zone --");
 
-                List<string> _bincode = (from q in db.StockCountAllocations
-                                         where q.StockCountID == ID
-                                         select q.BinCode).Distinct().ToList();
+                //List<string> _bincode = (from q in db.StockCountAllocations
+                //                         where q.StockCountID == ID
+                //                         select q.BinCode).Distinct().ToList();
 
-                _bincode.Insert(0, "-- Select Bin Code");
+                List<string> _bincode = new List<string>();
+                _bincode.Insert(0, "-- Select Bin --");
 
                 ViewBag.ZoneCodes = new SelectList(_zonecodes);
                 ViewBag.BinCodes = new SelectList(_bincode);
@@ -1468,7 +1485,7 @@ namespace TWI.InventoryAutomated.Controllers
             return View(_sch);
         }
 
-        public JsonResult GetManagerViewData(int ID)
+        public JsonResult GetManagerViewData(int ID,string Zone,string Bin,string Item)
         {
             DataTable dt = new DataTable();
             DataSet ds = new DataSet();
@@ -1478,6 +1495,9 @@ namespace TWI.InventoryAutomated.Controllers
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@SCID", ID));
+                    cmd.Parameters.Add(new SqlParameter("@Zone", Zone));
+                    cmd.Parameters.Add(new SqlParameter("@Bin", Bin));
+                    cmd.Parameters.Add(new SqlParameter("@Item", Item));
                     con.Open();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(ds);
@@ -1489,11 +1509,6 @@ namespace TWI.InventoryAutomated.Controllers
 
                     if (ds.Tables.Count == 0)
                     { /*row = new Dictionary<string, object>(); rows.Add(row);*/ return Json(rows, JsonRequestBehavior.AllowGet); }
-
-                    
-
-                    //ds.Tables[0].Columns.Add("ID", Type.GetType("System.String"));
-                    //ds.Tables[0].AcceptChanges();
 
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
@@ -1509,8 +1524,8 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             if (count == 0)
                             {
-                                colhead = "<input type='checkbox' name='select_all' checked=value>";
-                                colvalue = "<input type='checkbox' checked=value>&nbsp;<input id='ID' type='hidden' value='" + rowNo + "'>";
+                                colhead = "<input type='checkbox' id='select_all' name='select_all' checked value>";
+                                colvalue = "<input type='checkbox' checked value>&nbsp;<input id='ID' type='hidden' value='" + rowNo + "'>";
                             }
                             else if (count >= 8 && col.ColumnName.ToLower() != "final qty") {
                                 DataRow[] dr1 = ds.Tables[1].Select("IterationName ='" + col.ColumnName + "'");
@@ -1526,9 +1541,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                                 DataRow[] dr2 = ds.Tables[2].Select("SCIterationName ='" + col.ColumnName + "'");
                                 if (dr2.Length == 1)
-                                {
-                                    countstatusbtn += "<br /><span style'float:left;margin:auto;font-family:'Calibri';font-size:9px;color:blue;'>" + Convert.ToString(dr2[0]["ItemsCounted"]) + " / "+ Convert.ToString(dr2[0]["TotalItems"]) + " counted</span>";
-                                }
+                                { countstatusbtn += "<br /><span style'float:left;margin:auto;font-family:'Calibri';font-size:9px;color:blue;'>" + Convert.ToString(dr2[0]["ItemsCounted"]) + " / "+ Convert.ToString(dr2[0]["TotalItems"]) + " counted</span>";}
                                 colhead = col.ColumnName + countstatusbtn;
                                 colvalue = Convert.ToString(dr[col]);
                                 string[] splitvalues = Convert.ToString(dr[col]).Split('|');
@@ -1537,7 +1550,6 @@ namespace TWI.InventoryAutomated.Controllers
                                     colvalue = "<span style='font-family:Calibri;font-size:14px !important;font-weight:bold;'>" + splitvalues[0] + "</span><br /><span style='font-family:Calibri;font-size:12px !important;'>" + splitvalues[1] + "</span>";
                                 }
                                 else { colvalue = Convert.ToString(dr[col]); }
-                                
                             }
                             else { colhead = col.ColumnName; colvalue = Convert.ToString(dr[col]); }
                             row.Add(colhead, colvalue);
@@ -1549,9 +1561,81 @@ namespace TWI.InventoryAutomated.Controllers
                     return Json( rows , JsonRequestBehavior.AllowGet);
                 }
             }
-
-           
         }
+
+        public JsonResult GetCountsByID(int ID)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    var _countList = (from e in db.StockCountAllocations
+                                      where e.StockCountID == ID
+                                      select new
+                                      {
+                                          e.SCIterationID,
+                                          e.SCIterationName
+                                      }).Distinct().ToList();
+
+                    return Json(_countList, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult GetBinsByZone(string Zone,int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                List<string> _bincode = (from q in db.StockCountAllocations
+                                         where q.StockCountID == ID && q.ZoneCode == Zone
+                                         select q.BinCode).Distinct().ToList();
+
+                _bincode.Insert(0, "-- Select Bin --");
+
+                return Json(_bincode, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult GetItemsByBin(int ID, string BinCode)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                List<string> _itemcodes = (from q in db.StockCountAllocations
+                                         where q.StockCountID == ID && q.BinCode == BinCode
+                                         select q.ItemNo).Distinct().ToList();
+
+
+                return Json(_itemcodes, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult PushFinalQty(string ID)
+        {
+            string[] Items = ID.Split(',');
+            string[] Item;
+          
+            if (Items.Length == 1) {
+                Item = Items[0].Split(':');
+
+               
+                UpdateItemFinalQty(Item);
+            }
+            else {
+
+                for (int i = 0; i <= Items.Length - 1; i++)
+                {
+                    Item = Items[i].Split(':');
+                    UpdateItemFinalQty(Item);
+                }
+            }
+
+            return Json("Final Qty Pushed Successfully", JsonRequestBehavior.AllowGet);
+        }
+
         #endregion 
 
         #endregion
@@ -1577,18 +1661,18 @@ namespace TWI.InventoryAutomated.Controllers
             StockCountDetail _std = new StockCountDetail();
             _std.SCID = ID;
             _std.WhseDocumentNo = Convert.ToString(obj.Whse_Document_No);
-            _std.ZoneCode = obj.Zone_Code;
-            _std.BinCode = obj.Bin_Code;
-            _std.ItemNo = obj.Item_No;
-            _std.Description = obj.Description;
-            _std.LotNo = obj.Lot_No;
-            _std.ExpirationDate = obj.Expiration_Date.ToString("dd/MM/yyyy");
-            _std.UOMCode = obj.Unit_of_Measure_Code;
+            _std.ZoneCode = Convert.ToString(obj.Zone_Code);
+            _std.BinCode = Convert.ToString(obj.Bin_Code);
+            _std.ItemNo = Convert.ToString(obj.Item_No);
+            _std.Description = Convert.ToString(obj.Description);
+            _std.LotNo = Convert.ToString(obj.Lot_No);
+            _std.ExpirationDate = string.IsNullOrEmpty(Convert.ToString(obj.Expiration_Date)) ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy");
+            _std.UOMCode =Convert.ToString(obj.Unit_of_Measure_Code);
             _std.PhyicalQty = obj.Qty_Phys_Inventory;
             _std.NAVQty = obj.Qty_Calculated;
             _std.TemplateName = string.Empty;
-            _std.BatchName = obj.Journal_Batch_Name;
-            _std.LocationCode = obj.Location_Code;
+            _std.BatchName = Convert.ToString(obj.Journal_Batch_Name);
+            _std.LocationCode = Convert.ToString(obj.Location_Code);
             _std.CreatedDate = DateTime.Now;
             _std.CreatedBy = Convert.ToInt32(Session["UserID"]);
             return _std;
@@ -1599,19 +1683,18 @@ namespace TWI.InventoryAutomated.Controllers
             StockCountDetail _std = new StockCountDetail();
             _std.SCID = ID;
             _std.WhseDocumentNo = Convert.ToString(obj.Whse_Document_No);
-            _std.ZoneCode = obj.Zone_Code;
-            _std.BinCode = obj.Bin_Code;
-            _std.ItemNo = obj.Item_No;
-            _std.Description = obj.Description;
-            _std.LotNo = obj.Lot_No;
-            _std.ExpirationDate = string.IsNullOrEmpty(Convert.ToString(obj.Expiration_Date)) ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy");
-            _std.UOMCode = obj.Unit_of_Measure_Code;
+            _std.ZoneCode = Convert.ToString(obj.Zone_Code);
+            _std.BinCode = Convert.ToString(obj.Bin_Code);
+            _std.ItemNo = Convert.ToString(obj.Item_No);
+            _std.Description = Convert.ToString(obj.Description);
+            _std.LotNo = Convert.ToString(obj.Lot_No);
+            _std.ExpirationDate = string.IsNullOrEmpty(Convert.ToString(obj.Expiration_Date)) ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy") ==  "01/01/0001" ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy");
+            _std.UOMCode = Convert.ToString(obj.Unit_of_Measure_Code);
             _std.PhyicalQty = obj.Qty_Phys_Inventory;
             _std.NAVQty = obj.Qty_Calculated;
-
             _std.TemplateName = string.Empty;
-            _std.BatchName = obj.Journal_Batch_Name;
-            _std.LocationCode = obj.Location_Code;
+            _std.BatchName = Convert.ToString(obj.Journal_Batch_Name);
+            _std.LocationCode = Convert.ToString(obj.Location_Code);
             _std.CreatedDate = DateTime.Now;
             _std.CreatedBy = Convert.ToInt32(Session["UserID"]);
             return _std;
@@ -1861,6 +1944,116 @@ namespace TWI.InventoryAutomated.Controllers
             }
             return _prevcountalloc;
         }
+
+        private void UpdateItemFinalQty(string[] Item)
+        {
+            int BatchID = 0;
+            string sourcemode = "";
+            bool includezero = false;
+            string doctype = ""; string zonecode = "";
+            string bincode = ""; string itemcode = "";
+            string lotno = null;
+            string expirydate = "";
+
+            
+            BatchID = Convert.ToInt32(Item[0].Trim());
+            sourcemode = Item[1].Trim();
+
+            if (sourcemode.ToLower() == "s")
+            {
+                int CountID = Convert.ToInt32(Item[2].Trim());
+                includezero = Convert.ToBoolean(Convert.ToInt32(Item[3].Trim()));
+                doctype = Convert.ToString(Item[4].Trim());
+                zonecode = Convert.ToString(Item[5].Trim());
+                bincode = Convert.ToString(Item[6].Trim());
+                itemcode = Convert.ToString(Item[7].Trim());
+                lotno = Convert.ToString(Item[8].Trim());
+                expirydate = Convert.ToString(Item[9].Trim()); 
+
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountAllocations.Where(x => x.StockCountID == BatchID && x.SCIterationID == CountID && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).Count() > 0)
+                    {
+                        StockCountAllocations _sca = db.StockCountAllocations.Where(x => x.StockCountID == BatchID && x.SCIterationID == CountID && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
+                        _sca.FinalQty = _sca.PhysicalQty;
+
+                        db.StockCountAllocations.Attach(_sca);
+                        db.Entry(_sca).Property(x => x.FinalQty).IsModified = true;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            else {
+
+                string operation = Convert.ToString(Item[2].Trim());
+                includezero = Convert.ToBoolean(Convert.ToInt32(Item[3].Trim()));
+                string[] CountIDS = Item[4].Split('/');
+                List<int> _ItrIDs = new List<int>();
+                for (int i = 0; i <= CountIDS.Length - 1; i++)
+                { _ItrIDs.Add(Convert.ToInt32(CountIDS[i].Trim())); }
+
+                doctype = Convert.ToString(Item[5].Trim());
+                zonecode = Convert.ToString(Item[6].Trim());
+                bincode = Convert.ToString(Item[7].Trim());
+                itemcode = Convert.ToString(Item[8].Trim());
+                lotno = Convert.ToString(Item[9].Trim());
+                expirydate = Convert.ToString(Item[10].Trim());
+                decimal? finalqty = 0;
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    switch (operation.ToLower()) {
+                        case "mi": finalqty = GetMinValue(BatchID,_ItrIDs, doctype, zonecode, bincode, itemcode, lotno, expirydate);break;
+                        case "ma": finalqty = GetMaxValue(BatchID, _ItrIDs, doctype, zonecode, bincode, itemcode, lotno, expirydate); break;
+                        case "av": finalqty = GetAVGValue(BatchID, _ItrIDs, doctype, zonecode, bincode, itemcode, lotno, expirydate); break;
+                    }
+                }
+            }
+        }
+
+        private decimal? GetMinValue(int batchId, List<int> countids, string doctype, string zonecode, string bincode, string itemcode, string lotno, string expdate)
+        {
+            decimal? _resultvalue = null;
+
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (db.StockCountAllocations.Where(x => x.StockCountID == batchId && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expdate && countids.Contains(x.SCIterationID.Value) &&  x.PhysicalQty != null).Count() > 1) {
+                    _resultvalue = db.StockCountAllocations.Where(x => x.StockCountID == batchId && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expdate && countids.Contains(x.SCIterationID.Value)).Min(x => x.PhysicalQty);
+                }
+            }
+
+            return _resultvalue;
+        }
+
+        private decimal? GetMaxValue(int batchId, List<int> countids, string doctype, string zonecode, string bincode, string itemcode, string lotno, string expdate)
+        {
+            decimal? _resultvalue = null;
+
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (db.StockCountAllocations.Where(x => x.StockCountID == batchId && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expdate && countids.Contains(x.SCIterationID.Value) && x.PhysicalQty != null).Count() > 1)
+                {
+                    _resultvalue = db.StockCountAllocations.Where(x => x.StockCountID == batchId && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expdate && countids.Contains(x.SCIterationID.Value)).Max(x => x.PhysicalQty);
+                }
+            }
+
+            return _resultvalue;
+        }
+
+        private decimal? GetAVGValue(int batchId, List<int> countids, string doctype, string zonecode, string bincode, string itemcode, string lotno, string expdate)
+        {
+            decimal? _resultvalue = null;
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (db.StockCountAllocations.Where(x => x.StockCountID == batchId && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expdate && countids.Contains(x.SCIterationID.Value) && x.PhysicalQty != null).Count() > 1)
+                {
+                    _resultvalue = db.StockCountAllocations.Where(x => x.StockCountID == batchId && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expdate && countids.Contains(x.SCIterationID.Value)).Average(x => x.PhysicalQty);
+                }
+            }
+
+            return _resultvalue;
+        }
+
+
 
         #endregion
 

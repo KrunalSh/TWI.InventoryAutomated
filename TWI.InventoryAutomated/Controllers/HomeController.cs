@@ -130,8 +130,6 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-
-
         public ActionResult Default()
         {
             return View();

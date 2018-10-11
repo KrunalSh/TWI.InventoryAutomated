@@ -5,6 +5,23 @@
 }
 
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
+
+<style>
+    .showdialog {
+        display:block;
+    }
+
+    input {
+      margin:.4rem;
+    }
+
+    .block {
+        display: block;
+    }
+
+</style>
+
+
 <div class="row" style="border:2px #808080 solid;">
     <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
@@ -46,21 +63,22 @@
             </div>
         </div>
         <div style="float:left !important;width:100% !important;margin:0 15px 5px 30px;padding-right:35px;">
-            <div class="row" >
+            <div class="row">
                 <div style="float:left;margin-right:10px;">
                     @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
                 </div>
                 <div style="float:left;margin-right:10px;">
                     @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
                 </div>
+                @**@
                 <div style="float:left;margin-right:10px;margin-bottom:10px;">
                     <input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" width="80" />
                 </div>
                 <div style="float:left;margin-bottom:10px;">
-                    <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Filter</a>
+                    <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" onclick="FilterList();" title="">Filter</a>
                 </div>
                 <div style="float:left;margin-bottom:10px;margin-left:10px">
-                    <a class="btn btn-primary" style="width:70px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Fill Qty</a>
+                    <a class="btn btn-primary" style="width:70px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="" id="FillQty" onclick="FillQty();">Fill Qty</a>
                 </div>
                 <div style="float:right;margin-bottom:10px;margin-right:25px;">
                     <a class="btn btn-primary fa fa-search" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title=""></a>
@@ -79,32 +97,133 @@
                 </div>
             </div>
         </div>
+        @*padding-right:13px;*@
         <div style="float:left;width:100%;margin:auto 15px;padding-right:13px;">
-                <div class="row col-sm-12 table-responsive" style="max-width:100% !important;">
-                    <table id="HeaderTable" class="table table-striped table-responsive table-bordered"></table>
+            <div class="row col-sm-12 table-responsive" style="max-width:100% !important;">
+                <table id="HeaderTable" class="table table-striped table-responsive table-bordered"></table>
+            </div>
+        </div>
+        <div id="filldialog" style="float:left;width:400px;">
+            <div style="float:left;width:400px;margin:5px 5px 15px 5px;">
+                <div style="float:left;"><label for="rdbSingle"><input type="radio" name="rdbSource" id="rdbSingle" value="" checked /><span style="padding-left:5px;font-weight:600;">Single Source</span></label></div>
+                <div style="float:left;margin-left:30px;">
+                    <select id="ddlCounts" name="ddlCounts" class="form-control" style="width:160px;"></select>
+                </div>
+            </div>
+            <div style="float:left;height:3px;border-bottom:1px solid #808080;width:370px;">&nbsp;</div>
+            <div style="float:left;width:400px;margin:5px 5px 15px 5px;">
+                <div style="float:left;"><label for="rdbMultiple"><input type="radio" name="rdbSource" id="rdbMultiple" value="" /><span style="padding-left:5px;font-weight:600;">Multiple Source</span></label></div>
+                <div style="float:left;margin-left:20px;">
+                    <label class="block "><input type="radio" name="radArthemeticOperations" id="rdbMin" value="MI" checked /><span style="padding-left:5px;font-weight:400;">Min.</span></label>
+                    <label class="block "><input type="radio" name="radArthemeticOperations" id="rdbMax" value="MA" /><span style="padding-left:5px;font-weight:400;">Max.</span></label>
+                    <label class="block "><input type="radio" name="radArthemeticOperations" id="rdbAvg" value="AV" /><span style="padding-left:5px;font-weight:400;">Avg. </span></label>
+                </div>
+                <div style="float:left;margin-left:20px;" id="chkCountGroup">
+                    @*<label class="block"><input type="checkbox" name="chkCountGroup" checked /><span style="padding-left:5px;font-weight:400;"> Count 1 </span> </label>
+                    <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 2 </span></label>
+                    <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 3 </span></label>
+                    <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 4 </span></label>*@
+                </div>
+            </div>
+            <div style="float:left;height:3px;border-bottom:1px solid #808080;width:370px;">&nbsp;</div>
+            <div style="float:left;width:400px;margin:5px 5px 15px 5px;">
+                <div style="float:left;"><label for="chkIncludeZero"><input type="checkbox" name="chkInclude" id="chkIncludeZero" value="" /><span style="padding-left:5px;font-weight:600;">Include Zero(s) </span></label></div>
+                <div style="float:right;margin-right:35px;" class="form-group">
+                    <input type="button" class="btn btn-primary" style="width:70px;height:30px;padding-top:4px;padding-left:11px;font-weight:bold;" onclick="PushFinalQty();" value="Fill Qty">
                 </div>
             </div>
         </div>
-    </div>
+
+        </div>
+</div>
 
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
 @section scripts{
 
-    <script type="text/javascript" charset="utf-8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
 
     <script>
         var datatable; var rows_selected = [];
-        var editor;
+        var editor; var Popup;
         
         $(document).ready(function () {
 
             var selectedbatch = $("#ddlBatches").val();
-            RefreshManagerView(selectedbatch);
+
+            RefreshManagerView(selectedbatch,'%','%','%');
+
+            $("#filldialog").hide();
+                
+            datatable = $("#HeaderTable");
+
+            $('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
+                var $row = $(this).closest('tr');
+
+                // Get row data
+                var data = datatable.row($row).data();
+
+                // Get row ID
+                var rowId = data[0];
+
+                // Determine whether row ID is in the list of selected row IDs 
+                var index = $.inArray(rowId, rows_selected);
+
+                // If checkbox is checked and row ID is not in list of selected row IDs
+                if (this.checked && index === -1) {
+                    rows_selected.push(rowId);
+
+                    // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+                } else if (!this.checked && index !== -1) {
+                    rows_selected.splice(index, 1);
+                }
+
+                if (this.checked) {
+                    $row.addClass('selected');
+                } else {
+                    $row.removeClass('selected');
+                }
+
+                // Update state of "Select all" control
+                updateDataTableSelectAllCtrl(datatable);
+
+                // Prevent click event from propagating to parent
+                e.stopPropagation();
+            });
+
+            // Handle click on table cells with checkboxes
+            $('#HeaderTable').on('click', 'tbody td, thead th:first-child', function (e) {
+                $(this).parent().find('input[type="checkbox"]').trigger('click');
+            });
+
+            //datatable.table().container()
+            //, datatable.table().container
+            $('thead input[name="select_all"]').on('click', function (e) {
+                if (this.checked) {
+                    $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+                } else {
+                    $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
+                }
+
+                // Prevent click event from propagating to parent
+                e.stopPropagation();
+            });
+
+            datatable.on('draw', function () {
+                // Update state of "Select all" control
+                updateDataTableSelectAllCtrl(datatable);
+            });
 
             $("#ddlBatches").change(function () {
+
+                if ($("#ddlBatches").val() == "-1") {
+                    alert("Batch Selection is Mandatory");
+                }
+
+
+
                 $.ajax({
                     url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
                     type: "GET",
@@ -122,77 +241,77 @@
                             $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
                             $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                         }
-                        RefreshManagerView($("#ddlBatches").val());
+                        RefreshManagerView($("#ddlBatches").val(),"%","%","%");
                     }
                 });
             });
 
-            //$('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
-            //    var $row = $(this).closest('tr');
+            $("#ddlZoneCodes").change(function () {
 
-            //    // Get row data
-            //    var data = datatable.row($row).data();
+                var zoneval = $("#ddlZoneCodes").val();
 
-            //    // Get row ID
-            //    var rowId = data[0];
+                if (zoneval === "-1") {
+                    $("#ddlBinCodes").empty();
+                    $("#txtItemNo").empty();
+                    var binopt = new Option("-- Select Bin --", "-1");
+                    $("#ddlBinCodes").append(binopt);
+                }
+                else {
 
-            //    // Determine whether row ID is in the list of selected row IDs 
-            //    var index = $.inArray(rowId, rows_selected);
+                    $.ajax({
+                        url: "/StockCount/GetBinsByZone",
+                        type: "GET",
+                        datatype: "Json",
+                        data: { Zone: zoneval,ID: $("#ddlBatches").val() },
+                        success: function (data) {
+                            //console.log(data);
+                            $("#ddlBinCodes").empty();
+                            $("#txtItemNo").empty();
+                            for (var i = 0; i < data.length; i++) {
+                                var binopt = new Option(data[i], data[i]);
+                                $("#ddlBinCodes").append(binopt);
+                            }
+                        }
+                    });
+                }
+            });
 
-            //    // If checkbox is checked and row ID is not in list of selected row IDs
-            //    if (this.checked && index === -1) {
-            //        rows_selected.push(rowId);
+            $("#ddlBinCodes").change(function () {
 
-            //        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-            //    } else if (!this.checked && index !== -1) {
-            //        rows_selected.splice(index, 1);
-            //    }
+                var bincode = $("#ddlBinCodes").val();
+                if (bincode === "-1") {
+                    $("#txtItemNo").empty();
+                }
+                else {
 
-            //    if (this.checked) {
-            //        $row.addClass('selected');
-            //    } else {
-            //        $row.removeClass('selected');
-            //    }
+                    $.ajax({
+                        url: "/StockCount/GetItemsByBin",
+                        type: "GET",
+                        datatype: "Json",
+                        data: { ID: $("#ddlBatches").val(), BinCode: bincode },
+                        success: function (data) {
+                            $("#txtItemNo").autocomplete({
+                                source:data
+                            });
+                        }
+                    });
+                }
+            });
 
-            //    // Update state of "Select all" control
-            //    updateDataTableSelectAllCtrl(datatable);
-
-            //    // Prevent click event from propagating to parent
-            //    e.stopPropagation();
-            //});
-
-            //// Handle click on table cells with checkboxes
-            //$('#HeaderTable').on('click', 'tbody td, thead th:first-child', function (e) {
-            //    $(this).parent().find('input[type="checkbox"]').trigger('click');
-            //});
-
-            //$('thead input[name="select_all"]', datatable.table().container()).on('click', function (e) {
-            //    if (this.checked) {
-            //        $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
-            //    } else {
-            //        $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
-            //    }
-
-            //    // Prevent click event from propagating to parent
-            //    e.stopPropagation();
-            //});
-
-            //datatable.on('draw', function () {
-            //    // Update state of "Select all" control
-            //    updateDataTableSelectAllCtrl(datatable);
-            //});
         });
 
-        function RefreshManagerView(batchId) {
+        function RefreshManagerView(batchId,ZoneCode,BinCode,ItemNo) {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             var dataset;
             var my_columns = [];
 
             $.ajax({
-                url: "/StockCount/GetManagerViewData?ID=" + batchId,
+                //url: "/StockCount/GetManagerViewData?ID=" + batchId,
+                url: "/StockCount/GetManagerViewData",
                 datatype: "json",
                 type: "GET",
+                data: { ID: batchId, Zone: ZoneCode,Bin:BinCode,Item: ItemNo },
                 success: function (data) {
                     //console.log(data);
                     if (data.length === 0) {
@@ -229,6 +348,7 @@
                                     'searchable': false,
                                     'orderable': false,
                                     'width': '1%',
+                                    'data' : 'ID',
                                     'className': 'dt-body-center'
                                 },
                                 {
@@ -261,34 +381,181 @@
             });
         }
 
-        //function updateDataTableSelectAllCtrl(table) {
-        //    var $table = table.table().node();
-        //    var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-        //    var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
-        //    var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+        function updateDataTableSelectAllCtrl(table) {
+            var $table = table.table().node();
+            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+            var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+            var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
 
-        //    // If none of the checkboxes are checked
-        //    if ($chkbox_checked.length === 0) {
-        //        chkbox_select_all.checked = false;
-        //        if ('indeterminate' in chkbox_select_all) {
-        //            chkbox_select_all.indeterminate = false;
-        //        }
+            // If none of the checkboxes are checked
+            if ($chkbox_checked.length === 0) {
+                chkbox_select_all.checked = false;
+                if ('indeterminate' in chkbox_select_all) {
+                    chkbox_select_all.indeterminate = false;
+                }
 
-        //        // If all of the checkboxes are checked
-        //    } else if ($chkbox_checked.length === $chkbox_all.length) {
-        //        chkbox_select_all.checked = true;
-        //        if ('indeterminate' in chkbox_select_all) {
-        //            chkbox_select_all.indeterminate = false;
-        //        }
+                // If all of the checkboxes are checked
+            } else if ($chkbox_checked.length === $chkbox_all.length) {
+                chkbox_select_all.checked = true;
+                if ('indeterminate' in chkbox_select_all) {
+                    chkbox_select_all.indeterminate = false;
+                }
 
-        //        // If some of the checkboxes are checked
-        //    } else {
-        //        chkbox_select_all.checked = true;
-        //        if ('indeterminate' in chkbox_select_all) {
-        //            chkbox_select_all.indeterminate = true;
-        //        }
-        //    }
-        //}
+                // If some of the checkboxes are checked
+            } else {
+                chkbox_select_all.checked = true;
+                if ('indeterminate' in chkbox_select_all) {
+                    chkbox_select_all.indeterminate = true;
+                }
+            }
+        }
+
+        function FillQty() {
+
+            var count = 0;
+            $('#HeaderTable tbody').find('tr').each(function () {
+                var row = $(this);
+
+                if (row.find('input[type="checkbox"]').is(':checked')) {
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                $("#filldialog").show();
+
+                $.ajax({
+                    url: "/StockCount/GetCountsByID?ID=" + $("#ddlBatches").val(),
+                    type: "GET",
+                    datatype: "Json",
+                    success: function (data) {
+                        console.log(data);
+                        $("#ddlCounts").empty();
+                        $("#chkCountGroup").empty();
+                        for (var i = 0; i < data.length; i++) {
+                            var countopt = new Option(data[i].SCIterationName, data[i].SCIterationID);
+                            var htmlContent = '';
+                            $("#ddlCounts").append(countopt);
+
+                            htmlContent += '<label class="block"><input type="checkbox" name="chkCountGroup" value="' + data[i].SCIterationID + '" /><span style="padding-left:5px;font-weight:400;">' + data[i].SCIterationName + '</span></label>';
+                            $("#chkCountGroup").append(htmlContent);
+                        }
+                    }
+                });
+
+                Popup = $("#filldialog").dialog({
+                    modal: true, title: 'Manager View - Fill Qty', zIndex: 10000, autoOpen: true, width: 400, resizable: false
+                    //buttons: {
+                    //    Ok: function () {
+                    //        $(this).dialog("close");
+                    //    }
+                    //}
+
+                });
+            }
+            else
+            {
+                alert("Kindly select atleast one item to proceed");
+                return;
+            }
+        }
+
+        function FilterList() {
+            var batchId = $("#ddlBatches").val();
+            var ZoneCode = $("#ddlZoneCodes").val();
+            var BinCode = $("#ddlBinCodes").val();
+            var ItemNo = $("#txtItemNo").val();
+
+
+            if (batchId === "-1") {
+                alert("Batch Selection is mandatory");
+                return;
+            }
+
+            if (ZoneCode === "-- Select Zone --") { ZoneCode = "%"; }
+
+            if (BinCode === "-- Select Bin --") { BinCode = "%"; }
+
+            if (ItemNo === "") { ItemNo = "%"; }
+
+            RefreshManagerView(batchId, ZoneCode, BinCode, ItemNo);
+        }
+
+        function PushFinalQty() {
+            alert("Push Final Qty");
+            var RowID = []; var count = 0;
+            
+            $('#HeaderTable tbody').find('tr').each(function () {
+                var row = $(this);
+                if (row.find('input[type="checkbox"]').is(':checked')) {
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                RowID.length = count;
+                var colcount = 0; var rowdata = ''; var itemstring = '';
+                var itemstringstart = '';
+                count = 0;
+                if ($("#rdbSingle").is(':checked')) {
+                    itemstringstart = $("#ddlBatches").val() + ':' + 'S:' + $("#ddlCounts").val() + ':';
+                    if ($("#chkIncludeZero").is(':checked')) { itemstringstart += '1:'; } else { itemstringstart += '0:'; }
+                    alert(itemstringstart);
+                }
+                else {
+                    var checkboxcount = 0;
+                    var iterationvalues = '';
+                    $("#chkCountGroup").find('input[type="checkbox"]').each(function () {
+                        var chk = $(this);
+                        if (chk.is(':checked')) { checkboxcount++; iterationvalues += $(this).val() + '/'; }
+                    });
+
+                    if (checkboxcount === 0) { alert("Kindly select atleast one count source for multiple source option"); return; }
+                    else if (checkboxcount < 2) { alert("Kindly select atleast two count sources to generate final Qty using selected Operation"); return;  }
+
+                    itemstringstart = $("#ddlBatches").val() + ':' + 'M:';
+                    if ($("#rdbMin").is(':checked')) { itemstringstart += 'MI:'; }
+                    else if ($("#rdbMax").is(':checked')) { itemstringstart += 'MA:'; }
+                    else if ($("#rdbAvg").is(':checked')) { itemstringstart += 'AV:'; }
+                    if ($("#chkIncludeZero").is(':checked')) { itemstringstart += '1:'; } else { itemstringstart += '0:'; }
+
+                    itemstringstart += iterationvalues.substring(0, iterationvalues.length - 2) + ':'; 
+                    alert(itemstringstart);
+                }
+
+                $('#HeaderTable tbody').find('tr').each(function () {
+                    var row = $(this);
+                    if (row.find('input[type="checkbox"]').is(':checked')) {
+                        colcount = 0;
+                        rowdata = '';
+                        row.find('td').each(function () {
+                            var col = $(this);
+                            if (colcount !== 0 && colcount !== 5 && colcount < 8) {
+                                rowdata += col.html() + ':';
+                            }
+                            colcount++;
+                        });
+                        RowID[count] = itemstringstart + rowdata;
+                        alert(RowID[count]);
+                        count++;
+                    }
+                });
+
+
+                $.ajax({
+                    url: "/StockCount/PushFinalQty?ID=" + RowID,
+                    type: "GET",
+                    datatype: "Json",
+                    success: function (data) {
+                        alert(data);
+                        RefreshManagerView($("ddlBatches").val(), "%", "%", "%");
+                    }
+                });
+
+                Popup.dialog('close');
+            }
+        }
 
     </script>
+
 }
