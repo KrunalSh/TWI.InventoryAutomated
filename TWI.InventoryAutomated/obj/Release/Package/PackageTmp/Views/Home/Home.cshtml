@@ -9,7 +9,7 @@
 
     @*padding-left:20px*@
     <div class="row" style="padding-bottom:30px;">
-        @if (CommonServices.IsUserhasPermissionsOnModule("InBound") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasPermissionsOnModule("InBound") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
         <div class="col-sm-4">
             @*padding:11px;*@
@@ -18,7 +18,7 @@
             </div>
         </div>
         }
-        @if (CommonServices.IsUserhasPermissionsOnModule("OutBound") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasPermissionsOnModule("OutBound") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 @*class="input-group"*@
@@ -28,7 +28,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasPermissionsOnModule("Internal") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasPermissionsOnModule("Internal") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 @*padding:11px;*@
@@ -37,7 +37,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasPermissionsOnModule("Admin") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasPermissionsOnModule("Admin") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 @*padding:11px;*@
@@ -46,7 +46,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasPermissionsOnModule("StockCount") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasPermissionsOnModule("Stock Count") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 @*padding:11px;*@

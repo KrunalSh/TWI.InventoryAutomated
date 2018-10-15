@@ -699,7 +699,7 @@ namespace TWI.InventoryAutomated.Controllers
                 if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).Count() > 0)
                 {
                     _adminsheet.AllocatedItems = new List<StockCountAllocations>();
-                    _adminsheet.AllocatedItems = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).ToList();
+                    _adminsheet.AllocatedItems = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).OrderByDescending(x => x.CreatedDate).ToList();
                 }
                 else { _adminsheet.AllocatedItems = new List<StockCountAllocations>(); }
             }
@@ -826,7 +826,7 @@ namespace TWI.InventoryAutomated.Controllers
                     if (TeamID != -1)
                     {
                         if (db.StockCountAllocations.Where(x => x.TeamID == TeamID).Count() > 0)
-                        { _allocateditems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).ToList(); }
+                        { _allocateditems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).OrderByDescending(x => x.CreatedDate).ToList(); }
                     }
                 }
             }
@@ -1085,6 +1085,7 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.MemberName = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().UserName;
                 _item.CreatedBy = Convert.ToInt32(Session["UserID"]);
                 _item.CreatedDate = DateTime.Now;
+                _item.UpdatedDate = DateTime.Now;
                 _item.Description = _allocitem.Description;
                 _item.DocType = _allocitem.DocType;
                 _item.ExpirationDate = _allocitem.ExpirationDate;
@@ -1115,6 +1116,7 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.MemberName = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().UserName;
                 _item.CreatedBy = Convert.ToInt32(Session["UserID"]);
                 _item.CreatedDate = DateTime.Now;
+                _item.UpdatedDate = DateTime.Now;
                 _item.Description = _std.Description;
                 _item.DocType = "INV";
                 _item.ExpirationDate = _std.ExpirationDate;
@@ -1291,7 +1293,7 @@ namespace TWI.InventoryAutomated.Controllers
                 data = data.OrderBy(x => x.ItemNo);
 
                 if (pageSize > 0) { data = data.Skip(skip).Take(pageSize).ToList(); }
-                return data.ToList();
+                return data.OrderByDescending(x=> x.CreatedDate).ToList();
             }
         }
 

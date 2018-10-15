@@ -130,7 +130,7 @@
 
         }
         function SubmitInstanceForm(form) {
-            if ($('#Instances').val() != null && $('#Companies').val() != null) {
+            if ($('#Instances').val() !== null && $('#Companies').val() !== null) {
             $.ajaxSetup({ async: false });
             $.post(form.action + "?InstId=" + $('#Instances').val() + "&CompId=" + $('#Companies').val() + "&InstName=" + $('#Instances  option:selected').text() + "&compName=" + $('#Companies  option:selected').text(),function(data){
                 if (data.success)

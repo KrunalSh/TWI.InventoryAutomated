@@ -8,7 +8,7 @@
 
     @*padding-left:20px;*@
     <div class="row" style="padding-bottom:30px;">
-        @if (CommonServices.IsUserhasAccessOnPage("Registered Devices") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("Registered Devices") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -16,7 +16,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("Instances") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("Instances") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -24,7 +24,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("Languages") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("Languages") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -32,7 +32,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("Modules") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("Modules") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             }*@
-        @if (CommonServices.IsUserhasAccessOnPage("Permissions") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("Permissions") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -56,7 +56,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("Users") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("Users") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -64,7 +64,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">
@@ -72,7 +72,7 @@
                 </div>
             </div>
         }
-        @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin())
+        @if (CommonServices.IsUserhasAccessOnPage("CurrentSessions") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
         {
             <div class="col-sm-4">
                 <div class="input-group" style="float:left;margin:5px;">

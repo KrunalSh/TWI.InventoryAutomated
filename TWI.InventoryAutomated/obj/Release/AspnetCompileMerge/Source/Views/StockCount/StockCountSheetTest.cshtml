@@ -11,7 +11,6 @@
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 
-@**@
 <div class="row" style="border:2px #808080 solid;">
     <div style="margin:auto;width:100% !important;max-width:100%;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
@@ -19,20 +18,32 @@
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         @*<div style="float:left !important;width:100% !important;margin:15px;">
-                <div class="row col-sm-12" style="float:left !important;width:100% !important;">
-                    <div class="field_background1" style="margin-bottom:5px;">
-                        <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
-                        <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                        <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
-                    </div>
-                    <div class="field_background1" style="">
-                        <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
-                        <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
-                        <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
-                    </div>
+            <div class="row col-sm-12" style="float:left !important;width:100% !important;">
+                <div class="field_background1" style="margin-bottom:5px;">
+                    <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
+                    <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
                 </div>
-            </div>*@
-        <div style="float:left;width:100% !important;margin:15px;">
+                <div class="field_background1" style="">
+                    <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
+                    <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
+                </div>
+            </div>
+        </div>*@
+
+
+        <div class="collapse navbar-collapse" style="margin-top:5px;">
+            @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
+            {
+                <div class="form-group">
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" />
+                </div>
+                <button type="submit" value="Search" class="btn btn-primary" style="font-weight:600;">Search</button>
+                <a class="btn btn-primary" style="width:100px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">Adjustment</a>
+            }
+        </div>
+        <div id="divAdjustments" style="float:left;width:100% !important;margin-left:15px;display:none;">
             <div class="row" style="margin:10px !important;">
                 <div style="float:left;margin-right:10px;">
                     @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
@@ -54,21 +65,12 @@
                 </div>
                 <div style="float:left;margin-bottom:10px;">
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="SaveAdjustments();">Save</a>
+                    <a class="btn btn-primary" style="width:60px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="CancelAdjustment();">Cancel</a>
                 </div>
             </div>
         </div>
-
-        <div class="collapse navbar-collapse">
-            @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
-            {
-                <div class="form-group">
-                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" />
-                </div>
-                <button type="submit" value="Search" class="btn btn-primary" style="font-weight:600;">Search</button>
-            }
-        </div>
-        <div style="float:left;width:100% !important;margin:15px;">
-            <div style="margin:10px 15px 20px 10px !important;">
+        <div style="float:left;width:100% !important;margin:0 0 0 15px;">
+            <div style="margin:0 15px 20px 10px !important;">
                 @grid.Table(
                     tableStyle: "table table-responsive table-bordered",
                     columns: grid.Columns(
@@ -79,7 +81,7 @@
                       grid.Column(columnName: "Description", header: "Description"),
                       grid.Column(columnName: "LotNo", header: "Lot No"),
                       grid.Column(columnName: "ExpirationDate", header: "Expiry Date"),
-                      grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text ><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
+                      grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
 )
 )
                 <div class="row">
@@ -119,6 +121,7 @@
         });
 
         $(document).ready(function () {
+
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             var oldvalue = '';
@@ -142,16 +145,64 @@
                         $(this).text(oldvalue);
                     }
                 }
-            }
-            );
+            });
+
+            $(".edit").keypress(function (e) {
+                if (e.which === 46) {
+                    if ($(this).val().indexOf('.') !== -1) {
+                        return false;
+                    }
+                }
+
+                if (e.which !== 8 && e.which !== 0 && e.which !== 46 && e.which !== 13 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+                
+            });
+
+
+
+            $("#ddlZoneCodes").change(function () {
+
+                var zonecode = $("#ddlZoneCodes").val();
+
+                if (zonecode === '-- Select Zone --' || zonecode === '-1') {
+                    $("#ddlBinCodes").empty();
+                    var opt = new Option('-- Select Bin --', '-1');
+                    $("#ddlBinCodes").append(opt);
+                    $("#txtItemNo").empty();
+                    $("#txtLotNo").empty();
+                    $("#txtPhyQty").empty();
+                    $("#txtExpDate").empty();
+                }
+                else {
+                    $.ajax({
+                        url: "/StockCount/GetBinsByTeamID?ZoneCode=" + zonecode,
+                        type: "GET",
+                        datatype: "Json",
+                        success: function (data) {
+                            $("#ddlBinCodes").empty();
+                            $("#txtItemNo").empty();
+                            $("#txtLotNo").empty();
+                            $("#txtPhyQty").empty();
+                            $("#txtExpDate").empty();
+                            for (var i = 0; i < data.length; i++) {
+                                var binopt = new Option(data[i], data[i]);
+                                $("#ddlBinCodes").append(binopt);
+                            }
+                        }
+                        //error: function (data) {
+
+                        //}
+                    });
+                }
+            });
 
             $("#txtExpDate").datepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: 'dd/mm/yy'
             });
-
-
         });
 
          function SaveAdjustments() {
@@ -172,13 +223,30 @@
                     if (data.success) {
                         alert(data.message);
                         window.location.href = "/StockCount/StockCountSheetTest";
-                        @*RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');*@
+                        RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
+                        $("#divAdjustments").hide();
                     }
                     else {
                         alert(data.message);
                     }
                 }
             });
+        }
+
+        function ShowAdjustment() {
+            $("#divAdjustments").show();
+            $("#txtItemNo").empty();
+            $("#txtPhyQty").empty();
+            $("#txtLotNo").empty();
+            $("#txtExpDate").empty();
+        }
+
+        function CancelAdjustment() {
+            $("#divAdjustments").hide();
+            $("#txtItemNo").empty();
+            $("#txtPhyQty").empty();
+            $("#txtLotNo").empty();
+            $("#txtExpDate").empty();
         }
 
     </script>
