@@ -409,7 +409,7 @@
     <value>Items of the selected batch in NAV contains Non-Zero Values in Qty (Phy. Inventory) Field, Kindly rectify in NAV. </value>
   </data>
   <data name="MsgOngoingBatchDeletionRestriction" xml:space="preserve">
-    <value>Cannot Delete an Batch with Posted Data</value>
+    <value>Cannot Delete a Batch with Posted Data</value>
   </data>
   <data name="MsgSuccessfullDeletion" xml:space="preserve">
     <value>Successfully Deleted the selected Batch</value>

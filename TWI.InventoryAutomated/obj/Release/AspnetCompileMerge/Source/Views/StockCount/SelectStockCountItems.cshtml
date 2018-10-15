@@ -171,7 +171,7 @@
                     });
 
                     // Handle click on table cells with checkboxes
-                    $('#ItemTable').on('click', 'tbody td, thead th:first-child', function (e) {
+                    $('#ItemTable').on('click', 'tbody td:first-child, thead th:first-child', function (e) {
                         $(this).parent().find('input[type="checkbox"]').trigger('click');
                     });
 

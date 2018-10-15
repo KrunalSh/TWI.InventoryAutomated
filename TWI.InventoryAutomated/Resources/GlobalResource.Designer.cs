@@ -736,7 +736,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot Delete an Batch with Posted Data.
+        ///   Looks up a localized string similar to Cannot Delete a Batch with Posted Data.
         /// </summary>
         public static string MsgOngoingBatchDeletionRestriction {
             get {
