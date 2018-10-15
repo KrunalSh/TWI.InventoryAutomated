@@ -258,14 +258,13 @@
     <EntitySetMapping Name="StockCountAllocations">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
         <MappingFragment StoreEntitySet="StockCountAllocations">
-          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
           <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
           <ScalarProperty Name="BatchName" ColumnName="BatchName" />
           <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
           <ScalarProperty Name="FinalQty" ColumnName="FinalQty" />
-          <ScalarProperty Name="AuditorQty" ColumnName="AuditorQty" />
           <ScalarProperty Name="PhysicalQty" ColumnName="PhysicalQty" />
           <ScalarProperty Name="NAVQty" ColumnName="NAVQty" />
           <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />

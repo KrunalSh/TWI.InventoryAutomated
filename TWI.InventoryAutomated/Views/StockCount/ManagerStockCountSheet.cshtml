@@ -129,7 +129,7 @@
             <div style="float:left;width:400px;margin:5px 5px 15px 5px;">
                 <div style="float:left;"><label for="chkIncludeZero"><input type="checkbox" name="chkInclude" id="chkIncludeZero" value="" /><span style="padding-left:5px;font-weight:600;">Include Zero(s) </span></label></div>
                 <div style="float:right;margin-right:35px;" class="form-group">
-                    <input type="button" class="btn btn-primary" style="width:70px;height:30px;padding-top:4px;padding-left:11px;font-weight:bold;" onclick="PushFinalQty();" value="Fill Qty">
+                    <input type="button" class="btn btn-primary" style="width:70px;height:30px;padding-top:4px;padding-left:11px;font-weight:bold;" onclick="ValidateQuantitiesForPush();" value="Fill Qty">
                 </div>
             </div>
         </div>
@@ -221,8 +221,6 @@
                 if ($("#ddlBatches").val() == "-1") {
                     alert("Batch Selection is Mandatory");
                 }
-
-
 
                 $.ajax({
                     url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
@@ -360,7 +358,7 @@
                                 },
                                 {
                                     'targets': [5],
-                                    'searchable': false,
+                                    'searchable': true,
                                     'orderable': false,
                                     'width': '25%'
                                 },
@@ -481,7 +479,7 @@
             RefreshManagerView(batchId, ZoneCode, BinCode, ItemNo);
         }
 
-        function PushFinalQty() {
+        function ValidateQuantitiesForPush() {
             //alert("Push Final Qty");
             var RowID = []; var count = 0;
             //var selectedbatch = $("#ddlBatches").val();
@@ -519,7 +517,7 @@
                     else if ($("#rdbAvg").is(':checked')) { itemstringstart += 'AV:'; }
                     if ($("#chkIncludeZero").is(':checked')) { itemstringstart += '1:'; } else { itemstringstart += '0:'; }
 
-                    itemstringstart += iterationvalues.substring(0, iterationvalues.length - 2) + ':'; 
+                    itemstringstart += iterationvalues.substring(0, iterationvalues.length - 1) + ':'; 
                     //alert(itemstringstart);
                 }
 
@@ -536,13 +534,46 @@
                             colcount++;
                         });
                         RowID[count] = itemstringstart + rowdata;
-                        alert(RowID[count]);
+                        //alert(RowID[count]);
                         count++;
                     }
                 });
 
-
                 $.ajax({
+                    url: "/StockCount/ValidateDataValues?ID=" + RowID,
+                    type: "GET",
+                    datatype: "Json",
+                    success: function (data) {
+                        //alert(data);
+                        if (data.success) {
+                            PushFinalQty(RowID);
+                            RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
+                        }
+                        else {
+                            $('<div></div>').html("<div><h5>" + data.message + "</h5></div>").dialog({
+                                title: 'Manager View - Fill Qty', modal: true, width: 400, resizable: false, autoOpen: true,
+                                buttons: {
+                                    Yes: function () {
+                                        PushFinalQty(RowID);
+                                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
+                                        $(this).dialog("close");
+                                    },
+                                    NO: function () {
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            Popup.dialog('close');
+        }
+
+        function PushFinalQty(RowID) {
+
+             $.ajax({
                     url: "/StockCount/PushFinalQty?ID=" + RowID,
                     type: "GET",
                     datatype: "Json",
@@ -551,9 +582,6 @@
                         RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
                     }
                 });
-
-                Popup.dialog('close');
-            }
         }
 
     </script>

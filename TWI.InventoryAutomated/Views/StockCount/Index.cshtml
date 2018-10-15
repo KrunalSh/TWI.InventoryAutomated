@@ -8,17 +8,17 @@
 
     @*padding-left:20px;*@
     <div class="row" style="padding-bottom:30px;">
-        @*@if (CommonServices.IsUserhasAccessOnPage("StockBatches") || CommonServices.IsUserSuperAdmin())
-        {*@
+        @if (CommonServices.IsUserhasAccessOnPage("NAV Data") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
+        {
         <div class="col-sm-4">
             @*padding:11px;*@
             <div class="input-group" style="float:left;margin:5px;">
                 <button type="button" class="btn" style="width:200px; height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("NavDataPull", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle</button>
             </div>
         </div>
-        @*}
-        @if (CommonServices.IsUserhasAccessOnPage("BatchIterations") || CommonServices.IsUserSuperAdmin())
-        {*@
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Counts & Teams") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
+        {
         <div class="col-sm-4">
             @*padding:11px;*@
             <div class="input-group" style="float:left;margin:5px;">
@@ -27,33 +27,34 @@
                 </button>
             </div>
         </div>
-        @*}
-        @if (CommonServices.IsUserhasAccessOnPage("AdminStockCountSheet") || CommonServices.IsUserSuperAdmin())
-        {*@
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Admin Stock Count Sheet") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
+        {
         <div class="col-sm-4">
             @*padding:11px;*@
             <div class="input-group" style="float:left;margin:5px;">
                 <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="location.href='@Url.Action("AdminStockCountSheet", "StockCount")'">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin</button>
             </div>
         </div>
-        @*}
-        @if (CommonServices.IsUserhasAccessOnPage("StockCountSheet") || CommonServices.IsUserSuperAdmin())
-        {*@
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Stock Count Sheet") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
+        {
         <div class="col-sm-4">
             @*padding:11px;*@
             <div class="input-group" style="float:left;margin:5px;">
                 <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="ValidateStockCount();">@TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet</button>
             </div>
         </div>
-        @*}
-        @if (CommonServices.IsUserhasAccessOnPage("StockCountSheet") || CommonServices.IsUserSuperAdmin())
-        {*@
+        }
+        @if (CommonServices.IsUserhasAccessOnPage("Manager View") || CommonServices.IsUserSuperAdmin(Convert.ToString(Session["InstanceName"]), Convert.ToString(Session["CompanyName"])))
+        {
         <div class="col-sm-4">
             @*padding:11px;*@
             <div class="input-group" style="float:left;margin:5px;">
                 <button type="button" class="btn" style="width:200px;height:90px;background-color:#ded8d8 !important;border-radius:5px;" onclick="ValidateCountAllocations();">@TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView</button>
             </div>
         </div>
+        }
         <div class="col-sm-4">
             @*padding:11px;*@
             <div class="input-group" style="float:left;margin:5px;">

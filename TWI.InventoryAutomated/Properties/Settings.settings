@@ -11,5 +11,8 @@
     <Setting Name="TWI_InventoryAutomated_TestItemList_ItemsList_Service" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/ItemsList</Value>
     </Setting>
+    <Setting Name="TWI_InventoryAutomated_TESTPostAdjustments_InventoryCount" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%20Wille%20Intertrade%20GMBH/Codeunit/InventoryCount</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

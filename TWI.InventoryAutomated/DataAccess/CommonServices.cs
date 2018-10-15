@@ -119,7 +119,7 @@ namespace TWI.InventoryAutomated.DataAccess
                 return false;
             }
         }
-        public static bool IsUserSuperAdmin()
+        public static bool IsUserSuperAdmin(string InstanceName = "",string CompanyName = "")
         {
             try
             {
@@ -130,6 +130,7 @@ namespace TWI.InventoryAutomated.DataAccess
                                           join b in db.UserAccesses on a.ID equals b.PermissionID
                                           join c in db.Users on b.UserID equals c.UserID
                                           where TagIds.Contains(a.PermissionDesc) && c.UserName == SessionPersister.UserName
+                                          && b.InstanceName == InstanceName && b.CompanyName == CompanyName
                                           select b).FirstOrDefault();
                     if (Useracc != null)
                         return true;
