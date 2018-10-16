@@ -49,14 +49,14 @@ namespace TWI.InventoryAutomated.Controllers
                     if (db.StockCountHeader.Where(x=> x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
                     {
                             if (db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
-                            { _sch = db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault(); }
-                            else  { _sch = db.StockCountHeader.Where(x => x.Status == "C" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).FirstOrDefault(); }
+                            { _sch = db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).OrderByDescending(y => y.ID).FirstOrDefault(); }
+                            else  { _sch = db.StockCountHeader.Where(x => x.Status == "C" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).OrderByDescending(y => y.ID).FirstOrDefault(); }
 
                         _scm.ID = _sch.ID;
                         _scm.SCCode = _sch.SCCode;
                         _scm.SCDesc = _sch.SCDesc;
                         _scm.LocationCode = _sch.LocationCode;
-                        if (_sch.Status == "O") { _scm.Status = "Open"; } else _scm.Status = "Closed";
+                        if (_sch.Status == "O") { _scm.Status = "Open"; } else _scm.Status = "Close";
                         _scm.TotalItemCount = Convert.ToDecimal(_sch.TotalItemCount);
 
                         if (db.StockCountDetail.Where(x => x.SCID == _sch.ID).Count() > 0) _scm._stockCountItems = db.StockCountDetail.Where(x => x.SCID == _sch.ID).ToList();
@@ -80,7 +80,17 @@ namespace TWI.InventoryAutomated.Controllers
         [HttpGet]
         public ActionResult NewStockCount(int ID=0)
         {
-            return View();
+            if (ID != 0)
+            {
+                StockCountHeader _sch = new StockCountHeader();
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault(); 
+                }
+                return View(_sch);
+            }
+            else { return View(new StockCountHeader()); }
+            
         }
 
         [HttpPost]
@@ -100,40 +110,51 @@ namespace TWI.InventoryAutomated.Controllers
                     return Json(new { success = false, message = "Value for Location Code is Mandatory, Kindly enter a value" }, JsonRequestBehavior.AllowGet);
 
                 //Validation to check whether duplicate Batch Code is not being entered.
-                if (db.StockCountHeader.AsNoTracking().Where(x => x.SCCode == _sc.SCCode && x.LocationCode == _sc.LocationCode).Count() > 0)
-                    return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
+                if (_sc.ID == 0)
+                {
+                    if (db.StockCountHeader.AsNoTracking().Where(x => x.SCCode == _sc.SCCode && x.LocationCode == _sc.LocationCode).Count() > 0)
+                        return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
 
-                //Validation to check whether stock count is ongoing for any Batch in the system.
-                if (db.StockCountHeader.AsNoTracking().Where(x => x.Status == "O" && x.LocationCode == _sc.LocationCode).Count() > 0)
-                    return Json(new { success = false, message = Resources.GlobalResource.MsgOngoingBatchError }, JsonRequestBehavior.AllowGet);
+                    if (_sc.Status == "C")
+                        return Json(new { success = false, message = "Cannot create a closed batch, Kindly uncheck Closed Batch Option"}, JsonRequestBehavior.AllowGet);
 
-                _sc.CreatedDate = DateTime.Now;
-                _sc.CreatedBy = Convert.ToInt32(Session["UserID"]);
-                _sc.TotalItemCount = 0;
+                    //Validation to check whether stock count is ongoing for any Batch in the system.
+                    if (db.StockCountHeader.AsNoTracking().Where(x => x.Status == "O" && x.LocationCode == _sc.LocationCode).Count() > 0)
+                        return Json(new { success = false, message = Resources.GlobalResource.MsgOngoingBatchError }, JsonRequestBehavior.AllowGet);
+                }
+                else {
+                     //&& x.LocationCode == _sc.LocationCode
+                    if (db.StockCountHeader.AsNoTracking().Where(x => x.SCCode == _sc.SCCode && x.ID != _sc.ID).Count() > 0)
+                        return Json(new { success = false, message = "Record exists with same code"}, JsonRequestBehavior.AllowGet);
+                }
+
+                if (_sc.Status == null) { _sc.Status = "O"; }
+                _sc.TotalItemCount = db.StockCountDetail.Where(x => x.SCID == _sc.ID).Count();
                 _sc.InstanceName = Convert.ToString(Session["InstanceName"]);
                 _sc.CompanyName = Convert.ToString(Session["CompanyName"]);
-                _sc.Status = "O";
+                _sc.CreatedDate = DateTime.Now;
+                _sc.CreatedBy = Convert.ToInt32(Session["UserID"]);
 
-                    try
-                    {
+                //_sc.Status = "O";
+
+                try
+                {
+
+                    if (_sc.ID ==0)
                         db.StockCountHeader.Add(_sc);
-                        db.SaveChanges();
-
-                        //List<StockCountHeader> _batchlist = db.StockCountHeader.ToList();
-                        //StockCountHeader _row0 = new StockCountHeader();
-                        //_row0.ID = -1;
-                        //_row0.SCCode = "-- Select Batch -- ";
-                        //_batchlist.Insert(0, _row0);
-                        //ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
-
-                    return Json(new { success = true, message = Resources.GlobalResource.MsgBatchSavedSuccessfully }, JsonRequestBehavior.AllowGet);
-                    }
-                    catch (Exception ex)
+                    else
                     {
-                        return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+                        db.StockCountHeader.Attach(_sc);
+                        db.Entry(_sc).State = System.Data.Entity.EntityState.Modified;
                     }
+                    db.SaveChanges();
+                    return Json(new { success = true, message = Resources.GlobalResource.MsgBatchSavedSuccessfully }, JsonRequestBehavior.AllowGet);
                 }
-            //return View();
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
         }
 
         public ActionResult GetPhyJournalData(int ID)
@@ -1522,12 +1543,13 @@ namespace TWI.InventoryAutomated.Controllers
         {
             DataTable dt = new DataTable();
             DataSet ds = new DataSet();
-            using (SqlConnection con = new SqlConnection("Data Source=AE01LP83\\SQL2014EXP;Initial Catalog=TWIInventoryPortal;User ID=itsupport;Password=saSql2014"))
+            //using (SqlConnection con = new SqlConnection("Data Source=AE01LP83\\SQL2014EXP;Initial Catalog=TWIInventoryPortal;User ID=itsupport;Password=saSql2014"))
+            using (SqlConnection con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryPortal"].ToString()))
             {
                 using (SqlCommand cmd = new SqlCommand("GetManagerViewByBatch_Test", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add(new SqlParameter("@SCID", ID)); 
+                    cmd.Parameters.Add(new SqlParameter("@SCID", ID));
                     cmd.Parameters.Add(new SqlParameter("@Zone", Zone));
                     cmd.Parameters.Add(new SqlParameter("@Bin", Bin));
                     cmd.Parameters.Add(new SqlParameter("@Item", Item));
@@ -1552,7 +1574,7 @@ namespace TWI.InventoryAutomated.Controllers
                         bool status = false;
                         string countstatusbtn = "";
                         string colvalue = "";
-                        
+
                         foreach (DataColumn col in ds.Tables[0].Columns)
                         {
                             if (count == 0)
@@ -1560,7 +1582,8 @@ namespace TWI.InventoryAutomated.Controllers
                                 colhead = "<input type='checkbox' id='select_all' name='select_all' checked value>";
                                 colvalue = "<input type='checkbox' checked value>&nbsp;<input id='ID' type='hidden' value='" + rowNo + "'>";
                             }
-                            else if (count >= 8 && col.ColumnName.ToLower() != "final qty") {
+                            else if (count >= 8 && col.ColumnName.ToLower() != "final qty")
+                            {
                                 DataRow[] dr1 = ds.Tables[1].Select("IterationName ='" + col.ColumnName + "'");
                                 if (dr1.Length == 1)
                                 {
@@ -1574,7 +1597,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                                 DataRow[] dr2 = ds.Tables[2].Select("SCIterationName ='" + col.ColumnName + "'");
                                 if (dr2.Length == 1)
-                                { countstatusbtn += "<br /><span style'float:left;margin:auto;font-family:'Calibri';font-size:9px;color:blue;'>" + Convert.ToString(dr2[0]["ItemsCounted"]) + " / "+ Convert.ToString(dr2[0]["TotalItems"]) + " counted</span>";}
+                                { countstatusbtn += "<br /><span style'float:left;margin:auto;font-family:'Calibri';font-size:9px;color:blue;'>" + Convert.ToString(dr2[0]["ItemsCounted"]) + " / " + Convert.ToString(dr2[0]["TotalItems"]) + " counted</span>"; }
                                 colhead = col.ColumnName + countstatusbtn;
                                 colvalue = Convert.ToString(dr[col]);
                                 string[] splitvalues = Convert.ToString(dr[col]).Split('|');
@@ -1591,7 +1614,7 @@ namespace TWI.InventoryAutomated.Controllers
                         rows.Add(row);
                         rowNo++;
                     }
-                    return Json( rows , JsonRequestBehavior.AllowGet);
+                    return Json(rows, JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -1806,20 +1829,20 @@ namespace TWI.InventoryAutomated.Controllers
         {
             StockCountDetail _std = new StockCountDetail();
             _std.SCID = ID;
-            _std.WhseDocumentNo = Convert.ToString(obj.Whse_Document_No);
-            _std.ZoneCode = Convert.ToString(obj.Zone_Code);
-            _std.BinCode = Convert.ToString(obj.Bin_Code);
-            _std.ItemNo = Convert.ToString(obj.Item_No);
-            _std.Description = Convert.ToString(obj.Description);
-            _std.LotNo = Convert.ToString(obj.Lot_No);
+            _std.WhseDocumentNo = string.IsNullOrEmpty(Convert.ToString(obj.Whse_Document_No)) ? "" : Convert.ToString(obj.Whse_Document_No);
+            _std.ZoneCode = string.IsNullOrEmpty(Convert.ToString(obj.Zone_Code)) ? "" : Convert.ToString(obj.Zone_Code);
+            _std.BinCode = string.IsNullOrEmpty(Convert.ToString(obj.Bin_Code)) ? "" : Convert.ToString(obj.Bin_Code);
+            _std.ItemNo = string.IsNullOrEmpty(Convert.ToString(obj.Item_No)) ? "" : Convert.ToString(obj.Item_No);
+            _std.Description = string.IsNullOrEmpty(Convert.ToString(obj.Description)) ? "" : Convert.ToString(obj.Description);
+            _std.LotNo = string.IsNullOrEmpty(Convert.ToString(obj.Lot_No)) ? "" : Convert.ToString(obj.Lot_No);
             _std.ExpirationDate = string.IsNullOrEmpty(Convert.ToString(obj.Expiration_Date)) ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy") ==  "01/01/0001" ? "" : obj.Expiration_Date.ToString("dd/MM/yyyy");
-            _std.UOMCode = Convert.ToString(obj.Unit_of_Measure_Code);
+            _std.UOMCode = string.IsNullOrEmpty(Convert.ToString(obj.Unit_of_Measure_Code))? "": Convert.ToString(obj.Unit_of_Measure_Code);
             _std.PhyicalQty = null;
             //_std.PhyicalQty = obj.Qty_Phys_Inventory;
             _std.NAVQty = obj.Qty_Calculated;
-            _std.TemplateName = obj.Journal_Template_Name.ToString();
-            _std.BatchName = Convert.ToString(obj.Journal_Batch_Name);
-            _std.LocationCode = Convert.ToString(obj.Location_Code);
+            _std.TemplateName = string.IsNullOrEmpty(obj.Journal_Template_Name.ToString()) ? "" : obj.Journal_Template_Name.ToString();
+            _std.BatchName = string.IsNullOrEmpty(Convert.ToString(obj.Journal_Batch_Name)) ? "" : Convert.ToString(obj.Journal_Batch_Name);
+            _std.LocationCode = string.IsNullOrEmpty(Convert.ToString(obj.Location_Code)) ? "" : Convert.ToString(obj.Location_Code);
             _std.CreatedDate = DateTime.Now;
             _std.CreatedBy = Convert.ToInt32(Session["UserID"]);
             return _std;

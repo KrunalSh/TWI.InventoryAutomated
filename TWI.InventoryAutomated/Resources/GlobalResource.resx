@@ -418,7 +418,7 @@
     <value>Are you sure to push selected batch data to NAV ? </value>
   </data>
   <data name="MsgBatchSavedSuccessfully" xml:space="preserve">
-    <value>Batch Created Successfully</value>
+    <value>Batch Information Saved Successfully</value>
   </data>
   <data name="MsgClosedBatchPush" xml:space="preserve">
     <value>Cannot Push Data for a Closed Batch, Kindly select a valid Batch</value>
@@ -464,5 +464,8 @@
   </data>
   <data name="SCManagerView" xml:space="preserve">
     <value>Manager View</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
   </data>
 </root>

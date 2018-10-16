@@ -339,6 +339,7 @@ namespace TWI.InventoryAutomated.Controllers
             }
             catch (Exception ex) { throw; }
         }
+
         [HttpPost]
         public ActionResult GetCompanies(int intInstID)
         {

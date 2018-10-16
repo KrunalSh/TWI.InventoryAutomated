@@ -277,6 +277,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string Edit {
+            get {
+                return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email ID.
         /// </summary>
         public static string EmailID {
@@ -556,7 +565,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Batch Created Successfully.
+        ///   Looks up a localized string similar to Batch Information Saved Successfully.
         /// </summary>
         public static string MsgBatchSavedSuccessfully {
             get {
