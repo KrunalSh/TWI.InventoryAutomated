@@ -18,6 +18,7 @@
                 </div>
                 <div style="float:right !important;padding-bottom:10px;margin-right:15px;">
                     <a class="btn btn-primary" style="width:70px;font-weight:600;" data-toggle="tooltip" title="Add New Batch" onclick="PopupForm('@Url.Action("NewStockCount", "StockCount")')">@TWI.InventoryAutomated.Resources.GlobalResource.Create</a>
+                    <a class="btn btn-primary" style="width:70px;font-weight:600;" data-toggle="tooltip" title="Edit Batch" onclick="EditBatch();">@TWI.InventoryAutomated.Resources.GlobalResource.Edit</a>
                     <input type="submit" style="width:70px;margin-left:5px !important;font-weight:bold;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Pull" class="btn btn-primary" title="Pull Data From NAV" onclick="PullData();" />
                     <input type="submit" style="width:70px;margin-left:5px !important;font-weight:bold;" value="@TWI.InventoryAutomated.Resources.GlobalResource.Push" class="btn btn-primary" title="Push Data To NAV" onclick="PushData();" />
                     <input type="submit" style="width:70px;margin-left:5px  !important;font-weight:bold;padding-left:7px;" value="@TWI.InventoryAutomated.Resources.GlobalResource.DeleteBatch" class="btn btn-danger" title="Remove Batch" onclick="Delete();" />
@@ -151,6 +152,26 @@
                                         RefreshData(selectedbatch);
                                     });
         });
+
+
+        function EditBatch() {
+            if ($("#ddlBatches").val() === "-1") {
+                 $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Edit)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+                return;
+            }
+
+            PopupForm('/StockCount/NewStockCount?ID=' + $("#ddlBatches").val());
+        }
+
 
         function PopupForm(url) {
             var formDiv = $('<div/>');
@@ -310,6 +331,20 @@
         function Cancelbutton() {
             Popup.dialog('destroy').remove();
         }
+
+        $(document).on("click", "[type='checkbox']", function (e) {
+            var chk = $(this);
+            var hdnStatus;
+            if (chk.is(':checked')) {
+                $('input[name="Status"]').val('C');
+            }
+            else {
+                $('input[name="Status"]').val('O');
+            }
+        });
+
+
+
         function SubmitForm(form) {
             $.validator.unobtrusive.parse(form);
             if ($(form).valid()) {

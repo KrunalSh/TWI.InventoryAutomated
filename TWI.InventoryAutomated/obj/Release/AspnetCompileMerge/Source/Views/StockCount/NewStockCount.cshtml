@@ -7,6 +7,7 @@
 @using (Html.BeginForm("NewStockCount", "StockCount", FormMethod.Post, new { onsubmit = "return SubmitForm(this)" }))
 {
     @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.Status)
     <div class="form-group txtNotification">
         @Html.LabelFor(model => model.SCCode, TWI.InventoryAutomated.Resources.GlobalResource.Code, new { @class = "control-label" })
         <span class="requiredfield">*</span>
@@ -26,7 +27,8 @@
         @Html.ValidationMessageFor(model => model.LocationCode)
     </div>
     <div class="form-group">
-        <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
-        <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" />
+        <input type="checkbox" id="chkClose" value="false" /><label><span class="control-label" style="font-family:Calibri !important;font-weight:600;padding-left:4px;font-size:14px;">Close Batch</span></label>
+        <input type="reset" value="@TWI.InventoryAutomated.Resources.GlobalResource.Cancel" class="btn" onclick="Cancelbutton();" style="float:right;" />
+        <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" style="float:right;margin-right:7px;" />
     </div>
 }
