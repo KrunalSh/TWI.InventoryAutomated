@@ -47,6 +47,9 @@ namespace TWI.InventoryAutomated.DataAccess
                     HttpContext.Current.Session["CompanyName"] = null;
                     HttpContext.Current.Session["CurrentSession"] = null;
                     HttpContext.Current.Session["DisplayName"] = null;
+                    HttpContext.Current.Session["TeamID"] = null;
+                    HttpContext.Current.Session["SCID"] = null;
+                    HttpContext.Current.Session["IterationID"] = null;
                     SessionPersister.UserName = string.Empty;
                     return true;
                 }

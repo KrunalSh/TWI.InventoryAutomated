@@ -747,37 +747,8 @@ namespace TWI.InventoryAutomated.Controllers
         public ActionResult SelectStockCountItems(int ID)
         {
             Session["TeamID"] = ID;
-            //int CurrCountID = 0;
-            //int SCID = 0;
-            //string IterationName = "";
-            //string TeamCode = "";
             List<StockCountIterations> _countlist = new List<StockCountIterations>();
             _countlist = GetCountListByTeam(ID, "D");
-
-            #region "Commented Code - Moved to GetCountListByTeam Function"
-            //using (InventoryPortalEntities db = new InventoryPortalEntities())
-            //{
-            //    if (db.StockCountTeams.Where(x => x.ID == ID).Count() > 0)
-            //    {
-            //        CurrCountID = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().SCIterationID.Value;
-            //        TeamCode = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().TeamCode;
-            //        IterationName = db.StockCountIterations.Where(x => x.ID == CurrCountID).FirstOrDefault().IterationName;
-            //        SCID = db.StockCountTeams.Where(x => x.ID == ID).FirstOrDefault().SCID.Value;
-
-            //        //if (db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).Count() > 0)
-            //        //    _countlist = db.StockCountIterations.Where(x => x.SCID == SCID && x.ID < CurrCountID).ToList();
-            //    }
-
-            //    StockCountIterations _scitr = new StockCountIterations();
-            //    _scitr.ID = 0;
-            //    _scitr.IterationName = "-- Prev. Count --";
-            //    _countlist.Insert(0, _scitr);
-
-            //    ViewBag.CountList = new SelectList(_countlist, "ID", "IterationName");
-            //    ViewBag.IterationName = IterationName;
-            //    ViewBag.TeamCode = TeamCode;
-            //}
-            #endregion
 
             return View();
         }
@@ -1900,6 +1871,7 @@ namespace TWI.InventoryAutomated.Controllers
         List<StockCountDetail> GetItemsFromNavision(int TeamID, int SCID, string searchfield, string searchcriteria,List<StockCountAllocations> _allocatedItems)
         {
             List<StockCountDetail> _items = new List<StockCountDetail>();
+            List<StockCountDetail> _uniqueList = new List<StockCountDetail>();
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 //select all items from stockcountdetail table
@@ -1929,46 +1901,46 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             //search Items from particular bins separated by comma's
                             bins = searchcriteria.Split(',').ToList(); ;
-                            if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).Count() > 0)
-                                _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode)).ToList();
+                            if (db.StockCountDetail.Where(x => x.SCID == SCID && bins.Contains(x.BinCode)  ).Count() > 0)
+                                _items = db.StockCountDetail.Where(x =>  x.SCID == SCID && bins.Contains(x.BinCode) ).ToList();
                         }
                         else if (binfilter[0].Contains("?"))
                         {
                             //search Items of a particular bin series
-                            searchfilter = binfilter[0].Substring(0, 4).Replace('?', ' ').Trim();
-                            if (db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).Count() > 0)
-                                _items = db.StockCountDetail.Where(x => x.BinCode.Substring(0, 4).Contains(searchfilter)).OrderBy(x => x.BinCode).ToList();
+                            _items = GetItemFromNavByFilter(binfilter[0].Replace('?', ' ').Replace('*', ' ').Trim(), SCID);
                         }
                         else
                         {
                             //search Items of a particular bin
                             searchfilter = binfilter[0].Trim();
-                            if (db.StockCountDetail.Where(x => x.BinCode == searchfilter).Count() > 0)
-                                _items = db.StockCountDetail.Where(x => x.BinCode == searchfilter).ToList();
+                            if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode == searchfilter).Count() > 0)
+                                _items = db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode == searchfilter).ToList();
                         }
                     }
                     else
                     {
                         //Search Items in a series of bins
                         bins = searchcriteria.Split('|').ToList();
-                        for (int i = 0; i <= bins.Count - 1; i++) { bins[i] = bins[i].Replace('?', ' ').Trim(); }
-
-                        if (db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).Count() > 0)
-                            _items = db.StockCountDetail.Where(x => bins.Contains(x.BinCode.Substring(0, 4))).ToList();
+                        List<StockCountDetail> _itrItems;
+                        for (int i = 0; i <= bins.Count - 1; i++) {
+                            _itrItems = GetItemFromNavByFilter(bins[i].Replace('?', ' ').Replace('*', ' ').Trim(), SCID);
+                            foreach (StockCountDetail _scd in _itrItems)
+                            { _items.Add(_scd); }
+                        }
                     }
                 }
 
+                _uniqueList = _items.Distinct().ToList();
 
-
-                foreach (StockCountDetail _scd in _items.ToList())
+                foreach (StockCountDetail _scd in _uniqueList.ToList())
                 {
                     if (_allocatedItems.Where(x => x.ItemNo == _scd.ItemNo && x.BinCode == _scd.BinCode && x.ZoneCode == _scd.ZoneCode && x.LotNo == _scd.LotNo && x.ExpirationDate == _scd.ExpirationDate).Count() > 0)
                     {
-                        _items.Remove(_scd);
+                        _uniqueList.Remove(_scd);
                     }
                 }
             }
-            return _items;
+            return _uniqueList;
         }
 
         List<StockCountAllocations> GetDeviationsEntries(int TeamID,int SCID ,int PrevCount, string searchfield, string searchcriteria,List<StockCountAllocations> _allocatedItems)
@@ -2091,6 +2063,39 @@ namespace TWI.InventoryAutomated.Controllers
                 }
             }
             return _prevcountalloc;
+        }
+
+        List<StockCountDetail> GetItemFromNavByFilter(string searchfilter,int SCID)
+        {
+            List<StockCountDetail> _items = new List<StockCountDetail>();
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (searchfilter.Length == 1)
+                {
+                    if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(3, 1).Contains(searchfilter)).Count() > 0)
+                        _items = db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(3, 1).Contains(searchfilter)).ToList();
+                }
+
+                if (searchfilter.Length == 2)
+                {
+                    if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(2, 2).Contains(searchfilter)).Count() > 0)
+                        _items = db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(2, 2).Contains(searchfilter)).ToList();
+                }
+
+
+                if (searchfilter.Length == 3)
+                {
+                    if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(1, 3).Contains(searchfilter)).Count() > 0)
+                        _items = db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(1, 3).Contains(searchfilter)).ToList();
+                }
+
+                if (searchfilter.Length == 4)
+                {
+                    if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(0, 4).Contains(searchfilter)).Count() > 0)
+                        _items = db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.Substring(0, 4).Contains(searchfilter)).ToList();
+                }
+                return _items;
+            }
         }
 
         private void UpdateItemFinalQty(string[] Item)
