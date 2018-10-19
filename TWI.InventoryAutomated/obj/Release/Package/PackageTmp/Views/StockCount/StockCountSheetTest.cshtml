@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet;
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var grid = new WebGrid(canPage: true, rowsPerPage: 5);
+    var grid = new WebGrid(canPage: true, rowsPerPage: 10);
     grid.Bind(source: Model, rowCount: ViewBag.TotalRows, autoSortAndPage: false);
 }
 
@@ -14,7 +14,7 @@
 <div class="row" style="border:2px #808080 solid;">
     <div style="margin:auto;width:100% !important;max-width:100%;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-            <div style="font-weight:bold">Stock Count Sheet </div>
+            <div style="font-weight:bold">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + ViewBag.CountInfo)  </div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         @*<div style="float:left !important;width:100% !important;margin:15px;">
@@ -79,6 +79,7 @@
                       grid.Column(columnName: "BinCode", header: "Bin Code"),
                       grid.Column(columnName: "ItemNo", header: "Item No"),
                       grid.Column(columnName: "Description", header: "Description"),
+                      grid.Column(columnName: "UOMCode", header: "UOM"),
                       grid.Column(columnName: "LotNo", header: "Lot No"),
                       grid.Column(columnName: "ExpirationDate", header: "Expiry Date"),
                       grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
@@ -92,7 +93,7 @@
 
                 @Html.Hidden("dir", grid.SortDirection)
                 @Html.Hidden("col", grid.SortColumn)
-                @Html.HiddenFor(x => x.FirstOrDefault().TeamID);
+                @Html.HiddenFor(x => x.FirstOrDefault().TeamID)
 
             </div>
         </div>
@@ -160,7 +161,18 @@
                 
             });
 
+            $("#txtPhyQty").keypress(function (e) {
+                if (e.which === 46) {
+                    if ($(this).val().indexOf('.') !== -1) {
+                        return false;
+                    }
+                }
 
+                if (e.which !== 8 && e.which !== 0 && e.which !== 46 && e.which !== 13 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+
+            });
 
             $("#ddlZoneCodes").change(function () {
 

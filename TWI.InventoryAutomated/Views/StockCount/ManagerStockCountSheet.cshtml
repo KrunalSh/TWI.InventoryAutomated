@@ -42,7 +42,7 @@
                 </div>
                 <div class="field_background1" style="width:100% !important;">
                     <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
-                        Item Lines: <span style="padding-left:3px;font-weight:400 !important">
+                        NAV Lines: <span style="padding-left:3px;font-weight:400 !important">
                             @{
                                 var ItemLines = Convert.ToInt32(Model.TotalItemCount);
                             }
@@ -57,9 +57,12 @@
                     </div>
                 </div>
             </div>
+            <div style="float:left;margin-bottom:10px;margin-left:10px">
+                <a class="btn btn-primary" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="" id="FillQty" onclick="FillQty();">Fill Final Qty</a>
+            </div>
             @*<div style="float:left;margin-bottom:10px;margin-left:5px !important;">
-                <a class="btn btn-primary" style="width:70px;height:55px;padding-left:7px;padding-top:13px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Post</a>
-            </div>*@
+            <a class="btn btn-primary" style="width:70px;height:55px;padding-left:7px;padding-top:13px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Post</a>
+        </div>*@
         </div>
         <div style="float:left !important;width:100% !important;margin:0 15px 0px 15px;padding-right:35px;display:none;" id="divfilters">
             <div class="row col-sm-12">
@@ -70,20 +73,18 @@
                     @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
                 </div>
                 @**@
-                <div style="float:left;margin-right:10px;margin-bottom:10px;border-radius:5px;height:25px;width:90px;">
-                    <input type="text" placeholder="Item No" id="txtItemNo" name="txtItemNo" width="80" />
+                <div style="float:left;margin-right:10px;margin-bottom:10px;">
+                    <input class="form-control" type="text" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important;margin-top:0px;"  />
                 </div>
                 <div style="float:left;margin-bottom:10px;">
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" onclick="FilterList();" title="">Filter</a>
                 </div>
-                <div style="float:left;margin-bottom:10px;margin-left:10px">
-                    <a class="btn btn-primary" style="width:70px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="" id="FillQty" onclick="FillQty();">Fill Qty</a>
-                </div>
+                
                 <div style="float:right;margin-bottom:10px;margin-right:25px;">
-                    <a class="btn btn-primary fa fa-search" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title=""></a>
+                    <a class="btn btn-primary fa fa-search" style="width:50px;height:33px;padding-left:7px;text-align:center;font-weight:bold;" data-toggle="tooltip" title=""></a>
                 </div>
-                <div style="float:right;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" placeholder="enter value" id="txtValue" name="txtValue" width="50" />
+                <div style="float:right;margin-right:10px;margin-bottom:10px;margin-top:-5px;">
+                    <input type="text" class="form-control" placeholder="enter value" id="txtValue" name="txtValue" style="width:100px !important;" />
                 </div>
                 <div style="float:right;margin-right:10px;">
                     <select id="ddlOperator" class="form-control">
@@ -230,13 +231,13 @@
                     success: function (data) {
                         //console.log(data);
                         if (data.data === null) {
-                            $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                            $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('NAV Lines: ');
                             $("#Status").html('Status : ');
                         }
                         else {
                             $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
                             $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                            $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                            $("#TotalItem").html('NAV Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
                             $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                         }
                         RefreshManagerView($("#ddlBatches").val(),"%","%","%");
@@ -344,6 +345,11 @@
                             my_columns.push(my_item);
                         });
 
+                        if (datatable !== null) {
+                            console.log(datatable);
+                            //datatable = $('#HeaderTable').DataTable().fnClearTable();
+                        }
+
                         datatable = $('#HeaderTable').DataTable({
                             "destroy": true,
                             data: dataset,
@@ -353,7 +359,7 @@
                                     'searchable': false,
                                     'orderable': false,
                                     'width': '1%',
-                                    'data' : 'ID',
+                                    'data': 'ID',
                                     'className': 'dt-body-center'
                                 },
                                 {
@@ -370,11 +376,15 @@
                                     'width': '15%'
                                 },
                                 {
-                                    'targets': [my_columns.length-1],
+                                    'targets': [my_columns.length - 1],
                                     'searchable': false,
                                     'orderable': false,
                                     'width': '5%',
-                                    'className': 'dt-body-center'
+                                    'className': 'dt-body-center',
+                                    "data": "FinalQty", "render": function (data) {
+                                        //onclick = "UpdatePhysicalQty(' + data + ');"
+                                        return data + ' &nbsp;&nbsp;<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" ></a>';
+                                    }
                                 }
                             ],
                             'select': { 'style': 'multi' },

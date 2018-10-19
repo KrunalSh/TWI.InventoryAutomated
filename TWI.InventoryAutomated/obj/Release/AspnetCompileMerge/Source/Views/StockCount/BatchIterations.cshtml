@@ -24,7 +24,7 @@
                     </div>
                     <div class="field_background1" style="width:100% !important;">
                         <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
-                            Item Lines: <span style="padding-left:3px;font-weight:400 !important">
+                            NAV Lines: <span style="padding-left:3px;font-weight:400 !important">
                                 @{
                                     var ItemLines = Convert.ToInt32(Model.TotalItemCount);
                                 }
@@ -59,7 +59,11 @@
                                     <div style="border:solid 2px #808080;border-radius:10px;box-shadow:5px 5px 0px 0px #808080;">
                                         <div style="width:100%;padding-left:10px;background-color:#eae7e7 !important;min-height:40px !important;max-height:80px !important;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom:solid 2px #808080;">
                                             <div style="float:left;color:black;font-family:Calibri;font-size:14px;font-weight:bold;height:auto;padding-top:8px">
-                                                @_std.IterationNo - @_std.IterationName
+                                                @_std.IterationNo - @_std.IterationName   
+                                                @if (Model.CountSummary.Where(x => x.CountID == _std.ID).Count() > 0)
+                                                {
+                                                    <span style="padding-left:5px;font-family:Calibri;font-size:12px;font-weight:400"> (@Model.CountSummary.Where(x => x.CountID == _std.ID).FirstOrDefault().TotalItems)  </span>
+                                                }
                                             </div>
                                             <div style="float:right;margin-right:5px;margin-top:7px;">
                                                 @{
@@ -90,7 +94,13 @@
                                                         if (_steam.SCIterationID == _std.ID)
                                                         {
                                                     <div class="row" style="height:30px !important;margin-left:5px;margin-right:7px;margin-bottom:7px;border-bottom:solid 1px #808080;">
-                                                        <div style="float:left;font-family:Calibri;font-size:14px;color:black;">@_steam.TeamCode - @_steam.UserName</div>
+                                                        <div style="float:left;font-family:Calibri;font-size:14px;color:black;">
+                                                            @_steam.TeamCode - @_steam.UserName
+                                                            @if (Model.TeamSummaries.Where(x => x.TeamID == _steam.ID).Count() > 0)
+                                                            {
+                                                                <span style="padding-left:5px;font-family:Calibri;font-size:12px;font-weight:400"> ( @Model.TeamSummaries.Where(x => x.TeamID == _steam.ID).FirstOrDefault().TotalItems / @Convert.ToInt32(Model.CountSummary.Where(x=> x.CountID == _steam.SCIterationID).FirstOrDefault().TotalItems))  </span>
+                                                            }
+                                                        </div>
                                                         <div style="float:right;"><a class="btn btn-danger fa fa-trash" style="padding-top:2px;  padding-left:4px;width:20px !important;height:20px !important;vertical-align:middle !important;margin-left:10px;" onclick="DeleteIterationTeam(@_steam.ID);"></a></div>
                                                         @*margin-top:5px;*@
                                                     </div>
@@ -140,13 +150,13 @@
                 success: function (data) {
                     //console.log(data);
                     if (data.data === null) {
-                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
+                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('NAV Lines: ');
                         $("#Status").html('Status : ');
                     }
                     else {
                         $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
                         $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                        $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                        $("#TotalItem").html('NAV Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
                         $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                     }
                 }
@@ -155,15 +165,20 @@
     });
 
 
-    function PopupForm(url) {
+    function PopupForm(url,title) {
             var formDiv = $('<div/>');
             $.get(url)
                 .done(function (response) {
                     formDiv.html(response);
-
+                    var formtitle = '';
+                    if (title === 'T') {
+                        formtitle = '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - Team")';
+                    }
+                    else { formtitle = '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.CreateIteration)';}
+                    
                     Popup = formDiv.dialog({
-                        autoOpen: true,
-                        title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.CreateIteration)',
+                            autoOpen: true,
+                            title: formtitle,
                         modal: true
                     });
                 });
@@ -171,7 +186,45 @@
 
     function CreateNewTeam(ID)
     {
-        Popup = PopupForm('/StockCount/NewIterationTeam?IterationID=' + ID);
+        var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            if ($("#ddlBatches").val() === -1) {
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                        buttons: {
+                            Ok: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    });
+            }
+            else {
+                $.ajax({
+                    url: '/StockCount/CheckTeamBatchStatus?ID=' + $("#ddlBatches").val(),
+                    type: 'GET',
+                    dataType: 'json',
+                    async:true,
+                    success: function (data) {
+                        if (data.success) {
+                            Popup = PopupForm('/StockCount/NewIterationTeam?IterationID=' + ID,'T');
+                        }
+                        else {
+                            $('<div></div>').appendTo('body')
+                                .html("<div><h5>" + data.message + "</h5></div>")
+                                .dialog({
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create + " Team")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                buttons: {
+                                Ok: function () {
+                                    $(this).dialog("close");
+                                }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
     }
    
     function Cancelbutton() {
@@ -263,9 +316,10 @@
                     url: '/StockCount/CheckBatchStatus?ID=' + $("#ddlBatches").val(),
                     type: 'GET',
                     dataType: 'json',
+                    async:true,
                     success: function (data) {
                         if (data.success) {
-                            Popup = PopupForm('/StockCount/CreateNewIteration?ID=' + $("#ddlBatches").val());
+                            Popup = PopupForm('/StockCount/CreateNewIteration?ID=' + $("#ddlBatches").val(),'C');
                         }
                         else {
                             $('<div></div>').appendTo('body')
@@ -406,6 +460,18 @@
                                                         RefreshData($("#ddlBatches").val());
                                                     }
                                                 }
+                                                });
+                                        }
+                                        else {
+                                            $('<div></div>').appendTo('body')
+                                                .html("<div><h5>" + data.message + "</h5></div>")
+                                                .dialog({
+                                                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                    buttons: {
+                                                        Ok: function () {
+                                                            $(this).dialog("close");
+                                                        }
+                                                    }
                                                 });
                                         }
                                     }

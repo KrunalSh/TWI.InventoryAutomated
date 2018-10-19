@@ -381,4 +381,16 @@
   <data name="Edit" xml:space="preserve">
     <value>Bearbeiten</value>
   </data>
+  <data name="MsgSelectItemForAllocation" xml:space="preserve">
+    <value>Bitte wählen Sie mindestens einen Artikel für die Zuordnung aus</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suche</value>
+  </data>
+  <data name="SelectAllocationSource" xml:space="preserve">
+    <value>Bitte wählen Sie eine Quelle um Artikel zuzuordnen</value>
+  </data>
+  <data name="MsgBatchSelectionMandatory" xml:space="preserve">
+    <value>Die Stapelauswahl ist obligatorisch.</value>
+  </data>
 </root>

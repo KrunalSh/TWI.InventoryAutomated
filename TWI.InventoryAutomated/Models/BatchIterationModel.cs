@@ -28,15 +28,20 @@ namespace TWI.InventoryAutomated.Models
 
         public List<StockCountTeams> Teams { get; set; }
 
-        public List<CountItemsSummary> TeamAllocationSummary { get; set; }
+        public List<CountItemsSummary> CountSummary { get; set; }
+
+        public List<TeamSummary> TeamSummaries { get; set; }
     }
 
+    public class TeamSummary {
 
+        public int CountID { get; set; }
+        public int TeamID { get; set; }
+        public int TotalItems { get; set; }
+    }
 
     public class CountItemsSummary {
         public int CountID { get; set; }
-
-        public int TeamId { get; set; }
 
         public int TotalItems { get; set; }
     }

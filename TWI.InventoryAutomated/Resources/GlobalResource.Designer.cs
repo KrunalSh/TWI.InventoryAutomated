@@ -529,7 +529,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure to want to pull data from navision.
+        ///   Looks up a localized string similar to Are you sure to pull data from navision.
         /// </summary>
         public static string MsgBatchDataPullConfirmation {
             get {
@@ -579,6 +579,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string MsgBatchSelectionError {
             get {
                 return ResourceManager.GetString("MsgBatchSelectionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Batch selection is mandatory..
+        /// </summary>
+        public static string MsgBatchSelectionMandatory {
+            get {
+                return ResourceManager.GetString("MsgBatchSelectionMandatory", resourceCulture);
             }
         }
         
@@ -768,6 +777,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string MsgPermissionAssigned {
             get {
                 return ResourceManager.GetString("MsgPermissionAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kindly select atleast one item for allocation.
+        /// </summary>
+        public static string MsgSelectItemForAllocation {
+            get {
+                return ResourceManager.GetString("MsgSelectItemForAllocation", resourceCulture);
             }
         }
         
@@ -1020,6 +1038,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string SCManagerView {
             get {
                 return ResourceManager.GetString("SCManagerView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kindly select a source to allocate item(s).
+        /// </summary>
+        public static string SelectAllocationSource {
+            get {
+                return ResourceManager.GetString("SelectAllocationSource", resourceCulture);
             }
         }
         

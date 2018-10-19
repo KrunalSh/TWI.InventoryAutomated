@@ -36,6 +36,7 @@
                                 <option value="0">-- Select Field --</option>
                                 <option value="1">Zone Code</option>
                                 <option value="2">Bin Code</option>
+                                <option value="3">Item No</option>
                             </select>
                         </div>
                         <div style="float:left;margin-right:10px;">
@@ -73,6 +74,7 @@
                 </div>
             </div>
         </div>
+        <div></div>
     </div>
 </div>
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -234,11 +236,13 @@
 
 
             if (allocsource === "0") {
-                alert("Kindly select a source to allocate item(s)");
+               ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SelectAllocationSource)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Search)');
+                //alert("Kindly select a source to allocate item(s)");
             }
             else {
                  datatable = $("#ItemTable").DataTable({
-                        "destroy": true,
+                     "destroy": true,
+                     "lengthMenu": [[-1,10, 25, 50], ["All",10,25,50]],
                         "ajax": {
                             "url": "/StockCount/GetSearchItem",
                             "data": { TeamID: '@Convert.ToInt32(Session["TeamID"])', source: allocsource, PrevCount: countId, searchfield: SearchField, searchcriteria: searchCriteria },
@@ -313,7 +317,6 @@
             
             $('#ItemTable tbody').find('tr').each(function () {
                 var row = $(this);
-
                 if (row.find('input[type="checkbox"]').is(':checked')) {
                     count++;
                 }
@@ -324,23 +327,36 @@
                 //alert(RowID.length);
                 var colcount = 0; var rowdata = '';
                 count = 0;
+                var data = datatable.rows().data();
+                console.log(data);
+                //data.each(function (value, index) {
+                //    var rowsdata = datatable.row(index).data();
+                //            //alert(rowsdata.ID + ' - ' + rowsdata.ItemNo);
+                //        $('#ItemTable tbody').find('tr').each(function () {
+                //            var row = $(this);
+                //            var hdnvalue = row.find('input[type="hidden"]').val();
+                //            var ItemId = rowsdata.ID;
+                //        });
+                //});
+                //console.log(RowID);
+                //console.log(data);
+
                 $('#ItemTable tbody').find('tr').each(function () {
                     var row = $(this);
                     if (row.find('input[type="checkbox"]').is(':checked')) {
                         //itemid = row.find('input[type="hidden"]').val();
-
-                        //RowID[count] = row.find('input[type="hidden"]').val();
-                        colcount = 0;
-                        rowdata = '';
-                        row.find('td').each(function () {
-                            var col = $(this);
-                            if (colcount >= 1) {
-                                rowdata += col.html() + ':';
-                            }
-                            colcount++;
-                        });
-                        RowID[count] = row.find('input[type="hidden"]').val() + ':' + rowdata;
-                        alert(RowID[count]);
+                        RowID[count] = row.find('input[type="hidden"]').val();
+                        //colcount = 0;
+                        //rowdata = '';
+                        //row.find('td').each(function () {
+                        //    var col = $(this);
+                        //    if (colcount >= 1 && colcount !== 2) {
+                        //        rowdata += col.html() + ':';
+                        //    }
+                        //    colcount++;
+                        //});
+                        //RowID[count] = row.find('input[type="hidden"]').val() + rowdata;
+                        //alert(RowID[count]);
                         count++;
                     }
                 });
@@ -352,20 +368,35 @@
                     //data: { TeamID : TeamID,ID : RowID },
                     success: function (data) {
                         if (data.success) {
-                            alert(data.message);
+                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
+                            //alert(data.message);
                             window.location.href = "/StockCount/AdminSTockCountSheet?TeamID=" + TeamID;
                         }
                         else {
-                            alert(data.message);
+                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
+                            //alert(data.message);
                         }
                     }
 
                 });
-
             }
             else {
-                alert("Kindly select atleast one item for allocation");
+                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgSelectItemForAllocation)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
+                //alert("Kindly select atleast one item for allocation");
             }
         }
+
+        function ShowDialog(message,formtitle) {
+             $('<div></div>').appendTo('body')
+                .html("<div><h5>" + message + "</h5></div>")
+                .dialog({ modal: true, title: formtitle, zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                          buttons: { Ok: function () { $(this).dialog("close"); } }
+                });
+        }
+
+
+
+
+
     </script>
 }

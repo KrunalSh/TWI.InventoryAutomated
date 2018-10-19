@@ -367,7 +367,7 @@
     <value>Location Code</value>
   </data>
   <data name="MsgBatchDataPullConfirmation" xml:space="preserve">
-    <value>Are you sure to want to pull data from navision</value>
+    <value>Are you sure to pull data from navision</value>
   </data>
   <data name="MsgBatchExistingDataOverwrite" xml:space="preserve">
     <value>Existing Data will be overwritten if any, do you wish to continue ?</value>
@@ -467,5 +467,17 @@
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
+  </data>
+  <data name="MsgSelectItemForAllocation" xml:space="preserve">
+    <value>Kindly select atleast one item for allocation</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SelectAllocationSource" xml:space="preserve">
+    <value>Kindly select a source to allocate item(s)</value>
+  </data>
+  <data name="MsgBatchSelectionMandatory" xml:space="preserve">
+    <value>Batch selection is mandatory.</value>
   </data>
 </root>

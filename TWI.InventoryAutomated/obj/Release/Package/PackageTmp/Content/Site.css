@@ -216,6 +216,16 @@ input.input-validation-error {
     color: black !important;
 }
 
+.datatable_col20PercH {
+    width: 20% !important;
+    text-align: left !important;
+    font-family: Calibri;
+    font-size: 14px;
+    font-weight: bold;
+    height: 15px !important;
+    color: black !important;
+}
+
 
 .datatable_col10PercR {
     width: 10% !important;
@@ -228,6 +238,15 @@ input.input-validation-error {
 
 .datatable_col30PercR {
     width: 30% !important;
+    text-align: left !important;
+    font-family: Calibri;
+    font-size: 14px;
+    height: 15px !important;
+    color: black !important;
+}
+
+.datatable_col20PercR {
+    width: 20% !important;
     text-align: left !important;
     font-family: Calibri;
     font-size: 14px;
