@@ -285,7 +285,7 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
-        public static StockCountHeader GetStockCountHeaderByID(int ID)
+        public static StockCountModel GetStockCountHeaderByID(int ID)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
@@ -297,7 +297,7 @@ namespace TWI.InventoryAutomated.DataAccess
                     command.Parameters.Add(new SqlParameter("@ID", ID));
                     db.Database.Connection.Open();
                     var reader = command.ExecuteReader();
-                    StockCountHeader _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountHeader>(reader).FirstOrDefault();
+                    StockCountModel _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountModel>(reader).FirstOrDefault();
                     return _stockcountdata;
                 }
                 catch (Exception ex)

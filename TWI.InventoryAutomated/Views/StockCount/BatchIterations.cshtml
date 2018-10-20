@@ -17,22 +17,30 @@
                 </div>
                 <div style="float:left !important;margin-left:5px !important;" class="col-sm-9">
                     <div class="field_background1" style="width:100% !important;margin-bottom:5px;">
-                        <div class="col-sm-6" style="padding-top:4px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                        <div class="col-sm-6" style="padding-top:4px;" id="LocationCode">
-                            Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+                        <div class="col-sm-5" style="padding-top:4px;" id="SCDesc">@TWI.InventoryAutomated.Resources.GlobalResource.Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                        <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">
+                            @TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+                        </div>
+                        <div class="col-sm-3" style="padding-top:4px;" id="Status">
+                            @TWI.InventoryAutomated.Resources.GlobalResource.Status: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
                         </div>
                     </div>
                     <div class="field_background1" style="width:100% !important;">
-                        <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
-                            NAV Lines: <span style="padding-left:3px;font-weight:400 !important">
+                        <div class="col-sm-5" style="padding-top:4px;" id="TotalItem">
+                            @TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries: <span style="padding-left:3px;font-weight:400 !important">
                                 @{
                                     var ItemLines = Convert.ToInt32(Model.TotalItemCount);
                                 }
                                 @Html.DisplayFor(model => ItemLines)
                             </span>
                         </div>
-                        <div class="col-sm-6" style="padding-top:4px;" id="Status">
-                            Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
+                        <div class="col-sm-4" style="padding-top:4px;" id="AdjTotalItem">
+                            @TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries: <span style="padding-left:3px;font-weight:400 !important">
+                                @{
+                                    var AdjItemLines = Convert.ToInt32(Model.TotalAdjustmentItems);
+                                }
+                                @Html.DisplayFor(model => AdjItemLines)
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -150,14 +158,16 @@
                 success: function (data) {
                     //console.log(data);
                     if (data.data === null) {
-                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('NAV Lines: ');
-                        $("#Status").html('Status : ');
+                        $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': '); $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' + ': '); $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
+                        $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
+                        $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' + ': ');
                     }
                     else {
-                        $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
-                        $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                        $("#TotalItem").html('NAV Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
-                        $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                        $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                        $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                        $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                        $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalAdjustmentItems + '</span>');
+                        $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                     }
                 }
             });

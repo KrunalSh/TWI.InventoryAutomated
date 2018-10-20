@@ -57,9 +57,11 @@ namespace TWI.InventoryAutomated.Controllers
                         _scm.SCDesc = _sch.SCDesc;
                         _scm.LocationCode = _sch.LocationCode;
                         if (_sch.Status == "O") { _scm.Status = "Open"; } else _scm.Status = "Close";
-                        _scm.TotalItemCount = Convert.ToDecimal(_sch.TotalItemCount);
+                        //_scm.TotalItemCount = Convert.ToDecimal(_sch.TotalItemCount);
+                        _scm.TotalItemCount = Convert.ToInt32(db.StockCountDetail.Where(x => x.SCID == _sch.ID && x.TemplateName == "INV").Count());
+                        _scm.TotalAdjustmentItems = Convert.ToInt32(db.StockCountDetail.Where(x => x.SCID == _sch.ID && x.TemplateName == "ADJUST").Count());
 
-                        if (db.StockCountDetail.Where(x => x.SCID == _sch.ID).Count() > 0) _scm._stockCountItems = db.StockCountDetail.Where(x => x.SCID == _sch.ID).ToList();
+                    if (db.StockCountDetail.Where(x => x.SCID == _sch.ID).Count() > 0) _scm._stockCountItems = db.StockCountDetail.Where(x => x.SCID == _sch.ID).ToList();
                         else _scm._stockCountItems = CommonServices.GetStockCountDetailByID(_sch.ID);
                         return View(_scm);
                     }
@@ -71,6 +73,7 @@ namespace TWI.InventoryAutomated.Controllers
                     _scm.LocationCode = string.Empty;
                     _scm.Status = "";
                     _scm.TotalItemCount = 0;
+                    _scm.TotalAdjustmentItems = 0;
                     _scm._stockCountItems = new List<StockCountDetail>();
                 }
                 return View(_scm);
@@ -305,6 +308,9 @@ namespace TWI.InventoryAutomated.Controllers
                     _bim.LocationCode = _sch.LocationCode;
                     if (_sch.Status == "O") { _bim.Status = "Open"; } else _bim.Status = "Closed";
                     _bim.TotalItemCount = Convert.ToInt32(_sch.TotalItemCount);
+                    _bim.TotalItemCount = Convert.ToInt32(db.StockCountDetail.Where(x => x.SCID == _sch.ID && x.TemplateName == "INV").Count());
+                    _bim.TotalAdjustmentItems = Convert.ToInt32(db.StockCountDetail.Where(x => x.SCID == _sch.ID && x.TemplateName == "ADJUST").Count());
+
 
                     if (db.StockCountIterations.Where(x => x.SCID == _sch.ID).Count() > 0) _bim.Iterations = db.StockCountIterations.Where(x => x.SCID == _sch.ID).OrderBy(y => y.IterationNo).ToList();
                     else _bim.Iterations = new List<StockCountIterations>();
@@ -343,6 +349,7 @@ namespace TWI.InventoryAutomated.Controllers
                     _bim.LocationCode = string.Empty;
                     _bim.Status = "";
                     _bim.TotalItemCount = 0;
+                    _bim.TotalAdjustmentItems = 0;
                     _bim.Iterations = new List<StockCountIterations>();
                     _bim.Teams = new List<StockCountTeams>();
                     _bim.CountSummary = new List<CountItemsSummary>();

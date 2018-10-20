@@ -190,7 +190,7 @@ input.input-validation-error {
     width: 10% !important;
     text-align: center !important;
     font-family: 'Calibri';
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     height: 15px !important;
     color: black !important;
@@ -200,8 +200,18 @@ input.input-validation-error {
     width: 5% !important;
     text-align: center !important;
     font-family: 'Calibri';
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
+    height: 15px !important;
+    color: black !important;
+}
+
+.datatable_col5PercR {
+    width: 5% !important;
+    text-align: center !important;
+    font-family: 'Calibri';
+    font-size: 12px;
+    font-weight:400;
     height: 15px !important;
     color: black !important;
 }
@@ -210,7 +220,7 @@ input.input-validation-error {
     width: 30% !important;
     text-align: left !important;
     font-family: Calibri;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     height: 15px !important;
     color: black !important;
@@ -220,7 +230,7 @@ input.input-validation-error {
     width: 20% !important;
     text-align: left !important;
     font-family: Calibri;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     height: 15px !important;
     color: black !important;
@@ -231,7 +241,7 @@ input.input-validation-error {
     width: 10% !important;
     text-align: center !important;
     font-family: 'Calibri';
-    font-size: 14px;
+    font-size: 12px;
     height: 15px !important;
     color: black !important;
 }
@@ -240,7 +250,7 @@ input.input-validation-error {
     width: 30% !important;
     text-align: left !important;
     font-family: Calibri;
-    font-size: 14px;
+    font-size: 12px;
     height: 15px !important;
     color: black !important;
 }
@@ -249,7 +259,7 @@ input.input-validation-error {
     width: 20% !important;
     text-align: left !important;
     font-family: Calibri;
-    font-size: 14px;
+    font-size: 12px;
     height: 15px !important;
     color: black !important;
 }

@@ -393,4 +393,16 @@
   <data name="MsgBatchSelectionMandatory" xml:space="preserve">
     <value>Die Stapelauswahl ist obligatorisch.</value>
   </data>
+  <data name="ADJEntries" xml:space="preserve">
+    <value>Anpassungen</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Ort</value>
+  </data>
+  <data name="NAVEntries" xml:space="preserve">
+    <value>NAV-Einträge</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
 </root>

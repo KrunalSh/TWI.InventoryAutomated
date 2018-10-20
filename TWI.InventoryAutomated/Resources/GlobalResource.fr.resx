@@ -393,4 +393,16 @@
   <data name="MsgBatchSelectionMandatory" xml:space="preserve">
     <value>La sélection par lots est obligatoire.</value>
   </data>
+  <data name="ADJEntries" xml:space="preserve">
+    <value>Ajustements</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Emplacement</value>
+  </data>
+  <data name="NAVEntries" xml:space="preserve">
+    <value>Entrées NAV</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Statut</value>
+  </data>
 </root>

@@ -480,4 +480,16 @@
   <data name="MsgBatchSelectionMandatory" xml:space="preserve">
     <value>Batch selection is mandatory.</value>
   </data>
+  <data name="ADJEntries" xml:space="preserve">
+    <value>Adjustment(s)</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="NAVEntries" xml:space="preserve">
+    <value>NAV Entries</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
 </root>

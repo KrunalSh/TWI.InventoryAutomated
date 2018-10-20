@@ -24,28 +24,39 @@
                     <input type="submit" style="width:70px;margin-left:5px  !important;font-weight:bold;padding-left:7px;" value="@TWI.InventoryAutomated.Resources.GlobalResource.DeleteBatch" class="btn btn-danger" title="Remove Batch" onclick="Delete();" />
                 </div>
             </div>
-            <div style="float:left !important;padding-bottom:10px;margin-bottom:10px" class="row col-sm-12">
-                <div class="field_background" style="width:100% !important">
-                    <div class="col-sm-4" style="padding-top:7px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                    <div class="col-sm-3" style="padding-top:7px;" id="LocationCode">
-                        Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+            <div style="float:left !important;margin-left:3px;" class="row col-sm-12">
+                <div class="field_background1" style="width:100% !important;margin-bottom:5px;">
+                    <div class="col-sm-5" style="padding-top:4px;" id="SCDesc">@TWI.InventoryAutomated.Resources.GlobalResource.Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
                     </div>
-                    <div class="col-sm-3" style="padding-top:7px;" id="TotalItem">
-                        NAV Lines: <span style="padding-left:3px;font-weight:400 !important"> 
-                        @{ 
-                            int TotalItems = Convert.ToInt32(Model.TotalItemCount);
-                        }
-                        @Html.DisplayFor(model => TotalItems) </span>
+                    <div class="col-sm-3" style="padding-top:4px;" id="Status">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.Status: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
                     </div>
-                    <div class="col-sm-2" style="padding-top:7px;" id="Status">
-                        Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
+                </div>
+                <div class="field_background1" style="width:100% !important;">
+                    <div class="col-sm-5" style="padding-top:4px;" id="TotalItem">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries: <span style="padding-left:3px;font-weight:400 !important">
+                            @{
+                                var ItemLines = Convert.ToInt32(Model.TotalItemCount);
+                            }
+                            @Html.DisplayFor(model => ItemLines)
+                        </span>
+                    </div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="AdjTotalItem">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries: <span style="padding-left:3px;font-weight:400 !important">
+                            @{
+                                var AdjItemLines = Convert.ToInt32(Model.TotalAdjustmentItems);
+                            }
+                            @Html.DisplayFor(model => AdjItemLines)
+                        </span>
                     </div>
                 </div>
             </div>
-            <div class="row col-sm-12" style="margin-left:2px;margin-top:50px;padding-bottom:10px;width:100% !important;">
+            <div class="row col-sm-12" style="margin-left:2px;margin-top:70px;padding-bottom:10px;width:100% !important;">
                 <ul id="tab_ul" class="tabs">
-                    <li class="selected"><a rel="tab_div1" href="#" onclick="javascript:ShowMyDiv(this);">NAV Entries</a></li>
-                    <li class=""><a rel="tab_div2" href="#" onclick="javascript:ShowMyDiv(this);">Adjustment Entries</a></li>
+                    <li class="selected"><a rel="tab_div1" href="#" onclick="javascript:ShowMyDiv(this);">@TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries</a></li>
+                    <li class=""><a rel="tab_div2" href="#" onclick="javascript:ShowMyDiv(this);">@TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries</a></li>
                 </ul>
                 <div class="tabcontents">
                     <div class="tabcontent" id="tab_div1" style="display: block;">
@@ -252,14 +263,16 @@
                                         success: function (data) {
                                             //console.log(data);
                                             if (data.data === null) {
-                                                $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('Item Lines: ');
-                                                $("#Status").html('Status : ');
+                                                $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': '); $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' + ': '); $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
+                                                $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
+                                                $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' + ': ');
                                             }
                                             else {
-                                                $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
-                                                $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                                                $("#TotalItem").html('Item Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
-                                                $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                                                $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                                                $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                                                $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                                                $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalAdjustmentItems + '</span>');
+                                                $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                                             }
                                         }
                                     });
@@ -467,14 +480,16 @@
                 async : true,
                 success: function (data) {
                     if (data.data === null) {
-                        $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('NAV Lines: ');
-                        $("#Status").html('Status : ');
+                        $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': '); $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' + ': '); $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
+                        $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
+                        $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' + ': ');
                     }
                     else {
-                        $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
-                        $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                        $("#TotalItem").html('NAV Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
-                        $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                        $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
+                        $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
+                        $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
+                        $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalAdjustmentItems + '</span>');
+                        $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                     }
 
                     datatable = $("#HeaderTable").dataTable({
@@ -487,14 +502,14 @@
                             "async": true
                         },
                         "columns": [
-                            { "data": "ZoneCode" },
-                            { "data": "BinCode" },
-                            { "data": "ItemNo" },
-                            { "data": "Description" },
-                            { "data": "LotNo" },
-                            { "data": "ExpirationDate" },
-                            { "data": "NAVQty" },
-                            { "data": "PhyicalQty" }],
+                            { "data": "ZoneCode", "className":"datatable_col10PercR" },
+                            { "data": "BinCode", "className": "datatable_col10PercR" },
+                            { "data": "ItemNo", "className": "datatable_col10PercR" },
+                            { "data": "Description", "className": "datatable_col30PercR" },
+                            { "data": "LotNo", "className": "datatable_col10PercR" },
+                            { "data": "ExpirationDate", "className": "datatable_col10PercR" },
+                            { "data": "NAVQty", "className": "datatable_col10PercR" },
+                            { "data": "PhyicalQty", "className": "datatable_col10PercR" }],
 
                         "aaSorting": [[4, "desc"]],
                         "responsive": true,
@@ -503,7 +518,6 @@
                             "url": Path
                         }
                     });
-
 
                     adjdataTable = $("#ADJHeaderTable").dataTable({
                         "destroy": true,
@@ -515,14 +529,14 @@
                             "async": true
                         },
                         "columns": [
-                            { "data": "ZoneCode" },
-                            { "data": "BinCode" },
-                            { "data": "ItemNo" },
-                            { "data": "Description" },
-                            { "data": "LotNo" },
-                            { "data": "ExpirationDate" },
-                            { "data": "NAVQty" },
-                            { "data": "PhyicalQty" }],
+                            { "data": "ZoneCode", "className": "datatable_col10PercR" },
+                            { "data": "BinCode", "className": "datatable_col10PercR" },
+                            { "data": "ItemNo", "className": "datatable_col10PercR"  },
+                            { "data": "Description", "className": "datatable_col30PercR"  },
+                            { "data": "LotNo", "className": "datatable_col10PercR"  },
+                            { "data": "ExpirationDate", "className": "datatable_col10PercR"  },
+                            { "data": "NAVQty", "className": "datatable_col10PercR"  },
+                            { "data": "PhyicalQty", "className": "datatable_col10PercR"  }],
 
                         "aaSorting": [[4, "desc"]],
                         "responsive": true,
@@ -531,7 +545,6 @@
                             "url": Path
                         }
                     });
-
 
                 }
             });

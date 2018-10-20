@@ -88,6 +88,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjustment(s).
+        /// </summary>
+        public static string ADJEntries {
+            get {
+                return ResourceManager.GetString("ADJEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Admin.
         /// </summary>
         public static string Admin {
@@ -408,6 +417,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string Languages {
             get {
                 return ResourceManager.GetString("Languages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string Location {
+            get {
+                return ResourceManager.GetString("Location", resourceCulture);
             }
         }
         
@@ -871,6 +889,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NAV Entries.
+        /// </summary>
+        public static string NAVEntries {
+            get {
+                return ResourceManager.GetString("NAVEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Navision Instances.
         /// </summary>
         public static string NavisionInstances {
@@ -1065,6 +1092,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string SourceFileName {
             get {
                 return ResourceManager.GetString("SourceFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
             }
         }
         
