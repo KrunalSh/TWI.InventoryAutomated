@@ -18,33 +18,34 @@
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         @*<div style="float:left !important;width:100% !important;margin:15px;">
-                <div class="row col-sm-12" style="float:left !important;width:100% !important;">
-                    <div class="field_background1" style="margin-bottom:5px;">
-                        <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
-                        <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                        <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
-                    </div>
-                    <div class="field_background1" style="">
-                        <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
-                        <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
-                        <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
-                    </div>
+            <div class="row col-sm-12" style="float:left !important;width:100% !important;">
+                <div class="field_background1" style="margin-bottom:5px;">
+                    <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
+                    <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
                 </div>
-            </div>*@
+                <div class="field_background1" style="">
+                    <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
+                    <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
+                </div>
+            </div>
+        </div>*@
 
 
         <div class="collapse navbar-collapse" style="margin-top:5px;">
             @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
             {
                 <div class="form-group">
-                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" />
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" style="margin-left:-5px;" />
                 </div>
                 <button type="submit" value="Search" class="btn btn-primary" style="font-weight:600;">Search</button>
-                <a class="btn btn-primary" style="width:100px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">Adjustment</a>
+                <div style="float:right;margin-left:10px; margin-top:1px;padding-top:4px;text-align:center;font-weight:600;font-family:Calibri;width:400px;background-color:#EEEEEE;color:black; border-width: thin;border-style: solid;border-color: #828282;border-radius:3px;height:32px;">@ViewBag.SummaryInfo</div>
             }
         </div>
-        <div id="divAdjustments" style="float:left;width:100% !important;margin-left:15px;display:none;">
-            <div class="row" style="margin:10px !important;">
+        <a class="btn btn-primary" style="float:left !important;width:90px;height:55px;margin:0 0 10px 25px ;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.buttonAdjustment)</a>
+        <div id="divAdjustments" style="float:left;width:47% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
+            <div class="row" style="margin:10px 10px 0 10px !important;">
                 <div style="float:left;margin-right:10px;">
                     @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
                 </div>
@@ -69,8 +70,8 @@
                 </div>
             </div>
         </div>
-        <div style="float:left;width:100% !important;margin:0 0 0 15px;">
-            <div style="margin:0 40px 20px 10px !important;">
+        <div style="float:left;width:100% !important;margin:10px 0 0 15px;">
+            <div style="margin:0 40px 10px 10px !important;">
                 @grid.Table(
                     tableStyle: "table table-responsive table-bordered",
                     columns: grid.Columns(

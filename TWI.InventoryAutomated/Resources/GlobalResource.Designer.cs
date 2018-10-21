@@ -115,6 +115,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter &lt;br /&gt; Adjustment.
+        /// </summary>
+        public static string buttonAdjustment {
+            get {
+                return ResourceManager.GetString("buttonAdjustment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string Cancel {

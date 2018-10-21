@@ -1364,11 +1364,12 @@ namespace TWI.InventoryAutomated.Controllers
                                    e.ZoneCode.Contains(search) ||
                                    e.BinCode.Contains(search) select e);
 
-                CountedRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.PhysicalQty != null).Count();
-                totalRecord = data.Count();
+                CountedRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
+                totalRecord = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV").Count();
                 data = data.OrderBy(x => x.ItemNo);
                 ViewBag.CountInfo =  data.FirstOrDefault().SCIterationName + " & Team: " + data.FirstOrDefault().TeamCode;
-                ViewBag.SummaryInfo = Convert.ToString(CountedRows) + " / " + Convert.ToString(totalRecord);
+                ViewBag.SummaryInfo = Resources.GlobalResource.NAVEntries + ": "  + Convert.ToString(CountedRows) + " / " + Convert.ToString(totalRecord) + " counted, ";
+                ViewBag.SummaryInfo += Resources.GlobalResource.ADJEntries + ": " + db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "ADJUST").Count(); 
 
                 if (pageSize > 0) { data = data.Skip(skip).Take(pageSize).ToList(); }
                 return data.OrderByDescending(x=> x.CreatedDate).ToList();

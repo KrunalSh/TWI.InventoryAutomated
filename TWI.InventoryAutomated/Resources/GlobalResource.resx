@@ -492,4 +492,7 @@
   <data name="Status" xml:space="preserve">
     <value>Status</value>
   </data>
+  <data name="buttonAdjustment" xml:space="preserve">
+    <value>Enter &lt;br /&gt; Adjustment</value>
+  </data>
 </root>
