@@ -1311,6 +1311,8 @@ namespace TWI.InventoryAutomated.Controllers
                 //Session["TeamID"] = TeamID;
                 List<StockCountAllocations> _allocationlist = GetTeamAllocatedItems(search, sort, sortdir, skip, pageSize, out totalRecord,out CountedRows);
                 ViewBag.TotalRows = totalRecord;
+                int totalpages = (totalRecord / pageSize == 0) ? (totalRecord / pageSize) : (totalRecord / pageSize) + 1;
+                ViewBag.TotalPages = "Total No. of Pages: " + Convert.ToString(totalpages);
                 ViewBag.Search = search;
                 return View(_allocationlist);
             }
@@ -1365,10 +1367,11 @@ namespace TWI.InventoryAutomated.Controllers
                                    e.BinCode.Contains(search) select e);
 
                 CountedRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
-                totalRecord = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV").Count();
+                int invtotalRecord = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV").Count();
+                totalRecord = data.Count();
                 data = data.OrderBy(x => x.ItemNo);
                 ViewBag.CountInfo =  data.FirstOrDefault().SCIterationName + " & Team: " + data.FirstOrDefault().TeamCode;
-                ViewBag.SummaryInfo = Resources.GlobalResource.NAVEntries + ": "  + Convert.ToString(CountedRows) + " / " + Convert.ToString(totalRecord) + " counted, ";
+                ViewBag.SummaryInfo = Resources.GlobalResource.NAVEntries + ": "  + Convert.ToString(CountedRows) + " / " + Convert.ToString(invtotalRecord) + " counted, ";
                 ViewBag.SummaryInfo += Resources.GlobalResource.ADJEntries + ": " + db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "ADJUST").Count(); 
 
                 if (pageSize > 0) { data = data.Skip(skip).Take(pageSize).ToList(); }

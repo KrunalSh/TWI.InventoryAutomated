@@ -14,7 +14,7 @@
 <div class="row" style="border:2px #808080 solid;">
     <div style="margin:auto;width:100% !important;max-width:100%;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-            <div style="font-weight:bold">Stock Count Sheet </div>
+            <div style="font-weight:bold">Stock Count Sheet - @ViewBag.CountInfo</div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         @*<div style="float:left !important;width:100% !important;margin:15px;">
@@ -31,7 +31,6 @@
                 </div>
             </div>
         </div>*@
-
 
         <div class="collapse navbar-collapse" style="margin-top:5px;">
             @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
@@ -71,7 +70,7 @@
             </div>
         </div>
         <div style="float:left;width:100% !important;margin:10px 0 0 15px;">
-            <div style="margin:0 40px 10px 10px !important;">
+            <div style="margin:0 40px 10px 10px !important;font-family:Calibri;font-size:13px;">
                 @grid.Table(
                     tableStyle: "table table-responsive table-bordered",
                     columns: grid.Columns(
@@ -86,8 +85,9 @@
                       grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
 )
 )
+                <span style="text-align:center;font-weight:600;font-family:Calibri;width:120px;height:25px;"> @ViewBag.TotalPages</span>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" style="float:left;">
                         @grid.PagerList(mode: WebGridPagerModes.All, paginationStyle: "pagination pagination-small pagination-right")
                     </div>
                 </div>
