@@ -196,12 +196,8 @@ E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\de\TWI.InventoryAutomated.resources.dll
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.de.resources
 E:\Allied Consultant\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\de\TWI.InventoryAutomated.resources.dll
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.resources
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.de.resources
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.fr.resources
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.GenerateResource.cache
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.CoreCompileInputs.cache
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojAssemblyReference.cache
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.SqlServer.dll
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.xml
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\ApplicationInsights.config
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\TWI.InventoryAutomated.dll.config
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\TWI.InventoryAutomated.dll
@@ -232,9 +228,7 @@ D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutoma
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.Diagnostics.Process.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.Diagnostics.StackTrace.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.Compression.dll
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.DriveInfo.dll
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.Primitives.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.Pipes.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.Reflection.Metadata.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.Security.AccessControl.dll
@@ -258,7 +252,6 @@ D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutoma
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\VBCSCompiler.exe.config
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Antlr3.Runtime.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.dll
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.SqlServer.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.Agent.Intercept.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.DependencyCollector.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.PerfCounterCollector.dll
@@ -277,7 +270,6 @@ D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutoma
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\System.Web.WebPages.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\System.Web.WebPages.Razor.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\WebGrease.dll
-D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.xml
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\EntityFramework.SqlServer.xml
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Newtonsoft.Json.xml
@@ -294,8 +286,16 @@ D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutoma
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.ServerTelemetryChannel.xml
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.WindowsServer.xml
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\Microsoft.AI.Web.xml
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.resources
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.de.resources
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.Resources.GlobalResource.fr.resources
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.GenerateResource.cache
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.CoreCompileInputs.cache
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\de\TWI.InventoryAutomated.resources.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\fr\TWI.InventoryAutomated.resources.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csproj.CopyComplete
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.dll
 D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.pdb
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.dll
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\roslyn\System.IO.FileSystem.Primitives.dll
+D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\obj\Debug\TWI.InventoryAutomated.csprojAssemblyReference.cache

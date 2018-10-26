@@ -66,5 +66,16 @@ namespace TWI.InventoryAutomated.Properties {
                 return ((string)(this["TWI_InventoryAutomated_TESTPostAdjustments_InventoryCount"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%20Wille%20Intertrade%20GMB" +
+            "H/Page/Bins")]
+        public string TWI_InventoryAutomated_TESTGMBHBINS_Bins_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_TESTGMBHBINS_Bins_Service"]));
+            }
+        }
     }
 }

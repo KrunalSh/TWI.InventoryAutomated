@@ -10,11 +10,11 @@
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-
+<link href="~/Content/jquery-editable-select.min.css" rel="stylesheet" />
 <div class="row" style="border:2px #808080 solid;">
     <div style="margin:auto;width:100% !important;max-width:100%;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
-            <div style="font-weight:bold">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + ViewBag.CountInfo)  </div>
+            <div style="font-weight:bold">Stock Count Sheet - @ViewBag.CountInfo</div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         @*<div style="float:left !important;width:100% !important;margin:15px;">
@@ -32,36 +32,38 @@
             </div>
         </div>*@
 
-
         <div class="collapse navbar-collapse" style="margin-top:5px;">
             @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
             {
                 <div class="form-group">
-                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Enter value to search" />
+                    <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search Zone, Bin, Item" style="margin-left:-5px;" />
                 </div>
                 <button type="submit" value="Search" class="btn btn-primary" style="font-weight:600;">Search</button>
-                <a class="btn btn-primary" style="width:100px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">Adjustment</a>
+                <div style="float:right;margin-left:10px; margin-top:1px;padding-top:4px;text-align:center;font-weight:600;font-family:Calibri;width:400px;background-color:#EEEEEE;color:black; border-width: thin;border-style: solid;border-color: #828282;border-radius:3px;height:32px;">@ViewBag.SummaryInfo</div>
             }
         </div>
-        <div id="divAdjustments" style="float:left;width:100% !important;margin-left:15px;display:none;">
-            <div class="row" style="margin:10px !important;">
-                <div style="float:left;margin-right:10px;">
+        <a class="btn btn-primary" style="float:left !important;width:90px;height:55px;margin:0 0 10px 25px ;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.buttonAdjustment)</a>
+        <div id="divAdjustments" style="float:left;width:50% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
+            <div class="row" style="margin:10px 10px 0 10px !important;">
+                @*<div style="float:left;margin-right:10px;" id="divZoneCode;" >
                     @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
-                </div>
-                <div style="float:left;margin-right:10px;">
-                    @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
-                </div>
-                <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" width="80" />
+                </div>*@
+                <div style="float:left;margin-right:10px;" id="divBinCode">
+                    @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes",@placeholder=" Select Bin" })
                 </div>
                 <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Lot Not" id="txtLotNo" name="txtLotNo" width="80" />
+                    <input type="hidden" value="0" id="hdnAdj" />
+                    @*<input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />*@
+                    @Html.DropDownList("ddlItems", ViewBag.Items as SelectList, new { @class = "form-control", @id = "ddlItems", @placeholder = " Select Item" })
                 </div>
                 <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Expiry Date" id="txtExpDate" name="txtExpDate" width="80" />
+                    <input type="text" class="form-control" placeholder="Lot No" id="txtLotNo" name="txtLotNo" style="width:100px !important" />
                 </div>
                 <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Qty found" id="txtPhyQty" name="txtPhyQty" width="80" />
+                    <input type="text" class="form-control" placeholder="Expiry Date" id="txtExpDate" name="txtExpDate" style="width:100px !important" />
+                </div>
+                <div style="float:left;margin-right:10px;margin-bottom:10px;">
+                    <input type="text" class="form-control" placeholder="Enter Qty" id="txtPhyQty" name="txtPhyQty" style="width:90px !important" maxlength="7" />
                 </div>
                 <div style="float:left;margin-bottom:10px;">
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="SaveAdjustments();">Save</a>
@@ -69,8 +71,8 @@
                 </div>
             </div>
         </div>
-        <div style="float:left;width:100% !important;margin:0 0 0 15px;">
-            <div style="margin:0 15px 20px 10px !important;">
+        <div style="float:left;width:100% !important;margin:10px 0 0 15px;">
+            <div style="margin:0 40px 10px 10px !important;font-family:Calibri;font-size:13px;">
                 @grid.Table(
                     tableStyle: "table table-responsive table-bordered",
                     columns: grid.Columns(
@@ -85,8 +87,9 @@
                       grid.Column(columnName: "PhysicalQty", header: "Phy. Qty",format:@<text><div class="edit" data-id="@item.ID" data-propertyname="PhysicalQty">@item.PhysicalQty</div></text>)
 )
 )
+                <span style="text-align:center;font-weight:600;font-family:Calibri;width:120px;height:25px;"> @ViewBag.TotalPages</span>
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-6" style="float:left;">
                         @grid.PagerList(mode: WebGridPagerModes.All, paginationStyle: "pagination pagination-small pagination-right")
                     </div>
                 </div>
@@ -106,8 +109,9 @@
 
     @*<script src="~/Scripts/jquery-1.10.2.js"></script>*@
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="https://www.appelsiini.net/download/jquery.jeditable.js"></script>
-
+    @*<script src="https://www.appelsiini.net/download/jquery.jeditable.js"></script>*@
+    <script src="~/Scripts/jquery.jeditable.js"></script>
+    <script src="~/Scripts/jquery-editable-select.min.js"></script>
     <script>
         $(function () {
             var dir = $('#dir').val();
@@ -128,7 +132,8 @@
             var oldvalue = '';
             $('.edit').editable('/StockCount/UpdateQty', {
                 cssclass: 'jeditForm',
-                width: '50px',
+                width: '60px',
+                maxlength:7,
                 height: 'none',
                 onsubmit: function (settings, original) {
                     oldvalue = original.revert;
@@ -158,7 +163,7 @@
                 if (e.which !== 8 && e.which !== 0 && e.which !== 46 && e.which !== 13 && (e.which < 48 || e.which > 57)) {
                     return false;
                 }
-                
+
             });
 
             $("#txtPhyQty").keypress(function (e) {
@@ -173,43 +178,48 @@
                 }
 
             });
+            $("#ddlZoneCodes").hide();
+            $("#ddlBinCodes").editableSelect({ effects: 'slide' });
+            //$("#ddlItems").editableSelect({ effects: 'slide' });
 
-            $("#ddlZoneCodes").change(function () {
+            //$("#ddlZoneCodes").change(function () {
 
-                var zonecode = $("#ddlZoneCodes").val();
+            //    var zonecode = $("#ddlZoneCodes").val();
 
-                if (zonecode === '-- Select Zone --' || zonecode === '-1') {
-                    $("#ddlBinCodes").empty();
-                    var opt = new Option('-- Select Bin --', '-1');
-                    $("#ddlBinCodes").append(opt);
-                    $("#txtItemNo").empty();
-                    $("#txtLotNo").empty();
-                    $("#txtPhyQty").empty();
-                    $("#txtExpDate").empty();
-                }
-                else {
-                    $.ajax({
-                        url: "/StockCount/GetBinsByTeamID?ZoneCode=" + zonecode,
-                        type: "GET",
-                        datatype: "Json",
-                        success: function (data) {
-                            $("#ddlBinCodes").empty();
-                            $("#txtItemNo").empty();
-                            $("#txtLotNo").empty();
-                            $("#txtPhyQty").empty();
-                            $("#txtExpDate").empty();
-                            for (var i = 0; i < data.length; i++) {
-                                var binopt = new Option(data[i], data[i]);
-                                $("#ddlBinCodes").append(binopt);
-                            }
-                        }
-                        //error: function (data) {
+            //    if (zonecode === '-- Select Zone --' || zonecode === '-1') {
+            //        $("#ddlBinCodes").empty();
+            //        var opt = new Option('-- Select Bin --', '-1');
+            //        $("#ddlBinCodes").append(opt);
+            //        $("#txtItemNo").empty();
+            //        $("#txtLotNo").empty();
+            //        $("#txtPhyQty").empty();
+            //        $("#txtExpDate").empty();
+            //    }
+            //    else {
+            //        alert($("#ddlZoneCodes").val());
+            //        $.ajax({
+            //            url: "/StockCount/GetBinsByTeamID?ZoneCode=" + zonecode,
+            //            type: "GET",
+            //            datatype: "Json",
+            //            success: function (data) {
+            //                $("#ddlBinCodes").empty();
+            //                $("#txtItemNo").empty();
+            //                $("#txtLotNo").empty();
+            //                $("#txtPhyQty").empty();
+            //                $("#txtExpDate").empty();
+            //                for (var i = 0; i < data.length; i++) {
+            //                    var binopt = new Option(data[i], data[i]);
+            //                    $("#ddlBinCodes").append(binopt);
+            //                }
+            //            }
+            //            //error: function (data) {
 
-                        //}
-                    });
-                }
-            });
+            //            //}
+            //        });
+            //    }
+            //});
 
+            
             $("#txtExpDate").datepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -218,19 +228,23 @@
         });
 
          function SaveAdjustments() {
-            var zonecode = $("#ddlZoneCodes").val();
+             //var zonecode = $("#ddlZoneCodes").val();
+             var zonecode ='';
             var bincode = $("#ddlBinCodes").val();
-            var itemno = $("#txtItemNo").val();
+             var itemno = $("#ddlItems").val();
+             //var itemno = $("#txtItemNo").val();
             var lotno = $("#txtLotNo").val();
             var expdate = $("#txtExpDate").val();
             var teamId = '@Convert.ToInt32(Session["TeamID"])';
             var Qty = $("#txtPhyQty").val();
-            $.ajax({
+
+             $.ajax({
                 url: "/StockCount/SaveAdjustments",
                 datatype: "json",
                 type: "GET",
-                async: true,
-                data: { TeamID: teamId, Zonecode: zonecode, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
+                 async: true,
+                 //Zonecode: zonecode,
+                data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
                 success: function (data) {
                     if (data.success) {
                         alert(data.message);
@@ -246,6 +260,25 @@
         }
 
         function ShowAdjustment() {
+
+            if ($("#hdnAdj").val() === "0") {
+                $.ajax({
+                    url: '/StockCount/GetItemList',
+                    type: 'GET',
+                    datatype: 'Json',
+                    async: true,
+                    success: function (data) {
+                        $("#ddlItems").empty();
+                        for (var i = 0; i < data.itemno.length; i++) {
+                            var binopt = new Option(data.itemno[i], data.itemno[i]);
+                            $("#ddlItems").append(binopt);
+                        }
+                        $("#ddlItems").editableSelect({ effects: 'slide' });
+                        $("#hdnAdj").val = "1";
+                    }
+                });
+            }
+
             $("#divAdjustments").show();
             $("#txtItemNo").empty();
             $("#txtPhyQty").empty();

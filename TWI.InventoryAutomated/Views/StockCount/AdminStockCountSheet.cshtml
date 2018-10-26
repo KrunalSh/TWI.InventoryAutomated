@@ -10,59 +10,121 @@
             <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle </div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
-        <div  style="width:100% !important;margin:15px;">
-            <div class="row" style="margin:10px !important;">
-                <div style="float:left;margin-right:10px;">
-                    @Html.Label("Batch Code", new { @class = "control-label"})
-                    @{ int SCID = ViewBag.SCID; int CountID = ViewBag.CountID; int TeamID = ViewBag.TeamID;}
-                    @Html.DropDownListFor(model => SCID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })
-                </div>
-                <div style="float:left;margin-right:10px;">
-                    @Html.Label("Count",new { @class = "control-label"})
-                    @Html.DropDownListFor(model => CountID, ViewBag.CountList as SelectList, new { @class = "form-control", @id = "ddlCounts", @name = "ddlCounts" })
-                </div>
-                <div style="float:left;margin-right:10px;">
-                    @Html.Label("Team Code", new { @class = "control-label" })
-                    @Html.DropDownListFor(model => TeamID, ViewBag.TeamList as SelectList, new { @class = "form-control", @id = "ddlTeams", @name = "ddlTeams" })
-                </div>
-                <div style="float:left !important;margin-top:25px;margin-right:30px;margin-bottom:10px;">
-                    @*onclick="PopupForm('@Url.Action("SelectStockCountItems", "StockCount")')"*@
-                    <a class="btn btn-primary" style="width:110px;font-weight:600;" data-toggle="tooltip" title="Add Source Data" onclick="SelectItems();">Select Item(s)</a>
+        <div style="width:100% !important;margin:15px;">
+            <div class="row col-sm-12">
+                <div class="col-sm-6">
+                    <div class="col-sm-8" style="border:solid 1px #808080;border-radius:5px;margin-bottom:15px;margin-left:-15px;">
+                        <fieldset>
+                            <legend style="font-family:Calibri;font-size:18px;font-weight:bold;">Allocate Items To</legend>
+                            <div class="row" style="margin-bottom:10px;margin-top:-10px;">
+                                <div style="float:left;margin-right:10px;margin-left:15px;">
+                                    @Html.Label("Batch", new { @class = "control-label" })
+                                    @{ int SCID = ViewBag.SCID; int CountID = ViewBag.CountID; int TeamID = ViewBag.TeamID;}
+                                    @Html.DropDownListFor(model => SCID, ViewBag.BatchList as SelectList, new { @class = "form-control customwidth175px", @id = "ddlBatches", @name = "ddlBatches" })
+                                </div>
+                                <div style="float:left;margin-right:10px;margin-left:20px;">
+                                    @Html.Label("Count", new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => CountID, ViewBag.CountList as SelectList, new { @class = "form-control customwidth175px", @id = "ddlCounts", @name = "ddlCounts" })
+                                </div>
+                            </div>
+                            @*<div class="row" style="margin-bottom:10px;"></div>*@
+                            <div class="row" style="margin-bottom:10px;">
+                                <div style="float:left;margin-right:10px;margin-bottom:10px;margin-left:15px;">
+                                    @Html.Label("Team", new { @class = "control-label" })
+                                    @Html.DropDownListFor(model => TeamID, ViewBag.TeamList as SelectList, new { @class = "form-control customwidth175px", @id = "ddlTeams", @name = "ddlTeams" })
+                                </div>
+                                <div style="float:left !important;margin-top:25px;margin-right:30px;margin-bottom:5px;margin-left:20px;">
+                                    @*onclick="PopupForm('@Url.Action("SelectStockCountItems", "StockCount")')"*@
+                                    <a class="btn btn-primary" style="font-weight:600;" data-toggle="tooltip" title="Add Source Data" onclick="SelectItems();">Allocate Item(s)</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                        </div>
+                    </div>
+                <div class="col-sm-6" style="margin:0 10px 10px 10px auto !important">
+                    <div class="col-sm-12" style="border:solid 1px #808080;border-radius:5px;margin-bottom:15px;margin-left:-15px;">
+                        <fieldset>
+                            <legend style="font-family:Calibri;font-size:18px;font-weight:bold;" id="AllocSummaryTitle"></legend>
+                            <div class="field_background1" style="margin-top:-10px;">
+                                <div class="col-sm-4" style="padding-top:4px;" id="TotalLines">
+                                    @*@TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important">0</span>*@
+                                    @*Total Lines: <span style="padding-left:3px;font-weight:400 !important">@ViewBag.TotalLines</span>*@
+                                </div>
+                                <div class="col-sm-4" style="padding-top:4px;" id="TotalNAVEntries">
+                                    @*@TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important">0</span>*@
+                                    @*NAV Lines: <span style="padding-left:3px;font-weight:400 !important">@ViewBag.NavLines</span>*@
+                                </div>
+                                <div class="col-sm-4" style="padding-top:4px;" id="TotalNewItems">
+                                    @*@TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important">0</span>*@
+                                    @*New Lines: <span style="padding-left:3px;font-weight:400 !important">@ViewBag.NewLines</span>*@
+                                </div>
+                            </div>
+                            <div style="margin-bottom:5px;width:100%;">
+                                <table class="table table-striped table-bordered table-responsive"  style="border:1px solid #808080;width:100%;margin-top:-10px;" id="tblAllocationSummary">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding-left:10px;">Team</th>
+                                            <th style="padding-left:10px;">NAV Lines</th>
+                                            <th style="padding-left:10px;">NEW Lines</th>
+                                            <th style="padding-left:10px;">Total</th>
+                                            <th style="padding-left:10px;">(%)</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div class="field_background1" style="margin-bottom:10px;margin-top:-6px;">
+                                <div class="col-sm-4" style="padding-top:4px;" id="RemainingTotal">
+                                    @*@TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important">0</span>*@
+                                    @*Remaining Total: <span style="padding-left:3px;font-weight:400 !important">@ViewBag.RemainingTotal</span>*@
+                                </div>
+                                <div class="col-sm-4" style="padding-top:4px;" id="RemainingNAVEntries">
+                                    @*@TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important">0</span>*@
+                                    @*NAV Lines: <span style="padding-left:3px;font-weight:400 !important">@ViewBag.RemainingNAV</span>*@
+                                </div>
+                                <div class="col-sm-4" style="padding-top:4px;" id="RemainingNewItems">
+                                    @*@TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important">0</span>*@
+                                    @*New Lines: <span style="padding-left:3px;font-weight:400 !important">@ViewBag.RemainingNew</span>*@
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
                 </div>
             </div>
-            <div class="row" style="margin:10px 35px 10px 10px;">
-                <table id="HeaderTable" class="table table-striped table-responsive table-bordered">
+            <div class="row col-sm-12">
+                <table id="HeaderTable" class="table table-striped table-responsive table-bordered" style=" margin:10px 10px 10px 0;padding-right:5px;">
                     <thead>
                         <tr>
-                            <th class="datatable_col10PercH">Doc Type</th>
+                            <th><input name="select_all" value="1" type="checkbox"></th>
+                            <th class="datatable_col5PercH">Doc Type</th>
                             <th class="datatable_col10PercH">Zone Code</th>
                             <th class="datatable_col10PercH">Bin Code</th>
                             <th class="datatable_col10PercH">Item No</th>
                             <th class="datatable_col20PercH">Description</th>
                             <th class="datatable_col10PercH">Lot No</th>
                             <th class="datatable_col10PercH">Expiry Date</th>
+                            <th class="datatable_col5PercH">UOM</th>
                             <th class="datatable_col10PercH">NAV Qty</th>
-                            <th class="datatable_col10PercH"> Phy. Qty</th>
+                            <th class="datatable_col10PercH">Phy. Qty</th>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var _std in Model.AllocatedItems)
-                                {
-                        <tr>
-                            <td class="datatable_col10PercR">@_std.DocType</td>
-                            <td class="datatable_col10PercR">@_std.ZoneCode</td>
-                            <td class="datatable_col10PercR">@_std.BinCode</td>
-                            <td class="datatable_col10PercR">@_std.ItemNo</td>
-                            <td class="datatable_col20PercR"> @_std.Description</td>
-                            <td class="datatable_col10PercR">@_std.LotNo</td>
-                            <td class="datatable_col10PercR">@_std.ExpirationDate</td>
-                            <td class="datatable_col10PercR">@_std.NAVQty</td>
-                            <td class="datatable_col10PercR">@_std.PhysicalQty</td>
-                            <td><a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" onclick="DeleteAllocatedItem(@_std.ID);"></a></td>
-                        </tr>
-                                }
-                    </tbody>
+                    @*<tbody>
+                    @foreach (var _std in Model.AllocatedItems)
+                            {
+                    <tr>
+                        <td class="datatable_col10PercR">@_std.DocType</td>
+                        <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                        <td class="datatable_col10PercR">@_std.BinCode</td>
+                        <td class="datatable_col10PercR">@_std.ItemNo</td>
+                        <td class="datatable_col20PercR"> @_std.Description</td>
+                        <td class="datatable_col10PercR">@_std.LotNo</td>
+                        <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                        <td class="datatable_col10PercR">@_std.NAVQty</td>
+                        <td class="datatable_col10PercR">@_std.PhysicalQty</td>
+                        <td><a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" onclick="DeleteAllocatedItem(@_std.ID);"></a></td>
+                    </tr>
+                            }
+                </tbody>*@
                 </table>
             </div>
             <div></div>
@@ -79,11 +141,14 @@
 
     <script>
 
-        var Popup, dataTable;
+        var Popup, dataTable; var rows_selected = [];
+        var summaryTable;
         $(document).ready(function () {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
-            dataTable = $("#HeaderTable").DataTable();
+            PullAllocationSummary($("#ddlCounts").val());
+            RefreshAllocationList($("#ddlTeams").val());
+            //dataTable = $("#HeaderTable").DataTable();
 
             $("#ddlBatches").change(function () {
                 var selectedbatch = $("#ddlBatches").val();
@@ -92,6 +157,8 @@
                     $("#ddlTeams").empty();
                     var countopt = new Option("-- Select Count --", "-1");
                     $("#ddlCounts").append(countopt);
+
+                    PullAllocationSummary(-1);
 
                     var teamopt = new Option("-- Select Team Code --", "-1");
                     $("#ddlTeams").append(teamopt);
@@ -133,6 +200,7 @@
                     $("#ddlTeams").empty();
                     var teamopt = new Option("-- Select Team Code --", "-1");
                     $("#ddlTeams").append(teamopt);
+                    PullAllocationSummary(-1);
                     RefreshAllocationList(-1);
                 }
                 else {
@@ -144,9 +212,16 @@
                         success: function (data) {
                             $("#ddlTeams").empty();
                             for (var i = 0; i < data.length; i++) {
-                                var teamopt = new Option(data[i].TeamCode, data[i].ID);
-                                $("#ddlTeams").append(teamopt);
+                                if (i > 0) {
+                                    var teamopt = new Option(data[i].TeamCode + ' - ' + data[i].UserName, data[i].ID);
+                                    $("#ddlTeams").append(teamopt);
+                                }
+                                else {
+                                    var teamopt1 = new Option(data[i].TeamCode, data[i].ID);
+                                    $("#ddlTeams").append(teamopt1);
+                                }
                             }
+                            PullAllocationSummary($("#ddlCounts").val());
                             RefreshAllocationList(-1);
                         },
                         error: function (data) {
@@ -161,35 +236,194 @@
                 var teamId = $("#ddlTeams").val();
                 RefreshAllocationList(teamId);
             });
+
+            $('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
+                var $row = $(this).closest('tr');
+
+                // Get row data
+                var data = datatable.rows($row).data();
+
+                // Get row ID
+                var rowId = data[0];
+
+                // Determine whether row ID is in the list of selected row IDs 
+                var index = $.inArray(rowId, rows_selected);
+
+                // If checkbox is checked and row ID is not in list of selected row IDs
+                if (this.checked && index === -1) {
+                    rows_selected.push(rowId);
+
+                    // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+                } else if (!this.checked && index !== -1) {
+                    rows_selected.splice(index, 1);
+                }
+
+                if (this.checked) {
+                    $row.addClass('selected');
+                } else {
+                    $row.removeClass('selected');
+                }
+
+                // Update state of "Select all" control
+                updateDataTableSelectAllCtrl(datatable);
+
+                // Prevent click event from propagating to parent
+                e.stopPropagation();
+            });
+
+            // Handle click on table cells with checkboxes
+            $('#HeaderTable').on('click', 'tbody td:first-child, thead th:first-child', function (e) {
+                $(this).parent().find('input[type="checkbox"]').trigger('click');
+            });
+
+            $('thead input[name="select_all"]', datatable.table().container()).on('click', function (e) {
+                if (this.checked) {
+                    $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+                } else {
+                    $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
+                }
+
+                // Prevent click event from propagating to parent
+                e.stopPropagation();
+            });
+
+            datatable.on('draw', function () {
+                // Update state of "Select all" control
+                updateDataTableSelectAllCtrl(datatable);
+            });
         });
 
+        function PullAllocationSummary(CountId) {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            $.ajax({
+                url: "/StockCount/GetAllocationSummaryHeader?ID=" + CountId,
+                type: "GET",
+                datatype: "json",
+                async: true,
+                success: function (data) {
+                    console.log(data);
+
+                    if (data.data === null) {
+                        $("#AllocSummaryTitle").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.AllocationSummaryTitle + ": , " + TWI.InventoryAutomated.Resources.GlobalResource.CountInfo + ": ")');
+                        $("#TotalLines").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.TotalEntries)' + ': ');
+                        $("#TotalNAVEntries").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
+                        $("#TotalNewItems").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
+                        $("#RemainingTotal").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.RemainingTotal)' + ': ');
+                        $("#RemainingNAVEntries").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
+                        $("#RemainingNewItems").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
+
+                    }
+                    else {
+                        @*+ @Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.CountInfo) + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.CountName + '</span>'*@
+                        $("#AllocSummaryTitle").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.AllocationSummaryTitle)' + ': <span style="padding-left:10px;font-weight:400 !important,font-size:14px;font-family:Calibri;">' + data.data.BatchCode + ' </span>, ' + '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.CountInfo)' + ': <span style="padding-left:10px;font-weight:400 !important,font-size:14px;font-family:Calibri;">' + data.data.CountName + '</span>');
+                        $("#TotalLines").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.TotalEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalLines + ' </span>');
+                        $("#TotalNAVEntries").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.NAVLines + '</span>');
+                        $("#TotalNewItems").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.NewLines + '</span>');
+                        $("#RemainingTotal").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.RemainingTotal)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.RemainingTotal + '</span>');
+                        $("#RemainingNAVEntries").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.RemainingNAV + '</span>');
+                        $("#RemainingNewItems").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.RemainingNew + '</span>');
+                    }
+                    summaryTable = $("#tblAllocationSummary").DataTable({
+                        "destroy": true,
+                        "ajax": {
+                            "url": "/StockCount/GetAllocationSummary?ID=" + $("#ddlCounts").val(),
+                            "type": "GET",
+                            "datatype": "json",
+                            "async": true
+                        },
+                        "columns": [
+                            { "data": "TeamName", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                            { "data": "NavLines", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                            { "data": "NewLines", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                            { "data": "TotalLines", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                            { "data": "Percent", "orderable": false, "searchable": false, 'className': 'datatable_col5PercR' }
+                        ],
+                        "aaSorting": [[1, "desc"]],
+                        "responsive": true,
+                        "paging": false,
+                        "ordering": false,
+                        "info": false,
+                        "searching": false,
+                        "language": {
+                            "emptyTable": "No Allocation Summary available for the selection made.",
+                            "url": Path
+                        }
+                    });
+                },
+                error: function (data) {
+                    ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle)');
+                }
+            });
+        }
+
+
+
+
+        function updateDataTableSelectAllCtrl(table) {
+            var $table = table.table().node();
+            var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+            var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+            var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+
+            // If none of the checkboxes are checked
+            if ($chkbox_checked.length === 0) {
+                chkbox_select_all.checked = false;
+                if ('indeterminate' in chkbox_select_all) {
+                    chkbox_select_all.indeterminate = false;
+                }
+
+                // If all of the checkboxes are checked
+            } else if ($chkbox_checked.length === $chkbox_all.length) {
+                chkbox_select_all.checked = true;
+                if ('indeterminate' in chkbox_select_all) {
+                    chkbox_select_all.indeterminate = false;
+                }
+
+                // If some of the checkboxes are checked
+            } else {
+                chkbox_select_all.checked = true;
+                if ('indeterminate' in chkbox_select_all) {
+                    chkbox_select_all.indeterminate = true;
+                }
+            }
+        }
 
         function RefreshAllocationList(teamid) {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
           
-            datatable = $("#HeaderTable").dataTable({
+            datatable = $("#HeaderTable").DataTable({
+                "lengthMenu": [[-1, 10, 15 ,25, 50,100], ["All", 10, 15 ,25, 50,100]],
                 "destroy": true,
                 "ajax": {
                     "url": "/StockCount/GetAllocatedItemsByTeamID?TeamID=" + teamid,
                     "type": "GET",
-                    "datatype": "json"
+                    "datatype": "json",
+                    "async" : true
                 },
                 "columns": [
-                    { "data": "DocType", "orderable": false, "searchable": true },
-                    { "data": "ZoneCode", "orderable": false, "searchable": true },
-                    { "data": "BinCode", "orderable": false, "searchable": true },
-                    { "data": "ItemNo", "orderable": false, "searchable": true },
-                    { "data": "Description", "orderable": false , "searchable": true },
-                    { "data": "LotNo", "orderable": false, "searchable": false },
-                    { "data": "ExpirationDate", "orderable": false, "searchable": false },
-                    { "data": "NAVQty", "orderable": false, "searchable": false },
-                    { "data": "PhysicalQty", "orderable": false, "searchable": false },
+                    {
+                        'searchable': false,'orderable': false,'width': '1%','className': 'dt-body-center',
+                        'data': "ID",'render': function (data, type, full, meta) {
+                            return '<input type="checkbox" checked value>&nbsp;<input id="ID" type="hidden" value="' + data + '">';
+                    }},
+                    { "data": "DocType", "orderable": false, "searchable": true, 'className':'datatable_col5PercR' },
+                    { "data": "ZoneCode", "orderable": false, "searchable": true, 'className':'datatable_col10PercR'  },
+                    { "data": "BinCode", "orderable": false, "searchable": true, 'className':'datatable_col10PercR'  },
+                    { "data": "ItemNo", "orderable": false, "searchable": true, 'className':'datatable_col10PercR'  },
+                    { "data": "Description", "orderable": false, "searchable": true, 'className':'datatable_col20PercR'  },
+                    { "data": "LotNo", "orderable": false, "searchable": false, 'className':'datatable_col10PercR'  },
+                    { "data": "ExpirationDate", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                    { "data": "UOMCode", "orderable": false, "searchable": true, 'className': 'datatable_col5PercR' },
+                    { "data": "NAVQty", "orderable": false, "searchable": false, 'className':'datatable_col10PercR'  },
+                    { "data": "PhysicalQty", "orderable": false, "searchable": false, 'className':'datatable_col10PercR' },
                     {
                         "data": "ID", "render": function (data) {
-                            return '<a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" onclick="DeleteAllocatedItem('+ data + ');"></a>'
+                            return '<a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;margin-left:12px;" alt="Delete Item" onclick="DeleteAllocatedItem('+ data + ');"></a>'
                         }
-                        ,"orderable" :false,"searchable":false
+                        , "orderable": false, "searchable": false,
+                        'width': '1%', 'className': 'dt-body-center'
                     }
                      ],
 
@@ -198,9 +432,80 @@
                 "language": {
                     "emptyTable": "No Items allocated to this team, Please click on <b>Select Item(s)</b> Button to allocate item(s)",
                     "url": Path
+                },
+                //'fnDrawCallback': function (oSettings) {
+                //    if ($('.dataTables_length i').length == 0)
+                //        $('.dataTables_length').append(' <a class="btn btn-danger" style="float:left;width:80px;height:34px;font-weight:600;" data-toggle="tooltip" title="Delete Item(s)" onclick="DeleteSelectedItems();">Delete</a>');
+                //    $('[data-toggle="tooltip"]').tooltip();
+                //}
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_length i').length == 0)
+                        $('.dataTables_length').append('  <a class="btn btn-danger" style="float:left;height:30px;width:80px;height:30px;padding-top:3px;font-weight:600;margin-right:7px;" data-toggle="tooltip" title="Delete Item(s)" onclick="DeleteSelectedItems();"><i></i>Delete</a>');
+                    $('[data-toggle="tooltip"]').tooltip();
                 }
             });
-          
+           
+        }
+
+
+        function DeleteSelectedItems() {
+            var count = 0;
+            var TeamID = $("#ddlTeams").val();
+            //var itemid = 0;
+            var RowID = [];
+
+            $('#HeaderTable tbody').find('tr').each(function () {
+                var row = $(this);
+                if (row.find('input[type="checkbox"]').is(':checked')) {
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemDeletionRecord)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)', zIndex: 10000, autoOpen: true,
+                        width: 'auto', resizable: false,
+                        buttons: {
+                            Yes: function () {
+                                RowID.length = count;
+                                count = 0;
+                                $('#HeaderTable tbody').find('tr').each(function () {
+                                    var row = $(this);
+                                    if (row.find('input[type="checkbox"]').is(':checked')) {
+                                        RowID[count] = row.find('input[type="hidden"]').val();
+                                        count++;
+                                    }
+                                });
+                                //console.log(RowID);
+                                $.ajax({
+                                    url: "/StockCount/ValidateSelectedItemsForDelete?TeamID=" + TeamID + "&ID=" + RowID,
+                                    type: "GET",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        if (data.success) {
+                                            DeleteAllocatedItems(TeamID,RowID); 
+                                        }
+                                        else {
+                                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
+                                        }
+                                    }
+                                });
+                                $(this).dialog("close");
+                            },
+                            No: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        close: function (event, ui) {
+                            $(this).remove();
+                        }
+                    });
+            }
+            else {
+                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgSelectItemForDeletion)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
+            }
         }
 
         function DeleteAllocatedItem(itemid) {
@@ -216,20 +521,21 @@
                                 url: '@Url.Action("DeleteAllocation", "StockCount")/' + itemid,
                                 success: function (data) {
                                     if (data.success) {
-                                        $('<div></div>').appendTo('body')
+                                        ShowDialog(data.message,'@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)' );
+                                        @*$('<div></div>').appendTo('body')
                                             .html("<div><h5>" + data.message + "</h5></div>")
                                             .dialog({
-                                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Delete Item")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                                                 buttons: {
                                                     Ok: function () {
                                                 $(this).dialog("close");
                                                 }
                                             }
-                                            });
+                                            });*@
                                         RefreshAllocationList($("#ddlTeams").val());
                                     }
                                     else
-                                        ShowDialog(data.message);
+                                        ShowDialog(data.message,'@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)' );
                                         //alert(data.message);
                                 }
 
@@ -257,7 +563,7 @@
                         Popup = formDiv.dialog({
                             autoOpen: true,
                             title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - Select Item(s)")',
-                            modal: true,
+                            modal: true
                            //,
                             //width: 'auto',
                             //close: function () {
@@ -277,12 +583,14 @@
             //alert($("#ddlTeams").val());
             var selectedteam = $("#ddlTeams").val();
             if (selectedteam === "-1") {
-                $('<div></div>').appendTo('body')
+
+                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgTeamSelectionRequired)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - " + TWI.InventoryAutomated.Resources.GlobalResource.MsgTitleSelectItem)');
+                @*$('<div></div>').appendTo('body')
                     .html("<div><h5>Team selection is mandatory</h5></div>")
                     .dialog({
                         modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheetAdmin + " - Select Item(s)")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                         buttons: { Ok: function () { $(this).dialog("close"); } }
-                    });
+                    });*@
             }
             else {
                 var url = '/StockCount/SelectStockCountItems?ID=' + $("#ddlTeams").val();
@@ -291,9 +599,32 @@
         }
 
 
+        function ShowDialog(message, formtitle) {
+            $('<div></div>').appendTo('body')
+                .html("<div><h5>" + message + "</h5></div>")
+                .dialog({
+                    modal: true, title: formtitle, zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                    buttons: { Ok: function () { $(this).dialog("close"); } }
+                });
+        }
 
-
-
+        function DeleteAllocatedItems(TeamID,RowID) {
+            $.ajax({
+                url: '/StockCount/DeleteSelectedItems?TeamID=' + TeamID + '&ID=' + RowID,
+                datatype: 'Json',
+                type: 'GET',
+                async: true,
+                success: function (data) {
+                    if (data.success) {
+                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
+                        RefreshAllocationList(TeamID);
+                    }
+                    else {
+                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
+                    }
+                }
+            });
+        }
     </script>
 
 }

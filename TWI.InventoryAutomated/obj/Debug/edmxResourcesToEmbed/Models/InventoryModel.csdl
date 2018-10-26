@@ -34,6 +34,7 @@
     <EntitySet Name="StockCountTeams" EntityType="TWIInventoryPortalModel.StockCountTeams" />
     <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
     <EntitySet Name="StockCountAllocations" EntityType="TWIInventoryPortalModel.StockCountAllocations" />
+    <EntitySet Name="NAVItems" EntityType="TWIInventoryPortalModel.NAVItems" />
   </EntityContainer>
   <EntityType Name="Company">
     <Key>
@@ -286,5 +287,16 @@
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="NAVItems">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SCID" Type="Int32" />
+    <Property Name="ItemNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ItemDesc" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>

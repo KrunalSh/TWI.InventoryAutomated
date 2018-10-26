@@ -170,6 +170,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdminStockCountSheetModel.cs" />
+    <Compile Include="Models\AllocationSummary.cs" />
+    <Compile Include="Models\AllocationSummaryHeader.cs" />
     <Compile Include="Models\ArchivedSessionLog.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
@@ -206,6 +208,9 @@
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Module.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NAVItems.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Permission.cs">
@@ -279,6 +284,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web References\TESTGMBHBINS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\TestItemList\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -301,6 +311,7 @@
     <Content Include="Content\chosen-sprite.png" />
     <Content Include="Content\chosen.min.css" />
     <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\jquery-editable-select.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -348,6 +359,7 @@
     </None>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\jquery-editable-select.min.js" />
     <Content Include="Scripts\jquery.jeditable.js" />
     <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -428,6 +440,14 @@
     <Content Include="Web References\TestItemList\ItemsList.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="Web References\TESTGMBHBINS\Bins.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\TESTGMBHBINS\Bins.wsdl" />
+    <Content Include="Web References\TESTGMBHBINS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
     <None Include="Web References\TestItemList\ItemsList.wsdl" />
     <Content Include="Web References\TestItemList\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -506,6 +526,17 @@
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>TWI_InventoryAutomated_TESTPostAdjustments_InventoryCount</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/Bins">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\TESTGMBHBINS\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/Bins</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_TESTGMBHBINS_Bins_Service</CachedSettingsPropName>
     </WebReferenceUrl>
     <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/ItemsList">
       <UrlBehavior>Dynamic</UrlBehavior>

@@ -24,6 +24,7 @@
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountTeams" Width="1.5" PointX="5.75" PointY="10.25" />
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountHeader" Width="1.5" PointX="0.75" PointY="10.25" />
         <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountAllocations" Width="1.5" PointX="7.5" PointY="10.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.NAVItems" Width="1.5" PointX="5.75" PointY="13.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

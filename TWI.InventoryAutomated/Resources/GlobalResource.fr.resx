@@ -408,4 +408,40 @@
   <data name="buttonAdjustment" xml:space="preserve">
     <value>Entrer l'ajustement</value>
   </data>
+  <data name="DeleteItem" xml:space="preserve">
+    <value>Effacer l'article</value>
+  </data>
+  <data name="MsgAllocationDeletionSuccess" xml:space="preserve">
+    <value>Supprimé avec succès les éléments sélectionnés</value>
+  </data>
+  <data name="MsgSelectItemForDeletion" xml:space="preserve">
+    <value>Veuillez sélectionner au moins un élément à supprimer.</value>
+  </data>
+  <data name="MsgTeamSelectionRequired" xml:space="preserve">
+    <value>La sélection de l'équipe est obligatoire</value>
+  </data>
+  <data name="MsgTitleSelectItem" xml:space="preserve">
+    <value>Sélectionner un article</value>
+  </data>
+  <data name="BatchCode" xml:space="preserve">
+    <value>Code de lot NAV</value>
+  </data>
+  <data name="FinalQty" xml:space="preserve">
+    <value>Final Qty</value>
+  </data>
+  <data name="StockCountSheetAdmin" xml:space="preserve">
+    <value>Les allocations</value>
+  </data>
+  <data name="AllocationSummaryTitle" xml:space="preserve">
+    <value>Résumé de l'allocation pour le lot</value>
+  </data>
+  <data name="CountInfo" xml:space="preserve">
+    <value>Compter</value>
+  </data>
+  <data name="RemainingTotal" xml:space="preserve">
+    <value>Restant | Total</value>
+  </data>
+  <data name="TotalEntries" xml:space="preserve">
+    <value>Total | Les entrées</value>
+  </data>
 </root>

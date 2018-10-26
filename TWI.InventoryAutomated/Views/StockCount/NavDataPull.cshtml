@@ -3,6 +3,8 @@
     ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Batch(es)";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
 <div class="row">
     @*border:2px #808080 solid;*@
     <div style="margin:auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
@@ -45,10 +47,12 @@
                     </div>
                     <div class="col-sm-4" style="padding-top:4px;" id="AdjTotalItem">
                         @TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries: <span style="padding-left:3px;font-weight:400 !important">
-                            @{
-                                var AdjItemLines = Convert.ToInt32(Model.TotalAdjustmentItems);
-                            }
-                            @Html.DisplayFor(model => AdjItemLines)
+                            @Html.DisplayFor(model => model.TotalAdjustmentItems)
+                        </span>
+                    </div>
+                    <div class="col-sm-3" style="padding-top:4px;" id="Finalized">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.FinalQty: <span style="padding-left:3px;font-weight:400 !important">
+                            @Html.DisplayFor(model => model.FinalizedLines)
                         </span>
                     </div>
                 </div>
@@ -70,22 +74,22 @@
                                     <th class="datatable_col10PercH">Lot No</th>
                                     <th class="datatable_col10PercH">Expiry Date</th>
                                     <th class="datatable_col10PercH">NAV Qty</th>
-                                    <th class="datatable_col10PercH"> Phy. Qty</th>
+                                    <th class="datatable_col10PercH">Final Qty</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "INV"))
                                 {
-                                <tr>
-                                    <td class="datatable_col10PercR">@_std.ZoneCode</td>
-                                    <td class="datatable_col10PercR">@_std.BinCode</td>
-                                    <td class="datatable_col10PercR"> @_std.ItemNo</td>
-                                    <td class="datatable_col30PercR"> @_std.Description</td>
-                                    <td class="datatable_col10PercR">@_std.LotNo</td>
-                                    <td class="datatable_col10PercR">@_std.ExpirationDate</td>
-                                    <td class="datatable_col10PercR">@_std.NAVQty</td>
-                                    <td class="datatable_col10PercR">@_std.PhyicalQty</td>
-                                </tr>
+                                    <tr>
+                                        <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                                        <td class="datatable_col10PercR">@_std.BinCode</td>
+                                        <td class="datatable_col10PercR"> @_std.ItemNo</td>
+                                        <td class="datatable_col30PercR"> @_std.Description</td>
+                                        <td class="datatable_col10PercR">@_std.LotNo</td>
+                                        <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                                        <td class="datatable_col10PercR">@_std.NAVQty</td>
+                                        <td class="datatable_col10PercR">@_std.PhyicalQty</td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -101,22 +105,22 @@
                                     <th class="datatable_col10PercH">Lot No</th>
                                     <th class="datatable_col10PercH">Expiry Date</th>
                                     <th class="datatable_col10PercH"> NAV Qty</th>
-                                    <th class="datatable_col10PercH"> Phy. Qty</th>
+                                    <th class="datatable_col10PercH">Final Qty</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "ADJUST"))
+                                @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "ADJUST" || x.TemplateName == "ADJ" ))
                                 {
-                                <tr>
-                                    <td class="datatable_col10PercR">@_std.ZoneCode</td>
-                                    <td class="datatable_col10PercR">@_std.BinCode</td>
-                                    <td class="datatable_col10PercR"> @_std.ItemNo</td>
-                                    <td class="datatable_col30PercR"> @_std.Description</td>
-                                    <td class="datatable_col10PercR">@_std.LotNo</td>
-                                    <td class="datatable_col10PercR">@_std.ExpirationDate</td>
-                                    <td class="datatable_col10PercR">@_std.NAVQty</td>
-                                    <td class="datatable_col10PercR">@_std.PhyicalQty</td>
-                                </tr>
+                                    <tr>
+                                        <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                                        <td class="datatable_col10PercR">@_std.BinCode</td>
+                                        <td class="datatable_col10PercR"> @_std.ItemNo</td>
+                                        <td class="datatable_col30PercR"> @_std.Description</td>
+                                        <td class="datatable_col10PercR">@_std.LotNo</td>
+                                        <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                                        <td class="datatable_col10PercR">@_std.NAVQty</td>
+                                        <td class="datatable_col10PercR">@_std.PhyicalQty</td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -142,33 +146,48 @@
                     </script>
                 </div>
 
-                
+
             </div>
             <div></div>
         </div>
     </div>
 </div>
 
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+@*<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />*@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" rel="stylesheet" />
 
 @section scripts{
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
 
     <script>
         var Popup, dataTable, adjdataTable;
         $(document).ready(function () {
                                     var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
-            dataTable = $("#HeaderTable").dataTable();
-            adjdataTable = $("#ADJHeaderTable").dataTable();
+            dataTable = $("#HeaderTable").dataTable({
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]});
+            adjdataTable = $("#ADJHeaderTable").dataTable({
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ]});
             $("#ddlBatches").change(function () {
-                                        var selectedbatch = $("#ddlBatches").val();
-                                        RefreshData(selectedbatch);
-                                    });
+                var selectedbatch = $("#ddlBatches").val();
+                RefreshData(selectedbatch);
+            });
         });
-
 
         function EditBatch() {
             if ($("#ddlBatches").val() === "-1") {
@@ -256,7 +275,7 @@
                                                 }
                                             }
                                         });
-                                    $.ajax({
+                                    @*$.ajax({
                                         url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
                                         type: "GET",
                                         datatype: "json",
@@ -275,7 +294,7 @@
                                                 $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
                                             }
                                         }
-                                    });
+                                    });*@
                                 }
                             });
                             $(this).dialog("close");
@@ -375,8 +394,22 @@
                     data: $(form).serialize(),
                     success: function (data) {
                         if (data.success) {
+
                             ShowDialog(data.message);
+                            var batchId = $("#ddlBatches").val();
+                            alert(batchId);
                             RefreshBatchList();
+                            RefreshData(batchId);
+
+                            $("#ddlBatches option").each(function () {
+                                var option = $(this);
+                                if (option.val() === batchId.toString()) {
+                                    alert(option.val() + ' - ' + option.text());
+                                    option.attr('selected', 'selected');
+                                    return;
+                                }
+                            });
+                            
                             //alert(data.message);
                             Popup.dialog('close');
                         }
@@ -402,6 +435,8 @@
                             }
                            });
         }
+
+
         function Delete() {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
@@ -446,7 +481,7 @@
                                             });
 
                                         RefreshBatchList();
-                                        //RefreshData(-1);
+                                        RefreshData(-1);
                                         //alert(data.message);
                                     }
                                     else
@@ -483,17 +518,20 @@
                         $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': '); $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' + ': '); $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
                         $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
                         $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' + ': ');
+                        $("#Finalized").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.FinalQty)' + ': ');
                     }
                     else {
                         $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
                         $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
                         $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
                         $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalAdjustmentItems + '</span>');
-                        $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                        $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
+                        $("#Finalized").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.FinalQty)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.FinalizedLines  + '</span>');
                     }
 
                     datatable = $("#HeaderTable").dataTable({
                         "destroy": true,
+                        "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
                         "ajax": {
                             "url": "/StockCount/GetStockCountDetail",
                             "data": { ID:ID,entrytype:'INV'},
@@ -521,6 +559,7 @@
 
                     adjdataTable = $("#ADJHeaderTable").dataTable({
                         "destroy": true,
+                        "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
                         "ajax": {
                             "url": "/StockCount/GetStockCountDetail",
                             "data": { ID: ID, entrytype: 'ADJUST' },
@@ -561,8 +600,8 @@
                     for (var i = 0; i < data.length; i++) {
                         var opt = new Option(data[i].SCCode, data[i].ID);
                         $("#ddlBatches").append(opt);
-                        RefreshData(-1);
                     }
+                    //RefreshData(-1);
                 }
             });
         }

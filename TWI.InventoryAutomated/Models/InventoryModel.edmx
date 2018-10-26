@@ -72,6 +72,17 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
+        <EntityType Name="NAVItems">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SCID" Type="int" />
+          <Property Name="ItemNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
+          <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="Permissions">
           <Key>
             <PropertyRef Name="ID" />
@@ -270,6 +281,7 @@
           <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NAVItems" EntityType="Self.NAVItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocations" Schema="dbo" store:Type="Tables" />
@@ -322,6 +334,7 @@
           <EntitySet Name="StockCountTeams" EntityType="TWIInventoryPortalModel.StockCountTeams" />
           <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
           <EntitySet Name="StockCountAllocations" EntityType="TWIInventoryPortalModel.StockCountAllocations" />
+          <EntitySet Name="NAVItems" EntityType="TWIInventoryPortalModel.NAVItems" />
         </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -574,6 +587,17 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
+        </EntityType>
+        <EntityType Name="NAVItems">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SCID" Type="Int32" />
+          <Property Name="ItemNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDesc" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -863,6 +887,18 @@
                 <ScalarProperty Name="SCIterationName" ColumnName="SCIterationName" />
                 <ScalarProperty Name="SCIterationID" ColumnName="SCIterationID" />
                 <ScalarProperty Name="StockCountID" ColumnName="StockCountID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NAVItems">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.NAVItems">
+              <MappingFragment StoreEntitySet="NAVItems">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />
+                <ScalarProperty Name="ItemDesc" ColumnName="ItemDesc" />
+                <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
+                <ScalarProperty Name="SCID" ColumnName="SCID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

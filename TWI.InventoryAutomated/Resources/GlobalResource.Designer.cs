@@ -88,7 +88,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adjustment(s).
+        ///   Looks up a localized string similar to New Entries.
         /// </summary>
         public static string ADJEntries {
             get {
@@ -106,11 +106,29 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allocation Summary For Batch.
+        /// </summary>
+        public static string AllocationSummaryTitle {
+            get {
+                return ResourceManager.GetString("AllocationSummaryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Archived Sessions.
         /// </summary>
         public static string ArchivedSessions {
             get {
                 return ResourceManager.GetString("ArchivedSessions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NAV Batch Code.
+        /// </summary>
+        public static string BatchCode {
+            get {
+                return ResourceManager.GetString("BatchCode", resourceCulture);
             }
         }
         
@@ -196,6 +214,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count.
+        /// </summary>
+        public static string CountInfo {
+            get {
+                return ResourceManager.GetString("CountInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string Create {
@@ -246,6 +273,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string DeleteBatch {
             get {
                 return ResourceManager.GetString("DeleteBatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Item.
+        /// </summary>
+        public static string DeleteItem {
+            get {
+                return ResourceManager.GetString("DeleteItem", resourceCulture);
             }
         }
         
@@ -309,6 +345,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string EmailID {
             get {
                 return ResourceManager.GetString("EmailID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finalized.
+        /// </summary>
+        public static string FinalQty {
+            get {
+                return ResourceManager.GetString("FinalQty", resourceCulture);
             }
         }
         
@@ -529,11 +574,20 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admin Stock Count Sheet.
+        ///   Looks up a localized string similar to Allocations.
         /// </summary>
         public static string MsgAdminSheetTitle {
             get {
                 return ResourceManager.GetString("MsgAdminSheetTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully deleted the selected Item(s).
+        /// </summary>
+        public static string MsgAllocationDeletionSuccess {
+            get {
+                return ResourceManager.GetString("MsgAllocationDeletionSuccess", resourceCulture);
             }
         }
         
@@ -736,7 +790,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure to delete the selected item?  &lt;br/&gt; Click &apos;Yes&apos; to proceed or &apos;No&apos; to cancel..
+        ///   Looks up a localized string similar to Are you sure to delete the selected item(s)?  &lt;br/&gt; Click &apos;Yes&apos; to proceed or &apos;No&apos; to cancel..
         /// </summary>
         public static string MsgItemDeletionRecord {
             get {
@@ -817,6 +871,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kindly select atleast one item for deletion..
+        /// </summary>
+        public static string MsgSelectItemForDeletion {
+            get {
+                return ResourceManager.GetString("MsgSelectItemForDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully Deleted the selected Batch.
         /// </summary>
         public static string MsgSuccessfullDeletion {
@@ -885,6 +948,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string MsgTeamDeletionSuccessfull {
             get {
                 return ResourceManager.GetString("MsgTeamDeletionSuccessfull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Team selection is mandatory.
+        /// </summary>
+        public static string MsgTeamSelectionRequired {
+            get {
+                return ResourceManager.GetString("MsgTeamSelectionRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Item(s).
+        /// </summary>
+        public static string MsgTitleSelectItem {
+            get {
+                return ResourceManager.GetString("MsgTitleSelectItem", resourceCulture);
             }
         }
         
@@ -1033,6 +1114,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remaining | Total.
+        /// </summary>
+        public static string RemainingTotal {
+            get {
+                return ResourceManager.GetString("RemainingTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Required Field.
         /// </summary>
         public static string RequiredField {
@@ -1150,11 +1240,20 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admin Stock Count Sheet .
+        ///   Looks up a localized string similar to Allocations.
         /// </summary>
         public static string StockCountSheetAdmin {
             get {
                 return ResourceManager.GetString("StockCountSheetAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total | Entries.
+        /// </summary>
+        public static string TotalEntries {
+            get {
+                return ResourceManager.GetString("TotalEntries", resourceCulture);
             }
         }
         

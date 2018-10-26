@@ -131,6 +131,10 @@ div .tabcontents {
     width:150px !important;
 }
 
+.customwidth175px {
+    width: 200px !important;
+}
+
 .customTextBox {
     width:200px !important;
     border-radius : 4px !important;
@@ -142,6 +146,14 @@ div .tabcontents {
     font-size: 13px;
     color:black;
 }
+
+
+.summaryheader {
+    font-family:Calibri;
+    font-size:12px;
+    font-weight:600;
+}
+
 
 
 

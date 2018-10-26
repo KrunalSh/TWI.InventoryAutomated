@@ -9,7 +9,7 @@
     @Html.HiddenFor(model => model.ID)
     @Html.HiddenFor(model => model.Status)
 <div class="form-group txtNotification">
-    @Html.LabelFor(model => model.SCCode, TWI.InventoryAutomated.Resources.GlobalResource.Code, new { @class = "control-label" })
+    @Html.LabelFor(model => model.SCCode, TWI.InventoryAutomated.Resources.GlobalResource.BatchCode, new { @class = "control-label" })
     <span class="requiredfield">*</span>
     @if (Model.ID == 0)
     {

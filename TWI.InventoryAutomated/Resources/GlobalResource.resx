@@ -379,7 +379,7 @@
     <value>Stock Count Sheet</value>
   </data>
   <data name="StockCountSheetAdmin" xml:space="preserve">
-    <value>Admin Stock Count Sheet </value>
+    <value>Allocations</value>
   </data>
   <data name="MsgBatchSelectionError" xml:space="preserve">
     <value>Batch selection is mandatory to pull data from NAV ERP</value>
@@ -457,10 +457,10 @@
     <value>Are you sure to delete  the selected count?  Click 'Yes' to Proceed Or 'No' to Cancel</value>
   </data>
   <data name="MsgAdminSheetTitle" xml:space="preserve">
-    <value>Admin Stock Count Sheet</value>
+    <value>Allocations</value>
   </data>
   <data name="MsgItemDeletionRecord" xml:space="preserve">
-    <value>Are you sure to delete the selected item?  &lt;br/&gt; Click 'Yes' to proceed or 'No' to cancel.</value>
+    <value>Are you sure to delete the selected item(s)?  &lt;br/&gt; Click 'Yes' to proceed or 'No' to cancel.</value>
   </data>
   <data name="SCManagerView" xml:space="preserve">
     <value>Manager View</value>
@@ -481,7 +481,7 @@
     <value>Batch selection is mandatory.</value>
   </data>
   <data name="ADJEntries" xml:space="preserve">
-    <value>Adjustment(s)</value>
+    <value>New Entries</value>
   </data>
   <data name="Location" xml:space="preserve">
     <value>Location</value>
@@ -494,5 +494,38 @@
   </data>
   <data name="buttonAdjustment" xml:space="preserve">
     <value>Enter &lt;br /&gt; Adjustment</value>
+  </data>
+  <data name="DeleteItem" xml:space="preserve">
+    <value>Delete Item</value>
+  </data>
+  <data name="MsgAllocationDeletionSuccess" xml:space="preserve">
+    <value>Successfully deleted the selected Item(s)</value>
+  </data>
+  <data name="MsgSelectItemForDeletion" xml:space="preserve">
+    <value>Kindly select atleast one item for deletion.</value>
+  </data>
+  <data name="MsgTeamSelectionRequired" xml:space="preserve">
+    <value>Team selection is mandatory</value>
+  </data>
+  <data name="MsgTitleSelectItem" xml:space="preserve">
+    <value>Select Item(s)</value>
+  </data>
+  <data name="BatchCode" xml:space="preserve">
+    <value>NAV Batch Code</value>
+  </data>
+  <data name="FinalQty" xml:space="preserve">
+    <value>Finalized</value>
+  </data>
+  <data name="AllocationSummaryTitle" xml:space="preserve">
+    <value>Allocation Summary For Batch</value>
+  </data>
+  <data name="CountInfo" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="RemainingTotal" xml:space="preserve">
+    <value>Remaining | Total</value>
+  </data>
+  <data name="TotalEntries" xml:space="preserve">
+    <value>Total | Entries</value>
   </data>
 </root>

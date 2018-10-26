@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ArchivedSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SessionLogID" Type="int" />
+    <Property Name="FormName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ControlName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ActivityPerformed" Type="nvarchar" MaxLength="50" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="Exception" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Company">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="InstanceID" Type="int" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Forms">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FormName" Type="nvarchar" MaxLength="50" />
+    <Property Name="SourceFileName" Type="nvarchar" MaxLength="150" />
+    <Property Name="ModuleID" Type="int" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Instances">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="InstanceName" Type="nvarchar" MaxLength="50" />
+    <Property Name="WebUrl" Type="nvarchar" MaxLength="500" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Languages">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar" MaxLength="500" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="Modules">
+    <Key>
+      <PropertyRef Name="ModuleID" />
+    </Key>
+    <Property Name="ModuleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ModuleName" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Permissions">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PermissionCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="PermissionDesc" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="RegisteredDevice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DeviceName" Type="nvarchar" MaxLength="50" />
+    <Property Name="MacAddress" Type="nvarchar" MaxLength="50" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountAllocations">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StockCountID" Type="int" />
+    <Property Name="SCIterationID" Type="int" />
+    <Property Name="SCIterationName" Type="varchar" MaxLength="50" />
+    <Property Name="TeamID" Type="int" />
+    <Property Name="TeamCode" Type="varchar" MaxLength="5" />
+    <Property Name="MemberName" Type="nvarchar" MaxLength="50" />
+    <Property Name="SearchCriteria" Type="nvarchar" MaxLength="50" />
+    <Property Name="DocType" Type="varchar" MaxLength="6" />
+    <Property Name="WhseDocumentNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
+    <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="ExpirationDate" Type="varchar" MaxLength="20" />
+    <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="NAVQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="PhysicalQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="FinalQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
+    <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
+    <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="UpdatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCID" Type="int" />
+    <Property Name="WhseDocumentNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
+    <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="ExpirationDate" Type="varchar" MaxLength="20" />
+    <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="PhyicalQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="NAVQty" Type="decimal" Precision="38" Scale="2" />
+    <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
+    <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
+    <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountHeader">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCCode" Type="varchar" MaxLength="10" />
+    <Property Name="SCDesc" Type="varchar" MaxLength="150" />
+    <Property Name="LocationCode" Type="varchar" MaxLength="10" />
+    <Property Name="TotalItemCount" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="InstanceName" Type="nvarchar" MaxLength="50" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Status" Type="varchar" MaxLength="1" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountIterations">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCID" Type="int" />
+    <Property Name="SCCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="IterationNo" Type="int" />
+    <Property Name="IterationName" Type="varchar" MaxLength="50" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="StockCountTeams">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCIterationID" Type="int" />
+    <Property Name="SCID" Type="int" />
+    <Property Name="TeamNo" Type="int" />
+    <Property Name="TeamCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="UIPermissionAssignment">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PermissionID" Type="int" />
+    <Property Name="FormID" Type="int" />
+    <Property Name="ModuleID" Type="int" />
+    <Property Name="AllowAccess" Type="bit" />
+  </EntityType>
+  <EntityType Name="UserAccess">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserID" Type="int" />
+    <Property Name="CompanyID" Type="int" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="500" />
+    <Property Name="InstanceID" Type="int" />
+    <Property Name="InstanceName" Type="nvarchar" MaxLength="500" />
+    <Property Name="PermissionID" Type="int" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="UserAccessDevices">
+    <Key>
+      <PropertyRef Name="UserAccessID" />
+      <PropertyRef Name="DeviceID" />
+    </Key>
+    <Property Name="UserAccessID" Type="int" Nullable="false" />
+    <Property Name="DeviceID" Type="int" Nullable="false" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityType Name="UserLanguages">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="LanguageID" />
+    </Key>
+    <Property Name="UserID" Type="int" Nullable="false" />
+    <Property Name="LanguageID" Type="int" Nullable="false" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="IsDefault" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="150" Nullable="false" />
+    <Property Name="EmailID" Type="nvarchar" MaxLength="250" />
+    <Property Name="DisplayName" Type="nvarchar" MaxLength="150" />
+    <Property Name="Password" Type="nvarchar" MaxLength="20" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="CreatedBy" Type="int" />
+  </EntityType>
+  <EntityType Name="UserSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserAccessID" Type="int" />
+    <Property Name="DeviceID" Type="int" />
+    <Property Name="SessionStart" Type="datetime" />
+    <Property Name="SessionEnd" Type="datetime" />
+    <Property Name="IsActive" Type="bit" />
+  </EntityType>
+  <EntityContainer Name="TestModelStoreContainer">
+    <EntitySet Name="ArchivedSessionLog" EntityType="Self.ArchivedSessionLog" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountDetail" EntityType="Self.StockCountDetail" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountHeader" EntityType="Self.StockCountHeader" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountIterations" EntityType="Self.StockCountIterations" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="StockCountTeams" EntityType="Self.StockCountTeams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UIPermissionAssignment" EntityType="Self.UIPermissionAssignment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserAccess" EntityType="Self.UserAccess" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserAccessDevices" EntityType="Self.UserAccessDevices" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserLanguages" EntityType="Self.UserLanguages" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserSessionLog" EntityType="Self.UserSessionLog" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

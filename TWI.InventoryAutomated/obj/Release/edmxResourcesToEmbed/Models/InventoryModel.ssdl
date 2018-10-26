@@ -67,6 +67,17 @@
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
   </EntityType>
+  <EntityType Name="NAVItems">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SCID" Type="int" />
+    <Property Name="ItemNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
+    <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="CreatedDate" Type="datetime" />
+  </EntityType>
   <EntityType Name="Permissions">
     <Key>
       <PropertyRef Name="ID" />
@@ -265,6 +276,7 @@
     <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NAVItems" EntityType="Self.NAVItems" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="RegisteredDevice" EntityType="Self.RegisteredDevice" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocations" Schema="dbo" store:Type="Tables" />

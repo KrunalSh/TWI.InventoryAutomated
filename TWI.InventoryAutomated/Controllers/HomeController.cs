@@ -316,7 +316,8 @@ namespace TWI.InventoryAutomated.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return false;
+                    throw ex;
+                    //return false;
                 }
                 
             }

@@ -106,7 +106,8 @@
                                                             @_steam.TeamCode - @_steam.UserName
                                                             @if (Model.TeamSummaries.Where(x => x.TeamID == _steam.ID).Count() > 0)
                                                             {
-                                                                <span style="padding-left:5px;font-family:Calibri;font-size:12px;font-weight:400"> ( @Model.TeamSummaries.Where(x => x.TeamID == _steam.ID).FirstOrDefault().TotalItems / @Convert.ToInt32(Model.CountSummary.Where(x=> x.CountID == _steam.SCIterationID).FirstOrDefault().TotalItems))  </span>
+                                                                /// @Convert.ToInt32(Model.CountSummary.Where(x => x.CountID == _steam.SCIterationID).FirstOrDefault().TotalItems))
+                                                                <span style="padding-left:5px;font-family:Calibri;font-size:12px;font-weight:400"> (@Model.TeamSummaries.Where(x => x.TeamID == _steam.ID).FirstOrDefault().TotalItems)   </span>
                                                             }
                                                         </div>
                                                         <div style="float:right;"><a class="btn btn-danger fa fa-trash" style="padding-top:2px;  padding-left:4px;width:20px !important;height:20px !important;vertical-align:middle !important;margin-left:10px;" onclick="DeleteIterationTeam(@_steam.ID);"></a></div>

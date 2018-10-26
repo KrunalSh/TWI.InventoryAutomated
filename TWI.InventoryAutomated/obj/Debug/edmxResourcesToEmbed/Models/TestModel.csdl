@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="ArchivedSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SessionLogID" Type="Int32" />
+    <Property Name="FormName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ControlName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ActivityPerformed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="Exception" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Company">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="InstanceID" Type="Int32" />
+    <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Form">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FormName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SourceFileName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="ModuleID" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Instance">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="InstanceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="WebUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Language">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="Module">
+    <Key>
+      <PropertyRef Name="ModuleID" />
+    </Key>
+    <Property Name="ModuleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ModuleName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="Permission">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PermissionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PermissionDesc" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="RegisteredDevice">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DeviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MacAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="StockCountAllocation">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StockCountID" Type="Int32" />
+    <Property Name="SCIterationID" Type="Int32" />
+    <Property Name="SCIterationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="TeamID" Type="Int32" />
+    <Property Name="TeamCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="MemberName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SearchCriteria" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="DocType" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+    <Property Name="WhseDocumentNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ZoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="BinCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ItemNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LotNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ExpirationDate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NAVQty" Type="Decimal" Precision="38" Scale="2" />
+    <Property Name="PhysicalQty" Type="Decimal" Precision="38" Scale="2" />
+    <Property Name="FinalQty" Type="Decimal" Precision="38" Scale="2" />
+    <Property Name="TemplateName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="BatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="StockCountDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SCID" Type="Int32" />
+    <Property Name="WhseDocumentNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ZoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="BinCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ItemNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LotNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ExpirationDate" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PhyicalQty" Type="Decimal" Precision="38" Scale="2" />
+    <Property Name="NAVQty" Type="Decimal" Precision="38" Scale="2" />
+    <Property Name="TemplateName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="BatchName" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="StockCountHeader">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SCCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="SCDesc" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="TotalItemCount" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="InstanceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="StockCountIteration">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SCID" Type="Int32" />
+    <Property Name="SCCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IterationNo" Type="Int32" />
+    <Property Name="IterationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Status" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="StockCountTeam">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SCIterationID" Type="Int32" />
+    <Property Name="SCID" Type="Int32" />
+    <Property Name="TeamNo" Type="Int32" />
+    <Property Name="TeamCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="UIPermissionAssignment">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PermissionID" Type="Int32" />
+    <Property Name="FormID" Type="Int32" />
+    <Property Name="ModuleID" Type="Int32" />
+    <Property Name="AllowAccess" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="UserAccess">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="CompanyID" Type="Int32" />
+    <Property Name="CompanyName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="InstanceID" Type="Int32" />
+    <Property Name="InstanceName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="PermissionID" Type="Int32" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+    <Property Name="ModifiedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="UserAccessDevice">
+    <Key>
+      <PropertyRef Name="UserAccessID" />
+      <PropertyRef Name="DeviceID" />
+    </Key>
+    <Property Name="UserAccessID" Type="Int32" Nullable="false" />
+    <Property Name="DeviceID" Type="Int32" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="UserLanguage">
+    <Key>
+      <PropertyRef Name="UserID" />
+      <PropertyRef Name="LanguageID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" />
+    <Property Name="LanguageID" Type="Int32" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="IsDefault" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="EmailID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="DisplayName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="CreatedBy" Type="Int32" />
+  </EntityType>
+  <EntityType Name="UserSessionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserAccessID" Type="Int32" />
+    <Property Name="DeviceID" Type="Int32" />
+    <Property Name="SessionStart" Type="DateTime" Precision="3" />
+    <Property Name="SessionEnd" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" />
+  </EntityType>
+  <EntityContainer Name="TestEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ArchivedSessionLogs" EntityType="Self.ArchivedSessionLog" />
+    <EntitySet Name="Companies" EntityType="Self.Company" />
+    <EntitySet Name="Forms" EntityType="Self.Form" />
+    <EntitySet Name="Instances" EntityType="Self.Instance" />
+    <EntitySet Name="Languages" EntityType="Self.Language" />
+    <EntitySet Name="Modules" EntityType="Self.Module" />
+    <EntitySet Name="Permissions" EntityType="Self.Permission" />
+    <EntitySet Name="RegisteredDevices" EntityType="Self.RegisteredDevice" />
+    <EntitySet Name="StockCountAllocations" EntityType="Self.StockCountAllocation" />
+    <EntitySet Name="StockCountDetails" EntityType="Self.StockCountDetail" />
+    <EntitySet Name="StockCountHeaders" EntityType="Self.StockCountHeader" />
+    <EntitySet Name="StockCountIterations" EntityType="Self.StockCountIteration" />
+    <EntitySet Name="StockCountTeams" EntityType="Self.StockCountTeam" />
+    <EntitySet Name="UIPermissionAssignments" EntityType="Self.UIPermissionAssignment" />
+    <EntitySet Name="UserAccesses" EntityType="Self.UserAccess" />
+    <EntitySet Name="UserAccessDevices" EntityType="Self.UserAccessDevice" />
+    <EntitySet Name="UserLanguages" EntityType="Self.UserLanguage" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="UserSessionLogs" EntityType="Self.UserSessionLog" />
+  </EntityContainer>
+</Schema>

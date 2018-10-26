@@ -19,6 +19,8 @@ namespace TWI.InventoryAutomated.Models
 
         public int TotalAdjustmentItems { get; set; }
 
+        public int FinalizedLines { get; set; }
+
         public string Status { get; set; }
         
         public DateTime? CreatedDate { get; set; }

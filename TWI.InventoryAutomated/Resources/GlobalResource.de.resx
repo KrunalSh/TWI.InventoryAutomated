@@ -408,4 +408,40 @@
   <data name="buttonAdjustment" xml:space="preserve">
     <value>Anpassung eingeben</value>
   </data>
+  <data name="DeleteItem" xml:space="preserve">
+    <value>Element löschen</value>
+  </data>
+  <data name="MsgAllocationDeletionSuccess" xml:space="preserve">
+    <value>Die ausgewählten Objekte wurden erfolgreich gelöscht</value>
+  </data>
+  <data name="MsgSelectItemForDeletion" xml:space="preserve">
+    <value>Bitte wählen Sie mindestens einen Artikel zum Löschen aus</value>
+  </data>
+  <data name="MsgTeamSelectionRequired" xml:space="preserve">
+    <value>Die Teamauswahl ist obligatorisch</value>
+  </data>
+  <data name="MsgTitleSelectItem" xml:space="preserve">
+    <value>Gegenstände auswählen)</value>
+  </data>
+  <data name="BatchCode" xml:space="preserve">
+    <value>NAV Stapelcode</value>
+  </data>
+  <data name="FinalQty" xml:space="preserve">
+    <value>Final Qty</value>
+  </data>
+  <data name="StockCountSheetAdmin" xml:space="preserve">
+    <value>Zuteilungen</value>
+  </data>
+  <data name="AllocationSummaryTitle" xml:space="preserve">
+    <value>Zuordnungszusammenfassung für Batch</value>
+  </data>
+  <data name="CountInfo" xml:space="preserve">
+    <value>Anzahl</value>
+  </data>
+  <data name="RemainingTotal" xml:space="preserve">
+    <value>Verbleibend | Gesamt</value>
+  </data>
+  <data name="TotalEntries" xml:space="preserve">
+    <value>Gesamt | Einträge</value>
+  </data>
 </root>
