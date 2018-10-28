@@ -19,6 +19,7 @@ namespace TWI.InventoryAutomated.Models
         public string ItemNo { get; set; }
         public string ItemDesc { get; set; }
         public string UOMCode { get; set; }
+        public string ItemCategoryCode { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
     }
 }

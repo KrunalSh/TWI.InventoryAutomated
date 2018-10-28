@@ -32,44 +32,47 @@
             </div>
         </div>*@
 
+        <div class="row col-sm-12" style="margin-top:10px;">
+            <a class="btn btn-primary" style="float:left !important;width:90px;height:55px;margin:0 0 10px 25px ;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.buttonAdjustment)</a>
+            <div id="divAdjustments" style="float:left;width:60% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
+                <div class="row" style="margin:10px 10px 0 10px !important;">
+                    @*<div style="float:left;margin-right:10px;" id="divZoneCode;" >
+                    @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
+                </div>*@
+                    <div style="float:left;margin-right:10px;" id="divBinCode">
+                        @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes", @placeholder = " Select Bin" })
+                    </div>
+                    <div style="float:left;margin-right:10px;margin-bottom:10px;">
+                        <input type="hidden" value="0" id="hdnAdj" />
+                        @*<input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />*@
+                        @Html.DropDownList("ddlItems", ViewBag.Items as SelectList, new { @class = "form-control", @id = "ddlItems", @placeholder = " Select Item" })
+                    </div>
+                    <div style="float:left;margin-right:10px;margin-bottom:10px;">
+                        <input type="text" class="form-control" placeholder="Lot No" id="txtLotNo" name="txtLotNo" style="width:100px !important" />
+                    </div>
+                    <div style="float:left;margin-right:10px;margin-bottom:10px;">
+                        <input type="text" class="form-control" placeholder="Expiry Date" id="txtExpDate" name="txtExpDate" style="width:100px !important" />
+                    </div>
+                    <div style="float:left;margin-right:10px;margin-bottom:10px;">
+                        <input type="text" class="form-control" placeholder="Enter Qty" id="txtPhyQty" name="txtPhyQty" style="width:90px !important" maxlength="7" />
+                    </div>
+                    <div style="float:left;margin-bottom:10px;">
+                        <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="SaveAdjustments();">Save</a>
+                        <a class="btn btn-primary" style="width:60px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="CancelAdjustment();">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="collapse navbar-collapse" style="margin-top:5px;">
-            @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-left" }))
+            <div id="divsummary" style="float:left !important;margin-left:10px; margin-top:1px;padding-top:4px;text-align:center;font-weight:600;font-family:Calibri;width:400px;background-color:#EEEEEE;color:black; border-width: thin;border-style: solid;border-color: #828282;border-radius:3px;height:32px;">@ViewBag.SummaryInfo</div>
+            @using (Html.BeginForm("StockCountSheetTest", "StockCount", FormMethod.Get, new { @class = "navbar-form navbar-right" }))
             {
                 <div class="form-group">
                     <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search Zone, Bin, Item" style="margin-left:-5px;" />
                 </div>
                 <button type="submit" value="Search" class="btn btn-primary" style="font-weight:600;">Search</button>
-                <div style="float:right;margin-left:10px; margin-top:1px;padding-top:4px;text-align:center;font-weight:600;font-family:Calibri;width:400px;background-color:#EEEEEE;color:black; border-width: thin;border-style: solid;border-color: #828282;border-radius:3px;height:32px;">@ViewBag.SummaryInfo</div>
+
             }
-        </div>
-        <a class="btn btn-primary" style="float:left !important;width:90px;height:55px;margin:0 0 10px 25px ;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.buttonAdjustment)</a>
-        <div id="divAdjustments" style="float:left;width:50% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
-            <div class="row" style="margin:10px 10px 0 10px !important;">
-                @*<div style="float:left;margin-right:10px;" id="divZoneCode;" >
-                    @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
-                </div>*@
-                <div style="float:left;margin-right:10px;" id="divBinCode">
-                    @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes",@placeholder=" Select Bin" })
-                </div>
-                <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="hidden" value="0" id="hdnAdj" />
-                    @*<input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />*@
-                    @Html.DropDownList("ddlItems", ViewBag.Items as SelectList, new { @class = "form-control", @id = "ddlItems", @placeholder = " Select Item" })
-                </div>
-                <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Lot No" id="txtLotNo" name="txtLotNo" style="width:100px !important" />
-                </div>
-                <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Expiry Date" id="txtExpDate" name="txtExpDate" style="width:100px !important" />
-                </div>
-                <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input type="text" class="form-control" placeholder="Enter Qty" id="txtPhyQty" name="txtPhyQty" style="width:90px !important" maxlength="7" />
-                </div>
-                <div style="float:left;margin-bottom:10px;">
-                    <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="SaveAdjustments();">Save</a>
-                    <a class="btn btn-primary" style="width:60px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="CancelAdjustment();">Cancel</a>
-                </div>
-            </div>
         </div>
         <div style="float:left;width:100% !important;margin:10px 0 0 15px;">
             <div style="margin:0 40px 10px 10px !important;font-family:Calibri;font-size:13px;">
@@ -99,6 +102,7 @@
                 @Html.HiddenFor(x => x.FirstOrDefault().TeamID)
 
             </div>
+            <div></div>
         </div>
     </div>
 </div>
@@ -146,7 +150,19 @@
                 },
                 callback: function (value, settings) {
                     var jsonData = $.parseJSON(value);
-                    if (jsonData.status) { $(this).text(jsonData.value); }
+                    if (jsonData.status) {
+                        $(this).text(jsonData.value);
+
+                        $.ajax({
+                            url: "/StockCount/UpdateNAVEntriesCount?TeamID=" + '@Html.Raw(Convert.ToInt32(Session["TeamID"]))',
+                            type: "GET",
+                            datatype: "JSON",
+                            success: function (data) {
+                                console.log(data);
+                                $("#divsummary").html(data.data);
+                            }
+                        });
+                    }
                     else {
                         $(this).text(oldvalue);
                     }
@@ -178,6 +194,27 @@
                 }
 
             });
+
+            //$("#txtLotNo").keypress(function (e) {
+            //    if (e.which === 46) {
+            //        if ($(this).val().indexOf('.') !== -1) {
+            //            return false;
+            //        }
+
+            //        if ($(this).val().indexOf('/') !== -1) { return false; }
+            //    }
+
+
+            //    //if ((e.which >= 65 || e.which <= 90) && (e.which)){
+            //    //    return true;
+            //    //}
+
+            //    if (e.which !== 8 && e.which !== 0 && e.which !== 46 && e.which !== 13 && (e.which <48 || e.which > 57) && e.which > 122) {
+            //        return false;
+            //    }
+
+            //});
+
             $("#ddlZoneCodes").hide();
             $("#ddlBinCodes").editableSelect({ effects: 'slide' });
             //$("#ddlItems").editableSelect({ effects: 'slide' });
@@ -247,13 +284,66 @@
                 data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
                 success: function (data) {
                     if (data.success) {
-                        alert(data.message);
+
+                         $('<div></div>').appendTo('body')
+                         .html("<div><h5>" + data.message + "</h5></div>")
+                         .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                   buttons: { Ok: function () { $(this).dialog("close"); } } });
+
+                        //alert(data.message);
                         window.location.href = "/StockCount/StockCountSheetTest";
                         RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
                         $("#divAdjustments").hide();
                     }
+                    else if (!data.success && data.message === "1") {
+                         $('<div></div>').appendTo('body')
+                            .html("<div><h5>Item already exists in the list, cannot create a new entry. <br/> Do you wish to update the quantity, Click 'Yes' to proceed or 'No' to cancel.</h5></div>")
+                            .dialog({
+                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - Save")', zIndex: 10000, autoOpen: true,
+                                width: 500, resizable: true,
+                            buttons: {
+                                Yes: function () {
+
+                                    $.ajax({
+                                        url: "/StockCount/UpdateAllocation",
+                                        type: "GET",
+                                        datatype: "Json",
+                                        data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
+                                        success: function (data) {
+                                            if (data.success) {
+
+                                                $('<div></div>').appendTo('body')
+                                                    .html("<div><h5>" + data.message + "</h5></div>")
+                                                    .dialog({
+                                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                        buttons: {
+                                                            Ok: function () {
+                                                                $(this).dialog("close");
+                                                            }
+                                                        }
+                                                    });
+                                                window.location.href = "/StockCount/StockCountSheetTest";
+                                            }
+                                        }
+                                    });
+                                    $(this).dialog("close");
+                                },
+                                No: function () {
+                                    $(this).dialog("close");
+
+                                    }
+                                },
+                                close: function (event, ui) {
+                                      $(this).remove();
+                                 }
+                            });
+
+                    }
                     else {
-                        alert(data.message);
+                        $('<div></div>').appendTo('body')
+                        .html("<div><h5>" + data.message + "</h5></div>")
+                        .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                  buttons: { Ok: function () { $(this).dialog("close"); } } });
                     }
                 }
             });
@@ -268,9 +358,10 @@
                     datatype: 'Json',
                     async: true,
                     success: function (data) {
+                        console.log(data);
                         $("#ddlItems").empty();
                         for (var i = 0; i < data.itemno.length; i++) {
-                            var binopt = new Option(data.itemno[i], data.itemno[i]);
+                            var binopt = new Option(data.itemno[i].ItemName, data.itemno[i].ItemName);
                             $("#ddlItems").append(binopt);
                         }
                         $("#ddlItems").editableSelect({ effects: 'slide' });

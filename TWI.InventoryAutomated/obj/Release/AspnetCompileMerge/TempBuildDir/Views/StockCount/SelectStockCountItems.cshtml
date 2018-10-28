@@ -27,9 +27,23 @@
                                 @*<option value="3">Adjustment(s)</option>*@
                             </select>
                         </div>
-                        <div style="float:left;margin-right:10px;display:none;" id="countsource">
-                            @Html.Label("Count Source", new { @class = "control-label" })
-                            @Html.DropDownList("SourceCounts", ViewBag.CountList as SelectList, new { @class = "form-control", @id = "ddlCounts" })
+                        <div style="float:left;margin-right:10px;">
+                            @Html.Label("Filter Option", new { @class = "control-label" })
+                            <select id="ddlFilterSource" class="form-control">
+                                <option value="0">All</option>
+                                <option value="1">Variance</option>
+                                <option value="2">No Variance</option>
+                                @*<option value="2">Deviations Only</option>*@
+                                @*<option value="3">Adjustment(s)</option>*@
+                            </select>
+                        </div>
+                        <div style="float:left;margin-right:10px;" id="countsource">
+                            @Html.Label("Count", new { @class = "control-label" })
+                            @Html.DropDownList("ddlCounts", ViewBag.CountList as SelectList, new { @class = "form-control", @id = "ddlCounts" })
+                        </div>
+                        <div style="float:left;margin-right:10px;" id="teamsource">
+                            @Html.Label("Team", new { @class = "control-label" })
+                            @Html.DropDownList("ddlTeams", ViewBag.TeamList as SelectList, new { @class = "form-control", @id = "ddlTeams" })
                         </div>
                         <div style="float:left;margin-right:10px;">
                             @Html.Label("Search Field", new { @class = "control-label" })
@@ -102,15 +116,11 @@
                             $("#txtSearch").removeAttr('readonly');
                             $("#txtSearch").empty();
                         }
-
-                        //$("#btnSearch").trigger("click");
                     });
 
                     $("#ddlAllocationSource").change(function () {
                         var selectedval = $("#ddlAllocationSource").val();
-
-                        if (selectedval >= 2) {
-                            $('#countsource').show();
+                        @*if (selectedval >= 2) {
                             var teamid = '@Convert.ToInt32(Session["TeamID"])';
 
                             $.ajax({
@@ -131,11 +141,29 @@
                                 error: function (error) {
                                 }
                             });
-                        }
-                        else { $('#countsource').hide(); }
+                            }
+                        else {/* $('#countsource').hide();*/ }*@
                     });
 
                     $("#ddlCounts").change(function () {
+                        var selectedcount = $("#ddlCounts").val();
+                        $.ajax({
+                            url: "/StockCount/GetTeamInfoByCount?ID=" + selectedcount,
+                            type: "GET",
+                            dataType: "Json",
+                            async:true,
+                            success: function (data) {
+                                console.log(data);
+                                $("#ddlTeams").empty();
+                                for (var i = 0; i < data.data.length; i++) {
+                                    var teamopt = new Option(data.data[i].TeamCode, data.data[i].ID);
+                                    $("#ddlTeams").append(teamopt);
+                                }
+                            },
+                            error: function (data) {
+                                ShowDialog(data, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " -  Count(s)")');
+                            }
+                        });
                         //$("#btnSearch").trigger("click");
                     });
 
@@ -231,7 +259,9 @@
         function GetSearchItem() {
 
             var allocsource = $('#ddlAllocationSource').val();
+            var filter = $("#ddlFilterSource").val();
             var countId = $("#ddlCounts").val();
+            var teamId = $("#ddlTeams").val();
             var SearchField = $("#ddlSearchField").val();
             var searchCriteria = $("#txtSearch").val();
 
@@ -246,7 +276,7 @@
                      "lengthMenu": [[-1,10, 25, 50], ["All",10,25,50]],
                         "ajax": {
                             "url": "/StockCount/GetSearchItem",
-                            "data": { TeamID: '@Convert.ToInt32(Session["TeamID"])', source: allocsource, PrevCount: countId, searchfield: SearchField, searchcriteria: searchCriteria },
+                            "data": { TeamID: '@Convert.ToInt32(Session["TeamID"])', source: allocsource, filter: filter, PrevCount: countId, PrevTeam: teamId, searchfield: SearchField, searchcriteria: searchCriteria },
                             "type": "GET",
                             "datatype": "json"
                         },
@@ -259,28 +289,33 @@
                                 'className': 'dt-body-center',
                                 'data' : "ID",
                                 'render': function (data, type, full, meta) {
-                                    return '<input type="checkbox" checked value>&nbsp;<input id="ID" type="hidden" value="'+ data +'">';
+                                    return '<input type="checkbox">&nbsp;<input id="ID" type="hidden" value="'+ data +'">';
                                 }
                             },
                             {
                                 'targets': [1],
-                                'data' : "ItemNo"
+                                'data': "ItemNo",
+                                'searchable': true
                             },
                             {
                                 'targets': [2],
+                                'searchable':false,
                                 'data': "Description"
                             },
                             {
                                 'targets': [3],
-                                'data': "ZoneCode"
+                                'data': "ZoneCode",
+                                'searchable': true
                             },
                             {
                                 'targets': [4],
-                                'data': "BinCode"
+                                'data': "BinCode",
+                                'searchable':true
                             },
                             {
                                 'targets': [5],
-                                'data': "LotNo"
+                                'data': "LotNo",
+                                'searchable': false
                             },
                             {
                                 'targets': [6],

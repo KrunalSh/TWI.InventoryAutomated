@@ -291,6 +291,7 @@
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.NAVItems">
         <MappingFragment StoreEntitySet="NAVItems">
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="ItemCategoryCode" ColumnName="ItemCategoryCode" />
           <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />
           <ScalarProperty Name="ItemDesc" ColumnName="ItemDesc" />
           <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />

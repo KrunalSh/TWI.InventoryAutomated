@@ -76,6 +76,7 @@
     <Property Name="ItemNo" Type="nvarchar" MaxLength="50" />
     <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
     <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="ItemCategoryCode" Type="nvarchar" MaxLength="50" />
     <Property Name="CreatedDate" Type="datetime" />
   </EntityType>
   <EntityType Name="Permissions">

@@ -109,7 +109,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "ADJUST"))
+                                @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "ADJUST" || x.TemplateName == "ADJ" ))
                                 {
                                     <tr>
                                         <td class="datatable_col10PercR">@_std.ZoneCode</td>
@@ -394,21 +394,20 @@
                     data: $(form).serialize(),
                     success: function (data) {
                         if (data.success) {
-
                             ShowDialog(data.message);
-                            var batchId = $("#ddlBatches").val();
-                            alert(batchId);
+                            //var batchId = $("#ddlBatches").val();
+                            //alert(batchId);
                             RefreshBatchList();
-                            RefreshData(batchId);
+                            //RefreshData(-1);
 
-                            $("#ddlBatches option").each(function () {
-                                var option = $(this);
-                                if (option.val() === batchId.toString()) {
-                                    alert(option.val() + ' - ' + option.text());
-                                    option.attr('selected', 'selected');
-                                    return;
-                                }
-                            });
+                            //$("#ddlBatches option").each(function () {
+                            //    var option = $(this);
+                            //    if (option.val() === batchId.toString()) {
+                            //        alert(option.val() + ' - ' + option.text());
+                            //        option.attr('selected', 'selected');
+                            //        return;
+                            //    }
+                            //});
                             
                             //alert(data.message);
                             Popup.dialog('close');
@@ -481,7 +480,7 @@
                                             });
 
                                         RefreshBatchList();
-                                        RefreshData(-1);
+                                        //RefreshData(-1);
                                         //alert(data.message);
                                     }
                                     else
@@ -601,7 +600,7 @@
                         var opt = new Option(data[i].SCCode, data[i].ID);
                         $("#ddlBatches").append(opt);
                     }
-                    //RefreshData(-1);
+                    RefreshData(-1);
                 }
             });
         }

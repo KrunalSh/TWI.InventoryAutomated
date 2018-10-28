@@ -297,6 +297,7 @@
     <Property Name="ItemNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="ItemDesc" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
     <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ItemCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
   </EntityType>
 </Schema>

@@ -277,6 +277,14 @@ input.input-validation-error {
 }
 
 
+.datatable_col1PercR {
+    width: 1% !important;
+    height: 15px !important;
+    color: black !important;
+    text-align: left !important;
+    font-family: Calibri;
+    font-size: 13px;
+}
 /* For mobile phones: */
 [class*="mobileDevices"] {
     text-align: center;

@@ -236,6 +236,7 @@
     <Compile Include="Models\StockCountTeams.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TeamExtended.cs" />
     <Compile Include="Models\UIPermissionAssignment.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>

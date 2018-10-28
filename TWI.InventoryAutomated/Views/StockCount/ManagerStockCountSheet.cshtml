@@ -27,7 +27,7 @@
             <div style="font-weight:bold">Stock Count - Manager's View </div>
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
-        <div style="float:left !important;width:100% !important;margin: 15px auto 15px;">
+        <div style="float:left !important;width:100% !important;margin: 15px auto 30px;">
             <div style="float:left !important;">
                 <div style="float:left;margin-left:15px;">
                     @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })
@@ -57,31 +57,18 @@
                     </div>
                 </div>
             </div>
-            <div style="float:left;margin-bottom:10px;margin-left:10px">
-                <a class="btn btn-primary" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="" id="FillQty" onclick="FillQty();">Fill Final Qty</a>
-            </div>
             @*<div style="float:left;margin-bottom:10px;margin-left:5px !important;">
             <a class="btn btn-primary" style="width:70px;height:55px;padding-left:7px;padding-top:13px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Post</a>
         </div>*@
         </div>
-        <div style="float:left !important;width:100% !important;margin:0 15px 0px 15px;padding-right:35px;display:none;" id="divfilters">
+        <div style="float:right !important;width:100% !important;margin:0 5px 0px 15px;padding-right:0px;display:none;" id="divfilters">
             <div class="row col-sm-12">
-                <div style="float:left;margin-right:10px;">
-                    @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
+                <div style="float:left;margin-bottom:10px;margin-left:10px">
+                    <a class="btn btn-primary" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;margin-left:10px;" data-toggle="tooltip" title="" id="FillQty" onclick="FillQty();">Fill Final Qty</a>
+                    <a class="btn btn-primary" href="http://twiqv02/QvAJAXZfc/opendoc.htm?document=it%20testing%5Cstock%20count%20analysis.qvw&lang=en-US&host=QVS%40twiqv02" target="_blank" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Graphichal View</a>
                 </div>
-                <div style="float:left;margin-right:10px;">
-                    @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
-                </div>
-                @**@
-                <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                    <input class="form-control" type="text" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important;margin-top:0px;"  />
-                </div>
-                <div style="float:left;margin-bottom:10px;">
+                <div style="float:right;margin-bottom:10px;">
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" onclick="FilterList();" title="">Filter</a>
-                </div>
-                
-                <div style="float:right;margin-bottom:10px;margin-right:25px;">
-                    <a class="btn btn-primary fa fa-search" style="width:50px;height:33px;padding-left:7px;text-align:center;font-weight:bold;" data-toggle="tooltip" title=""></a>
                 </div>
                 <div style="float:right;margin-right:10px;margin-bottom:10px;margin-top:-5px;">
                     <input type="text" class="form-control" placeholder="enter value" id="txtValue" name="txtValue" style="width:100px !important;" />
@@ -94,6 +81,15 @@
                         <option value="3">></option>
                         <option value="2">>=</option>
                     </select>
+                </div>
+                <div style="float:right;margin-right:10px;margin-bottom:10px;">
+                    <input class="form-control" type="text" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important;margin-top:0px;" />
+                </div>
+                <div style="float:right;margin-right:10px;">
+                    @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
+                </div>
+                <div style="float:right;margin-right:10px;">
+                    @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
                 </div>
             </div>
         </div>
@@ -358,9 +354,8 @@
                                     'targets': [0],
                                     'searchable': false,
                                     'orderable': false,
-                                    'width': '1%',
-                                    'data': 'ID',
-                                    'className': 'dt-body-center'
+                                    'className': 'datatable_col5PercR',
+                                    "data" : "DocType"
                                 },
                                 {
                                     'targets': [1],
@@ -382,15 +377,15 @@
                                 },
                                 {
                                     'targets': [4],
-                                    'searchable': false,
-                                    'orderable': false,
-                                    'className': 'datatable_col5PercR'
-                                },
-                                {
-                                    'targets': [5],
                                     'searchable': true,
                                     'orderable': false,
                                     'className': 'datatable_col10PercR'
+                                },
+                                {
+                                    'targets': [5],
+                                    'searchable': false,
+                                    'orderable': false,
+                                    'className': 'datatable_col5PercR'
                                 },
                                 {
                                     'targets': [6],
@@ -407,20 +402,45 @@
                                 {
                                     'targets': [8],
                                     'searchable': false,
-                                    'orderable': false,
-                                    'className': 'datatable_col5PercR'
+                                    'orderable': true,
+                                    'width': '5%',
+                                    'className': 'datatable_col5PercR',
+                                    "data": "FinalQty"
                                 },
                                 {
                                     'targets': [9],
                                     'searchable': false,
-                                    'orderable': false,
+                                    'orderable': true,
                                     'width': '5%',
                                     'className': 'datatable_col5PercR',
-                                    "data": "FinalQty", "render": function (data) {
-                                        //onclick = "UpdatePhysicalQty(' + data + ');"
-                                        return data + ' &nbsp;&nbsp;<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" ></a>';
+                                    "data": "ID",
+                                    "visible" : false
+                                },
+                                {
+                                    'targets': [my_columns.length],
+                                    'searchable': false,
+                                    'orderable': false,
+                                    "data": "ID",
+                                    "header" : "<input type='checkbox' id='select_All'>",
+                                    "className": "datatable_col5PercR",
+                                    'render': function (data, type, full, meta) {
+                                        return '<input type="checkbox"><input id="ID" type="hidden" value="' + data + '">&nbsp;&nbsp;<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="" onclick="UpdateFinalQty('+ data +');" ></a> ';
                                     }
                                 }
+                                    //"data": "FinalQty", "render": function (data) {
+                                    //    //onclick = "UpdatePhysicalQty(' + data + ');"
+                                    //    return data + ' &nbsp;&nbsp;<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" ></a>';
+                                //    },
+                                //{
+                                //    'targets': [10],
+                                //    'searchable': false,
+                                //    'orderable': false,
+                                //    'width': '2%',
+                                //    'className': 'dt-body-center',
+                                //    "data": "ID", "render": function (data) {
+                                //        //onclick = "UpdatePhysicalQty(' + data + ');"
+                                //        return '<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" ></a><input type="hidden" value="'+ data+'"';
+                                //    }
                             ],
                             'select': { 'style': 'multi' },
                             'order': [[1, 'asc']],
@@ -634,6 +654,11 @@
                         RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
                     }
                 });
+        }
+
+
+        function UpdateFinalQty(ID) {
+            alert('Edit Button Clicked, ID:' + ID);
         }
 
     </script>

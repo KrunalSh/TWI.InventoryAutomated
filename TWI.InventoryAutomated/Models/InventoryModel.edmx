@@ -81,6 +81,7 @@
           <Property Name="ItemNo" Type="nvarchar" MaxLength="50" />
           <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
           <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ItemCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Permissions">
@@ -597,6 +598,7 @@
           <Property Name="ItemNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ItemDesc" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
@@ -895,6 +897,7 @@
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.NAVItems">
               <MappingFragment StoreEntitySet="NAVItems">
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ItemCategoryCode" ColumnName="ItemCategoryCode" />
                 <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />
                 <ScalarProperty Name="ItemDesc" ColumnName="ItemDesc" />
                 <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
