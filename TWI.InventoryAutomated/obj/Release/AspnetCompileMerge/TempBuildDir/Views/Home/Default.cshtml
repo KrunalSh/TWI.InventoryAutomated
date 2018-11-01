@@ -9,6 +9,9 @@
     <div class="row">
         <img src="https://www.w3schools.com/howto/img_fjords_wide.jpg" style="width:100%">
     </div>
+    @*<div class="row" style="float:right">
+        <a style="float: right;color: blue;" href='@Url.Action("GenerateXMLFile","Home")'>Generate XML</a>
+    </div>*@
     <div class="row">
         <br />
         <br />
@@ -32,9 +35,9 @@
                     url: '@Url.Action("AuthenticateDevice", "Home")' ,
                     success: function (data) {
                         var title = "";
-                        if (data.indexOf('AccessDenied')!=-1) {
+                        if (data.indexOf('AccessDenied')!== -1) {
                             title = "Access Denied";
-                            data = data.replace("<h4>AccessDenied</h4>","<h4>Device does not have access to the System. Please contact your administrator.</h4>")
+                            data = data.replace("<h4>AccessDenied</h4>", "<h4>Device does not have access to the System. Please contact your administrator.</h4>")
                         }
                         else {
                             title = "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Login)";

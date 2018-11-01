@@ -130,20 +130,19 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
-                            //UserAccess useracc = db.UserAccesses.Where(x => x.ID == useraccess.ID).FirstOrDefault();
-                            //useraccess.CreatedDate = useracc.CreatedDate;
-                            //useraccess.CreatedBy = useracc.CreatedBy;
-                            //useraccess.ModifiedDate = DateTime.Now;
-                            //useraccess.PermissionID = useracc.PermissionID;
-                            //useraccess.ModifiedBy = Convert.ToInt32(Session["UserID"].ToString());
-                            db.Entry(useraccess).State = EntityState.Modified;
+                            UserAccess useracc = db.UserAccesses.Where(x => x.ID == useraccess.ID).FirstOrDefault();
+                            useracc.CreatedDate = useracc.CreatedDate;
+                            useracc.CreatedBy = useracc.CreatedBy;
+                            useracc.ModifiedDate = DateTime.Now;
+                            useracc.PermissionID = useraccess.PermissionID != null ? useraccess.PermissionID : useracc.PermissionID;
+                            useracc.ModifiedBy = Convert.ToInt32(Session["UserID"].ToString());
+                            useracc.IsActive = useraccess.IsActive;
+                            db.Entry(useracc).State = EntityState.Modified;
                             db.SaveChanges();
-                            updateDevices(useraccess, selectedval, (bool)useraccess.IsActive);
+                            updateDevices(useracc, selectedval, (bool)useraccess.IsActive);
                             return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
-
                     }
-
                 }
 
                 else

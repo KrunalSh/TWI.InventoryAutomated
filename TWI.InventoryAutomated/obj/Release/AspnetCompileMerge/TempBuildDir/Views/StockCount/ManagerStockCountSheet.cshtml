@@ -1,4 +1,4 @@
-﻿@model TWI.InventoryAutomated.Models.StockCountHeader
+﻿@model TWI.InventoryAutomated.Models.StockCountModel
 @{
     ViewBag.Title = @TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,17 +8,16 @@
 
 <style>
     .showdialog {
-        display:block;
+        display: block;
     }
 
     input {
-      margin:.4rem;
+        margin: .4rem;
     }
 
     .block {
         display: block;
     }
-
 </style>
 
 <div class="row" style="border:2px #808080 solid;">
@@ -33,39 +32,47 @@
                     @Html.DropDownListFor(model => model.ID, ViewBag.BatchList as SelectList, new { @class = "form-control", @id = "ddlBatches", @name = "ddlBatches" })
                 </div>
             </div>
-            <div style="float:left !important;margin-left:5px !important;" class="col-sm-8">
+            <div style="float:left !important;margin-left:5px !important;" class="col-sm-10">
                 <div class="field_background1" style="width:100% !important;margin-bottom:5px;">
-                    <div class="col-sm-6" style="padding-top:4px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                    <div class="col-sm-6" style="padding-top:4px;" id="LocationCode">
-                        Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+                    <div class="col-sm-5" style="padding-top:4px;" id="SCDesc">@TWI.InventoryAutomated.Resources.GlobalResource.Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                    <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span>
+                    </div>
+                    <div class="col-sm-3" style="padding-top:4px;" id="Status">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.Status: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span>
                     </div>
                 </div>
                 <div class="field_background1" style="width:100% !important;">
-                    <div class="col-sm-6" style="padding-top:4px;" id="TotalItem">
-                        NAV Lines: <span style="padding-left:3px;font-weight:400 !important">
+                    <div class="col-sm-5" style="padding-top:4px;" id="TotalItem">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries: <span style="padding-left:3px;font-weight:400 !important">
                             @{
                                 var ItemLines = Convert.ToInt32(Model.TotalItemCount);
                             }
                             @Html.DisplayFor(model => ItemLines)
                         </span>
                     </div>
-                    <div class="col-sm-6" style="padding-top:4px;" id="Status">
-                        Status : <span style="padding-left:3px;font-weight:400 !important">
-                            @{ var status = ""; status = Model.Status == "O" ? "Open" : "Closed"; }
-                            @Html.DisplayFor(model => status)
+                    <div class="col-sm-4" style="padding-top:4px;" id="AdjTotalItem">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries: <span style="padding-left:3px;font-weight:400 !important">
+                            @Html.DisplayFor(model => model.TotalAdjustmentItems)
+                        </span>
+                    </div>
+                    <div class="col-sm-3" style="padding-top:4px;" id="Finalized">
+                        @TWI.InventoryAutomated.Resources.GlobalResource.FinalQty: <span style="padding-left:3px;font-weight:400 !important">
+                            @Html.DisplayFor(model => model.FinalizedLines)
                         </span>
                     </div>
                 </div>
             </div>
             @*<div style="float:left;margin-bottom:10px;margin-left:5px !important;">
-            <a class="btn btn-primary" style="width:70px;height:55px;padding-left:7px;padding-top:13px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Post</a>
-        </div>*@
+                    <a class="btn btn-primary" style="width:70px;height:55px;padding-left:7px;padding-top:13px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Post</a>
+                </div>*@
         </div>
         <div style="float:right !important;width:100% !important;margin:0 5px 0px 15px;padding-right:0px;display:none;" id="divfilters">
             <div class="row col-sm-12">
                 <div style="float:left;margin-bottom:10px;margin-left:10px">
+                    <a class="btn btn-primary" href="http://twiqv02/QvAJAXZfc/opendoc.htm?document=it%20testing%5Cstock%20count%20analysis.qvw&lang=en-US&host=QVS%40twiqv02" target="_blank" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;margin-left:10px;" data-toggle="tooltip" title="">Batch Insight</a>
                     <a class="btn btn-primary" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;margin-left:10px;" data-toggle="tooltip" title="" id="FillQty" onclick="FillQty();">Fill Final Qty</a>
-                    <a class="btn btn-primary" href="http://twiqv02/QvAJAXZfc/opendoc.htm?document=it%20testing%5Cstock%20count%20analysis.qvw&lang=en-US&host=QVS%40twiqv02" target="_blank" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" title="">Graphichal View</a>
+                    <a class="btn btn-primary" style="width:120px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;margin-left:10px;" data-toggle="tooltip" title="" id="FillQty" onclick="ClearFinalQty();">Clear Final Qty</a>
                 </div>
                 <div style="float:right;margin-bottom:10px;">
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" onclick="FilterList();" title="">Filter</a>
@@ -75,15 +82,16 @@
                 </div>
                 <div style="float:right;margin-right:10px;">
                     <select id="ddlOperator" class="form-control">
-                        <option value="0"><</option>
-                        <option value="1">=</option>
-                        <option value="2"><=</option>
-                        <option value="3">></option>
-                        <option value="2">>=</option>
+                        <option value="0"></option>
+                        <option value="1"><</option>
+                        <option value="2">=</option>
+                        <option value="3"><=</option>
+                        <option value="4">></option>
+                        <option value="5">>=</option>
                     </select>
                 </div>
                 <div style="float:right;margin-right:10px;margin-bottom:10px;">
-                    <input class="form-control" type="text" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important;margin-top:0px;" />
+                    <input class="form-control" type="text" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:200px; !important;margin-top:0px;" />
                 </div>
                 <div style="float:right;margin-right:10px;">
                     @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes" })
@@ -99,7 +107,7 @@
                 <table id="HeaderTable" class="table table-striped table-bordered"></table>
             </div>
         </div>
-        <div class="row col-sm-12"  style='display:none;margin:80px 10px 10px 10px; padding:5px 5px 5px 10px;border:solid 1px #808080; border-radius:10px;background-color: #eae7e7!important;color:black;height:40px !important;width:99% !important;font-family:Calibri;font-size:18px;font-weight:400;' id="divNoData">No Item Allocation done for this batch.</div>
+        <div class="row col-sm-12" style='display:none;margin:80px 10px 10px 10px; padding:5px 5px 5px 10px;border:solid 1px #808080; border-radius:10px;background-color: #eae7e7!important;color:black;height:40px !important;width:99% !important;font-family:Calibri;font-size:18px;font-weight:400;' id="divNoData">No Item Allocation done for this batch.</div>
         <div id="filldialog" style="float:left;width:400px;">
             <div style="float:left;width:400px;margin:5px 5px 15px 5px;">
                 <div style="float:left;"><label for="rdbSingle"><input type="radio" name="rdbSource" id="rdbSingle" value="" checked /><span style="padding-left:5px;font-weight:600;">Single Source</span></label></div>
@@ -117,9 +125,9 @@
                 </div>
                 <div style="float:left;margin-left:20px;" id="chkCountGroup">
                     @*<label class="block"><input type="checkbox" name="chkCountGroup" checked /><span style="padding-left:5px;font-weight:400;"> Count 1 </span> </label>
-                    <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 2 </span></label>
-                    <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 3 </span></label>
-                    <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 4 </span></label>*@
+                        <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 2 </span></label>
+                        <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 3 </span></label>
+                        <label class="block"><input type="checkbox" name="chkCountGroup" /><span style="padding-left:5px;font-weight:400;"> Count 4 </span></label>*@
                 </div>
             </div>
             <div style="float:left;height:3px;border-bottom:1px solid #808080;width:370px;">&nbsp;</div>
@@ -131,6 +139,11 @@
             </div>
         </div>
 
+        <div id="divUpdateQty" style="float:left;width:200px !important">
+            <div style="float:left;"><input type="text" id="txtQty" class="form-control customWidth90px" maxlength="7" placeholder="Enter Qty" /><input type="hidden" id="hdnId" value="0" /></div>
+            <div style="float:left;"><input type="submit" onclick="SaveManualQty();" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" /></div>
+        </div>
+        <div></div>
     </div>
 </div>
 
@@ -141,19 +154,32 @@
 
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
-
+    <script src="~/Scripts/jquery-editable-select.min.js"></script>
     <script>
         var datatable; var rows_selected = [];
         var editor; var Popup;
-        
+
         $(document).ready(function () {
 
             var selectedbatch = $("#ddlBatches").val();
 
-            RefreshManagerView(selectedbatch,'%','%','%');
+            //$.ajax({
+            //    url: "/StockCount/GetItemListByID?SCID=" + $("#ddlBatches").val(),
+            //    type: "GET",
+            //    datatype: "Json",
+            //    success: function (data) {
+            //        console.log(data);
+            //        $("#txtItemNo").autocomplete({
+            //            source: data
+            //        });
+            //    }
+            //});
+
+            RefreshManagerView(selectedbatch,'%','%','%',"");
 
             $("#filldialog").hide();
-                
+            $("#divUpdateQty").hide();
+
             datatable = $("#HeaderTable");
 
             $('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
@@ -165,7 +191,7 @@
                 // Get row ID
                 var rowId = data[0];
 
-                // Determine whether row ID is in the list of selected row IDs 
+                // Determine whether row ID is in the list of selected row IDs
                 var index = $.inArray(rowId, rows_selected);
 
                 // If checkbox is checked and row ID is not in list of selected row IDs
@@ -216,29 +242,13 @@
             $("#ddlBatches").change(function () {
 
                 if ($("#ddlBatches").val() === "-1") {
-                    alert("Batch Selection is Mandatory");
+                    ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionMandatory)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)');
+                    //alert("Batch Selection is Mandatory");
+                    return;
                 }
-
-                $.ajax({
-                    url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
-                    type: "GET",
-                    datatype: "json",
-                    async: true,
-                    success: function (data) {
-                        //console.log(data);
-                        if (data.data === null) {
-                            $("#LocationCode").html('Location: '); $("#SCDesc").html('Description : '); $("#TotalItem").html('NAV Lines: ');
-                            $("#Status").html('Status : ');
-                        }
-                        else {
-                            $("#LocationCode").html('Location: <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
-                            $("#SCDesc").html('Description: <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                            $("#TotalItem").html('NAV Lines: <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
-                            $("#Status").html('Status : <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
-                        }
-                        RefreshManagerView($("#ddlBatches").val(),"%","%","%");
-                    }
-                });
+                else {
+                    window.location.href = "/StockCount/ManagerStockCountSheet?ID=" + $("#ddlBatches").val();
+                }
             });
 
             $("#ddlZoneCodes").change(function () {
@@ -285,6 +295,7 @@
                         datatype: "Json",
                         data: { ID: $("#ddlBatches").val(), BinCode: bincode },
                         success: function (data) {
+                            console.log(data);
                             $("#txtItemNo").autocomplete({
                                 source:data
                             });
@@ -293,9 +304,36 @@
                 }
             });
 
+            $("#txtQty").keypress(function (e) {
+                if (e.which === 46) {
+                    if ($(this).val().indexOf('.') !== -1) {
+                        return false;
+                    }
+                }
+
+                if (e.which !== 8 && e.which !== 0 && e.which !== 46 && e.which !== 13 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+
+            });
+
+            $("#txtValue").keypress(function (e) {
+                if (e.which === 46) {
+                    if ($(this).val().indexOf('.') !== -1) {
+                        return false;
+                    }
+                }
+
+                if (e.which !== 8 && e.which !== 0 && e.which !== 46 && e.which !== 13 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
+
+            });
+
+
         });
 
-        function RefreshManagerView(batchId,ZoneCode,BinCode,ItemNo) {
+        function RefreshManagerView(batchId,ZoneCode,BinCode,ItemNo,Qtyfilter) {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             var dataset;
@@ -306,16 +344,14 @@
                 url: "/StockCount/GetManagerViewData",
                 datatype: "json",
                 type: "GET",
-                data: { ID: batchId, Zone: ZoneCode,Bin:BinCode,Item: ItemNo },
+                data: { ID: batchId, Zone: ZoneCode, Bin: BinCode, Item: ItemNo, QtyFilter: Qtyfilter },
                 success: function (data) {
-                    //console.log(data);
                     if (data.length === 0) {
-                        $("#divNoData").show();
-                        $("#divfilters").hide();
+                        //$("#divNoData").show();
+                        $("#divfilters").show();
                         $("#divtable").hide();
 
                         //dataset = data;
-                        //datatable.table().clear();
                         //datatable = $("#HeaderTable").DataTable({
                         //    "destroy": true, data: dataset,
                         //    "language": {
@@ -340,11 +376,6 @@
                             my_item.title = key;
                             my_columns.push(my_item);
                         });
-
-                        if (datatable !== null) {
-                            console.log(datatable);
-                            //datatable = $('#HeaderTable').DataTable().fnClearTable();
-                        }
 
                         datatable = $('#HeaderTable').DataTable({
                             "destroy": true,
@@ -410,7 +441,7 @@
                                 {
                                     'targets': [9],
                                     'searchable': false,
-                                    'orderable': true,
+                                    'orderable':false,
                                     'width': '5%',
                                     'className': 'datatable_col5PercR',
                                     "data": "ID",
@@ -421,26 +452,11 @@
                                     'searchable': false,
                                     'orderable': false,
                                     "data": "ID",
-                                    "header" : "<input type='checkbox' id='select_All'>",
                                     "className": "datatable_col5PercR",
                                     'render': function (data, type, full, meta) {
                                         return '<input type="checkbox"><input id="ID" type="hidden" value="' + data + '">&nbsp;&nbsp;<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="" onclick="UpdateFinalQty('+ data +');" ></a> ';
                                     }
                                 }
-                                    //"data": "FinalQty", "render": function (data) {
-                                    //    //onclick = "UpdatePhysicalQty(' + data + ');"
-                                    //    return data + ' &nbsp;&nbsp;<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" ></a>';
-                                //    },
-                                //{
-                                //    'targets': [10],
-                                //    'searchable': false,
-                                //    'orderable': false,
-                                //    'width': '2%',
-                                //    'className': 'dt-body-center',
-                                //    "data": "ID", "render": function (data) {
-                                //        //onclick = "UpdatePhysicalQty(' + data + ');"
-                                //        return '<a class="btn btn-primary fa fa-edit" style="float:right;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="Delete Item" ></a><input type="hidden" value="'+ data+'"';
-                                //    }
                             ],
                             'select': { 'style': 'multi' },
                             'order': [[1, 'asc']],
@@ -480,6 +496,27 @@
             }
         }
 
+        function ClearFinalQty() {
+            $.ajax({
+                url: "/StockCount/ClearFinalQty?ID=" + $("#ddlBatches").val(),
+                type: "GET",
+                datatype: "JSON",
+                success: function (data) {
+                    if (data.success) {
+                        //alert(data.message);
+                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
+                        RefreshManagerView($("#ddlBatches").val(), '%', '%', '%',"");
+                    }
+                    else {
+                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
+                    }
+                },
+                error: function (data) {
+                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
+                }
+            });
+        }
+
         function FillQty() {
 
             var count = 0;
@@ -499,7 +536,7 @@
                     type: "GET",
                     datatype: "Json",
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         $("#ddlCounts").empty();
                         $("#chkCountGroup").empty();
                         for (var i = 0; i < data.length; i++) {
@@ -514,7 +551,7 @@
                 });
 
                 Popup = $("#filldialog").dialog({
-                    modal: true, title: 'Manager View - Fill Qty', zIndex: 10000, autoOpen: true, width: 400, resizable: false
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - "+ TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', zIndex: 10000, autoOpen: true, width: 400, resizable: false
                     //buttons: {
                     //    Ok: function () {
                     //        $(this).dialog("close");
@@ -525,7 +562,8 @@
             }
             else
             {
-                alert("Kindly select atleast one item to proceed");
+                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemSelection)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)' + ' - ' + '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                //alert("Kindly select atleast one item to proceed");
                 return;
             }
         }
@@ -534,11 +572,29 @@
             var batchId = $("#ddlBatches").val();
             var ZoneCode = $("#ddlZoneCodes").val();
             var BinCode = $("#ddlBinCodes").val();
-            var ItemNo = $("#txtItemNo").val();
+            var ItemNo = $("#txtItemNo").val().split(" - ")[0];
+            var QtyFilter = '';
 
+            var filterselected = $("#ddlOperator").val();
+
+            if (filterselected !== '0' && $("#txtValue").val() === '') {
+                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgFinalQtyValueMandatory)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)' + ' - ' + '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Filter)');
+                //alert('Kindly enter a value to filter final qty');
+                return;
+            }
+            else {
+                if (filterselected === '0') { QtyFilter = ''; }
+                if (filterselected === '1') { QtyFilter = ' And SCD.PhyicalQty < ' + $("#txtValue").val(); }
+                if (filterselected === '2') { QtyFilter = ' And SCD.PhyicalQty = ' + $("#txtValue").val(); }
+                if (filterselected === '3') { QtyFilter = ' And SCD.PhyicalQty <= ' + $("#txtValue").val(); }
+                if (filterselected === '4') { QtyFilter = ' And SCD.PhyicalQty > ' + $("#txtValue").val(); }
+                if (filterselected === '5') { QtyFilter = ' And SCD.PhyicalQty >= ' + $("#txtValue").val(); }
+            }
 
             if (batchId === "-1") {
-                alert("Batch Selection is mandatory");
+
+                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionMandatory)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)' + ' - ' + '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Filter)');
+                //alert("Batch Selection is mandatory");
                 return;
             }
 
@@ -548,7 +604,7 @@
 
             if (ItemNo === "") { ItemNo = "%"; }
 
-            RefreshManagerView(batchId, ZoneCode, BinCode, ItemNo);
+            RefreshManagerView(batchId, ZoneCode, BinCode, ItemNo,QtyFilter);
         }
 
         function ValidateQuantitiesForPush() {
@@ -580,8 +636,14 @@
                         if (chk.is(':checked')) { checkboxcount++; iterationvalues += $(this).val() + '/'; }
                     });
 
-                    if (checkboxcount === 0) { alert("Kindly select atleast one count source for multiple source option"); return; }
-                    else if (checkboxcount < 2) { alert("Kindly select atleast two count sources to generate final Qty using selected Operation"); return;  }
+                    if (checkboxcount === 0) {
+                        ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgCountSelectionForMultipleSource)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)'); return;
+                        /*alert("Kindly select atleast one count source for multiple source option");*/
+                    }
+                    else if (checkboxcount < 2) {
+                        ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgMultipleCountSelection)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)'); return;
+                        //alert("Kindly select atleast two count sources to generate final Qty using selected Operation"); return;
+                    }
 
                     itemstringstart = $("#ddlBatches").val() + ':' + 'M:';
                     if ($("#rdbMin").is(':checked')) { itemstringstart += 'MI:'; }
@@ -589,7 +651,7 @@
                     else if ($("#rdbAvg").is(':checked')) { itemstringstart += 'AV:'; }
                     if ($("#chkIncludeZero").is(':checked')) { itemstringstart += '1:'; } else { itemstringstart += '0:'; }
 
-                    itemstringstart += iterationvalues.substring(0, iterationvalues.length - 1) + ':'; 
+                    itemstringstart += iterationvalues.substring(0, iterationvalues.length - 1) + ':';
                     //alert(itemstringstart);
                 }
 
@@ -600,7 +662,8 @@
                         rowdata = '';
                         row.find('td').each(function () {
                             var col = $(this);
-                            if (colcount !== 0 && colcount !== 5 && colcount < 8) {
+                            //colcount !== 0 &&
+                            if (colcount !== 4 && colcount < 8) {
                                 rowdata += col.html() + ':';
                             }
                             colcount++;
@@ -619,15 +682,15 @@
                         //alert(data);
                         if (data.success) {
                             PushFinalQty(RowID);
-                            RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
+                            RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
                         }
                         else {
                             $('<div></div>').html("<div><h5>" + data.message + "</h5></div>").dialog({
-                                title: 'Manager View - Fill Qty', modal: true, width: 400, resizable: false, autoOpen: true,
+                                title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - "+ TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', modal: true, width: 400, resizable: false, autoOpen: true,
                                 buttons: {
                                     Yes: function () {
                                         PushFinalQty(RowID);
-                                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
+                                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
                                         $(this).dialog("close");
                                     },
                                     NO: function () {
@@ -650,15 +713,72 @@
                     type: "GET",
                     datatype: "Json",
                     success: function (data) {
-                        alert(data);
-                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%");
+                        //alert(data);
+                        ShowDialog(data, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
                     }
                 });
         }
 
-
         function UpdateFinalQty(ID) {
-            alert('Edit Button Clicked, ID:' + ID);
+            $("#txtQty").empty();
+            $("#hdnId").val(ID);
+
+            Popup = $("#divUpdateQty").dialog({
+                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', zIndex: 10000, autoOpen: true, width: 200,height:100, resizable: false
+                //buttons: {
+                //    Ok: function () {
+                //        $(this).dialog("close");
+                //    }
+                //}
+
+            });
+            //alert('Edit Button Clicked, ID:' + ID);
+        }
+
+        function SaveManualQty() {
+            var selectedId = $("#hdnId").val();
+            //alert(selectedId);
+            var rows = datatable.table().data();
+            //console.log(rows);
+            rows.each(function (value, index) {
+                //rowdata = datatable.row(index).data();
+                if (value['ID'] === selectedId) {
+
+                    var teamId = $("#ddlBatches").val();
+
+                    $.ajax({
+                        url: '/StockCount/UpdateFinalQty',
+                        type: 'GET',
+                        datatype: 'Json',
+                        data: { TeamID: teamId, ItemNo: value['Item No'], BinCode: value['Bin Code'], LotNo: value['Lot No'], Expdate: value['Expiry Date'], Qty: $("#txtQty").val() },
+                        success: function (data) {
+                            if (data.success) {
+                                ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                                $("#txtQty").empty();
+                                RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
+                                Popup.dialog('close');
+                            }
+                        },
+                        error: function (data) {
+                            ShowDialog(data, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                        }
+                    });
+                }
+            });
+        }
+
+        function Cancelbutton() {
+            Popup.dialog('close');
+        }
+
+        function ShowDialog(message, formtitle) {
+            $('<div></div>').appendTo('body')
+                .html("<div><h5>" + message + "</h5></div>")
+                .dialog({
+                    modal: true, title: formtitle, zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                    buttons: { Ok: function () { $(this).dialog("close"); } }
+                });
         }
 
     </script>

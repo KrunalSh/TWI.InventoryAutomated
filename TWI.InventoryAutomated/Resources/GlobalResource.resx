@@ -528,4 +528,25 @@
   <data name="TotalEntries" xml:space="preserve">
     <value>Total | Entries</value>
   </data>
+  <data name="ClearFinalQty" xml:space="preserve">
+    <value>Clear Final Qty</value>
+  </data>
+  <data name="FillQty" xml:space="preserve">
+    <value>Fill Qty</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="MsgCountSelectionForMultipleSource" xml:space="preserve">
+    <value>Kindly select atleast one count source for multiple source option</value>
+  </data>
+  <data name="MsgFinalQtyValueMandatory" xml:space="preserve">
+    <value>Kindly enter a value to filter Final Qty</value>
+  </data>
+  <data name="MsgItemSelection" xml:space="preserve">
+    <value>Kindly select at least one item to proceed.</value>
+  </data>
+  <data name="MsgMultipleCountSelection" xml:space="preserve">
+    <value>Kindly select atleast two count(s) for multiple source option</value>
+  </data>
 </root>

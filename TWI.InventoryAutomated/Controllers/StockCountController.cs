@@ -13,8 +13,10 @@ using System.Net;
 using System.Globalization;
 using TWI.InventoryAutomated.Security;
 using System.Data;
+using System.Data.Entity.SqlServer;
 using System.Data.SqlClient;
 using Newtonsoft.Json.Linq;
+using System.Web.Script.Serialization;
 
 namespace TWI.InventoryAutomated.Controllers
 {
@@ -48,9 +50,14 @@ namespace TWI.InventoryAutomated.Controllers
                     StockCountHeader _sch = new StockCountHeader();
                     if (db.StockCountHeader.Where(x=> x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
                     {
+                        if (ID == 0)
+                        {
                             if (db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).Count() > 0)
                             { _sch = db.StockCountHeader.Where(x => x.Status == "O" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).OrderByDescending(y => y.ID).FirstOrDefault(); }
-                            else  { _sch = db.StockCountHeader.Where(x => x.Status == "C" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).OrderByDescending(y => y.ID).FirstOrDefault(); }
+                            else { _sch = db.StockCountHeader.Where(x => x.Status == "C" && x.InstanceName == InstanceName && x.CompanyName == CompanyName).OrderByDescending(y => y.ID).FirstOrDefault(); }
+                        }
+                        else
+                        { if(db.StockCountHeader.Where(x => x.ID == ID).Count() > 0) _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();  }
 
                         _scm.ID = _sch.ID;
                         _scm.SCCode = _sch.SCCode;
@@ -1594,8 +1601,11 @@ namespace TWI.InventoryAutomated.Controllers
                              where q.TeamID == TeamID
                              select q.BinCode).Distinct().ToList();
 
-                List<string> _itemno = new List<string>();
-                _itemno.Add("Select Item");
+                //List<string> _itemno = new List<string>();
+                //_itemno.Add("Select Item");
+
+                List<string> _itemno = CommonServices.GetFullItemList(SCID);
+                _itemno.Insert(0, "Select Item");
 
                 //_bincode.Insert(0, "-- Select Bin --");
 
@@ -1738,7 +1748,7 @@ namespace TWI.InventoryAutomated.Controllers
             string ZoneCode = "";
             string InstanceName = Session["InstanceName"].ToString();
             string CompanyName = Session["CompanyName"].ToString();
-
+            ItemNo = ItemNo.Trim();
             //List<TestItemList.ItemsList> _obj= new List<ItemsList>();
             //if (string.IsNullOrEmpty(ZoneCode))
             //{
@@ -1762,6 +1772,7 @@ namespace TWI.InventoryAutomated.Controllers
 
             try
             {
+                #region "Commented Code"
                 //if (InstanceName.ToLower() == "test" && CompanyName.ToLower() == "theodor wille intertrade gmbh")
                 //{
                 //    _service = new TestItemList.ItemsList_Service();
@@ -1784,14 +1795,15 @@ namespace TWI.InventoryAutomated.Controllers
                 //        return Json(new { success = false, message = "Lot No & Expiry Date are mandatory for this item." }, JsonRequestBehavior.AllowGet);
                 //    }
                 //}
+                #endregion 
 
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     int SCID = 0;
-                    
+
                     SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
 
-                    if(db.NAVItems.Where(x=>x.ItemNo == ItemNo &&  x.SCID == SCID).Count() == 0)
+                    if (db.NAVItems.Where(x => x.ItemNo == ItemNo && x.SCID == SCID).Count() == 0)
                         return Json(new { success = false, message = "Item No. invalid. Kindly enter a valid Item No." }, JsonRequestBehavior.AllowGet);
 
                     NAVItems _item = db.NAVItems.Where(x => x.ItemNo == ItemNo && x.SCID == SCID).FirstOrDefault();
@@ -1807,7 +1819,7 @@ namespace TWI.InventoryAutomated.Controllers
                     }
                     if (Qty.Contains('.') && _item.UOMCode.ToLower() != "lb")
                     {
-                        return Json(new { success = false, message = "Decimal values not allowed for " + _item.UOMCode.ToUpper()  + " item." }, JsonRequestBehavior.AllowGet);
+                        return Json(new { success = false, message = "Decimal values not allowed for " + _item.UOMCode.ToUpper() + " item." }, JsonRequestBehavior.AllowGet);
                     }
 
                     StockCountDetail _std = db.StockCountDetail.Where(x => x.SCID == SCID).FirstOrDefault();
@@ -1819,7 +1831,8 @@ namespace TWI.InventoryAutomated.Controllers
                         case "test": ZoneCode = GetBinsByZoneAndLocationFromTest(CompanyName, BinCode, _std.LocationCode); break;
                     }
 
-                    if (ZoneCode == "") {
+                    if (ZoneCode == "")
+                    {
                         return Json(new { success = false, message = "Incorrect Bin code, Kindly enter a valid Bin Code." }, JsonRequestBehavior.AllowGet);
                     }
 
@@ -1828,10 +1841,10 @@ namespace TWI.InventoryAutomated.Controllers
 
                     if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.LotNo == LotNo && x.ExpirationDate == ExpDate).Count() == 0)
                     {
-                        if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.LotNo == LotNo && x.ExpirationDate != ExpDate).Count() > 0)
+                        if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo.Trim() && x.LotNo == LotNo && x.ExpirationDate != ExpDate).Count() > 0)
                         {
                             string expdate = db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.LotNo == LotNo).FirstOrDefault().ExpirationDate;
-                            return Json(new { success = false, message = "Wrong Expiration Date entered for the selected Item & LotNo, Correct Expiration Date is " + expdate}, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = false, message = "Wrong Expiration Date entered for the selected Item & LotNo, Correct Expiration Date is " + expdate }, JsonRequestBehavior.AllowGet);
                         }
                     }
 
@@ -1865,19 +1878,19 @@ namespace TWI.InventoryAutomated.Controllers
                     _sca.WhseDocumentNo = _std.WhseDocumentNo;
                     _sca.ZoneCode = ZoneCode;
                     db.StockCountAllocations.Add(_sca);
+                    db.SaveChanges();
 
-                    if (db.StockCountDetail.Where(x => x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == ExpDate && x.TemplateName == "ADJUST").Count() == 0)
+                    if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == ExpDate && x.TemplateName == "ADJUST").Count() == 0)
                     {
                         StockCountDetail _scd = new StockCountDetail();
                         _scd.SCID = SCID; _scd.BatchName = _sca.BatchName; _scd.BinCode = BinCode; _scd.CreatedBy = Convert.ToInt32(Session["UserID"]);
                         _scd.CreatedDate = DateTime.Now; _scd.Description = _sca.Description; _scd.ExpirationDate = _sca.ExpirationDate;
                         _scd.ItemNo = ItemNo; _scd.LocationCode = _sca.LocationCode; _scd.LotNo = _sca.LotNo; _scd.NAVQty = _sca.NAVQty;
-                        _scd.PhyicalQty = Convert.ToDecimal(Qty); _scd.TemplateName = "ADJUST"; _scd.UOMCode = _sca.UOMCode;
+                        _scd.PhyicalQty = null; _scd.TemplateName = "ADJUST"; _scd.UOMCode = _sca.UOMCode;
                         _scd.WhseDocumentNo = _sca.WhseDocumentNo; _scd.ZoneCode = _sca.ZoneCode;
                         db.StockCountDetail.Add(_scd);
+                        db.SaveChanges();
                     }
-
-                    db.SaveChanges();
 
                     return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
                 }
@@ -1890,65 +1903,19 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult UpdateAllocation(int TeamID, string BinCode, string ItemNo, string LotNo, string ExpDate, string Qty)
         {
-            string ZoneCode = "";
-            string InstanceName = Session["InstanceName"].ToString();
-            string CompanyName = Session["CompanyName"].ToString();
-
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
-                int SCID = 0;
-
-                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
-
-                StockCountDetail _std = db.StockCountDetail.Where(x => x.SCID == SCID).FirstOrDefault();
-
-                switch (InstanceName.ToLower())
-                {
-                    //case "live": ZoneCode = GetBinsByZoneAndLocationFromLive(CompanyName, BinCode, _std.LocationCode);break;
-                    //case "dev": ZoneCode = GetBinsByZoneAndLocationFromDev(CompanyName, BinCode, _std.LocationCode); break;
-                    case "test": ZoneCode = GetBinsByZoneAndLocationFromTest(CompanyName, BinCode, _std.LocationCode); break;
-                }
-
-                NAVItems _item = db.NAVItems.Where(x => x.ItemNo == ItemNo && x.SCID == SCID).FirstOrDefault();
-
                 StockCountAllocations _sca = new StockCountAllocations();
-                _sca.StockCountID = SCID;
-                _sca.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
-                _sca.SCIterationName = db.StockCountIterations.Where(x => x.ID == _sca.SCIterationID).FirstOrDefault().IterationName;
-                //_sca.AuditorQty = 0;
-                _sca.BatchName = _std.BatchName;
-                _sca.BinCode = BinCode;
-                _sca.MemberName = SessionPersister.UserName;
-                _sca.CreatedBy = Convert.ToInt32(Session["UserID"]);
-                _sca.CreatedDate = DateTime.Now;
-                _sca.UpdatedDate = DateTime.Now;
-                _sca.Description = _item.ItemDesc;
-                _sca.DocType = "ADJUST";
-                _sca.ExpirationDate = ExpDate;
-                _sca.ItemNo = ItemNo;
-                _sca.LocationCode = _std.LocationCode;
-                _sca.LotNo = LotNo;
-                _sca.NAVQty = 0;
+                int SCID = 0;
+                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+                ItemNo = ItemNo.Trim();
+
+                if (db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == ExpDate).Count() > 0)
+                    _sca = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == ExpDate).FirstOrDefault();
+
                 _sca.PhysicalQty = Convert.ToDecimal(Qty);
-                _sca.TeamID = TeamID;
-                _sca.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
-                _sca.TemplateName = _std.TemplateName;
-                _sca.UOMCode = _item.UOMCode.ToString();
-                _sca.WhseDocumentNo = _std.WhseDocumentNo;
-                _sca.ZoneCode = ZoneCode;
-                db.StockCountAllocations.Add(_sca);
-
-                if (db.StockCountDetail.Where(x => x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == ExpDate && x.TemplateName == "ADJUST").Count() == 0)
-                {
-                    StockCountDetail _scd = new StockCountDetail();
-                    _scd.SCID = SCID; _scd.BatchName = _sca.BatchName; _scd.BinCode = BinCode; _scd.CreatedBy = Convert.ToInt32(Session["UserID"]);
-                    _scd.CreatedDate = DateTime.Now; _scd.Description = _sca.Description; _scd.ExpirationDate = _sca.ExpirationDate;
-                    _scd.ItemNo = ItemNo; _scd.LocationCode = _sca.LocationCode; _scd.LotNo = _sca.LotNo; _scd.NAVQty = _sca.NAVQty;
-                    _scd.PhyicalQty = null; _scd.TemplateName = "ADJUST"; _scd.UOMCode = _sca.UOMCode;
-                    _scd.WhseDocumentNo = _sca.WhseDocumentNo; _scd.ZoneCode = _sca.ZoneCode;
-                    db.StockCountDetail.Add(_scd);
-                }
-
+                db.StockCountAllocations.Attach(_sca);
+                db.Entry(_sca).Property(x => x.PhysicalQty).IsModified = true;
                 db.SaveChanges();
 
                 return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
@@ -2011,9 +1978,10 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult ManagerStockCountSheet(int ID)
         {
-            StockCountHeader _sch = new StockCountHeader();
+            //StockCountHeader _sch = new StockCountHeader();
+            StockCountModel _sch = CommonServices.GetStockCountHeaderByID(ID);
             using (InventoryPortalEntities db = new InventoryPortalEntities())
-            { _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+            { /*_sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();*/
 
                 List<string> _zonecodes = (from e in db.StockCountAllocations
                                            where e.StockCountID == ID
@@ -2031,17 +1999,19 @@ namespace TWI.InventoryAutomated.Controllers
                 ViewBag.ZoneCodes = new SelectList(_zonecodes);
                 ViewBag.BinCodes = new SelectList(_bincode);
             }
+            //_sch.Status = _sch.Status.ToLower() == "o" ? "Open" : "Close";
             List<StockCountHeader> _batchlist = GetBatchListing();
             ViewBag.BatchList = new SelectList(_batchlist, "ID", "SCCode");
             ViewBag.BatchID = ID;
             return View(_sch);
         }
 
-        public JsonResult GetManagerViewData(int ID,string Zone,string Bin,string Item)
+        public JsonResult GetManagerViewData(int ID,string Zone,string Bin,string Item,string QtyFilter = "")
         {
             DataTable dt = new DataTable();
             DataSet ds = new DataSet();
             //using (SqlConnection con = new SqlConnection("Data Source=AE01LP83\\SQL2014EXP;Initial Catalog=TWIInventoryPortal;User ID=itsupport;Password=saSql2014"))
+
             using (SqlConnection con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryPortal"].ToString()))
             {
                 using (SqlCommand cmd = new SqlCommand("GetManagerViewByBatch_Test", con))
@@ -2051,11 +2021,12 @@ namespace TWI.InventoryAutomated.Controllers
                     cmd.Parameters.Add(new SqlParameter("@Zone", Zone));
                     cmd.Parameters.Add(new SqlParameter("@Bin", Bin));
                     cmd.Parameters.Add(new SqlParameter("@Item", Item));
+                    cmd.Parameters.Add(new SqlParameter("@QtyFilter", QtyFilter));
                     con.Open();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(ds);
                     //da.Fill(dt);
-                    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+                    //System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
                     List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
                     Dictionary<string, object> row;
                     int rowNo = 1;
@@ -2156,7 +2127,6 @@ namespace TWI.InventoryAutomated.Controllers
                 List<string> _itemcodes = (from q in db.StockCountAllocations
                                          where q.StockCountID == ID && q.BinCode == BinCode
                                          select q.ItemNo).Distinct().ToList();
-
 
                 return Json(_itemcodes, JsonRequestBehavior.AllowGet);
             }
@@ -2276,8 +2246,26 @@ namespace TWI.InventoryAutomated.Controllers
             return Json("Final Qty Pushed Successfully", JsonRequestBehavior.AllowGet);
         }
 
-        #endregion 
-         
+        public JsonResult ClearFinalQty(int ID)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+                        return Json(new { success = false, message = "Invalid batch selected, kindly check your selection." }, JsonRequestBehavior.AllowGet);
+
+                    int rowcount = CommonServices.ClearFinalQtyByBatchID(ID);
+                    return Json(new { success = true, message = "Successfully cleared Final Qty." }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex) {
+                return Json(new { success = false,message = ex.Message},JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region "Helper Function(s)"
@@ -4445,6 +4433,26 @@ namespace TWI.InventoryAutomated.Controllers
             return _resultvalue;
         }
 
+        public ActionResult UpdateFinalQty(string TeamID, string ItemNo, string BinCode, string LotNo, string Expdate, string Qty)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    int SCID = Convert.ToInt32(TeamID);
+                    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == Expdate).FirstOrDefault();
+                    _scd.PhyicalQty = Convert.ToDecimal(Qty);
+
+                    db.StockCountDetail.Attach(_scd);
+                    db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
+                    db.SaveChanges();
+                    return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            { return Json(new { success = false, message =ex.Message}, JsonRequestBehavior.AllowGet);  }
+        }
+
         #endregion
 
         #region "Helper Function(s) To Pull Data"
@@ -5270,7 +5278,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                 var itemno = (from e in db.NAVItems
                           where e.SCID == SCID
-                          select new { ItemName = e.ItemNo + " - " + e.ItemDesc }).ToList();
+                          select new { ItemName = e.ItemNo + " - <span style='font-family:Calibri;font-size:10px;font-weight:bold;'>" + e.ItemDesc + "</span>" }).ToList();
 
                 //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
                 return Json(new { itemno }, JsonRequestBehavior.AllowGet);
@@ -5281,6 +5289,44 @@ namespace TWI.InventoryAutomated.Controllers
                 //    //case "dev": _itemno = GetItemListFromDev(CompanyName); break;
                 //    case "test": itemno = GetItemListFromTest(CompanyName); break;
                 //}
+        }
+
+        public JsonResult GetItemListByID(int SCID)
+        {
+            //+" - " + e.ItemDesc
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                List<string> itemno = (from e in db.NAVItems
+                              where e.SCID == SCID
+                              select  e.ItemNo ).ToList();
+                //+" - " + e.ItemDesc
+
+                //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
+                return Json( itemno , JsonRequestBehavior.AllowGet);
+            }
+            //switch (InstanceName.ToLower())
+            //{
+            //    //case "live": _itemno = GetItemListFromLive(CompanyName);break;
+            //    //case "dev": _itemno = GetItemListFromDev(CompanyName); break;
+            //    case "test": itemno = GetItemListFromTest(CompanyName); break;
+            //}
+        }
+
+        public List<string> GetFullItemList()
+        {
+            int TeamID = Convert.ToInt32(Session["TeamID"]);
+            int SCID = 0;
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+
+                var itemno = (from e in db.NAVItems
+                              where e.SCID == SCID
+                              select new { ItemName = e.ItemNo + " - <span style='font-family:Calibri;font-size:10px;font-weight:bold;'>" + e.ItemDesc + "</span>" }).ToList();
+
+                List<string> _itemNo = CommonServices.GetFullItemList(SCID);
+                return _itemNo;
+            }
         }
 
         private List<string> GetItemListFromTest(string Company)
@@ -5352,6 +5398,18 @@ namespace TWI.InventoryAutomated.Controllers
             {
             }
             return _obj;
+        }
+
+        protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)
+        {
+            return new JsonResult()
+            {
+                Data = data,
+                ContentType = contentType,
+                ContentEncoding = contentEncoding,
+                JsonRequestBehavior = behavior,
+                MaxJsonLength = Int32.MaxValue
+            };
         }
         #endregion
     }

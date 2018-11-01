@@ -444,4 +444,25 @@
   <data name="TotalEntries" xml:space="preserve">
     <value>Total | Les entrées</value>
   </data>
+  <data name="ClearFinalQty" xml:space="preserve">
+    <value>Effacer la quantité finale</value>
+  </data>
+  <data name="FillQty" xml:space="preserve">
+    <value>Remplir Qté</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filtre</value>
+  </data>
+  <data name="MsgCountSelectionForMultipleSource" xml:space="preserve">
+    <value>Veuillez sélectionner au moins une source de compte pour plusieurs sources.</value>
+  </data>
+  <data name="MsgFinalQtyValueMandatory" xml:space="preserve">
+    <value>Veuillez entrer une valeur pour filtrer la quantité finale</value>
+  </data>
+  <data name="MsgItemSelection" xml:space="preserve">
+    <value>Veuillez sélectionner un élément pour continuer.</value>
+  </data>
+  <data name="MsgMultipleCountSelection" xml:space="preserve">
+    <value>Veuillez sélectionner au moins deux comptes pour l'option source multiple.</value>
+  </data>
 </root>

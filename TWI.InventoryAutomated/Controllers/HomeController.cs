@@ -9,6 +9,9 @@ using TWI.InventoryAutomated.Models;
 using TWI.InventoryAutomated.Security;
 using System.Runtime.InteropServices;
 using TWI.InventoryAutomated.DataAccess;
+using System.Xml;
+using System.Xml.Linq;
+using System.Text;
 
 namespace TWI.InventoryAutomated.Controllers
 {
@@ -134,6 +137,27 @@ namespace TWI.InventoryAutomated.Controllers
         {
             return View();
         }
+
+        public FileResult GenerateXMLFile()
+        {
+            var xdoc = new XDocument(new XElement("data", new XElement("product",
+                        new XAttribute("id", "01"),
+                        new XElement("Name", "Java"),
+                        new XElement("Price", "Free")),
+                    new XElement("product",
+                        new XAttribute("id", "02"),
+                        new XElement("Name", "C#"),
+                        new XElement("Price", "Free")
+                        )));
+             xdoc.Save(Server.MapPath("~/Content/Test.xml"));
+            
+            Response.AppendHeader("Content-Disposition", "filename=Test1.xml");
+            string filename = Server.MapPath("~/Content/Test.xml");
+
+
+            return File(filename, "application/xml", "Test1.xml");
+        }
+
         public ActionResult AccessDenied()
         {
             return View();
@@ -279,8 +303,10 @@ namespace TWI.InventoryAutomated.Controllers
             obj = GetAllDevicesOnLAN();
             IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
             string MacAddress = string.Empty, txtIPAdress = string.Empty;
+            string ips = "";
             foreach (IPAddress ip in obj.Keys)
             {
+                ips += Convert.ToString(obj[ip]) + ",";
                 if (ip.Equals(clientip))
                 {
                     PhysicalAddress actual = obj[ip];
@@ -293,7 +319,11 @@ namespace TWI.InventoryAutomated.Controllers
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
+            {
+               // Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
                 return PartialView("AccessDenied");
+            }
+                
         }
 
         private bool IsDeviceRegistered(string macAddress)
@@ -455,7 +485,7 @@ namespace TWI.InventoryAutomated.Controllers
             foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
             {
                 // Only consider Ethernet network interfaces
-                if (nic.NetworkInterfaceType == NetworkInterfaceType.Ethernet &&
+                if (nic.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
                     nic.OperationalStatus == OperationalStatus.Up)
                 {
                     return nic.GetPhysicalAddress();

@@ -306,6 +306,26 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
+        public static int ClearFinalQtyByBatchID(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[ClearFinalqtyByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@SCID", ID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteNonQuery();
+                    return reader;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
         public static object GetManagerViewData(int ID)
         {
             System.Data.Entity.Core.Objects.ObjectResult<System.Data.Entity.Core.Objects.ObjectResult> _obj;
@@ -327,6 +347,27 @@ namespace TWI.InventoryAutomated.DataAccess
                 finally { db.Database.Connection.Close(); }
             }
             
+        }
+
+        public static List<string> GetFullItemList(int SCID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetItemListByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", SCID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+                    List<string> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<string>(reader).ToList();
+                    return _stockcountdata;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
         }
 
         #endregion

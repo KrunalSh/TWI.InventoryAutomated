@@ -444,4 +444,25 @@
   <data name="TotalEntries" xml:space="preserve">
     <value>Gesamt | Einträge</value>
   </data>
+  <data name="ClearFinalQty" xml:space="preserve">
+    <value>Endgültige Menge löschen</value>
+  </data>
+  <data name="FillQty" xml:space="preserve">
+    <value>Füllmenge</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="MsgCountSelectionForMultipleSource" xml:space="preserve">
+    <value>Bitte wählen Sie mindestens eine Zählquelle für mehrere Quellen aus</value>
+  </data>
+  <data name="MsgFinalQtyValueMandatory" xml:space="preserve">
+    <value>Bitte geben Sie einen Wert ein, um die Endmenge zu filtern</value>
+  </data>
+  <data name="MsgItemSelection" xml:space="preserve">
+    <value>Bitte wählen Sie einen Punkt aus, um fortzufahren.</value>
+  </data>
+  <data name="MsgMultipleCountSelection" xml:space="preserve">
+    <value>Wählen Sie mindestens zwei Zähler für mehrere Quellen aus</value>
+  </data>
 </root>

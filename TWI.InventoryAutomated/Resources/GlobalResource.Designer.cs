@@ -151,6 +151,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear Final Qty.
+        /// </summary>
+        public static string ClearFinalQty {
+            get {
+                return ResourceManager.GetString("ClearFinalQty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click to Login.
         /// </summary>
         public static string ClicktoLogin {
@@ -345,6 +354,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string EmailID {
             get {
                 return ResourceManager.GetString("EmailID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill Qty.
+        /// </summary>
+        public static string FillQty {
+            get {
+                return ResourceManager.GetString("FillQty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string Filter {
+            get {
+                return ResourceManager.GetString("Filter", resourceCulture);
             }
         }
         
@@ -718,6 +745,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kindly select atleast one count source for multiple source option.
+        /// </summary>
+        public static string MsgCountSelectionForMultipleSource {
+            get {
+                return ResourceManager.GetString("MsgCountSelectionForMultipleSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check the Whse. Document no &amp; location code, no Item Lines found for this selected NAV Batch..
         /// </summary>
         public static string MsgCreateValidBatch {
@@ -772,6 +808,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kindly enter a value to filter Final Qty.
+        /// </summary>
+        public static string MsgFinalQtyValueMandatory {
+            get {
+                return ResourceManager.GetString("MsgFinalQtyValueMandatory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Form Name is a Required Field.
         /// </summary>
         public static string MsgFormNameRequired {
@@ -799,6 +844,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kindly select at least one item to proceed..
+        /// </summary>
+        public static string MsgItemSelection {
+            get {
+                return ResourceManager.GetString("MsgItemSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to  Items for the selected batch from NAV ERP.
         /// </summary>
         public static string MsgItemsFromERP {
@@ -813,6 +867,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string MsgMACAlreadyExist {
             get {
                 return ResourceManager.GetString("MsgMACAlreadyExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kindly select atleast two count(s) for multiple source option.
+        /// </summary>
+        public static string MsgMultipleCountSelection {
+            get {
+                return ResourceManager.GetString("MsgMultipleCountSelection", resourceCulture);
             }
         }
         

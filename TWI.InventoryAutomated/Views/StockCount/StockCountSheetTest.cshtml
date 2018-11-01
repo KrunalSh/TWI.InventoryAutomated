@@ -18,27 +18,27 @@
             <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index", "StockCount")'><i class="fa fa-home fa-2x"></i></a>
         </div>
         @*<div style="float:left !important;width:100% !important;margin:15px;">
-            <div class="row col-sm-12" style="float:left !important;width:100% !important;">
-                <div class="field_background1" style="margin-bottom:5px;">
-                    <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
-                    <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
-                    <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
+                <div class="row col-sm-12" style="float:left !important;width:100% !important;">
+                    <div class="field_background1" style="margin-bottom:5px;">
+                        <div class="col-sm-4" style="padding-top:3px;" id="SCCode">Batch Code: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCCode) </span></div>
+                        <div class="col-sm-4" style="padding-top:5px;" id="SCDesc">Description: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.SCDesc) </span></div>
+                        <div class="col-sm-4" style="padding-top:4px;" id="LocationCode">Location: <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.LocationCode)</span></div>
+                    </div>
+                    <div class="field_background1" style="">
+                        <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
+                        <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
+                        <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
+                    </div>
                 </div>
-                <div class="field_background1" style="">
-                    <div class="col-sm-4" style="padding-top:3px;" id="Status">Status : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.Status) </span></div>
-                    <div class="col-sm-4" style="padding-top:5px;" id="CountName">Count Name: <span style="padding-left:3px;font-weight:400 !important">@Html.DisplayFor(model => model.CountName)  </span></div>
-                    <div class="col-sm-4" style="padding-top:4px;" id="TeamCode">Team Code : <span style="padding-left:3px;font-weight:400 !important"> @Html.DisplayFor(model => model.TeamCode) </span></div>
-                </div>
-            </div>
-        </div>*@
+            </div>*@
 
         <div class="row col-sm-12" style="margin-top:10px;">
             <a class="btn btn-primary" style="float:left !important;width:90px;height:55px;margin:0 0 10px 25px ;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.buttonAdjustment)</a>
             <div id="divAdjustments" style="float:left;width:60% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
                 <div class="row" style="margin:10px 10px 0 10px !important;">
                     @*<div style="float:left;margin-right:10px;" id="divZoneCode;" >
-                    @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
-                </div>*@
+            @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
+        </div>*@
                     <div style="float:left;margin-right:10px;" id="divBinCode">
                         @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes", @placeholder = " Select Bin" })
                     </div>
@@ -47,6 +47,9 @@
                         @*<input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />*@
                         @Html.DropDownList("ddlItems", ViewBag.Items as SelectList, new { @class = "form-control", @id = "ddlItems", @placeholder = " Select Item" })
                     </div>
+                    @*<div style="float:left;margin-right:10px;margin-bottom:10px;">
+                        <input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />
+                    </div>*@
                     <div style="float:left;margin-right:10px;margin-bottom:10px;">
                         <input type="text" class="form-control" placeholder="Lot No" id="txtLotNo" name="txtLotNo" style="width:100px !important" />
                     </div>
@@ -116,6 +119,7 @@
     @*<script src="https://www.appelsiini.net/download/jquery.jeditable.js"></script>*@
     <script src="~/Scripts/jquery.jeditable.js"></script>
     <script src="~/Scripts/jquery-editable-select.min.js"></script>
+    <script src="~/Scripts/bootstrap-suggest.js"></script>
     <script>
         $(function () {
             var dir = $('#dir').val();
@@ -169,6 +173,26 @@
                 }
             });
 
+
+            //$("#txtItemNo").bsSuggest({
+            //    searchFields:["shortAccount"],
+            //    IdField: "userId",
+            //    keyField: "userName",
+            //    data: {
+            //        "message": "",
+            //        "value": [
+            //            { "userName": "Mark", "shortAccount": "chunyun", "userId": 20001 },
+            //            { "userName": "orion-01", "shortAccount": "orion-01", "userId": 20000 },
+            //            { "userName": "Otto","shortAccount": "muxiaochen", "userId": 20002}
+            //            ],
+            //        "code": 200,
+            //        "redirect": ""
+            //    }
+            //});
+
+
+
+
             $(".edit").keypress(function (e) {
                 if (e.which === 46) {
                     if ($(this).val().indexOf('.') !== -1) {
@@ -217,6 +241,7 @@
 
             $("#ddlZoneCodes").hide();
             $("#ddlBinCodes").editableSelect({ effects: 'slide' });
+            $("#ddlItems").editableSelect({ effects: 'slide' });
             //$("#ddlItems").editableSelect({ effects: 'slide' });
 
             //$("#ddlZoneCodes").change(function () {
@@ -256,7 +281,14 @@
             //    }
             //});
 
-            
+            //$('#ddlItems')
+            //    .editableSelect()
+            //    .on('select.editable-select', function (e, li) {
+            //        var textvalue = li.text();
+            //        li.text(textvalue.split('-')[0]);
+            //        console.log(textvalue.split('-')[0]);
+            //    });
+
             $("#txtExpDate").datepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -268,7 +300,7 @@
              //var zonecode = $("#ddlZoneCodes").val();
              var zonecode ='';
             var bincode = $("#ddlBinCodes").val();
-             var itemno = $("#ddlItems").val();
+             var itemno = $("#ddlItems").val().split('-')[0];
              //var itemno = $("#txtItemNo").val();
             var lotno = $("#txtLotNo").val();
             var expdate = $("#txtExpDate").val();
@@ -351,24 +383,24 @@
 
         function ShowAdjustment() {
 
-            if ($("#hdnAdj").val() === "0") {
-                $.ajax({
-                    url: '/StockCount/GetItemList',
-                    type: 'GET',
-                    datatype: 'Json',
-                    async: true,
-                    success: function (data) {
-                        console.log(data);
-                        $("#ddlItems").empty();
-                        for (var i = 0; i < data.itemno.length; i++) {
-                            var binopt = new Option(data.itemno[i].ItemName, data.itemno[i].ItemName);
-                            $("#ddlItems").append(binopt);
-                        }
-                        $("#ddlItems").editableSelect({ effects: 'slide' });
-                        $("#hdnAdj").val = "1";
-                    }
-                });
-            }
+            //if ($("#hdnAdj").val() === "0") {
+            //    $.ajax({
+            //        url: '/StockCount/GetItemList',
+            //        type: 'GET',
+            //        datatype: 'Json',
+            //        async: true,
+            //        success: function (data) {
+            //            console.log(data);
+            //            $("#ddlItems").empty();
+            //            for (var i = 0; i < data.itemno.length; i++) {
+            //                var binopt = new Option(data.itemno[i].ItemName, data.itemno[i].ItemName);
+            //                $("#ddlItems").append(binopt);
+            //            }
+            //            $("#ddlItems").editableSelect({ effects: 'slide' });
+            //            $("#hdnAdj").val = "1";
+            //        }
+            //    });
+            //}
 
             $("#divAdjustments").show();
             $("#txtItemNo").empty();

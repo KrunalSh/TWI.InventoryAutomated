@@ -313,6 +313,7 @@
     <Content Include="Content\chosen.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\jquery-editable-select.min.css" />
+    <Content Include="Content\Test.xml" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -330,6 +331,7 @@
       <DependentUpon>InventoryModel.edmx</DependentUpon>
       <LastGenOutput>InventoryModel.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\bootstrap-suggest.js" />
     <Content Include="Scripts\bootstrap-table.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
