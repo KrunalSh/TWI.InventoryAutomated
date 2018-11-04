@@ -549,4 +549,7 @@
   <data name="MsgMultipleCountSelection" xml:space="preserve">
     <value>Kindly select atleast two count(s) for multiple source option</value>
   </data>
+  <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
+    <value>Are you sure to clear Final Qty of all items. Click 'Yes' to proceed or 'No' to cancel.</value>
+  </data>
 </root>

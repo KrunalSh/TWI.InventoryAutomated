@@ -1604,12 +1604,12 @@ namespace TWI.InventoryAutomated.Controllers
                 //List<string> _itemno = new List<string>();
                 //_itemno.Add("Select Item");
 
-                List<string> _itemno = CommonServices.GetFullItemList(SCID);
-                _itemno.Insert(0, "Select Item");
+                //List<string> _itemno = CommonServices.GetFullItemList(SCID);
+                //_itemno.Insert(0, "Select Item");
 
                 //_bincode.Insert(0, "-- Select Bin --");
 
-                ViewBag.Items = new SelectList(_itemno);
+               // ViewBag.Items = new SelectList(_itemno);
 
                 ViewBag.BinCodes = new SelectList(_bincode);
 
@@ -2046,7 +2046,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                         foreach (DataColumn col in ds.Tables[0].Columns)
                         {
-                            if (count >= 9 && col.ColumnName.ToLower() != "final qty" )
+                            if (count >= 9 && col.ColumnName.ToLower() != "final qty")
                             {
                                 DataRow[] dr1 = ds.Tables[1].Select("IterationName ='" + col.ColumnName + "'");
                                 if (dr1.Length == 1)
@@ -5276,12 +5276,12 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
 
-                var itemno = (from e in db.NAVItems
+                List<string> itemno = (from e in db.NAVItems
                           where e.SCID == SCID
-                          select new { ItemName = e.ItemNo + " - <span style='font-family:Calibri;font-size:10px;font-weight:bold;'>" + e.ItemDesc + "</span>" }).ToList();
+                          select e.ItemNo + " - " + e.ItemDesc).ToList();
 
                 //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
-                return Json(new { itemno }, JsonRequestBehavior.AllowGet);
+                return Json( itemno , JsonRequestBehavior.AllowGet);
             }
                 //switch (InstanceName.ToLower())
                 //{
@@ -5293,23 +5293,14 @@ namespace TWI.InventoryAutomated.Controllers
 
         public JsonResult GetItemListByID(int SCID)
         {
-            //+" - " + e.ItemDesc
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 List<string> itemno = (from e in db.NAVItems
                               where e.SCID == SCID
-                              select  e.ItemNo ).ToList();
-                //+" - " + e.ItemDesc
+                              select  e.ItemNo + " - " + e.ItemDesc).ToList();
 
-                //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
                 return Json( itemno , JsonRequestBehavior.AllowGet);
             }
-            //switch (InstanceName.ToLower())
-            //{
-            //    //case "live": _itemno = GetItemListFromLive(CompanyName);break;
-            //    //case "dev": _itemno = GetItemListFromDev(CompanyName); break;
-            //    case "test": itemno = GetItemListFromTest(CompanyName); break;
-            //}
         }
 
         public List<string> GetFullItemList()

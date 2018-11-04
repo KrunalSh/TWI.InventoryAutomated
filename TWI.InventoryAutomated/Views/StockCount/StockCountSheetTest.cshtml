@@ -11,6 +11,8 @@
 <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="~/Content/jquery-editable-select.min.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+
 <div class="row" style="border:2px #808080 solid;">
     <div style="margin:auto;width:100% !important;max-width:100%;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
@@ -43,9 +45,9 @@
                         @Html.DropDownList("BinCodes", ViewBag.BinCodes as SelectList, new { @class = "form-control", @id = "ddlBinCodes", @placeholder = " Select Bin" })
                     </div>
                     <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                        <input type="hidden" value="0" id="hdnAdj" />
-                        @*<input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />*@
-                        @Html.DropDownList("ddlItems", ViewBag.Items as SelectList, new { @class = "form-control", @id = "ddlItems", @placeholder = " Select Item" })
+                        @*<input type="hidden" value="0" id="hdnAdj" />*@
+                        <input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:200px !important" />
+                        @*@Html.DropDownList("ddlItems", ViewBag.Items as SelectList, new { @class = "form-control", @id = "ddlItems", @placeholder = " Select Item" })*@
                     </div>
                     @*<div style="float:left;margin-right:10px;margin-bottom:10px;">
                         <input type="text" class="form-control" placeholder="Item No" id="txtItemNo" name="txtItemNo" style="width:100px !important" />
@@ -173,7 +175,25 @@
                 }
             });
 
-
+            $.ajax({
+                url: "/StockCount/GetItemList",
+                type: "GET",
+                datatype: "Json",
+                success: function (data) {
+                    console.log(data);
+                    $("#txtItemNo").autocomplete({
+                        source: data,
+                        minLength: 2,
+                        maxLength: 10
+                        //,
+                        //select: function (event, ui) {
+                        //    $("#txtItemNo").val(ui.item.val().split('-')[0]);
+                        //    //$("#" + idTextBox).val(ui.item.value);
+                            
+                        //} 
+                    });
+                }
+            });
             //$("#txtItemNo").bsSuggest({
             //    searchFields:["shortAccount"],
             //    IdField: "userId",
@@ -241,7 +261,7 @@
 
             $("#ddlZoneCodes").hide();
             $("#ddlBinCodes").editableSelect({ effects: 'slide' });
-            $("#ddlItems").editableSelect({ effects: 'slide' });
+            //$("#ddlItems").editableSelect({ effects: 'slide' });
             //$("#ddlItems").editableSelect({ effects: 'slide' });
 
             //$("#ddlZoneCodes").change(function () {
@@ -300,8 +320,8 @@
              //var zonecode = $("#ddlZoneCodes").val();
              var zonecode ='';
             var bincode = $("#ddlBinCodes").val();
-             var itemno = $("#ddlItems").val().split('-')[0];
-             //var itemno = $("#txtItemNo").val();
+             //var itemno = $("#ddlItems").val().split('-')[0];
+             var itemno = $("#txtItemNo").val().split('-')[0];
             var lotno = $("#txtLotNo").val();
             var expdate = $("#txtExpDate").val();
             var teamId = '@Convert.ToInt32(Session["TeamID"])';

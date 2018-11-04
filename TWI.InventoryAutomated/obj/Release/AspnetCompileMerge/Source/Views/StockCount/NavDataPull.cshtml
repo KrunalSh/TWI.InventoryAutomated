@@ -386,7 +386,9 @@
 
 
         function SubmitForm(form) {
+
             $.validator.unobtrusive.parse(form);
+            
             if ($(form).valid()) {
                 $.ajax({
                     type: "POST",
@@ -394,26 +396,25 @@
                     data: $(form).serialize(),
                     success: function (data) {
                         if (data.success) {
-                            ShowDialog(data.message);
-                            //var batchId = $("#ddlBatches").val();
-                            //alert(batchId);
-                            RefreshBatchList();
-                            //RefreshData(-1);
-
-                            //$("#ddlBatches option").each(function () {
-                            //    var option = $(this);
-                            //    if (option.val() === batchId.toString()) {
-                            //        alert(option.val() + ' - ' + option.text());
-                            //        option.attr('selected', 'selected');
-                            //        return;
-                            //    }
-                            //});
-                            
-                            //alert(data.message);
-                            Popup.dialog('close');
+                            var batchId = $("#ddlBatches").val();                
+                             $('<div></div>').appendTo('body')
+                            .html("<div><h5>" + data.message + "</h5></div>")
+                            .dialog({
+                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                            buttons: {
+                                Ok: function () {
+                                    window.location.href = "/StockCount/NAVDataPull?ID=" + batchId;
+                                    $(this).dialog("close");
+                                }
+                            }
+                           });
+                            //ShowDialog(data.message);
+                            //RefreshBatchList();
+                            //Popup.dialog('close');
                         }
                         else {
                             ShowDialog(data.message);
+                            window.location.href = "/StockCount/NAVDataPull?ID=" + batchId;
                             //alert(data.message);
                         }
                     }
@@ -474,8 +475,8 @@
                                                 modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Remove Batch")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                                                 buttons: {
                                                     Ok: function () {
-                                                $(this).dialog("close");
-                                                }
+                                                        $(this).dialog("close");
+                                                    }
                                             }
                                             });
 

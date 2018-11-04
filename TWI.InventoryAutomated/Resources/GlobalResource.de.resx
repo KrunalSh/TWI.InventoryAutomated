@@ -465,4 +465,7 @@
   <data name="MsgMultipleCountSelection" xml:space="preserve">
     <value>Wählen Sie mindestens zwei Zähler für mehrere Quellen aus</value>
   </data>
+  <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
+    <value>Sind Sie sicher, die endgültige Menge aller Elemente zu löschen? Klicken Sie auf 'Ja', um fortzufahren, oder auf 'Nein', um den Vorgang abzubrechen.</value>
+  </data>
 </root>

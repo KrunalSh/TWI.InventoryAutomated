@@ -315,7 +315,7 @@ namespace TWI.InventoryAutomated.Controllers
                 }
             }
 
-            //string MacAddress = "A44CC82CBE25";
+           // string MacAddress = "A44CC82CBE25";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else

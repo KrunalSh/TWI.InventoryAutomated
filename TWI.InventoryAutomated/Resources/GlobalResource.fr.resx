@@ -370,7 +370,7 @@
     <value>Effacer</value>
   </data>
   <data name="MsgTeamDeletionConfirm" xml:space="preserve">
-    <value>Etes-vous sûr de supprimer l'équipe sélectionnée? Cliquez sur "Oui" pour continuer ou sur "Non" pour annuler</value>
+    <value>Etes-vous sûr de supprimer l'équipe sélectionnée? Cliquez sur 'Oui' pour continuer ou sur 'Non' pour annuler</value>
   </data>
   <data name="MsgTeamDeletionSuccessfull" xml:space="preserve">
     <value>Supprimé avec succès l'équipe sélectionnée.</value>
@@ -382,7 +382,7 @@
     <value>modifier</value>
   </data>
   <data name="MsgSelectItemForAllocation" xml:space="preserve">
-    <value>Veuillez sélectionner au moins un élément pour l'attribution</value>
+    <value>Veuillez sélectionner au moins un élément pour l attribution</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Chercher</value>
@@ -463,6 +463,9 @@
     <value>Veuillez sélectionner un élément pour continuer.</value>
   </data>
   <data name="MsgMultipleCountSelection" xml:space="preserve">
-    <value>Veuillez sélectionner au moins deux comptes pour l'option source multiple.</value>
+    <value>Veuillez sélectionner au moins deux comptes pour l option source multiple.</value>
+  </data>
+  <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir effacer la quantité finale d'éléments? Cliquez sur 'Oui' pour continuer ou sur 'Non' pour annuler.</value>
   </data>
 </root>

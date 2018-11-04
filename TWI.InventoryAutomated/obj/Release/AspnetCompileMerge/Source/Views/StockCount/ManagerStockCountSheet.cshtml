@@ -5,6 +5,7 @@
 }
 
 <link href="~/Content/font-awesome.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
 
 <style>
     .showdialog {
@@ -143,6 +144,7 @@
             <div style="float:left;"><input type="text" id="txtQty" class="form-control customWidth90px" maxlength="7" placeholder="Enter Qty" /><input type="hidden" id="hdnId" value="0" /></div>
             <div style="float:left;"><input type="submit" onclick="SaveManualQty();" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" /></div>
         </div>
+
         <div></div>
     </div>
 </div>
@@ -162,82 +164,86 @@
         $(document).ready(function () {
 
             var selectedbatch = $("#ddlBatches").val();
-
-            //$.ajax({
-            //    url: "/StockCount/GetItemListByID?SCID=" + $("#ddlBatches").val(),
-            //    type: "GET",
-            //    datatype: "Json",
-            //    success: function (data) {
-            //        console.log(data);
-            //        $("#txtItemNo").autocomplete({
-            //            source: data
-            //        });
-            //    }
-            //});
-
             RefreshManagerView(selectedbatch,'%','%','%',"");
+
+                 $.ajax({
+                     url: "/StockCount/GetItemListByID",
+                        type: "GET",
+                        datatype: "Json",
+                        data: { SCID: $("#ddlBatches").val() },
+                        success: function (data) {
+                            console.log(data);
+                            $("#txtItemNo").autocomplete({
+                                source: data,
+                                minLength: 2,
+                                maxLength:10
+                            });
+                        }
+                    });
+
 
             $("#filldialog").hide();
             $("#divUpdateQty").hide();
 
             datatable = $("#HeaderTable");
 
-            $('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
-                var $row = $(this).closest('tr');
+            //$('#HeaderTable tbody').on('click', 'input[type="checkbox"]', function (e) {
+            //    var $row = $(this).closest('tr');
 
-                // Get row data
-                var data = datatable.row($row).data();
+            //    // Get row data
+            //    var data = datatable.row($row).data();
 
-                // Get row ID
-                var rowId = data[0];
+            //    // Get row ID
+            //    var rowId = data[0];
 
-                // Determine whether row ID is in the list of selected row IDs
-                var index = $.inArray(rowId, rows_selected);
+            //    // Determine whether row ID is in the list of selected row IDs
+            //    var index = $.inArray(rowId, rows_selected);
 
-                // If checkbox is checked and row ID is not in list of selected row IDs
-                if (this.checked && index === -1) {
-                    rows_selected.push(rowId);
+            //    // If checkbox is checked and row ID is not in list of selected row IDs
+            //    if (this.checked && index === -1) {
+            //        rows_selected.push(rowId);
 
-                    // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
-                } else if (!this.checked && index !== -1) {
-                    rows_selected.splice(index, 1);
-                }
+            //        // Otherwise, if checkbox is not checked and row ID is in list of selected row IDs
+            //    } else if (!this.checked && index !== -1) {
+            //        rows_selected.splice(index, 1);
+            //    }
 
-                if (this.checked) {
-                    $row.addClass('selected');
-                } else {
-                    $row.removeClass('selected');
-                }
+            //    if (this.checked) {
+            //        $row.addClass('selected');
+            //    } else {
+            //        $row.removeClass('selected');
+            //    }
 
-                // Update state of "Select all" control
-                updateDataTableSelectAllCtrl(datatable);
+            //    // Update state of "Select all" control
+            //    updateDataTableSelectAllCtrl(datatable);
 
-                // Prevent click event from propagating to parent
-                e.stopPropagation();
-            });
+            //    // Prevent click event from propagating to parent
+            //    e.stopPropagation();
+            //});
 
+            //, thead th: last - child
             // Handle click on table cells with checkboxes
-            $('#HeaderTable').on('click', 'tbody td:first-child, thead th:first-child', function (e) {
-                $(this).parent().find('input[type="checkbox"]').trigger('click');
-            });
+            //$('#HeaderTable').on('click', 'tbody td:first-child', function (e) {
+            //    $(this).parent().find('input[type="checkbox"]').trigger('click');
+            //});
 
             //datatable.table().container()
             //, datatable.table().container
-            $('thead input[name="select_all"]').on('click', function (e) {
-                if (this.checked) {
-                    $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
-                } else {
-                    $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
-                }
+            //$('#HeaderTable thead input[name="select_all"]').on('click', function (e) {
+            //    if (this.checked) {
+            //        $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+            //    } else {
+            //        $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
+            //    }
 
-                // Prevent click event from propagating to parent
-                e.stopPropagation();
-            });
+            //    // Prevent click event from propagating to parent
+            //    e.stopPropagation();
+            //});
 
-            datatable.on('draw', function () {
-                // Update state of "Select all" control
-                updateDataTableSelectAllCtrl(datatable);
-            });
+            //datatable.on('draw', function () {
+            //    // Update state of "Select all" control
+            //    updateDataTableSelectAllCtrl(datatable);
+            //});
 
             $("#ddlBatches").change(function () {
 
@@ -287,21 +293,21 @@
                 if (bincode === "-1") {
                     $("#txtItemNo").empty();
                 }
-                else {
+                //else {
 
-                    $.ajax({
-                        url: "/StockCount/GetItemsByBin",
-                        type: "GET",
-                        datatype: "Json",
-                        data: { ID: $("#ddlBatches").val(), BinCode: bincode },
-                        success: function (data) {
-                            console.log(data);
-                            $("#txtItemNo").autocomplete({
-                                source:data
-                            });
-                        }
-                    });
-                }
+                //    $.ajax({
+                //        url: "/StockCount/GetItemsByBin",
+                //        type: "GET",
+                //        datatype: "Json",
+                //        data: { ID: $("#ddlBatches").val(), BinCode: bincode },
+                //        success: function (data) {
+                //            console.log(data);
+                //            $("#txtItemNo").autocomplete({
+                //                source:data
+                //            });
+                //        }
+                //    });
+                //}
             });
 
             $("#txtQty").keypress(function (e) {
@@ -330,6 +336,12 @@
 
             });
 
+            $("#ddlOperator").change(function () {
+                if ($("#ddlOperator").val() === "0") { $("#txtValue").val('');  }
+            });
+
+
+          
 
         });
 
@@ -380,6 +392,7 @@
                         datatable = $('#HeaderTable').DataTable({
                             "destroy": true,
                             data: dataset,
+                            "lengthMenu": [[-1, 10, 15, 25, 50, 100], ["All", 10, 15, 25, 50, 100]],
                             'columnDefs': [
                                 {
                                     'targets': [0],
@@ -462,16 +475,39 @@
                             'order': [[1, 'asc']],
                             "columns": my_columns
                         });
+
+                        var count = 0;
+                        $("#HeaderTable thead th").each(function () {
+                            if (count === (my_columns.length - 1)) {
+                                var colhead = $(this);
+                                if ($(this).find("input#select_all").length === 0)
+                                    colhead.append('<input type="checkbox" id="select_all" name="select_all" onclick="CheckAllboxes();">');
+                            }
+                            count++;
+                        });
                     }
                 }
             });
         }
+
+        function CheckAllboxes() {
+            var headcheckbox = $('#HeaderTable thead input[name="select_all"]');
+            if ($(headcheckbox).is(':checked')) {
+                    $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+                } else {
+                    $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
+             }
+        }
+
+
+
 
         function updateDataTableSelectAllCtrl(table) {
             var $table = table.table().node();
             var $chkbox_all = $('tbody input[type="checkbox"]', $table);
             var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
             var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
+
 
             // If none of the checkboxes are checked
             if ($chkbox_checked.length === 0) {
@@ -497,24 +533,42 @@
         }
 
         function ClearFinalQty() {
-            $.ajax({
-                url: "/StockCount/ClearFinalQty?ID=" + $("#ddlBatches").val(),
-                type: "GET",
-                datatype: "JSON",
-                success: function (data) {
-                    if (data.success) {
-                        //alert(data.message);
-                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
-                        RefreshManagerView($("#ddlBatches").val(), '%', '%', '%',"");
+            $('<div></div>')
+                .appendTo('body')
+                .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgClearFinalQtyConfirmation)" + "</h5></div>")
+                .dialog({
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)', zIndex: 10000, autoOpen: true,
+                    width: 500, resizable: true,
+                    buttons: {
+                        Yes: function () {
+                             $.ajax({
+                                    url: "/StockCount/ClearFinalQty?ID=" + $("#ddlBatches").val(),
+                                    type: "GET",
+                                    datatype: "JSON",
+                                    success: function (data) {
+                                        if (data.success) {
+                                            //alert(data.message);
+                                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
+                                            RefreshManagerView($("#ddlBatches").val(), '%', '%', '%',"");
+                                        }
+                                        else {
+                                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
+                                        }
+                                    },
+                                    error: function (data) {
+                                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
+                                    }
+                                });
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
                     }
-                    else {
-                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
-                    }
-                },
-                error: function (data) {
-                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.ClearFinalQty)');
-                }
-            });
+                });
         }
 
         function FillQty() {

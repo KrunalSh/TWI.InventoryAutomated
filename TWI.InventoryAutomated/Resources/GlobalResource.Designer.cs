@@ -709,6 +709,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure to clear Final Qty of all items. Click &apos;Yes&apos; to proceed or &apos;No&apos; to cancel..
+        /// </summary>
+        public static string MsgClearFinalQtyConfirmation {
+            get {
+                return ResourceManager.GetString("MsgClearFinalQtyConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This batch is already closed, cannot create an iteration for it.
         /// </summary>
         public static string MsgClosedBatchIterationRestriction {

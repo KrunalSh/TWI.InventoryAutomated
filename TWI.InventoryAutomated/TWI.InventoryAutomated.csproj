@@ -277,6 +277,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GlobalResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resources\GlobalResource.fr1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GlobalResource.fr.resx</DependentUpon>
+    </Compile>
     <Compile Include="Security\CustomAuthorizeAttribute.cs" />
     <Compile Include="Security\CustomPrincipal.cs" />
     <Compile Include="Security\SessionPersister.cs" />
@@ -494,7 +499,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\GlobalResource.fr.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>GlobalResource.fr.Designer.cs</LastGenOutput>
+      <LastGenOutput>GlobalResource.fr1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\GlobalResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
