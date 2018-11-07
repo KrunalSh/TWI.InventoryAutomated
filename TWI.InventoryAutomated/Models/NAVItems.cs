@@ -21,5 +21,7 @@ namespace TWI.InventoryAutomated.Models
         public string UOMCode { get; set; }
         public string ItemCategoryCode { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
+        public Nullable<decimal> NetWeight { get; set; }
+        public Nullable<decimal> StandardCost { get; set; }
     }
 }

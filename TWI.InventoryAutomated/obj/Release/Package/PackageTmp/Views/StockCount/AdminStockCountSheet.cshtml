@@ -13,7 +13,7 @@
         <div style="width:100% !important;margin:15px;">
             <div class="row col-sm-12">
                 <div class="col-sm-6">
-                    <div class="col-sm-8" style="border:solid 1px #808080;border-radius:5px;margin-bottom:15px;margin-left:-15px;">
+                    <div class="col-sm-8" style="border:solid 1px #808080;border-radius:5px;margin-bottom:15px;margin-left:-15px;" id="AllocateSection">
                         <fieldset>
                             <legend style="font-family:Calibri;font-size:18px;font-weight:bold;">Allocate Items To</legend>
                             <div class="row" style="margin-bottom:10px;margin-top:-10px;">
@@ -303,7 +303,6 @@
                 async: true,
                 success: function (data) {
                     console.log(data);
-
                     if (data.data === null) {
                         $("#AllocSummaryTitle").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.AllocationSummaryTitle + ": , " + TWI.InventoryAutomated.Resources.GlobalResource.CountInfo + ": ")');
                         $("#TotalLines").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.TotalEntries)' + ': ');
@@ -352,7 +351,8 @@
                     });
                 },
                 error: function (data) {
-                    ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle)');
+                    alert(data.message + ' error section');
+                    @*ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle)');*@
                 }
             });
         }
@@ -440,20 +440,35 @@
                 //}
                 'fnDrawCallback': function (oSettings) {
                     if ($('.dataTables_length i').length == 0)
-                        $('.dataTables_length').append('  <a class="btn btn-danger" style="float:left;height:30px;width:80px;height:30px;padding-top:3px;font-weight:600;margin-right:7px;" data-toggle="tooltip" title="Delete Item(s)" onclick="DeleteSelectedItems();"><i></i>Delete</a>');
+                        $('.dataTables_length').append('  <a id="aSelectAll" class="btn btn-danger" style="float:left;height:30px;width:80px;height:30px;padding-top:3px;font-weight:600;margin-right:7px;" data-toggle="tooltip" title="Delete Item(s)" onclick="DeleteSelectedItems();"><i></i>Delete</a>');
                     $('[data-toggle="tooltip"]').tooltip();
                 }
             });
            
         }
 
-
         function DeleteSelectedItems() {
+
+            var e = $("#AllocateSection");
+
+            if (e.is(':disabled')) {
+                $('<div></div>').appendTo('body').html("<div><h5>Delete Operation already in progress, Kindly please wait for it to complete.</h5></div>").dialog({
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false, closeOnEscape: false,
+                    buttons: {},
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+                return;
+            }
+
             var count = 0;
             var TeamID = $("#ddlTeams").val();
             //var itemid = 0;
             var RowID = [];
-
+            $("#AllocateSection").prop('disabled', true);
+            $("#aSelectAll").off('click');
             $('#HeaderTable tbody').find('tr').each(function () {
                 var row = $(this);
                 if (row.find('input[type="checkbox"]').is(':checked')) {
@@ -466,7 +481,7 @@
                     .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemDeletionRecord)" + "</h5></div>")
                     .dialog({
                         modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)', zIndex: 10000, autoOpen: true,
-                        width: 'auto', resizable: false,
+                        width: 'auto', resizable: false, closeOnEscape:false,
                         buttons: {
                             Yes: function () {
                                 RowID.length = count;
@@ -478,6 +493,7 @@
                                         count++;
                                     }
                                 });
+
                                 //console.log(RowID);
                                 $.ajax({
                                     url: "/StockCount/ValidateSelectedItemsForDelete?TeamID=" + TeamID + "&ID=" + RowID,
@@ -485,9 +501,14 @@
                                     dataType: "json",
                                     success: function (data) {
                                         if (data.success) {
-                                            DeleteAllocatedItems(TeamID,RowID); 
+                                            DeleteAllocatedItems(TeamID, RowID); 
+                                            $("#AllocateSection").prop('disabled', false);
+                                            $("#aSelectAll").on('click');
+                                            window.location.href = "/StockCount/AdminStockCountSheet?TeamID=" + TeamID;
                                         }
                                         else {
+                                            $("#AllocateSection").prop('disabled', false);
+                                            $("#aSelectAll").on('click');
                                             ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
                                         }
                                     }
@@ -497,7 +518,8 @@
                             No: function () {
                                 $(this).dialog("close");
                             }
-                        },
+                        }
+                        ,
                         close: function (event, ui) {
                             $(this).remove();
                         }
@@ -505,6 +527,8 @@
             }
             else {
                 ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgSelectItemForDeletion)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
+                $("#AllocateSection").prop('disabled', false);
+                $("#aSelectAll").on('click');
             }
         }
 
@@ -513,7 +537,7 @@
                 .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemDeletionRecord)" + "</h5></div>")
                 .dialog({
                     modal: true, title:  '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Delete Item")', zIndex: 10000, autoOpen: true,
-                    width: 'auto', resizable: false,
+                    width: 'auto', resizable: false, closeOnEscape: false,
                     buttons: {
                         Yes: function () {
                             $.ajax({
@@ -521,7 +545,8 @@
                                 url: '@Url.Action("DeleteAllocation", "StockCount")/' + itemid,
                                 success: function (data) {
                                     if (data.success) {
-                                        ShowDialog(data.message,'@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)' );
+                                        ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)');
+                                        window.location.href = "/StockCount/AdminStockCountSheet?TeamID=" + $("#ddlTeams").val();
                                         @*$('<div></div>').appendTo('body')
                                             .html("<div><h5>" + data.message + "</h5></div>")
                                             .dialog({
@@ -532,7 +557,7 @@
                                                 }
                                             }
                                             });*@
-                                        RefreshAllocationList($("#ddlTeams").val());
+                                        //RefreshAllocationList($("#ddlTeams").val());
                                     }
                                     else
                                         ShowDialog(data.message,'@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)' );
@@ -598,12 +623,11 @@
             }
         }
 
-
         function ShowDialog(message, formtitle) {
             $('<div></div>').appendTo('body')
                 .html("<div><h5>" + message + "</h5></div>")
                 .dialog({
-                    modal: true, title: formtitle, zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                    modal: true, title: formtitle, zIndex: 10000, autoOpen: true, width: 500, resizable: true, closeOnEscape: false,
                     buttons: { Ok: function () { $(this).dialog("close"); } }
                 });
         }

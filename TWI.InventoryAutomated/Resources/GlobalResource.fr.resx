@@ -468,4 +468,7 @@
   <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
     <value>Êtes-vous sûr de vouloir effacer la quantité finale d'éléments? Cliquez sur 'Oui' pour continuer ou sur 'Non' pour annuler.</value>
   </data>
+  <data name="MsgAllocateSelectedItem" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir attribuer le ou les éléments sélectionnés? &lt;br /&gt; Cliquez sur 'Oui' pour continuer ou sur 'Non' pour annuler.</value>
+  </data>
 </root>

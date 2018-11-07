@@ -37,7 +37,7 @@
                         var title = "";
                         if (data.indexOf('AccessDenied')!== -1) {
                             title = "Access Denied";
-                            data = data.replace("<h4>AccessDenied</h4>", "<h4>Device does not have access to the System. Please contact your administrator.</h4>")
+                            data = data.replace("<h4>AccessDenied</h4>", "<h4>Device does not have access to the System. Please contact your administrator.</h4>");
                         }
                         else {
                             title = "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Login)";

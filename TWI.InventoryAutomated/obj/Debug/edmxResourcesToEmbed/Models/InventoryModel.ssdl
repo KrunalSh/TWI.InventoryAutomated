@@ -77,6 +77,8 @@
     <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
     <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
     <Property Name="ItemCategoryCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="NetWeight" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="StandardCost" Type="decimal" Precision="18" Scale="2" />
     <Property Name="CreatedDate" Type="datetime" />
   </EntityType>
   <EntityType Name="Permissions">
@@ -151,6 +153,9 @@
     <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
     <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
     <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="FinalSource" Type="nvarchar" MaxLength="50" />
+    <Property Name="CountSource" Type="nvarchar(max)" />
+    <Property Name="MethodUsed" Type="nvarchar" MaxLength="50" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
   </EntityType>

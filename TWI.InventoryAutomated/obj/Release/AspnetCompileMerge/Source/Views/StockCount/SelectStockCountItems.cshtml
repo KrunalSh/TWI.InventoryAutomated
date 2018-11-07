@@ -11,12 +11,12 @@
     <div style="margin:15px auto;width:100% !important;max-width:100%;border:2px #808080 solid;">
         <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
             <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle - Select Item(s) For @ViewBag.IterationName & Team: @ViewBag.TeamCode</div>
-            <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("AdminStockCountSheet", "StockCount",Convert.ToInt32(Session["TeamID"]))'><i class="fa fa-arrow-circle-o-right fa-2x"></i></a>
+            <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("AdminStockCountSheet", "StockCount",Convert.ToInt32(Session["TeamID"]))'><i class="fa fa-arrow-circle-o-left fa-2x"></i></a>
         </div>
         <div class="row">
             <div style="margin:15px auto;width:100% !important;max-width:100%;">
                 <div style="width:100% !important;margin:15px;">
-                    <div class="row" style="margin:10px !important;">
+                    <div class="row" style="margin:10px !important;" id="SearchSection">
                         <div style="float:left;margin-right:10px;">
                             @Html.Label("Source", new { @class = "control-label" })
                             <select id="ddlAllocationSource" class="form-control">
@@ -65,7 +65,7 @@
                             <a class="btn btn-primary fa fa-save fa-2x" style="width:45px;height:33px;padding-left:10px;padding-top:1px;padding-bottom:3px;" data-toggle="tooltip" title="" onclick="AllocateIems();"></a>
                         </div>
                     </div>
-                    <div class="row" style="margin:10px 35px 10px 10px;">
+                    <div class="row" style="margin:10px 50px 10px 10px;">
                         <table id="ItemTable" class="table table-striped table-responsive table-bordered">
                             <thead>
                                 <tr>
@@ -75,12 +75,12 @@
                                     @*class="datatable_col10PercH"*@
                                     @*class="datatable_col10PercH"*@
                                     @*class="datatable_col10PercH"*@
-                                    <th><input name="select_all" value="1" type="checkbox"></th>
-                                    <th>Item No</th>
-                                    <th>Description</th>
-                                    <th>Zone Code</th>
-                                    <th>Bin Code</th>
-                                    <th>Lot No</th>
+                                    <th class="datatable_col1PercH"><input name="select_all" value="1" type="checkbox"></th>
+                                    <th class="datatable_col10PercH">Item No</th>
+                                    <th class="datatable_col59PercH">Description</th>
+                                    <th class="datatable_col10PercH">Zone Code</th>
+                                    <th class="datatable_col10PercH">Bin Code</th>
+                                    <th class="datatable_col10PercH">Lot No</th>
                                     <th>ID</th>
                                 </tr>
                             </thead>
@@ -286,41 +286,47 @@
                                 'searchable': false,
                                 'orderable': false,
                                 'width': '1%',
-                                'className': 'dt-body-center',
+                                'className': 'datatable_col1PercR',
                                 'data' : "ID",
                                 'render': function (data, type, full, meta) {
-                                    return '<input type="checkbox">&nbsp;<input id="ID" type="hidden" value="'+ data +'">';
+                                    return '<input type="checkbox"><input id="ID" type="hidden" value="'+ data +'" />';
                                 }
                             },
                             {
                                 'targets': [1],
                                 'data': "ItemNo",
-                                'searchable': true
+                                'searchable': true,
+                                'className': 'datatable_col10PercR'
                             },
                             {
                                 'targets': [2],
                                 'searchable':false,
-                                'data': "Description"
+                                'data': "Description",
+                                'className': 'datatable_col59PercR'
                             },
                             {
                                 'targets': [3],
                                 'data': "ZoneCode",
-                                'searchable': true
+                                'searchable': true,
+                                'className': 'datatable_col10PercR'
                             },
                             {
                                 'targets': [4],
                                 'data': "BinCode",
-                                'searchable':true
+                                'searchable': true,
+                                'className': 'datatable_col10PercR'
                             },
                             {
                                 'targets': [5],
                                 'data': "LotNo",
-                                'searchable': false
+                                'searchable': false,
+                                'className': 'datatable_col10PercR'
                             },
                             {
                                 'targets': [6],
                                 'data': "ID",
-                                'visible' :false
+                                'visible': false,
+                                'className': 'datatable_col10PercR'
                             }
                         ],
                         'select': {
@@ -346,11 +352,28 @@
         }
 
         function AllocateIems() {
+
+            var e = $("#SearchSection");
+
+            if (e.is(':disabled')) {
+                $('<div></div>').appendTo('body').html("<div><h5>Save Operation already in progress, Kindly please wait for it to complete.</h5></div>").dialog({
+                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false, closeOnEscape: false,
+                    buttons: { Ok: function () { $(this).dialog("close"); }  },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+                return;
+            }
+
             var count = 0;
             var TeamID = '@Convert.ToInt32(Session["TeamID"])';
             //var itemid = 0;
             var RowID = [];
-            
+
+            $("#SearchSection").prop('disabled', true);
+
             $('#ItemTable tbody').find('tr').each(function () {
                 var row = $(this);
                 if (row.find('input[type="checkbox"]').is(':checked')) {
@@ -359,65 +382,67 @@
             });
 
             if (count > 0) {
-                RowID.length = count;
-                //alert(RowID.length);
-                var colcount = 0; var rowdata = '';
-                count = 0;
-                var data = datatable.rows().data();
-                console.log(data);
-                //data.each(function (value, index) {
-                //    var rowsdata = datatable.row(index).data();
-                //            //alert(rowsdata.ID + ' - ' + rowsdata.ItemNo);
-                //        $('#ItemTable tbody').find('tr').each(function () {
-                //            var row = $(this);
-                //            var hdnvalue = row.find('input[type="hidden"]').val();
-                //            var ItemId = rowsdata.ID;
-                //        });
-                //});
-                //console.log(RowID);
-                //console.log(data);
 
-                $('#ItemTable tbody').find('tr').each(function () {
-                    var row = $(this);
-                    if (row.find('input[type="checkbox"]').is(':checked')) {
-                        //itemid = row.find('input[type="hidden"]').val();
-                        RowID[count] = row.find('input[type="hidden"]').val();
-                        //colcount = 0;
-                        //rowdata = '';
-                        //row.find('td').each(function () {
-                        //    var col = $(this);
-                        //    if (colcount >= 1 && colcount !== 2) {
-                        //        rowdata += col.html() + ':';
-                        //    }
-                        //    colcount++;
-                        //});
-                        //RowID[count] = row.find('input[type="hidden"]').val() + rowdata;
-                        //alert(RowID[count]);
-                        count++;
-                    }
-                });
+                $('<div></div>').appendTo('body')
+                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAllocateSelectedItem)" + "</h5></div>")
+                    .dialog({
+                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
+                        width: 'auto', resizable: false, closeOnEscape: false,
+                        buttons: {
+                            Yes: function () {
+                                RowID.length = count;
+                                //alert(RowID.length);
+                                count = 0;
+                                var colcount = 0; var rowdata = '';
+                                var data = datatable.rows().data();
+                                //console.log(data);
 
-                $.ajax({
-                    url: "/StockCount/AllocateItems?TeamID=" + TeamID + "&ID=" + RowID,
-                    type: "GET",
-                    dataType: "json",
-                    //data: { TeamID : TeamID,ID : RowID },
-                    success: function (data) {
-                        if (data.success) {
-                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
-                            //alert(data.message);
-                            window.location.href = "/StockCount/AdminSTockCountSheet?TeamID=" + TeamID;
+                                    $('#ItemTable tbody').find('tr').each(function () {
+                                        var row = $(this);
+                                        if (row.find('input[type="checkbox"]').is(':checked')) {
+                                            //itemid = row.find('input[type="hidden"]').val();
+                                            RowID[count] = row.find('input[type="hidden"]').val();
+                                            count++;
+                                        }
+                                    });
+
+                                    $.ajax({
+                                        url: "/StockCount/AllocateItems?TeamID=" + TeamID + "&ID=" + RowID,
+                                        type: "GET",
+                                        dataType: "json",
+                                        //data: { TeamID : TeamID,ID : RowID },
+                                        success: function (data) {
+                                            if (data.success) {
+                                                @*ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');*@
+                                                $("#SearchSection").prop('disabled', false);
+                                                $('<div></div>').appendTo('body')
+                                                    .html("<div><h5>" + data.message + "</h5></div>")
+                                                    .dialog({
+                                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                        buttons: { Ok: function () { $(this).dialog("close"); window.location.href = "/StockCount/AdminSTockCountSheet?TeamID=" + TeamID; } }
+                                                    });
+                                            }
+                                            else {
+                                                ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
+                                                $("#SearchSection").prop('disabled', false);
+                                                //alert(data.message);
+                                            }
+                                        }
+                                    });
+                            },
+                            No: function () {
+                                $(this).dialog("close");
+                            }
                         }
-                        else {
-                            ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
-                            //alert(data.message);
-                        }
-                    }
+                    });
+                
 
-                });
+                
+                
             }
             else {
                 ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgSelectItemForAllocation)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
+                $("#SearchSection").prop('disabled', false);
                 //alert("Kindly select atleast one item for allocation");
             }
         }

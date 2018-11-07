@@ -552,4 +552,7 @@
   <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
     <value>Are you sure to clear Final Qty of all items. Click 'Yes' to proceed or 'No' to cancel.</value>
   </data>
+  <data name="MsgAllocateSelectedItem" xml:space="preserve">
+    <value>Are you sure you want to allocate the selected Item(s). &lt;br /&gt; Click 'Yes' to  Proceed or 'No' to Cancel.</value>
+  </data>
 </root>

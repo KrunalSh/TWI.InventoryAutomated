@@ -610,6 +610,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to allocate the selected Item(s). &lt;br /&gt; Click &apos;Yes&apos; to  Proceed or &apos;No&apos; to Cancel..
+        /// </summary>
+        public static string MsgAllocateSelectedItem {
+            get {
+                return ResourceManager.GetString("MsgAllocateSelectedItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Successfully deleted the selected Item(s).
         /// </summary>
         public static string MsgAllocationDeletionSuccess {

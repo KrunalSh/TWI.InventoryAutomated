@@ -82,6 +82,8 @@
           <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
           <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
           <Property Name="ItemCategoryCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="NetWeight" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="StandardCost" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="Permissions">
@@ -156,6 +158,9 @@
           <Property Name="TemplateName" Type="nvarchar" MaxLength="10" />
           <Property Name="BatchName" Type="nvarchar" MaxLength="10" />
           <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="FinalSource" Type="nvarchar" MaxLength="50" />
+          <Property Name="CountSource" Type="nvarchar(max)" />
+          <Property Name="MethodUsed" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
         </EntityType>
@@ -527,6 +532,9 @@
           <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="FinalSource" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CountSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MethodUsed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="StockCountTeams">
           <Key>
@@ -600,6 +608,8 @@
           <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ItemCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="NetWeight" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="StandardCost" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -809,6 +819,9 @@
           <EntitySetMapping Name="StockCountDetail">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountDetail">
               <MappingFragment StoreEntitySet="StockCountDetail">
+                <ScalarProperty Name="MethodUsed" ColumnName="MethodUsed" />
+                <ScalarProperty Name="CountSource" ColumnName="CountSource" />
+                <ScalarProperty Name="FinalSource" ColumnName="FinalSource" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
@@ -896,6 +909,8 @@
           <EntitySetMapping Name="NAVItems">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.NAVItems">
               <MappingFragment StoreEntitySet="NAVItems">
+                <ScalarProperty Name="StandardCost" ColumnName="StandardCost" />
+                <ScalarProperty Name="NetWeight" ColumnName="NetWeight" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ItemCategoryCode" ColumnName="ItemCategoryCode" />
                 <ScalarProperty Name="UOMCode" ColumnName="UOMCode" />

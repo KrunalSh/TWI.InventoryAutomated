@@ -31,5 +31,8 @@ namespace TWI.InventoryAutomated.Models
         public string LocationCode { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }
+        public string FinalSource { get; set; }
+        public string CountSource { get; set; }
+        public string MethodUsed { get; set; }
     }
 }

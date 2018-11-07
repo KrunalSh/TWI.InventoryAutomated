@@ -26,6 +26,8 @@ namespace TWI.InventoryAutomated.Models
 
         public string TeamCode { get; set; }
 
+        public string CountInfo { get; set; }
+
         public List<StockCountAllocations> AllocatedItems { get; set; }
 
     }

@@ -220,8 +220,28 @@ input.input-validation-error {
     color: black !important;
 }
 
+datatable_col59PercH {
+    width: 59% !important;
+    text-align: center !important;
+    font-family: 'Calibri';
+    font-size: 12px;
+    font-weight: bold;
+    height: 15px !important;
+    color: black !important;
+}
+
 .datatable_col5PercH {
     width: 5% !important;
+    text-align: center !important;
+    font-family: 'Calibri';
+    font-size: 13px;
+    font-weight: bold;
+    height: 15px !important;
+    color: black !important;
+}
+
+.datatable_col1PercH {
+    width: 1% !important;
     text-align: center !important;
     font-family: 'Calibri';
     font-size: 13px;
@@ -237,6 +257,15 @@ input.input-validation-error {
     font-size: 13px;
     font-weight:400;
     height: 15px !important;
+    color: black !important;
+}
+
+.datatable_col1PercR {
+    width: 1% !important;
+    text-align: center !important;
+    font-family: 'Calibri';
+    font-size: 13px;
+    font-weight: 400;
     color: black !important;
 }
 
@@ -272,6 +301,15 @@ input.input-validation-error {
 
 .datatable_col30PercR {
     width: 30% !important;
+    text-align: left !important;
+    font-family: Calibri;
+    font-size: 13px;
+    height: 15px !important;
+    color: black !important;
+}
+
+.datatable_col59PercR {
+    width: 59% !important;
     text-align: left !important;
     font-family: Calibri;
     font-size: 13px;

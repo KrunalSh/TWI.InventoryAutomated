@@ -81,8 +81,9 @@
                type: "GET",
                dataType: "json",
                success: function (data) {
-                   //if (data.success) { window.location.href = "/StockCount/StockCountSheet?TeamID=" + data.message; }
-                   if (data.success) { window.location.href = "/StockCount/StockCountSheetTest";  }
+
+                   if (data.success) { window.location.href = "/StockCount/StockCountSheet?TeamID=" + data.message; }
+                   ////if (data.success) { window.location.href = "/StockCount/StockCountSheetTest";  }
                    else {
                          $('<div></div>').appendTo('body')
                                             .html("<div><h5>" + data.message + "</h5></div>")
@@ -99,8 +100,7 @@
                }
            });
        }
-
-
+       
        function ValidateCountAllocations() {
 
            $.ajax({
@@ -125,9 +125,6 @@
                }
            });
        }
-
-
-
 
    </script>
 

@@ -468,4 +468,7 @@
   <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
     <value>Sind Sie sicher, die endgültige Menge aller Elemente zu löschen? Klicken Sie auf 'Ja', um fortzufahren, oder auf 'Nein', um den Vorgang abzubrechen.</value>
   </data>
+  <data name="MsgAllocateSelectedItem" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie die ausgewählten Artikel zuordnen möchten. &lt;br /&gt; Klicken Sie zum Fortfahren auf 'Ja' oder zum Abbrechen auf 'Nein'.</value>
+  </data>
 </root>

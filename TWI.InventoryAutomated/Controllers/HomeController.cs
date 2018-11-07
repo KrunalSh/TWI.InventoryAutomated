@@ -138,25 +138,26 @@ namespace TWI.InventoryAutomated.Controllers
             return View();
         }
 
-        public FileResult GenerateXMLFile()
-        {
-            var xdoc = new XDocument(new XElement("data", new XElement("product",
-                        new XAttribute("id", "01"),
-                        new XElement("Name", "Java"),
-                        new XElement("Price", "Free")),
-                    new XElement("product",
-                        new XAttribute("id", "02"),
-                        new XElement("Name", "C#"),
-                        new XElement("Price", "Free")
-                        )));
-             xdoc.Save(Server.MapPath("~/Content/Test.xml"));
-            
-            Response.AppendHeader("Content-Disposition", "filename=Test1.xml");
-            string filename = Server.MapPath("~/Content/Test.xml");
+        //public FileContentResult GenerateXMLFile()
+        //{
+        //    var xdoc = new XDocument(new XElement("data", new XElement("product",
+        //                new XAttribute("id", "01"),
+        //                new XElement("Name", "Java"),
+        //                new XElement("Price", "Free")),
+        //            new XElement("product",
+        //                new XAttribute("id", "02"),
+        //                new XElement("Name", "C#"),
+        //                new XElement("Price", "Free")
+        //                )));
 
 
-            return File(filename, "application/xml", "Test1.xml");
-        }
+        //    // xdoc.Save(Server.MapPath("~/Content/Test.xml"));
+        //    //Response.AppendHeader("Content-Disposition", "filename=Test1.xml");
+        //    //string filename = Server.MapPath("~/Content/Test.xml");
+
+
+        //    return File(xdoc.ToString(), "application/xml", "Test1.xml");
+        //}
 
         public ActionResult AccessDenied()
         {
@@ -315,15 +316,14 @@ namespace TWI.InventoryAutomated.Controllers
                 }
             }
 
-           // string MacAddress = "A44CC82CBE25";
+            //string MacAddress = "A44CC82CBE25";
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
             {
-               // Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
+                //Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
                 return PartialView("AccessDenied");
             }
-                
         }
 
         private bool IsDeviceRegistered(string macAddress)
@@ -582,6 +582,7 @@ namespace TWI.InventoryAutomated.Controllers
                 }
             }
         }
+
         #endregion
 
     }

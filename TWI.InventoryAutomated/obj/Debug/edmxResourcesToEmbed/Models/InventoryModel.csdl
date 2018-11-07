@@ -226,6 +226,9 @@
     <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="FinalSource" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CountSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MethodUsed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="StockCountTeams">
     <Key>
@@ -299,5 +302,7 @@
     <Property Name="UOMCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="ItemCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+    <Property Name="NetWeight" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="StandardCost" Type="Decimal" Precision="18" Scale="2" />
   </EntityType>
 </Schema>

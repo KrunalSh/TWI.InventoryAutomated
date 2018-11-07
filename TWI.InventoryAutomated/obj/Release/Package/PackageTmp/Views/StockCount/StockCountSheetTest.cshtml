@@ -164,12 +164,18 @@
                             type: "GET",
                             datatype: "JSON",
                             success: function (data) {
-                                console.log(data);
+                                //console.log(data);
                                 $("#divsummary").html(data.data);
                             }
                         });
                     }
                     else {
+
+                         $('<div></div>').appendTo('body')
+                             .html("<div><h5>" + jsonData.message + "</h5></div>")
+                         .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                             buttons: { Ok: function () { $(this).dialog("close"); } } });
+                        //alert(jsonData.message);
                         $(this).text(oldvalue);
                     }
                 }
@@ -184,7 +190,13 @@
                     $("#txtItemNo").autocomplete({
                         source: data,
                         minLength: 2,
-                        maxLength:10
+                        maxLength: 10
+                        //,
+                        //select: function (event, ui) {
+                        //    $("#txtItemNo").val(ui.item.val().split('-')[0]);
+                        //    //$("#" + idTextBox).val(ui.item.value);
+                            
+                        //} 
                     });
                 }
             });
@@ -334,16 +346,14 @@
                          $('<div></div>').appendTo('body')
                          .html("<div><h5>" + data.message + "</h5></div>")
                          .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
-                                   buttons: { Ok: function () { $(this).dialog("close"); } } });
-
+                             buttons: { Ok: function () { window.location.href = "/StockCount/StockCountSheetTest"; $(this).dialog("close"); } } });
                         //alert(data.message);
-                        window.location.href = "/StockCount/StockCountSheetTest";
-                        RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
-                        $("#divAdjustments").hide();
+                       @*RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
+                        $("#divAdjustments").hide();*@
                     }
                     else if (!data.success && data.message === "1") {
                          $('<div></div>').appendTo('body')
-                            .html("<div><h5>Item already exists in the list, cannot create a new entry. <br/> Do you wish to update the quantity, Click 'Yes' to proceed or 'No' to cancel.</h5></div>")
+                            .html("<div><h5>There is an existing entry for this Item/Lot on the entered Bin. <br/> Do you wish to update the quantity, Click 'Yes' to proceed or 'No' to cancel.</h5></div>")
                             .dialog({
                             modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - Save")', zIndex: 10000, autoOpen: true,
                                 width: 500, resizable: true,
@@ -364,11 +374,12 @@
                                                         modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                                                         buttons: {
                                                             Ok: function () {
+                                                                window.location.href = "/StockCount/StockCountSheetTest";
                                                                 $(this).dialog("close");
                                                             }
                                                         }
                                                     });
-                                                window.location.href = "/StockCount/StockCountSheetTest";
+                                               
                                             }
                                         }
                                     });

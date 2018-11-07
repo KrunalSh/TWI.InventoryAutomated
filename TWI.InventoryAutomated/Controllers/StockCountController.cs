@@ -17,6 +17,8 @@ using System.Data.Entity.SqlServer;
 using System.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using System.Web.Script.Serialization;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace TWI.InventoryAutomated.Controllers
 {
@@ -128,7 +130,7 @@ namespace TWI.InventoryAutomated.Controllers
                 if (_sc.ID == 0)
                 {
                     //Validation to check whether duplicate Batch Code is not being entered.
-                    if (db.StockCountHeader.AsNoTracking().Where(x => x.SCCode == _sc.SCCode && x.LocationCode == _sc.LocationCode).Count() > 0)
+                    if (db.StockCountHeader.AsNoTracking().Where(x => x.SCCode == _sc.SCCode && x.LocationCode == _sc.LocationCode ).Count() > 0)
                         return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
 
                     //Validation to restrict user from creating a closed batch.
@@ -278,6 +280,7 @@ namespace TWI.InventoryAutomated.Controllers
                     if (db.StockCountIterations.Where(x => x.SCID == ID).Count() > 0) db.StockCountIterations.RemoveRange(db.StockCountIterations.Where(x => x.SCID == ID));
                     if (db.StockCountTeams.Where(x => x.SCID == ID).Count() > 0) db.StockCountTeams.RemoveRange(db.StockCountTeams.Where(x => x.SCID == ID));
                     if (db.StockCountAllocations.Where(x => x.StockCountID == ID).Count() > 0) db.StockCountAllocations.RemoveRange(db.StockCountAllocations.Where(x => x.StockCountID == ID));
+                    if (db.NAVItems.Where(x => x.SCID == ID).Count() > 0) db.NAVItems.RemoveRange(db.NAVItems.Where(x => x.SCID == ID));
                     db.SaveChanges();
                     return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullDeletion }, JsonRequestBehavior.AllowGet);
                 }
@@ -947,7 +950,8 @@ namespace TWI.InventoryAutomated.Controllers
                     if (TeamID != -1)
                     {
                         if (db.StockCountAllocations.Where(x => x.TeamID == TeamID).Count() > 0)
-                        { _allocateditems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).OrderByDescending(x => x.CreatedDate).ToList(); }
+                        { _allocateditems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).OrderByDescending(x => x.UpdatedDate).ToList(); }
+
                     }
                 }
             }
@@ -1355,7 +1359,8 @@ namespace TWI.InventoryAutomated.Controllers
                             _alloc.NewLines = db.StockCountAllocations.Where(x => x.TeamID == _sct.ID && x.DocType == "ADJUST").Count();
                             _alloc.TeamName = db.StockCountTeams.Where(x => x.ID == _sct.ID).FirstOrDefault().TeamCode + " - " + db.StockCountTeams.Where(x => x.ID == _sct.ID).FirstOrDefault().UserName;
                             _alloc.TotalLines = _alloc.NavLines + _alloc.NewLines;
-                            _alloc.Percent = (_alloc.TotalLines * 100) / TotalLines;
+                            double perc = ((double)(_alloc.TotalLines) * 100) / (double)(TotalLines);
+                            _alloc.Percent =Math.Round(Convert.ToDecimal(perc),2);
                             countallocations.Add(_alloc);
                         }
                     }
@@ -1382,14 +1387,15 @@ namespace TWI.InventoryAutomated.Controllers
                 }
                 else {
                     SCID = db.StockCountIterations.Where(x => x.ID == ID).FirstOrDefault().SCID.Value;
+                    //int CurrCountAdj = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID != ID && x.DocType == "ADJUST").Count();
                     _allochead.BatchCode = db.StockCountIterations.Where(x => x.ID == ID).FirstOrDefault().SCCode;
                     _allochead.CountName = db.StockCountIterations.Where(x => x.ID == ID).FirstOrDefault().IterationName;
                     _allochead.TotalLines = db.StockCountDetail.Where(x => x.SCID == SCID).Count();
                     _allochead.NAVLines = db.StockCountDetail.Where(x => x.SCID == SCID && x.TemplateName == "INV").Count();
                     _allochead.NewLines = db.StockCountDetail.Where(x => x.SCID == SCID && x.TemplateName == "ADJUST").Count();
                     _allochead.RemainingNAV = (db.StockCountDetail.Where(x => x.SCID == SCID && x.TemplateName == "INV").Count()) - (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == ID && x.DocType == "INV").Count());
-                    _allochead.RemainingNew = (db.StockCountDetail.Where(x => x.SCID == SCID && x.TemplateName == "ADJUST").Count()) - (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == ID && x.DocType == "ADJUST").Count());
-                    _allochead.RemainingTotal = Convert.ToInt32(_allochead.RemainingNAV) + Convert.ToInt32(_allochead.RemainingNew);
+                    _allochead.RemainingNew = (db.StockCountDetail.Where(x => x.SCID == SCID && x.TemplateName == "ADJUST").Count()) - (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == ID && x.DocType == "ADJUST").Count()) ;
+                    _allochead.RemainingTotal = Convert.ToInt32(_allochead.RemainingNAV) + Convert.ToInt32(_allochead.RemainingNew) ;
                 }
             }
             return Json(new { data = _allochead }, JsonRequestBehavior.AllowGet);
@@ -1508,7 +1514,12 @@ namespace TWI.InventoryAutomated.Controllers
                 //                         select q.BinCode).Distinct().ToList();
 
                 List<string> _bincode = new List<string>();
-                _bincode.Insert(0,"-- Select Bin Code");
+
+                _bincode = (from q in db.StockCountAllocations
+                            where q.TeamID == TeamID
+                            select q.BinCode).Distinct().ToList();
+
+                //_bincode.Insert(0,"-- Select Bin Code");
 
                 ViewBag.ZoneCodes = new SelectList(_zonecodes);
                 ViewBag.BinCodes = new SelectList(_bincode);
@@ -1522,13 +1533,19 @@ namespace TWI.InventoryAutomated.Controllers
                 _adminsheet.Status = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().Status == "O" ? "Open" : "Closed";
                 _adminsheet.TotalItemCount = db.StockCountHeader.Where(x => x.ID == SCID).FirstOrDefault().TotalItemCount.Value;
 
+                int CountedRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
+                int invtotalRecord = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV").Count();
+
+                _adminsheet.CountInfo += Resources.GlobalResource.NAVEntries + ": " + Convert.ToString(CountedRows) + " / " + Convert.ToString(invtotalRecord) + " counted, ";
+                _adminsheet.CountInfo += Resources.GlobalResource.ADJEntries + ": " + db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "ADJUST").Count();
+
                 //    if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).Count() > 0)
                 //    {
                 //        _adminsheet.AllocatedItems = new List<StockCountAllocations>();
                 //        _adminsheet.AllocatedItems = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == CountID && x.TeamID == TeamID).ToList();
                 //    }
                 //    else { _adminsheet.AllocatedItems = new List<StockCountAllocations>(); }
-                }
+            }
             Session["TeamID"] = TeamID;
             return View(_adminsheet);
         }
@@ -1629,7 +1646,20 @@ namespace TWI.InventoryAutomated.Controllers
                 CountedRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
                 int invtotalRecord = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV").Count();
                 totalRecord = data.Count();
-                data = data.OrderBy(x => x.ItemNo);
+                switch (sort)
+                {
+                    case "DocType": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.DocType); } else { data = data.OrderByDescending(x => x.DocType); } break;
+                    case "ZoneCode": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.ZoneCode); } else { data = data.OrderByDescending(x => x.ZoneCode); } break;
+                    case "BinCode": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.BinCode); } else { data = data.OrderByDescending(x => x.BinCode); } break;
+                    case "ItemNo": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.ItemNo); } else { data = data.OrderByDescending(x => x.ItemNo); } break;
+                    case "Description": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.Description); } else { data = data.OrderByDescending(x => x.Description); } break;
+                    case "UOMCode": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.UOMCode); } else { data = data.OrderByDescending(x => x.UOMCode); } break;
+                    case "LotNo": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.LotNo); } else { data = data.OrderByDescending(x => x.LotNo); } break;
+                    case "ExpirationDate": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.ExpirationDate); } else { data = data.OrderByDescending(x => x.ExpirationDate); } break;
+                    case "PhysicalQty": if (sortdir.ToLower() == "asc") { data = data.OrderBy(x => x.PhysicalQty); } else { data = data.OrderByDescending(x => x.PhysicalQty); } break;
+                }
+
+                
 
                 if (data.Count() > 0)
                 {
@@ -1718,30 +1748,85 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-        //public ActionResult UpdatePhysicalQty(int ID)
-        //{
-        //    return View();
-        //}
+        public ActionResult UpdatePhysicalQty(int ID)
+        {
+            decimal NetWeight = 0;
+            string ItemInfo = "";
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (db.StockCountAllocations.Where(x => x.ID == ID).Count() > 0)
+                {
+                    StockCountAllocations _sca = db.StockCountAllocations.Where(x => x.ID == ID).FirstOrDefault();
+                    if (_sca.UOMCode.ToLower() == "lb")
+                    {
+                        try
+                        { NetWeight = db.NAVItems.Where(x => x.SCID == _sca.StockCountID && x.ItemNo == _sca.ItemNo && x.UOMCode == _sca.UOMCode).FirstOrDefault().NetWeight.Value; }
+                        catch (Exception ex)
+                        { NetWeight = 0; }
 
-        //[HttpPost]
-        //public ActionResult UpdatePhysicalQty(StockCountAllocations _sca)
-        //{
-        //    try
-        //    {
-        //        using (InventoryPortalEntities db = new InventoryPortalEntities())
-        //        {
-        //            db.StockCountAllocations.Attach(_sca);
-        //            db.Entry(_sca).Property(y => y.PhysicalQty).IsModified = true;
-        //            db.SaveChanges(); 
-        //            return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
-        //    }
-            
-        //}
+                        ItemInfo = "Net Weight for Item No: " + _sca.ItemNo + " is " + Convert.ToString(NetWeight) + ", Kindly Enter the Case Value.";
+                    }
+                }
+                ViewBag.ItemInfo = ItemInfo;
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UpdatePhysicalQty(StockCountAllocations _sca)
+        {
+            try
+            {
+                if (_sca.PhysicalQty == null)
+                {
+                    return Json(new { success = false, message = "Qty is a required field, cannot be empty." }, JsonRequestBehavior.AllowGet);
+                }
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    StockCountAllocations _dbsca = db.StockCountAllocations.Where(x => x.ID == _sca.ID).FirstOrDefault();
+
+                    if (_dbsca.UOMCode.ToLower().Trim() == "lb")
+                    {
+                        decimal NetWt = 0;
+                        try
+                        {
+                            NetWt = db.NAVItems.Where(x => x.SCID == _dbsca.StockCountID && x.ItemNo == _dbsca.ItemNo && x.UOMCode == _dbsca.UOMCode).FirstOrDefault().NetWeight.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            NetWt = 0;
+                        }
+                        _dbsca.PhysicalQty = _sca.PhysicalQty * NetWt;
+                    }
+                    else {
+                        if (Convert.ToString(_sca.PhysicalQty).Contains('.')) {
+                            if (Convert.ToString(_sca.PhysicalQty).Split('.')[1].ToLower().Trim() != "00" && Convert.ToString(_sca.PhysicalQty).Split('.')[1].ToLower().Trim() != "0")
+                            { return Json(new { success = false, message = "Decimal values not allowed for " + _dbsca.UOMCode + " item." }, JsonRequestBehavior.AllowGet); }
+                        }
+                        _dbsca.PhysicalQty = _sca.PhysicalQty;
+                    }
+
+                    db.StockCountAllocations.Attach(_dbsca);
+                    db.Entry(_dbsca).Property(y => y.PhysicalQty).IsModified = true;
+                    db.SaveChanges();
+
+                    int CountedRows = db.StockCountAllocations.Where(x => x.TeamID == _dbsca.TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
+                    int invtotalRecord = db.StockCountAllocations.Where(x => x.TeamID == _dbsca.TeamID && x.DocType == "INV").Count();
+
+                    string _responsemsg = "Saved Successfully" + " - ";
+
+                    _responsemsg += Resources.GlobalResource.NAVEntries + ": " + Convert.ToString(CountedRows) + " / " + Convert.ToString(invtotalRecord) + " counted, ";
+                    _responsemsg += Resources.GlobalResource.ADJEntries + ": " + db.StockCountAllocations.Where(x => x.TeamID == _dbsca.TeamID && x.DocType == "ADJUST").Count();
+
+                    return Json(new { success = true, message = _responsemsg }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
 
         public ActionResult SaveAdjustments(int TeamID,string BinCode,string ItemNo, string LotNo, string ExpDate,string Qty)
         {
@@ -1769,6 +1854,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 return Json(new { success = false, message = "Quantity is mandatory, Kindly enter a value." }, JsonRequestBehavior.AllowGet);
             }
+
 
             try
             {
@@ -1836,6 +1922,20 @@ namespace TWI.InventoryAutomated.Controllers
                         return Json(new { success = false, message = "Incorrect Bin code, Kindly enter a valid Bin Code." }, JsonRequestBehavior.AllowGet);
                     }
 
+
+                    if (!string.IsNullOrEmpty(ExpDate))
+                    {
+                        try
+                        {
+                            DateTime.ParseExact(ExpDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        }
+                        catch (Exception ex)
+                        {
+                            return Json(new { success = false, message = "Invalid date entered, Kindly enter date in dd/MM/yyyy format." }, JsonRequestBehavior.AllowGet);
+                        }
+
+                    }
+
                     if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.TeamID == TeamID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == ExpDate).Count() > 0)
                     { return Json(new { success = false, message = "1" }, JsonRequestBehavior.AllowGet); }
 
@@ -1892,7 +1992,9 @@ namespace TWI.InventoryAutomated.Controllers
                         db.SaveChanges();
                     }
 
-                    return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                    string _response = "Saved Successfully" + " - " + GetCountSummary(TeamID);
+
+                    return Json(new { success = true, message = _response }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
@@ -1918,7 +2020,9 @@ namespace TWI.InventoryAutomated.Controllers
                 db.Entry(_sca).Property(x => x.PhysicalQty).IsModified = true;
                 db.SaveChanges();
 
-                return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
+                string _response = "Saved Successfully" + " - " + GetCountSummary(TeamID);
+
+                return Json(new { success = true, message = _response }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1935,6 +2039,21 @@ namespace TWI.InventoryAutomated.Controllers
                 summaryinfo += Resources.GlobalResource.ADJEntries + ": " + Convert.ToString(NewRows);
             }
             return Json(new { data = summaryinfo }, JsonRequestBehavior.AllowGet);
+        }
+
+        public string GetCountSummary(int TeamID)
+        {
+            string summaryinfo = "";
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                int CountedRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
+                int invtotalRecord = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "INV").Count();
+                int NewRows = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.DocType == "ADJUST").Count();
+
+                summaryinfo += Resources.GlobalResource.NAVEntries + ": " + Convert.ToString(CountedRows) + " / " + Convert.ToString(invtotalRecord) + " counted, ";
+                summaryinfo += Resources.GlobalResource.ADJEntries + ": " + Convert.ToString(NewRows);
+            }
+            return summaryinfo;
         }
 
         #endregion
@@ -2034,6 +2153,11 @@ namespace TWI.InventoryAutomated.Controllers
                     if (ds.Tables.Count == 0)
                     { /*row = new Dictionary<string, object>(); rows.Add(row);*/ return Json(rows, JsonRequestBehavior.AllowGet); }
 
+
+                    //DataColumn _IDCol = new DataColumn("ID"); _IDCol.AutoIncrement = true;_IDCol.AutoIncrementSeed = 1; _IDCol.AutoIncrementStep = 1;
+
+                    ds.Tables[0].Columns.Add("ID",Type.GetType("System.Int32"));
+
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
                         row = new Dictionary<string, object>();
@@ -2044,9 +2168,11 @@ namespace TWI.InventoryAutomated.Controllers
                         string countstatusbtn = "";
                         string colvalue = "";
 
+                        dr["ID"] = rowNo;
+
                         foreach (DataColumn col in ds.Tables[0].Columns)
                         {
-                            if (count >= 9 && col.ColumnName.ToLower() != "final qty")
+                            if (count >= 9 && col.ColumnName.ToLower() != "final qty" && col.ColumnName.ToLower() != "id")
                             {
                                 DataRow[] dr1 = ds.Tables[1].Select("IterationName ='" + col.ColumnName + "'");
                                 if (dr1.Length == 1)
@@ -2263,6 +2389,44 @@ namespace TWI.InventoryAutomated.Controllers
                 return Json(new { success = false,message = ex.Message},JsonRequestBehavior.AllowGet);
             }
         }
+        
+
+        public FileContentResult ExportBatchDataToExcel(int ID)
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["InventoryPortal"].ToString()))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetManagerViewByBatch_Test", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@SCID", ID));
+                    cmd.Parameters.Add(new SqlParameter("@Zone", "%"));
+                    cmd.Parameters.Add(new SqlParameter("@Bin", "%"));
+                    cmd.Parameters.Add(new SqlParameter("@Item", "%"));
+                    cmd.Parameters.Add(new SqlParameter("@QtyFilter", ""));
+                    con.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(ds);
+                }
+            }
+
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(ds.Tables[0]);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+
+        }
+
+        //public FileContentResult ExportBatchDataToExcel(int BatchID)
+        //{
+
+        //}
 
         #endregion
 
@@ -2338,6 +2502,8 @@ namespace TWI.InventoryAutomated.Controllers
             _item.ItemDesc = string.IsNullOrEmpty(Convert.ToString(obj.Description)) ? "" : Convert.ToString(obj.Description);
             _item.UOMCode = string.IsNullOrEmpty(Convert.ToString(obj.Base_Unit_of_Measure)) ? "" : Convert.ToString(obj.Base_Unit_of_Measure);
             _item.ItemCategoryCode = string.IsNullOrEmpty(Convert.ToString(obj.Item_Category_Code)) ? "" : Convert.ToString(obj.Item_Category_Code);
+            _item.NetWeight = string.IsNullOrEmpty(Convert.ToString(obj.Net_Weight)) ? 0 : Convert.ToDecimal(obj.Net_Weight);
+            _item.StandardCost = string.IsNullOrEmpty(Convert.ToString(obj.Standard_Cost)) ? 0 : Convert.ToDecimal(obj.Standard_Cost);
             _item.CreatedDate = DateTime.Now;
             return _item;
         }
@@ -3096,8 +3262,8 @@ namespace TWI.InventoryAutomated.Controllers
                         else
                         {
                             //search Items of a particular bin
-                            searchfilter = binfilter[0].Trim();
-                            if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode == searchfilter).Count() > 0)
+                            searchfilter = binfilter[0].Replace('?',' ').Replace('*',' ').Trim();
+                            if (db.StockCountDetail.Where(x => x.SCID == SCID && x.BinCode.StartsWith(searchfilter)).Count() > 0)
                                 _items = db.StockCountDetail.Where(x => x.SCID == SCID && x.TemplateName == "INV" && x.BinCode.StartsWith(searchfilter)).ToList();
                         }
                     }
@@ -4353,39 +4519,53 @@ namespace TWI.InventoryAutomated.Controllers
                     _sca = db.StockCountAllocations.Where(x => x.StockCountID == BatchID && x.DocType == doctype && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate && _ItrIDs.Contains(x.SCIterationID.Value) && x.PhysicalQty != null).FirstOrDefault();
                 }
 
+                _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
+                _scd.PhyicalQty = sourcemode == "S" ? _sca.PhysicalQty : finalqty;
+                _scd.FinalSource = sourcemode == "S" ? "SI" : "MU";
+                _scd.MethodUsed = sourcemode == "S" ? "" : operation;
+                _scd.CountSource = sourcemode == "S" ? db.StockCountIterations.Where(x => x.ID == CountID).FirstOrDefault().IterationName : GetCountIDs(_ItrIDs);
 
+                db.StockCountDetail.Attach(_scd);
+                db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
+                db.Entry(_scd).Property(x => x.FinalSource).IsModified = true;
+                db.Entry(_scd).Property(x => x.CountSource).IsModified = true;
+                db.Entry(_scd).Property(x => x.MethodUsed).IsModified = true;
+                db.SaveChanges();
+
+                #region "Commented Code" 
                 //Code to identify entry doc type and either create an Adjustment Entry or update Inventory Entry  Qty Phy.Inv field in main table - Stock Count Detail Table 
-                if (doctype == "ADJUST" || doctype == "ADJ")
-                {
-                    if (db.StockCountDetail.Where(x => x.SCID == BatchID && x.TemplateName == "ADJUST" && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).Count() == 0)
-                    {
-                        _scd = new StockCountDetail();
-                        _scd.SCID = BatchID; _scd.BatchName = _sca.BatchName; _scd.BinCode = bincode; _scd.CreatedBy = Convert.ToInt32(Session["UserID"]);
-                        _scd.CreatedDate = DateTime.Now; _scd.Description = _sca.Description; _scd.ExpirationDate = _sca.ExpirationDate;
-                        _scd.ItemNo = itemcode; _scd.LocationCode = _sca.LocationCode; _scd.LotNo = _sca.LotNo; _scd.NAVQty = _sca.NAVQty;
-                        _scd.PhyicalQty = sourcemode == "S" ? _sca.PhysicalQty : finalqty; _scd.TemplateName = "ADJUST"; _scd.UOMCode = _sca.UOMCode;
-                        _scd.WhseDocumentNo = _sca.WhseDocumentNo; _scd.ZoneCode = _sca.ZoneCode;
+                //if (doctype == "ADJUST" || doctype == "ADJ")
+                //{
+                //    if (db.StockCountDetail.Where(x => x.SCID == BatchID && x.TemplateName == "ADJUST" && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).Count() == 0)
+                //    {
+                //        _scd = new StockCountDetail();
+                //        _scd.SCID = BatchID; _scd.BatchName = _sca.BatchName; _scd.BinCode = bincode; _scd.CreatedBy = Convert.ToInt32(Session["UserID"]);
+                //        _scd.CreatedDate = DateTime.Now; _scd.Description = _sca.Description; _scd.ExpirationDate = _sca.ExpirationDate;
+                //        _scd.ItemNo = itemcode; _scd.LocationCode = _sca.LocationCode; _scd.LotNo = _sca.LotNo; _scd.NAVQty = _sca.NAVQty;
+                //        _scd.PhyicalQty = sourcemode == "S" ? _sca.PhysicalQty : finalqty; _scd.TemplateName = "ADJUST"; _scd.UOMCode = _sca.UOMCode;
+                //        _scd.WhseDocumentNo = _sca.WhseDocumentNo; _scd.ZoneCode = _sca.ZoneCode;
 
-                        db.StockCountDetail.Add(_scd);
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.TemplateName == "ADJUST" && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
-                        _scd.PhyicalQty = sourcemode == "S" ? _sca.PhysicalQty : finalqty;
-                        db.StockCountDetail.Attach(_scd);
-                        db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
-                        db.SaveChanges();
-                    }
-                }
-                else
-                {
-                    _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
-                    _scd.PhyicalQty = sourcemode == "S" ? _sca.PhysicalQty : finalqty;
-                    db.StockCountDetail.Attach(_scd);
-                    db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
-                    db.SaveChanges();
-                }
+
+                //        db.StockCountDetail.Add(_scd);
+                //        db.SaveChanges();
+                //    }
+                //    else
+                //    {
+                //        _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.TemplateName == "ADJUST" && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
+                //        db.StockCountDetail.Attach(_scd);
+                //        db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
+                //        db.SaveChanges();
+                //    }
+                //}
+                //else
+                //{
+                //    _scd = db.StockCountDetail.Where(x => x.SCID == BatchID && x.ZoneCode == zonecode && x.BinCode == bincode && x.ItemNo == itemcode && x.LotNo == lotno && x.ExpirationDate == expirydate).FirstOrDefault();
+                //    _scd.PhyicalQty = sourcemode == "S" ? _sca.PhysicalQty : finalqty;
+                //    db.StockCountDetail.Attach(_scd);
+                //    db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
+                //    db.SaveChanges();
+                //}
+                #endregion
             }
         }
 
@@ -4433,6 +4613,23 @@ namespace TWI.InventoryAutomated.Controllers
             return _resultvalue;
         }
 
+        private string GetCountIDs(List<int> _counts)
+        {
+            string _result = "";
+            for (int i = 0; i <= _counts.Count() - 1; i++)
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (i == _counts.Count() - 1)
+                        _result += db.StockCountIterations.Where(x=> x.ID == _counts[i]).FirstOrDefault().IterationName;
+                    else
+                        _result += db.StockCountIterations.Where(x => x.ID == _counts[i]).FirstOrDefault().IterationName + ", ";
+                }
+                    
+            }
+            return _result;
+        }
+
         public ActionResult UpdateFinalQty(string TeamID, string ItemNo, string BinCode, string LotNo, string Expdate, string Qty)
         {
             try
@@ -4442,15 +4639,160 @@ namespace TWI.InventoryAutomated.Controllers
                     int SCID = Convert.ToInt32(TeamID);
                     StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == Expdate).FirstOrDefault();
                     _scd.PhyicalQty = Convert.ToDecimal(Qty);
+                    _scd.FinalSource = "MA";
+                    _scd.CountSource = "";
+                    _scd.MethodUsed = ""; 
 
                     db.StockCountDetail.Attach(_scd);
                     db.Entry(_scd).Property(x => x.PhyicalQty).IsModified = true;
+                    db.Entry(_scd).Property(x => x.FinalSource).IsModified = true;
+                    db.Entry(_scd).Property(x => x.CountSource).IsModified = true;
+                    db.Entry(_scd).Property(x => x.MethodUsed).IsModified = true;
                     db.SaveChanges();
                     return Json(new { success = true, message = "Saved Successfully" }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             { return Json(new { success = false, message =ex.Message}, JsonRequestBehavior.AllowGet);  }
+        }
+
+        [OutputCache(Duration = 3600, VaryByParam = "none")]
+        public ActionResult GetItemList()
+        {
+            string InstanceName = Convert.ToString(Session["InstanceName"]);
+            string CompanyName = Convert.ToString(Session["CompanyName"]);
+
+            int TeamID = Convert.ToInt32(Session["TeamID"]);
+            int SCID = 0;
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+
+                List<string> itemno = (from e in db.NAVItems
+                                       where e.SCID == SCID
+                                       select e.ItemNo + " - " + e.ItemDesc).ToList();
+
+                //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
+                return Json(itemno, JsonRequestBehavior.AllowGet);
+            }
+            //switch (InstanceName.ToLower())
+            //{
+            //    //case "live": _itemno = GetItemListFromLive(CompanyName);break;
+            //    //case "dev": _itemno = GetItemListFromDev(CompanyName); break;
+            //    case "test": itemno = GetItemListFromTest(CompanyName); break;
+            //}
+        }
+
+        public JsonResult GetItemListByID(int SCID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                List<string> itemno = (from e in db.NAVItems
+                                       where e.SCID == SCID
+                                       select e.ItemNo + " - " + e.ItemDesc).ToList();
+
+                return Json(itemno, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public List<string> GetFullItemList()
+        {
+            int TeamID = Convert.ToInt32(Session["TeamID"]);
+            int SCID = 0;
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+
+                var itemno = (from e in db.NAVItems
+                              where e.SCID == SCID
+                              select new { ItemName = e.ItemNo + " - <span style='font-family:Calibri;font-size:10px;font-weight:bold;'>" + e.ItemDesc + "</span>" }).ToList();
+
+                List<string> _itemNo = CommonServices.GetFullItemList(SCID);
+                return _itemNo;
+            }
+        }
+
+        private List<string> GetItemListFromTest(string Company)
+        {
+            List<TestItemList.ItemsList> _obj = new List<ItemsList>();
+            List<string> _items = new List<string>();
+            string Itemdesc = "";
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (Company.ToLower() == "theodor wille intertrade gmbh")
+                    {
+                        _service = new TestItemList.ItemsList_Service();
+                        ((TestItemList.ItemsList_Service)_service).UseDefaultCredentials = false;
+                        ((TestItemList.ItemsList_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+                        //_servicefilters = new List<TestItemList.ItemsList_Filter>();
+                        //((List<TestItemList.ItemsList_Filter>)_servicefilters).Add(new TestItemList.ItemsList_Filter { Field = TestItemList.ItemsList_Fields.No, Criteria = ItemNo });
+
+                        //TestItemList.ItemsList[] _phyjournal = ((TestItemList.ItemsList_Service)_service).ReadMultiple(null, string.Empty, 0).ToList();
+                        //_obj = _phyjournal.ToList();
+                        _obj = ((TestItemList.ItemsList_Service)_service).ReadMultiple(null, string.Empty, 0).ToList();
+
+                        if (_obj.Count == 0) { return _items; }
+
+
+                        var data = (from e in _obj
+                                    select e.No).ToList();
+
+                        //for (int i = 0; i <= _obj.Count() - 1; i++)
+                        //{
+                        //    Itemdesc = Convert.ToString(_obj[i].No.Trim()) ;
+                        //    //+" - " + Convert.ToString(_obj[i].Description.Trim())
+                        //    _items.Add(Itemdesc);
+                        //}
+                        return data;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+
+
+
+            return _items;
+        }
+
+        private List<TestItemList.ItemsList> GetFullItemListFromTest(string Company)
+        {
+            List<TestItemList.ItemsList> _obj = new List<ItemsList>();
+            try
+            {
+                if (Company.ToLower() == "theodor wille intertrade gmbh")
+                {
+                    _service = new TestItemList.ItemsList_Service();
+                    ((TestItemList.ItemsList_Service)_service).UseDefaultCredentials = false;
+                    ((TestItemList.ItemsList_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                        , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+                    _obj = ((TestItemList.ItemsList_Service)_service).ReadMultiple(null, string.Empty, 0).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return _obj;
+        }
+
+        protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)
+        {
+            return new JsonResult()
+            {
+                Data = data,
+                ContentType = contentType,
+                ContentEncoding = contentEncoding,
+                JsonRequestBehavior = behavior,
+                MaxJsonLength = Int32.MaxValue
+            };
         }
 
         #endregion
@@ -5263,145 +5605,8 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         #endregion
-
-        [OutputCache(Duration = 3600, VaryByParam = "none")]
-        public ActionResult GetItemList()
-        {
-            string InstanceName = Convert.ToString(Session["InstanceName"]);
-            string CompanyName = Convert.ToString(Session["CompanyName"]);
-            
-            int TeamID = Convert.ToInt32(Session["TeamID"]);
-            int SCID = 0;
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
-            {
-                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
-
-                List<string> itemno = (from e in db.NAVItems
-                          where e.SCID == SCID
-                          select e.ItemNo + " - " + e.ItemDesc).ToList();
-
-                //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
-                return Json( itemno , JsonRequestBehavior.AllowGet);
-            }
-                //switch (InstanceName.ToLower())
-                //{
-                //    //case "live": _itemno = GetItemListFromLive(CompanyName);break;
-                //    //case "dev": _itemno = GetItemListFromDev(CompanyName); break;
-                //    case "test": itemno = GetItemListFromTest(CompanyName); break;
-                //}
-        }
-
-        public JsonResult GetItemListByID(int SCID)
-        {
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
-            {
-                List<string> itemno = (from e in db.NAVItems
-                              where e.SCID == SCID
-                              select  e.ItemNo + " - " + e.ItemDesc).ToList();
-
-                return Json( itemno , JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public List<string> GetFullItemList()
-        {
-            int TeamID = Convert.ToInt32(Session["TeamID"]);
-            int SCID = 0;
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
-            {
-                SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
-
-                var itemno = (from e in db.NAVItems
-                              where e.SCID == SCID
-                              select new { ItemName = e.ItemNo + " - <span style='font-family:Calibri;font-size:10px;font-weight:bold;'>" + e.ItemDesc + "</span>" }).ToList();
-
-                List<string> _itemNo = CommonServices.GetFullItemList(SCID);
-                return _itemNo;
-            }
-        }
-
-        private List<string> GetItemListFromTest(string Company)
-        {
-            List<TestItemList.ItemsList> _obj = new List<ItemsList>();
-            List<string> _items = new List<string>();
-            string Itemdesc = "";
-            try
-            {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
-                {
-                    if (Company.ToLower() == "theodor wille intertrade gmbh")
-                    {
-                        _service = new TestItemList.ItemsList_Service();
-                        ((TestItemList.ItemsList_Service)_service).UseDefaultCredentials = false;
-                        ((TestItemList.ItemsList_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TestItemList.ItemsList_Filter>();
-                        //((List<TestItemList.ItemsList_Filter>)_servicefilters).Add(new TestItemList.ItemsList_Filter { Field = TestItemList.ItemsList_Fields.No, Criteria = ItemNo });
-
-                        //TestItemList.ItemsList[] _phyjournal = ((TestItemList.ItemsList_Service)_service).ReadMultiple(null, string.Empty, 0).ToList();
-                        //_obj = _phyjournal.ToList();
-                        _obj = ((TestItemList.ItemsList_Service)_service).ReadMultiple(null, string.Empty, 0).ToList();
-
-                        if (_obj.Count == 0) { return _items; }
-
-
-                        var data = (from e in _obj
-                                    select e.No).ToList();
-
-                        //for (int i = 0; i <= _obj.Count() - 1; i++)
-                        //{
-                        //    Itemdesc = Convert.ToString(_obj[i].No.Trim()) ;
-                        //    //+" - " + Convert.ToString(_obj[i].Description.Trim())
-                        //    _items.Add(Itemdesc);
-                        //}
-                        return data;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-
-
-
-
-            return _items;
-        }
-
-        private List<TestItemList.ItemsList> GetFullItemListFromTest(string Company)
-        {
-            List<TestItemList.ItemsList> _obj = new List<ItemsList>();
-            try
-            {
-                    if (Company.ToLower() == "theodor wille intertrade gmbh")
-                    {
-                        _service = new TestItemList.ItemsList_Service();
-                        ((TestItemList.ItemsList_Service)_service).UseDefaultCredentials = false;
-                        ((TestItemList.ItemsList_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-                        _obj = ((TestItemList.ItemsList_Service)_service).ReadMultiple(null, string.Empty, 0).ToList();
-                    }
-            }
-            catch (Exception ex)
-            {
-            }
-            return _obj;
-        }
-
-        protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)
-        {
-            return new JsonResult()
-            {
-                Data = data,
-                ContentType = contentType,
-                ContentEncoding = contentEncoding,
-                JsonRequestBehavior = behavior,
-                MaxJsonLength = Int32.MaxValue
-            };
-        }
+       
         #endregion
+
     }
 }
