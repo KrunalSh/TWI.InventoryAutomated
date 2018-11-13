@@ -156,9 +156,7 @@
                 if (e.which !== 8 && e.which !== 0 && e.which === 46 && e.which !== 13 && (e.which < 48 || e.which > 57)) {
                     return false;
                 }
-
             });
-
             RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
         });
 
@@ -325,8 +323,9 @@
                                  buttons: {
                                      Ok: function () {
                                          ClearAjustmentControls();
-                                         $("#CountInfo").html(summary); RefreshAllocationList(teamId);
-                                         RefreshAllocationList(teamId); $(this).dialog("close");
+                                         $("#CountInfo").html(summary); 
+                                         RefreshAllocationList(teamId);
+                                         $(this).dialog("close");
                                      }
                                  }
                              });
@@ -342,7 +341,6 @@
                                 width: 500, resizable: true,
                             buttons: {
                                 Yes: function () {
-
                                     $.ajax({
                                         url: "/StockCount/UpdateAllocation",
                                         type: "GET",
@@ -359,7 +357,7 @@
                                                         buttons: {
                                                             Ok: function () {
                                                                 ClearAjustmentControls();
-                                                                $("#CountInfo").html(summary); RefreshAllocationList(teamId);
+                                                                $("#CountInfo").html(summary);
                                                                 RefreshAllocationList(teamId);
                                                                 $(this).dialog("close");
                                                             }
