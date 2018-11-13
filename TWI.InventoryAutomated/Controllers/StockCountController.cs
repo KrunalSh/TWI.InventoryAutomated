@@ -1540,10 +1540,26 @@ namespace TWI.InventoryAutomated.Controllers
                 return Json(new { data = _teamList }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         #endregion
 
         #region "Stock Count Sheet"
+
+        //public JsonResult ValidateUserSessionAndTeam()
+        //{
+        //    //First Check if current session is active or not.
+        //    CommonServices c = new CommonServices();
+        //    if (c.IsCurrentSessionActive(Session["CurrentSession"]))
+        //    {
+        //        //Check whether current user is part of any count or not.
+
+        //    }
+        //    else
+        //    {
+        //        c.RemoveSessions();
+        //        return Json(new { success = false, message = "1" }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         public JsonResult UserStockCountSheetValidation()
         {

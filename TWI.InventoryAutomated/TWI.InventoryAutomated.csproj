@@ -312,6 +312,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web References\LIVEGMBHBINS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LiveGMBHItemList\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LIVEGMBHPostAdjustments\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LIVEPhyInvJournal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\TESTGMBHBINS\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -474,6 +494,35 @@
     <Content Include="Web References\TESTGMBHBINS\Bins.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
+    <Content Include="Web References\LIVEGMBHBINS\Bins.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\LIVEGMBHBINS\Bins.wsdl" />
+    <Content Include="Web References\LIVEGMBHBINS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\LIVEPhyInvJournal\PhysicalInvJournal.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Web References\LiveGMBHItemList\ItemsList.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\LiveGMBHItemList\ItemsList.wsdl" />
+    <Content Include="Web References\LiveGMBHItemList\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <None Include="Web References\LIVEGMBHPostAdjustments\InventoryCount.wsdl" />
+    <Content Include="Web References\LIVEGMBHPostAdjustments\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <None Include="Web References\LIVEPhyInvJournal\PhysicalInvJournal.wsdl" />
+    <Content Include="Web References\LIVEPhyInvJournal\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
     <None Include="Web References\TESTGMBHBINS\Bins.wsdl" />
     <Content Include="Web References\TESTGMBHBINS\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -536,6 +585,50 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Codeunit/InventoryCount">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LIVEGMBHPostAdjustments\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Codeunit/InventoryCount</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_LIVEGMBHPostAdjustments_InventoryCount</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/Bins">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LIVEGMBHBINS\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/Bins</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_LIVEGMBHBINS_Bins_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/ItemsList">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LiveGMBHItemList\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/ItemsList</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_LiveGMBHItemList_ItemsList_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LIVEPhyInvJournal\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_LIVEPhyInvJournal_PhysicalInvJournal_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
     <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_DEV/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/PhysicalInvJournal">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\DEVPhyInvJournal\</RelPath>

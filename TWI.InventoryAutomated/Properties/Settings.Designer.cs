@@ -77,5 +77,49 @@ namespace TWI.InventoryAutomated.Properties {
                 return ((string)(this["TWI_InventoryAutomated_TESTGMBHBINS_Bins_Service"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%20Wille%20Intertrade%20GMBH/Pa" +
+            "ge/Bins")]
+        public string TWI_InventoryAutomated_LIVEGMBHBINS_Bins_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_LIVEGMBHBINS_Bins_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%20Wille%20Intertrade%20GMBH/Pa" +
+            "ge/PhysicalInvJournal")]
+        public string TWI_InventoryAutomated_LIVEPhyInvJournal_PhysicalInvJournal_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_LIVEPhyInvJournal_PhysicalInvJournal_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%20Wille%20Intertrade%20GMBH/Pa" +
+            "ge/ItemsList")]
+        public string TWI_InventoryAutomated_LiveGMBHItemList_ItemsList_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_LiveGMBHItemList_ItemsList_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:7047/twi_live/WS/Theodor%20Wille%20Intertrade%20GMBH/Co" +
+            "deunit/InventoryCount")]
+        public string TWI_InventoryAutomated_LIVEGMBHPostAdjustments_InventoryCount {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_LIVEGMBHPostAdjustments_InventoryCount"]));
+            }
+        }
     }
 }
