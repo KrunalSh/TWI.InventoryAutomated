@@ -149,7 +149,18 @@
         var currentCult = getCookie("Language");
         var Path = FetchPathforCultureFile(currentCult);
         $("#ddlBatches").change(function () {
-            
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             RefreshData($("#ddlBatches").val());
             $.ajax({
                 url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
@@ -197,45 +208,59 @@
 
     function CreateNewTeam(ID)
     {
-        var currentCult = getCookie("Language");
-            var Path = FetchPathforCultureFile(currentCult);
-            if ($("#ddlBatches").val() === -1) {
-                $('<div></div>').appendTo('body')
-                    .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
-                    .dialog({
-                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
-                        buttons: {
-                            Ok: function () {
-                                $(this).dialog("close");
-                            }
-                        }
-                    });
-            }
-            else {
-                $.ajax({
-                    url: '/StockCount/CheckTeamBatchStatus?ID=' + $("#ddlBatches").val(),
-                    type: 'GET',
-                    dataType: 'json',
-                    async:true,
-                    success: function (data) {
-                        if (data.success) {
-                            Popup = PopupForm('/StockCount/NewIterationTeam?IterationID=' + ID,'T');
-                        }
-                        else {
-                            $('<div></div>').appendTo('body')
-                                .html("<div><h5>" + data.message + "</h5></div>")
-                                .dialog({
-                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create + " Team")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+        $.ajax({
+            url: '/StockCount/ValidateUserSession',
+            type: 'GET',
+            datatype: 'Json',
+            success: function (data) {
+                if (!data.success) {
+                    window.location.href = '/home/default';
+                }
+                else {
+                    var currentCult = getCookie("Language");
+                    var Path = FetchPathforCultureFile(currentCult);
+                    if ($("#ddlBatches").val() === -1) {
+                        $('<div></div>').appendTo('body')
+                            .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionError)" + "</h5></div>")
+                            .dialog({
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                                 buttons: {
-                                Ok: function () {
-                                    $(this).dialog("close");
-                                }
+                                    Ok: function () {
+                                        $(this).dialog("close");
+                                    }
                                 }
                             });
-                        }
                     }
-                });
+                    else {
+                        $.ajax({
+                            url: '/StockCount/CheckTeamBatchStatus?ID=' + $("#ddlBatches").val(),
+                            type: 'GET',
+                            dataType: 'json',
+                            async:true,
+                            success: function (data) {
+                                if (data.success) {
+                                    Popup = PopupForm('/StockCount/NewIterationTeam?IterationID=' + ID,'T');
+                                }
+                                else {
+                                    $('<div></div>').appendTo('body')
+                                        .html("<div><h5>" + data.message + "</h5></div>")
+                                        .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchIterationTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Create + " Team")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                        buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
             }
+        });
+
+        
     }
    
     function Cancelbutton() {
@@ -307,7 +332,20 @@
         return false;
     }
 
-        function CreateIteration() {
+    function CreateIteration() {
+
+        $.ajax({
+            url: '/StockCount/ValidateUserSession',
+            type: 'GET',
+            datatype: 'Json',
+            success: function (data) {
+                if (!data.success) {
+                    window.location.href = '/home/default';
+                }
+            }
+        });
+
+
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             if ($("#ddlBatches").val() === -1) {
@@ -373,6 +411,18 @@
     }
 
     function ChangeCountStatus(CountID) {
+
+        $.ajax({
+            url: '/StockCount/ValidateUserSession',
+            type: 'GET',
+            datatype: 'Json',
+            success: function (data) {
+                if (!data.success) {
+                    window.location.href = '/home/default';
+                }
+            }
+        });
+
         var batchId = $("#ddlBatches").val();
         $.ajax({
             url: "/StockCount/ChangeCountStatus?CountID=" + CountID,
@@ -396,6 +446,18 @@
     }
 
     function DeleteIterationTeam(TeamID) {
+
+        $.ajax({
+            url: '/StockCount/ValidateUserSession',
+            type: 'GET',
+            datatype: 'Json',
+            success: function (data) {
+                if (!data.success) {
+                    window.location.href = '/home/default';
+                }
+            }
+        });
+
          $('<div></div>').appendTo('body')
                     .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgTeamDeletionConfirm)" + "</h5></div>")
                     .dialog({
@@ -447,6 +509,16 @@
 
     function DeleteIteration(IterationID)
     {
+        $.ajax({
+            url: '/StockCount/ValidateUserSession',
+            type: 'GET',
+            datatype: 'Json',
+            success: function (data) {
+                if (!data.success) {
+                    window.location.href = '/home/default';
+                }
+            }
+        });
 
          $('<div></div>').appendTo('body')
                     .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgCountDeletionConfirm)" + "</h5></div>")

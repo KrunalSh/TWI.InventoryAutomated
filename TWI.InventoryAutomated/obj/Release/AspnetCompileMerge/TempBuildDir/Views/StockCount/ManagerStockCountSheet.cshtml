@@ -79,7 +79,7 @@
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" onclick="FilterList();" title="">Filter</a>
                 </div>
                 <div style="float:right;margin-right:10px;margin-bottom:10px;margin-top:-5px;">
-                    <input type="text" class="form-control" placeholder="enter value" id="txtValue" name="txtValue" style="width:100px !important;" />
+                    <input type="text" class="form-control" placeholder="Search Final Qty" id="txtValue" name="txtValue" style="width:100px !important;" />
                 </div>
                 <div style="float:right;margin-right:10px;">
                     <select id="ddlOperator" class="form-control">
@@ -246,6 +246,16 @@
             //});
 
             $("#ddlBatches").change(function () {
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
 
                 if ($("#ddlBatches").val() === "-1") {
                     ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionMandatory)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)');
@@ -258,6 +268,17 @@
             });
 
             $("#ddlZoneCodes").change(function () {
+
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
 
                 var zoneval = $("#ddlZoneCodes").val();
 
@@ -288,6 +309,17 @@
             });
 
             $("#ddlBinCodes").change(function () {
+
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
 
                 var bincode = $("#ddlBinCodes").val();
                 if (bincode === "-1") {
@@ -337,14 +369,20 @@
             });
 
             $("#ddlOperator").change(function () {
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
                 if ($("#ddlOperator").val() === "0") { $("#txtValue").val('');  }
             });
 
-
-          
-
         });
-
 
         function GenerateExcel() {
             var batchId = $("#ddlBatches").val();
@@ -360,9 +398,7 @@
             });
         }
 
-
-
-        function RefreshManagerView(batchId,ZoneCode,BinCode,ItemNo,Qtyfilter) {
+        function RefreshManagerView(batchId, ZoneCode, BinCode, ItemNo, Qtyfilter) {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             var dataset;
@@ -409,44 +445,44 @@
                         datatable = $('#HeaderTable').DataTable({
                             "destroy": true,
                             data: dataset,
-                            "lengthMenu": [[-1, 10, 15, 25, 50, 100], ["All", 10, 15, 25, 50, 100]],
+                            "lengthMenu": [[-1, 25, 50, 100,250,500], ["All",25, 50, 100,250,500]],
                             'columnDefs': [
                                 {
                                     'targets': [0],
-                                    'searchable': false,
+                                    'searchable': true,
                                     'orderable': true,
                                     'className': 'datatable_col5PercR',
-                                    "data" : "DocType"
+                                    'visible': false
                                 },
                                 {
                                     'targets': [1],
-                                    'searchable': false,
+                                    'searchable': true,
                                     'orderable': true,
                                     'className': 'datatable_col5PercR'
                                 },
                                 {
                                     'targets': [2],
-                                    'searchable': false,
+                                    'searchable': true,
                                     'orderable': true,
                                     'className': 'datatable_col5PercR'
                                 },
                                 {
                                     'targets': [3],
-                                    'searchable': false,
+                                    'searchable': true,
                                     'orderable': true,
                                     'className': 'datatable_col5PercR'
                                 },
                                 {
                                     'targets': [4],
-                                    'searchable': true,
+                                    'searchable': false,
                                     'orderable': true,
-                                    'className': 'datatable_col10PercR'
+                                    'className': 'datatable_col5PercR'
                                 },
                                 {
                                     'targets': [5],
                                     'searchable': false,
                                     'orderable': true,
-                                    'className': 'datatable_col5PercR'
+                                    'className': 'datatable_col10PercR'
                                 },
                                 {
                                     'targets': [6],
@@ -465,18 +501,24 @@
                                     'searchable': false,
                                     'orderable': true,
                                     'width': '5%',
-                                    'className': 'datatable_col5PercR',
-                                    "data": "FinalQty"
+                                    'className': 'datatable_col5PercR'
                                 },
                                 {
-                                    'targets': [my_columns.length-1],
+                                    'targets': [9],
                                     'searchable': false,
-                                    'orderable':false,
+                                    'orderable': true,
                                     'width': '5%',
-                                    'className': 'datatable_col5PercR',
-                                    "data": "ID",
-                                    "visible" : false
+                                    'className': 'datatable_col5PercR'
                                 },
+                                //{
+                                //    'targets': [my_columns.length-1],
+                                //    'searchable': false,
+                                //    'orderable':false,
+                                //    'width': '5%',
+                                //    'className': 'datatable_col5PercR',
+                                //    "data": "ID",
+                                //    "visible" : false
+                                //},
                                 {
                                     'targets': [my_columns.length],
                                     'searchable': false,
@@ -484,19 +526,19 @@
                                     "data": "ID",
                                     "className": "datatable_col5PercR",
                                     'render': function (data, type, full, meta) {
-                                        return '<a class="btn btn-primary fa fa-edit" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="" onclick="UpdateFinalQty(' + data +');" ></a> &nbsp;&nbsp;<input type="checkbox"><input id="ID" type="hidden" value="' + data + '">';
+                                        return '<a class="btn btn-primary fa fa-edit" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;" alt="" onclick="UpdateFinalQty(' + data + ');" ></a> &nbsp;&nbsp;<input type="checkbox"><input id="ID" type="hidden" value="' + data + '">';
                                     }
                                 }
                             ],
                             'select': { 'style': 'multi' },
-                            'order': [[0, 'asc']],
+                            'order': [[1, 'asc']],
                             "columns": my_columns
-                            ,"fnDrawCallback": function (oSettings) {
-                                if ($('.dataTables_filter i').length === 0)
-                                    $('.dataTables_filter').append('  <a class="btn btn-primary" style="height:30px;width:100px;font-weight:bold;padding-top:3px;padding-left:6px;" data-toggle="tooltip" title="Export To Excel" ><i></i>Excel Export</a>');
-                                    $('[data-toggle="tooltip"]').tooltip();
-                            }
-                        });
+                            //,"fnDrawCallback": function (oSettings) {
+                            //    if ($('.dataTables_filter i').length === 0)
+                            //        $('.dataTables_filter').append('  <a class="btn btn-primary" style="height:30px;width:100px;font-weight:bold;padding-top:3px;padding-left:6px;" data-toggle="tooltip" title="Export To Excel" ><i></i>Excel Export</a>');
+                            //        $('[data-toggle="tooltip"]').tooltip();
+                            //}
+                        })     ;
 
                         //onclick = "GenerateExcel();"
 
@@ -515,6 +557,18 @@
         }
 
         function CheckAllboxes() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var headcheckbox = $('#HeaderTable thead input[name="select_all"]');
             if ($(headcheckbox).is(':checked')) {
                     $('#HeaderTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
@@ -522,9 +576,6 @@
                     $('#HeaderTable tbody input[type="checkbox"]:checked').trigger('click');
              }
         }
-
-
-
 
         function updateDataTableSelectAllCtrl(table) {
             var $table = table.table().node();
@@ -557,6 +608,17 @@
         }
 
         function ClearFinalQty() {
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             $('<div></div>')
                 .appendTo('body')
                 .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgClearFinalQtyConfirmation)" + "</h5></div>")
@@ -596,7 +658,16 @@
         }
 
         function FillQty() {
-
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
             var count = 0;
             $('#HeaderTable tbody').find('tr').each(function () {
                 var row = $(this);
@@ -647,6 +718,18 @@
         }
 
         function FilterList() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var batchId = $("#ddlBatches").val();
             var ZoneCode = $("#ddlZoneCodes").val();
             var BinCode = $("#ddlBinCodes").val();
@@ -686,8 +769,32 @@
         }
 
         function ValidateQuantitiesForPush() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             //alert("Push Final Qty");
             var RowID = []; var count = 0;
+
+            Popup.dialog("close");
+            @*    Popup =  $('<div></div>').appendTo('body')
+                                    .html("<div><h5>Please be patient while Final Qty updation is in progress..........</h5></div>")
+                                    .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
+                                        width: 'auto', resizable: false, closeOnEscape: false,
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });*@
+
             //var selectedbatch = $("#ddlBatches").val();
             $('#HeaderTable tbody').find('tr').each(function () {
                 var row = $(this);
@@ -697,6 +804,7 @@
             });
 
             if (count > 0) {
+                
                 RowID.length = count;
                 var colcount = 0; var rowdata = ''; var itemstring = '';
                 var itemstringstart = '';
@@ -715,10 +823,13 @@
                     });
 
                     if (checkboxcount === 0) {
+                        Popup.dialog("close");
                         ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgCountSelectionForMultipleSource)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)'); return;
+                        
                         /*alert("Kindly select atleast one count source for multiple source option");*/
                     }
                     else if (checkboxcount < 2) {
+                        Popup.dialog("close");
                         ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgMultipleCountSelection)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)'); return;
                         //alert("Kindly select atleast two count sources to generate final Qty using selected Operation"); return;
                     }
@@ -732,73 +843,84 @@
                     itemstringstart += iterationvalues.substring(0, iterationvalues.length - 1) + ':';
                     //alert(itemstringstart);
                 }
-
+                var successcount = 0;
                 $('#HeaderTable tbody').find('tr').each(function () {
                     var row = $(this);
                     if (row.find('input[type="checkbox"]').is(':checked')) {
-                        colcount = 0;
+                        //colcount = 0; commented to test the new solution
                         rowdata = '';
-                        row.find('td').each(function () {
-                            var col = $(this);
-                            //colcount !== 0 &&
-                            if (colcount !== 4 && colcount < 8) {
-                                rowdata += col.html() + ':';
+                        rowdata = row.find('input[type="hidden"]').val();
+                        //row.find('td').each(function () { -- commented to test the new solution
+                        //    var col = $(this);
+                        //    //colcount !== 0 &&
+                        //    if (colcount !== 4 && colcount < 8) {
+                        //        rowdata += col.html() + ':';
+                        //    }
+                        //    colcount++;
+                        //}); -- commented to test the new solution
+                        var _finalrowdata = itemstringstart + rowdata;
+                        $.ajax({
+                            url: "/StockCount/ValidateDataValues?ID=" + _finalrowdata,
+                            type: "GET",
+                            datatype: "Json",
+                            success: function (data) {
+                                //alert(data);
+                                if (data.success) { successcount++; }
+                                //PushFinalQty(_finalrowdata);
+                                @*else {
+                                    $('<div></div>').html("<div><h5>" + data.message + "</h5></div>").dialog({
+                                        title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - "+ TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', modal: true, width: 400, resizable: false, autoOpen: true,
+                                        buttons: {
+                                            Yes: function () {
+                                                PushFinalQty(RowID);
+                                                RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
+                                                $(this).dialog("close");
+                                            },
+                                            NO: function () {
+                                                $(this).dialog("close");
+                                            }
+                                        }
+                                    });
+                                }*@
                             }
-                            colcount++;
                         });
-                        RowID[count] = itemstringstart + rowdata;
                         //alert(RowID[count]);
-                        count++;
+                        //count++;
                     }
                 });
-
-                $.ajax({
-                    url: "/StockCount/ValidateDataValues?ID=" + RowID,
-                    type: "GET",
-                    datatype: "Json",
-                    success: function (data) {
-                        //alert(data);
-                        if (data.success) {
-                            PushFinalQty(RowID);
-                            RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
-                        }
-                        else {
-                            $('<div></div>').html("<div><h5>" + data.message + "</h5></div>").dialog({
-                                title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - "+ TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', modal: true, width: 400, resizable: false, autoOpen: true,
-                                buttons: {
-                                    Yes: function () {
-                                        PushFinalQty(RowID);
-                                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
-                                        $(this).dialog("close");
-                                    },
-                                    NO: function () {
-                                        $(this).dialog("close");
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
+                RefreshManagerView($("#ddlBatches").val(), "%", "%", "%", "");
+                Popup.dialog("close");
+                ShowDialog("Selected Item(s) Final Qty Updated Successfully.", '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
             }
-
-            Popup.dialog('close');
         }
 
         function PushFinalQty(RowID) {
-
              $.ajax({
                     url: "/StockCount/PushFinalQty?ID=" + RowID,
                     type: "GET",
                     datatype: "Json",
                     success: function (data) {
+                     return;
                         //alert(data);
-                        ShowDialog(data, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
-                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");
+                        @*ShowDialog(data, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                        RefreshManagerView($("#ddlBatches").val(), "%", "%", "%","");*@
                     }
                 });
         }
 
         function UpdateFinalQty(ID) {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             $("#txtQty").empty();
             $("#hdnId").val(ID);
 
@@ -822,6 +944,18 @@
         }
 
         function SaveManualQty() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var selectedId = $("#hdnId").val();
             //alert(selectedId);
             var rows = datatable.table().data();
@@ -854,6 +988,16 @@
         }
 
         function Cancelbutton() {
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
             Popup.dialog('close');
         }
 

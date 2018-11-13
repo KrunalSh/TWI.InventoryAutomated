@@ -151,6 +151,18 @@
             //dataTable = $("#HeaderTable").DataTable();
 
             $("#ddlBatches").change(function () {
+
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
+
                 var selectedbatch = $("#ddlBatches").val();
                 if (selectedbatch === "-1") {
                     $("#ddlCounts").empty();
@@ -194,6 +206,18 @@
             });
 
             $("#ddlCounts").change(function () {
+
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
+
                 var countid = $("#ddlCounts").val();
 
                 if (countid === "-1") {
@@ -232,6 +256,18 @@
             });
 
             $("#ddlTeams").change(function () {
+
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
+
                 //alert($("#ddlTeams").val());
                 var teamId = $("#ddlTeams").val();
                 RefreshAllocationList(teamId);
@@ -408,16 +444,16 @@
                         'data': "ID",'render': function (data, type, full, meta) {
                             return '<input type="checkbox" checked value>&nbsp;<input id="ID" type="hidden" value="' + data + '">';
                     }},
-                    { "data": "DocType", "orderable": false, "searchable": true, 'className':'datatable_col5PercR' },
-                    { "data": "ZoneCode", "orderable": false, "searchable": true, 'className':'datatable_col10PercR'  },
-                    { "data": "BinCode", "orderable": false, "searchable": true, 'className':'datatable_col10PercR'  },
-                    { "data": "ItemNo", "orderable": false, "searchable": true, 'className':'datatable_col10PercR'  },
-                    { "data": "Description", "orderable": false, "searchable": true, 'className':'datatable_col20PercR'  },
-                    { "data": "LotNo", "orderable": false, "searchable": false, 'className':'datatable_col10PercR'  },
-                    { "data": "ExpirationDate", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
-                    { "data": "UOMCode", "orderable": false, "searchable": true, 'className': 'datatable_col5PercR' },
-                    { "data": "NAVQty", "orderable": false, "searchable": false, 'className':'datatable_col10PercR'  },
-                    { "data": "PhysicalQty", "orderable": false, "searchable": false, 'className':'datatable_col10PercR' },
+                    { "data": "DocType", "orderable": true, "searchable": true, 'className':'datatable_col5PercR' },
+                    { "data": "ZoneCode", "orderable": true, "searchable": true, 'className':'datatable_col10PercR'  },
+                    { "data": "BinCode", "orderable": true, "searchable": true, 'className':'datatable_col10PercR'  },
+                    { "data": "ItemNo", "orderable": true, "searchable": true, 'className':'datatable_col10PercR'  },
+                    { "data": "Description", "orderable": true, "searchable": true, 'className':'datatable_col20PercR'  },
+                    { "data": "LotNo", "orderable": true, "searchable": false, 'className':'datatable_col10PercR'  },
+                    { "data": "ExpirationDate", "orderable": true, "searchable": false, 'className': 'datatable_col10PercR' },
+                    { "data": "UOMCode", "orderable": true, "searchable": true, 'className': 'datatable_col5PercR' },
+                    { "data": "NAVQty", "orderable":true, "searchable": false, 'className':'datatable_col10PercR'  },
+                    { "data": "PhysicalQty", "orderable": true, "searchable": false, 'className':'datatable_col10PercR' },
                     {
                         "data": "ID", "render": function (data) {
                             return '<a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;margin-left:12px;" alt="Delete Item" onclick="DeleteAllocatedItem('+ data + ');"></a>'
@@ -427,7 +463,7 @@
                     }
                      ],
 
-                "aaSorting": [[4, "desc"]],
+                "aaSorting": [[1, "asc"]],
                 "responsive": true,
                 "language": {
                     "emptyTable": "No Items allocated to this team, Please click on <b>Select Item(s)</b> Button to allocate item(s)",
@@ -449,26 +485,24 @@
 
         function DeleteSelectedItems() {
 
-            var e = $("#AllocateSection");
-
-            if (e.is(':disabled')) {
-                $('<div></div>').appendTo('body').html("<div><h5>Delete Operation already in progress, Kindly please wait for it to complete.</h5></div>").dialog({
-                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.DeleteItem)', zIndex: 10000, autoOpen: true,
-                    width: 'auto', resizable: false, closeOnEscape: false,
-                    buttons: {},
-                    close: function (event, ui) {
-                        $(this).remove();
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
                     }
-                });
-                return;
-            }
+                }
+            });
 
+            var e = $("#AllocateSection");
             var count = 0;
             var TeamID = $("#ddlTeams").val();
             //var itemid = 0;
             var RowID = [];
-            $("#AllocateSection").prop('disabled', true);
-            $("#aSelectAll").off('click');
+            //$("#AllocateSection").prop('disabled', true);
+            //$("#aSelectAll").off('click');
             $('#HeaderTable tbody').find('tr').each(function () {
                 var row = $(this);
                 if (row.find('input[type="checkbox"]').is(':checked')) {
@@ -486,6 +520,18 @@
                             Yes: function () {
                                 RowID.length = count;
                                 count = 0;
+
+                                 Popup =  $('<div></div>').appendTo('body')
+                                    .html("<div><h5>Please be patient while delete operation is in progress..........</h5></div>")
+                                    .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
+                                        width: 'auto', resizable: false, closeOnEscape: false,
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });
+
+
                                 $('#HeaderTable tbody').find('tr').each(function () {
                                     var row = $(this);
                                     if (row.find('input[type="checkbox"]').is(':checked')) {
@@ -502,13 +548,11 @@
                                     success: function (data) {
                                         if (data.success) {
                                             DeleteAllocatedItems(TeamID, RowID); 
-                                            $("#AllocateSection").prop('disabled', false);
-                                            $("#aSelectAll").on('click');
+                                            Popup.dialog("close");
                                             window.location.href = "/StockCount/AdminStockCountSheet?TeamID=" + TeamID;
                                         }
                                         else {
-                                            $("#AllocateSection").prop('disabled', false);
-                                            $("#aSelectAll").on('click');
+                                            Popup.dialog("close");
                                             ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
                                         }
                                     }
@@ -527,12 +571,23 @@
             }
             else {
                 ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgSelectItemForDeletion)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
-                $("#AllocateSection").prop('disabled', false);
-                $("#aSelectAll").on('click');
+                //$("#AllocateSection").prop('disabled', false);
+                //$("#aSelectAll").on('click');
             }
         }
 
         function DeleteAllocatedItem(itemid) {
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             $('<div></div>').appendTo('body')
                 .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemDeletionRecord)" + "</h5></div>")
                 .dialog({
@@ -605,6 +660,16 @@
 
         function SelectItems()
         {
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
             //alert($("#ddlTeams").val());
             var selectedteam = $("#ddlTeams").val();
             if (selectedteam === "-1") {
@@ -632,7 +697,19 @@
                 });
         }
 
-        function DeleteAllocatedItems(TeamID,RowID) {
+        function DeleteAllocatedItems(TeamID, RowID) {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             $.ajax({
                 url: '/StockCount/DeleteSelectedItems?TeamID=' + TeamID + '&ID=' + RowID,
                 datatype: 'Json',

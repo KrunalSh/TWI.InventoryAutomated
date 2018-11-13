@@ -107,6 +107,18 @@
 
                     datatable = $("#ItemTable").DataTable();
                     $("#ddlSearchField").change(function () {
+
+                        $.ajax({
+                            url: '/StockCount/ValidateUserSession',
+                            type: 'GET',
+                            datatype: 'Json',
+                            success: function (data) {
+                                if (!data.success) {
+                                    window.location.href = '/home/default';
+                                }
+                            }
+                        });
+
                         var searchval = $("#ddlSearchField").val();
                         if (searchval === "0") {
                             $("#txtSearch").empty();
@@ -119,6 +131,16 @@
                     });
 
                     $("#ddlAllocationSource").change(function () {
+                        $.ajax({
+                            url: '/StockCount/ValidateUserSession',
+                            type: 'GET',
+                            datatype: 'Json',
+                            success: function (data) {
+                                if (!data.success) {
+                                    window.location.href = '/home/default';
+                                }
+                            }
+                        });
                         var selectedval = $("#ddlAllocationSource").val();
                         @*if (selectedval >= 2) {
                             var teamid = '@Convert.ToInt32(Session["TeamID"])';
@@ -146,6 +168,19 @@
                     });
 
                     $("#ddlCounts").change(function () {
+
+                        $.ajax({
+                            url: '/StockCount/ValidateUserSession',
+                            type: 'GET',
+                            datatype: 'Json',
+                            success: function (data) {
+                                if (!data.success) {
+                                    window.location.href = '/home/default';
+                                }
+                            }
+                        });
+
+
                         var selectedcount = $("#ddlCounts").val();
                         $.ajax({
                             url: "/StockCount/GetTeamInfoByCount?ID=" + selectedcount,
@@ -258,6 +293,17 @@
 
         function GetSearchItem() {
 
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var allocsource = $('#ddlAllocationSource').val();
             var filter = $("#ddlFilterSource").val();
             var countId = $("#ddlCounts").val();
@@ -273,7 +319,7 @@
             else {
                  datatable = $("#ItemTable").DataTable({
                      "destroy": true,
-                     "lengthMenu": [[-1,10, 25, 50], ["All",10,25,50]],
+                     "lengthMenu": [[-1,10, 25, 50,100,250,500], ["All",10,25,50,100,250,500]],
                         "ajax": {
                             "url": "/StockCount/GetSearchItem",
                             "data": { TeamID: '@Convert.ToInt32(Session["TeamID"])', source: allocsource, filter: filter, PrevCount: countId, PrevTeam: teamId, searchfield: SearchField, searchcriteria: searchCriteria },
@@ -353,26 +399,20 @@
 
         function AllocateIems() {
 
-            var e = $("#SearchSection");
-
-            if (e.is(':disabled')) {
-                $('<div></div>').appendTo('body').html("<div><h5>Save Operation already in progress, Kindly please wait for it to complete.</h5></div>").dialog({
-                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
-                    width: 'auto', resizable: false, closeOnEscape: false,
-                    buttons: { Ok: function () { $(this).dialog("close"); }  },
-                    close: function (event, ui) {
-                        $(this).remove();
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
                     }
-                });
-                return;
-            }
+                }
+            });
 
             var count = 0;
             var TeamID = '@Convert.ToInt32(Session["TeamID"])';
-            //var itemid = 0;
             var RowID = [];
-
-            $("#SearchSection").prop('disabled', true);
 
             $('#ItemTable tbody').find('tr').each(function () {
                 var row = $(this);
@@ -397,6 +437,16 @@
                                 var data = datatable.rows().data();
                                 //console.log(data);
 
+                                Popup =  $('<div></div>').appendTo('body')
+                                    .html("<div><h5>Please be patient while save operation is in progress..........</h5></div>")
+                                    .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
+                                        width: 'auto', resizable: false, closeOnEscape: false,
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });
+
                                     $('#ItemTable tbody').find('tr').each(function () {
                                         var row = $(this);
                                         if (row.find('input[type="checkbox"]').is(':checked')) {
@@ -414,7 +464,7 @@
                                         success: function (data) {
                                             if (data.success) {
                                                 @*ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');*@
-                                                $("#SearchSection").prop('disabled', false);
+                                                Popup.dialog("close");
                                                 $('<div></div>').appendTo('body')
                                                     .html("<div><h5>" + data.message + "</h5></div>")
                                                     .dialog({
@@ -424,26 +474,19 @@
                                             }
                                             else {
                                                 ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
-                                                $("#SearchSection").prop('disabled', false);
-                                                //alert(data.message);
                                             }
                                         }
-                                    });
+                                });
+                                $(this).dialog("close");
                             },
                             No: function () {
                                 $(this).dialog("close");
                             }
                         }
                     });
-                
-
-                
-                
             }
             else {
                 ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgSelectItemForAllocation)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)');
-                $("#SearchSection").prop('disabled', false);
-                //alert("Kindly select atleast one item for allocation");
             }
         }
 
@@ -454,10 +497,6 @@
                           buttons: { Ok: function () { $(this).dialog("close"); } }
                 });
         }
-
-
-
-
 
     </script>
 }

@@ -16,7 +16,7 @@
             }
         }
         @Html.Label("Enter Quantity", new { @class = "control-label" })
-        @Html.EditorFor(model => model.PhysicalQty, new { htmlAttributes = new { @class = "form-control", @id = "txtQty", @maxLength = "7" } })
+        @Html.EditorFor(model => model.PhysicalQty, new { htmlAttributes = new { @class = "form-control", @id = "txtQty", @maxLength = "3" , @type="number" ,@Min=0,@Max=999 } })
     </div>
     <div class="form-group" style="float:right !important;">
         <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />

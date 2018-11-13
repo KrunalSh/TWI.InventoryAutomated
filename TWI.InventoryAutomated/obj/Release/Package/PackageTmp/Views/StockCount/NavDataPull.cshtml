@@ -73,23 +73,37 @@
                                     <th class="datatable_col30PercH">Description</th>
                                     <th class="datatable_col10PercH">Lot No</th>
                                     <th class="datatable_col10PercH">Expiry Date</th>
-                                    <th class="datatable_col10PercH">NAV Qty</th>
-                                    <th class="datatable_col10PercH">Final Qty</th>
+                                    <th class="datatable_col5PercH">NAV Qty</th>
+                                    <th class="datatable_col5PercH">Final Qty</th>
+                                    <th class="datatable_col10PercH">Final Qty Source</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "INV"))
                                 {
-                                    <tr>
-                                        <td class="datatable_col10PercR">@_std.ZoneCode</td>
-                                        <td class="datatable_col10PercR">@_std.BinCode</td>
-                                        <td class="datatable_col10PercR"> @_std.ItemNo</td>
-                                        <td class="datatable_col30PercR"> @_std.Description</td>
-                                        <td class="datatable_col10PercR">@_std.LotNo</td>
-                                        <td class="datatable_col10PercR">@_std.ExpirationDate</td>
-                                        <td class="datatable_col10PercR">@_std.NAVQty</td>
-                                        <td class="datatable_col10PercR">@_std.PhyicalQty</td>
-                                    </tr>
+                                <tr>
+                                    <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                                    <td class="datatable_col10PercR">@_std.BinCode</td>
+                                    <td class="datatable_col10PercR"> @_std.ItemNo</td>
+                                    <td class="datatable_col30PercR"> @_std.Description</td>
+                                    <td class="datatable_col10PercR">@_std.LotNo</td>
+                                    <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                                    <td class="datatable_col5PercR">@_std.NAVQty</td>
+                                    <td class="datatable_col5PercR">@_std.PhyicalQty</td>
+                                    <td class="datatable_col10PercR">@_std.FinalSource
+                                    @*@{string finalsource = "";
+                                        if (_std.FinalSource == "SI")
+                                        { finalsource = _std.CountSource; }
+                                        else if (_std.FinalSource == "MU")
+                                        { if (_std.MethodUsed == "MI") { finalsource = "Min. Of " + _std.CountSource; }
+                                            else if (_std.MethodUsed == "MA") { finalsource = "Max. of " + _std.CountSource; }
+                                            else if (_std.MethodUsed == "AVG") { finalsource = "Avg. of " + _std.CountSource; }
+                                        }
+                                        else if (_std.FinalSource == "MA") { finalsource = "Manager Input"; }
+                                        }
+                                        @finalsource*@
+                                    </td>
+                                </tr>
                                 }
                             </tbody>
                         </table>
@@ -104,23 +118,25 @@
                                     <th class="datatable_col30PercH">Description</th>
                                     <th class="datatable_col10PercH">Lot No</th>
                                     <th class="datatable_col10PercH">Expiry Date</th>
-                                    <th class="datatable_col10PercH"> NAV Qty</th>
-                                    <th class="datatable_col10PercH">Final Qty</th>
+                                    <th class="datatable_col5PercH"> NAV Qty</th>
+                                    <th class="datatable_col5PercH">Final Qty</th>
+                                    <th class="datatable_col10PercH">Final Qty Source</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var _std in Model._stockCountItems.Where(x => x.TemplateName == "ADJUST" || x.TemplateName == "ADJ" ))
                                 {
-                                    <tr>
-                                        <td class="datatable_col10PercR">@_std.ZoneCode</td>
-                                        <td class="datatable_col10PercR">@_std.BinCode</td>
-                                        <td class="datatable_col10PercR"> @_std.ItemNo</td>
-                                        <td class="datatable_col30PercR"> @_std.Description</td>
-                                        <td class="datatable_col10PercR">@_std.LotNo</td>
-                                        <td class="datatable_col10PercR">@_std.ExpirationDate</td>
-                                        <td class="datatable_col10PercR">@_std.NAVQty</td>
-                                        <td class="datatable_col10PercR">@_std.PhyicalQty</td>
-                                    </tr>
+                                <tr>
+                                    <td class="datatable_col10PercR">@_std.ZoneCode</td>
+                                    <td class="datatable_col10PercR">@_std.BinCode</td>
+                                    <td class="datatable_col10PercR"> @_std.ItemNo</td>
+                                    <td class="datatable_col30PercR"> @_std.Description</td>
+                                    <td class="datatable_col10PercR">@_std.LotNo</td>
+                                    <td class="datatable_col10PercR">@_std.ExpirationDate</td>
+                                    <td class="datatable_col5PercR">@_std.NAVQty</td>
+                                    <td class="datatable_col5PercR">@_std.PhyicalQty</td>
+                                    <td class="datatable_col10PercR">@_std.FinalSource
+                                </tr>
                                 }
                             </tbody>
                         </table>
@@ -173,23 +189,40 @@
     <script>
         var Popup, dataTable, adjdataTable;
         $(document).ready(function () {
-                                    var currentCult = getCookie("Language");
+            var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
-            dataTable = $("#HeaderTable").dataTable({
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]});
-            adjdataTable = $("#ADJHeaderTable").dataTable({
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]});
+            dataTable = $("#HeaderTable").dataTable();
+            adjdataTable = $("#ADJHeaderTable").dataTable();
             $("#ddlBatches").change(function () {
+                $.ajax({
+                    url: '/StockCount/ValidateUserSession',
+                    type: 'GET',
+                    datatype: 'Json',
+                    success: function (data) {
+                        if (!data.success) {
+                            window.location.href = '/home/default';
+                        }
+                    }
+                });
+
                 var selectedbatch = $("#ddlBatches").val();
                 RefreshData(selectedbatch);
             });
         });
 
         function EditBatch() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             if ($("#ddlBatches").val() === "-1") {
                  $('<div></div>').appendTo('body')
                     .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionMandatory)" + "</h5></div>")
@@ -208,7 +241,20 @@
         }
 
 
-        function PopupForm(url,title) {
+        function PopupForm(url, title) {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
+
             var formDiv = $('<div/>');
                 $.get(url)
                     .done(function (response) {
@@ -236,6 +282,17 @@
         }
 
         function PushData() {
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             if ($("#ddlBatches").val() === "-1") {
@@ -260,11 +317,22 @@
                     width: 500, resizable: true,
                     buttons: {
                         Yes: function () {
+
+                             Popup =  $('<div></div>').appendTo('body')
+                                    .html("<div><h5>Please be patient while data push operation to navision is in progress..........</h5></div>")
+                                    .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
+                                        width: 'auto', resizable: false, closeOnEscape: false,
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });
+
                             $.ajax({
                                 type: "POST",
                                 url: '@Url.Action("PushPhyJournalData", "StockCount")/' + $("#ddlBatches").val(),
                                 success: function (data) {
-
+                                    Popup.dialog("close");
                                     $('<div></div>').appendTo('body')
                                         .html("<div><h5>" + data + "</h5></div>")
                                         .dialog({
@@ -275,26 +343,6 @@
                                                 }
                                             }
                                         });
-                                    @*$.ajax({
-                                        url: "/StockCount/GetStockCountHeaderDetailByID?ID=" + $("#ddlBatches").val(),
-                                        type: "GET",
-                                        datatype: "json",
-                                        success: function (data) {
-                                            //console.log(data);
-                                            if (data.data === null) {
-                                                $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': '); $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' + ': '); $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': ');
-                                                $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': ');
-                                                $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' + ': ');
-                                            }
-                                            else {
-                                                $("#LocationCode").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Location)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.LocationCode + ' </span>');
-                                                $("#SCDesc").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Description)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.SCDesc + ' </span>');
-                                                $("#TotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.NAVEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalItemCount + '</span>');
-                                                $("#AdjTotalItem").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ADJEntries)' + ': <span style="padding-left:10px;font-weight:400 !important">' + data.data.TotalAdjustmentItems + '</span>');
-                                                $("#Status").html('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.Status)' +': <span style="padding-left:10px;font-weight:400 !important">' + data.data.Status + ' </span>');
-                                            }
-                                        }
-                                    });*@
                                 }
                             });
                             $(this).dialog("close");
@@ -311,6 +359,18 @@
 
 
         function PullData() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
             if ($("#ddlBatches").val() === "-1") {
@@ -335,11 +395,22 @@
                     width: 500, resizable: true,
                     buttons: {
                         Yes: function () {
+
+                            Popup =  $('<div></div>').appendTo('body')
+                                    .html("<div><h5>Please be patient while data pull operation from Navision is in progress..........</h5></div>")
+                                    .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Pull From NAV")', zIndex: 10000, autoOpen: true,
+                                        width: 'auto', resizable: false, closeOnEscape: false,
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });
+
                             $.ajax({
                                 type: "POST",
                                 url: '@Url.Action("GetPhyJournalData", "StockCount")/' + $("#ddlBatches").val(),
                                 success: function (data) {
-
+                                    Popup.dialog("close");
                                     $('<div></div>').appendTo('body')
                                         .html("<div><h5>" + data + "</h5></div>")
                                         .dialog({
@@ -438,6 +509,18 @@
 
 
         function Delete() {
+
+            $.ajax({
+                url: '/StockCount/ValidateUserSession',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success) {
+                        window.location.href = '/home/default';
+                    }
+                }
+            });
+
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
 
@@ -531,7 +614,6 @@
 
                     datatable = $("#HeaderTable").dataTable({
                         "destroy": true,
-                        "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
                         "ajax": {
                             "url": "/StockCount/GetStockCountDetail",
                             "data": { ID:ID,entrytype:'INV'},
@@ -546,10 +628,10 @@
                             { "data": "Description", "className": "datatable_col30PercR" },
                             { "data": "LotNo", "className": "datatable_col10PercR" },
                             { "data": "ExpirationDate", "className": "datatable_col10PercR" },
-                            { "data": "NAVQty", "className": "datatable_col10PercR" },
-                            { "data": "PhyicalQty", "className": "datatable_col10PercR" }],
-
-                        "aaSorting": [[4, "desc"]],
+                            { "data": "NAVQty", "className": "datatable_col5PercR" },
+                            { "data": "PhyicalQty", "className": "datatable_col5PercR" },
+                            { "data": "FinalSource", "className": "datatable_col10PercR" }],
+                        "aaSorting": [[1, "asc"]],
                         "responsive": true,
                         "language": {
                             "emptyTable": "No data found, Please click on <b>Pull</b> Button to retrieve Batch Data from NAV ERP",
@@ -574,10 +656,12 @@
                             { "data": "Description", "className": "datatable_col30PercR"  },
                             { "data": "LotNo", "className": "datatable_col10PercR"  },
                             { "data": "ExpirationDate", "className": "datatable_col10PercR"  },
-                            { "data": "NAVQty", "className": "datatable_col10PercR"  },
-                            { "data": "PhyicalQty", "className": "datatable_col10PercR"  }],
+                            { "data": "NAVQty", "className": "datatable_col5PercR"  },
+                            { "data": "PhyicalQty", "className": "datatable_col5PercR" },
+                            { "data": "FinalSource", "className": "datatable_col10PercR" }
+                        ],
 
-                        "aaSorting": [[4, "desc"]],
+                        "aaSorting": [[1, "asc"]],
                         "responsive": true,
                         "language": {
                             "emptyTable": "Zero adjustments posted for the selected batch.",

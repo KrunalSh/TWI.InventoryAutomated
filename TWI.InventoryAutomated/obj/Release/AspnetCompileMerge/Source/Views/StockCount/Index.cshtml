@@ -77,6 +77,19 @@
        function ValidateStockCount()
        {
            $.ajax({
+               url: '/StockCount/ValidateUserSession',
+               type: 'GET',
+               datatype: 'Json',
+               success: function (data) {
+                   if (!data.success) {
+                       window.location.href = '/home/default';
+                   }
+               }
+           });
+
+
+
+           $.ajax({
                url: "/StockCount/UserStockCountSheetValidation",
                type: "GET",
                dataType: "json",
@@ -102,6 +115,16 @@
        }
        
        function ValidateCountAllocations() {
+           $.ajax({
+               url: '/StockCount/ValidateUserSession',
+               type: 'GET',
+               datatype: 'Json',
+               success: function (data) {
+                   if (!data.success) {
+                       window.location.href = '/home/default';
+                   }
+               }
+           });
 
            $.ajax({
                url: "/StockCount/ManagerViewValidation",
