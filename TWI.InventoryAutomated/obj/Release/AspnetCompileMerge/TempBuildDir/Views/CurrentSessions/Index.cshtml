@@ -64,7 +64,7 @@
                     { "data": "CompanyName" },
                     {
                         "data": "SessionStart", "render": function (date) {
-                            if (date != null) return moment(date).format("DD/MM/YYYY HH:mm");
+                            if (date !== null) return moment(date).format("DD/MM/YYYY HH:mm");
                             else return "";
                         }
                     },
@@ -76,8 +76,6 @@
                         "searchable": false,
                         "width": "50px"
                     }
-
-
                 ],
                 "responsive": true,
                 "language": {

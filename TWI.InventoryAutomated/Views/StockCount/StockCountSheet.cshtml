@@ -33,7 +33,7 @@
         <div style="float:left;width:100% !important;margin:0px 15px 15px 15px;">
             <div class="row col-sm-12" >
                 <a class="btn btn-primary" style="float:left !important;width:90px;height:55px;margin:0 0 10px 0px ;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="ShowAdjustment();">@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.buttonAdjustment)</a>
-                <div id="divAdjustments" style="float:left;width:48% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
+                <div id="divAdjustments" style="float:left;width:50% !important;margin :0  5px 0 15px;display:none;border:1px solid #828282;border-radius:5px;">
                     <div class="row" style="margin:10px 10px 0 10px !important;">
                         @*<div style="float:left;margin-right:10px;" id="divZoneCode;" >
                                 @Html.DropDownList("ZoneCodes", ViewBag.ZoneCodes as SelectList, new { @class = "form-control", @id = "ddlZoneCodes" })
@@ -53,10 +53,10 @@
                             <input type="text" class="form-control" placeholder="Lot No" id="txtLotNo" name="txtLotNo" style="width:100px !important" />
                         </div>
                         <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                            <input type="text" class="form-control" placeholder="Expiry Date" id="txtExpDate" name="txtExpDate" style="width:100px !important" />
+                            <input type="text" class="form-control" placeholder="Expiry Date" id="txtExpDate" name="txtExpDate" style="width:120px !important" />
                         </div>
                         <div style="float:left;margin-right:10px;margin-bottom:10px;">
-                            <input type="text" class="form-control" placeholder="Enter Qty" id="txtPhyQty" name="txtPhyQty" style="width:90px !important" maxlength="3" />
+                            <input type="text" class="form-control datepicker" placeholder="Enter Qty" id="txtPhyQty" name="txtPhyQty" pattern="\d{1,2}/\d{1,2}/\d{4}" style="width:90px !important" maxlength="3" />
                         </div>
                         <div style="float:left;margin-bottom:10px;">
                             <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" onclick="SaveAdjustments();">Save</a>
@@ -102,6 +102,8 @@
     <script>
 
         var Popup, dataTable;
+        var alphanumers = /^[a-zA-Z0-9]+$/;
+
         $(document).ready(function () {
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
@@ -109,7 +111,7 @@
             $("#txtExpDate").datepicker({
                 changeMonth: true,
                 changeYear: true,
-                dateFormat: 'dd/mm/yy'
+                dateFormat: 'dd/M/yy'
             });
 
             $("#divItemNetWeight").hide();
@@ -157,23 +159,77 @@
                     return false;
                 }
             });
+
+            $("#txtLotNo").keypress(function (e) {
+
+                if (e.which === 45 || e.which === 46 || e.which === 47) { return true; }
+
+                if (e.which < 48 || (e.which > 57 && e.which < 65) || (e.which > 90 && e.which < 97) || e.which > 122) {
+                    e.preventDefault();
+                }
+            });
+
             RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
         });
 
         function UpdatePhysicalQty(ID)
         {
             $.ajax({
-                url: '/StockCount/ValidateUserSession',
+                url: '/StockCount/ValidateStockCountTeam',
                 type: 'GET',
                 datatype: 'Json',
                 success: function (data) {
-                    if (!data.success) {
-                        window.location.href = '/home/default';
+                    if (!data.success && data.message === "1") {
+
+                        $('<div></div>').appendTo('body')
+                            .html("<div><h5>Administrator has closed the count, cannot count items anymore.</h5></div>")
+                            .dialog({
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.href = '/home/default';
+                                    }
+                                },
+                                open: function (event, ui) {
+                                    $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                }
+                            });
+                    }
+                    else if (data.success) {
+                        Popup = PopupForm('/StockCount/UpdatePhysicalQty?ID=' + ID);
                     }
                 }
             });
+        }
 
-            Popup = PopupForm('/StockCount/UpdatePhysicalQty?ID=' + ID);
+
+        function ValidateUserSession() {
+            $.ajax({
+                url: '/StockCount/ValidateStockCountTeam',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success && data.message === "1") {
+
+                        $('<div></div>').appendTo('body')
+                             .html("<div><h5>Administrator has closed the count, cannot count items anymore.</h5></div>")
+                             .dialog({
+                                 modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                 buttons: {
+                                     Ok: function () {
+                                         window.location.href = '/home/default';
+                                     }
+                                 },
+                                 open: function (event, ui) {
+                                     $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                 }
+                             });
+
+
+                        
+                    }
+                }
+            });
         }
 
         function RefreshAllocationList(TeamID) {
@@ -239,7 +295,29 @@
 
 
         function SubmitForm(form) {
-            $.validator.unobtrusive.parse(form);
+            $.ajax({
+                url: '/StockCount/ValidateStockCountTeam',
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    if (!data.success && data.message === "1") {
+
+                        $('<div></div>').appendTo('body')
+                            .html("<div><h5>Administrator has closed the count, cannot count items anymore.</h5></div>")
+                            .dialog({
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.href = '/home/default';
+                                    }
+                                },
+                                open: function (event, ui) {
+                                    $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                }
+                            });
+                    }
+                    else if (data.success) {
+                       $.validator.unobtrusive.parse(form);
             if ($(form).valid()) {
                 $.ajax({
                     type: "POST",
@@ -259,6 +337,9 @@
                                          Popup.dialog('close');
                                          $(this).dialog('close');
                                      }
+                                 },
+                                 open: function (event, ui) {
+                                     $(".ui-dialog-titlebar-close", ui.dialog | ui).show();
                                  }
                              });
                         }
@@ -269,6 +350,9 @@
                                  modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
                                  buttons: {
                                      Ok: function () { Popup.dialog('close'); $(this).dialog('close'); }
+                                 },
+                                 open: function (event, ui) {
+                                     $(".ui-dialog-titlebar-close", ui.dialog | ui).show();
                                  }
                                 });
                             //ShowDialog(data.message);
@@ -276,148 +360,151 @@
                     }
                 });
             }
+                    }
+                }
+            });
+
+
+            
             return false;
         }
 
         function Cancelbutton() {
+            ValidateUserSession();
             Popup.dialog('destroy').remove();
         }
 
         function SaveAdjustments() {
+            ValidateUserSession();
+             //var zonecode = $("#ddlZoneCodes").val();
 
             $.ajax({
-                url: '/StockCount/ValidateUserSession',
+                url: '/StockCount/ValidateStockCountTeam',
                 type: 'GET',
                 datatype: 'Json',
                 success: function (data) {
-                    if (!data.success) {
-                        window.location.href = '/home/default';
-                    }
-                }
-            });
-             //var zonecode = $("#ddlZoneCodes").val();
-             var zonecode ='';
-            var bincode = $("#ddlBinCodes").val();
-             //var itemno = $("#ddlItems").val().split('-')[0];
-             var itemno = $("#txtItemNo").val().split('-')[0];
-            var lotno = $("#txtLotNo").val();
-            var expdate = $("#txtExpDate").val();
-            var teamId = '@Convert.ToInt32(Session["TeamID"])';
-            var Qty = $("#txtPhyQty").val();
+                    if (!data.success && data.message === "1") {
 
-             $.ajax({
-                url: "/StockCount/SaveAdjustments",
-                datatype: "json",
-                type: "GET",
-                 async: true,
-                 //Zonecode: zonecode,
-                data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
-                success: function (data) {
-                    if (data.success) {
-                        var message = data.message.split('-')[0];
-                        var summary = data.message.split('-')[1];
-                         $('<div></div>').appendTo('body')
-                             .html("<div><h5>" + message+ "</h5></div>")
-                             .dialog({
-                                 modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
-                                 buttons: {
-                                     Ok: function () {
-                                         ClearAjustmentControls();
-                                         $("#CountInfo").html(summary); 
-                                         RefreshAllocationList(teamId);
-                                         $(this).dialog("close");
-                                     }
-                                 }
-                             });
-                        //alert(data.message);
-                       @*RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
-                        $("#divAdjustments").hide();*@
-                    }
-                    else if (!data.success && data.message === "1") {
-                         $('<div></div>').appendTo('body')
-                            .html("<div><h5>There is an existing entry for this Item/Lot on the entered Bin. <br/> Do you wish to update the quantity, Click 'Yes' to proceed or 'No' to cancel.</h5></div>")
+                        $('<div></div>').appendTo('body')
+                            .html("<div><h5>Administrator has closed the count, cannot count items anymore.</h5></div>")
                             .dialog({
-                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
-                                width: 500, resizable: true,
-                            buttons: {
-                                Yes: function () {
-                                    $.ajax({
-                                        url: "/StockCount/UpdateAllocation",
-                                        type: "GET",
-                                        datatype: "Json",
-                                        data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
-                                        success: function (data) {
-                                            if (data.success) {
-                                                var message = data.message.split('-')[0];
-                                                var summary = data.message.split('-')[1];
-                                                $('<div></div>').appendTo('body')
-                                                    .html("<div><h5>" + message + "</h5></div>")
-                                                    .dialog({
-                                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
-                                                        buttons: {
-                                                            Ok: function () {
-                                                                ClearAjustmentControls();
-                                                                $("#CountInfo").html(summary);
-                                                                RefreshAllocationList(teamId);
-                                                                $(this).dialog("close");
-                                                            }
-                                                        }
-                                                    });
-                                            }
-                                        }
-                                    });
-                                    $(this).dialog("close");
-                                },
-                                No: function () {
-                                    $(this).dialog("close");
-
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                buttons: {
+                                    Ok: function () {
+                                        window.location.href = '/home/default';
                                     }
                                 },
-                                close: function (event, ui) {
-                                      $(this).remove();
-                                 }
+                                open: function (event, ui) {
+                                    $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                }
                             });
-
                     }
-                    else {
-                        $('<div></div>').appendTo('body')
-                        .html("<div><h5>" + data.message + "</h5></div>")
-                        .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
-                                  buttons: { Ok: function () { $(this).dialog("close"); } } });
+                    else if (data.success) {
+                        var zonecode ='';
+                        var bincode = $("#ddlBinCodes").val();
+                         //var itemno = $("#ddlItems").val().split('-')[0];
+                         var itemno = $("#txtItemNo").val().split('-')[0];
+                        var lotno = $("#txtLotNo").val();
+                        var expdate = $("#txtExpDate").val();
+                        var teamId = '@Convert.ToInt32(Session["TeamID"])';
+                        var Qty = $("#txtPhyQty").val();
+
+                         $.ajax({
+                            url: "/StockCount/SaveAdjustments",
+                            datatype: "json",
+                            type: "GET",
+                             async: true,
+                             //Zonecode: zonecode,
+                            data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
+                            success: function (data) {
+                                if (data.success) {
+                                    var message = data.message.split('-')[0];
+                                    var summary = data.message.split('-')[1];
+                                     $('<div></div>').appendTo('body')
+                                         .html("<div><h5>" + message+ "</h5></div>")
+                                         .dialog({
+                                             modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                             buttons: {
+                                                 Ok: function () {
+                                                     ClearAjustmentControls();
+                                                     $("#CountInfo").html(summary); 
+                                                     RefreshAllocationList(teamId);
+                                                     $(this).dialog("close");
+                                                 }
+                                             }
+                                         });
+                                    //alert(data.message);
+                                   @*RefreshAllocationList('@Convert.ToInt32(Session["TeamID"])');
+                                    $("#divAdjustments").hide();*@
+                                }
+                                else if (!data.success && data.message === "1") {
+                                     $('<div></div>').appendTo('body')
+                                        .html("<div><h5>There is an existing entry for this Item/Lot on the entered Bin. <br/> Do you wish to update the quantity, Click 'Yes' to proceed or 'No' to cancel.</h5></div>")
+                                        .dialog({
+                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true,
+                                            width: 500, resizable: true,
+                                        buttons: {
+                                            Yes: function () {
+                                                $.ajax({
+                                                    url: "/StockCount/UpdateAllocation",
+                                                    type: "GET",
+                                                    datatype: "Json",
+                                                    data: { TeamID: teamId, BinCode: bincode, ItemNo: itemno, LotNo: lotno, ExpDate: expdate, Qty: Qty },
+                                                    success: function (data) {
+                                                        if (data.success) {
+                                                            var message = data.message.split('-')[0];
+                                                            var summary = data.message.split('-')[1];
+                                                            $('<div></div>').appendTo('body')
+                                                                .html("<div><h5>" + message + "</h5></div>")
+                                                                .dialog({
+                                                                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                                                    buttons: {
+                                                                        Ok: function () {
+                                                                            ClearAjustmentControls();
+                                                                            $("#CountInfo").html(summary);
+                                                                            RefreshAllocationList(teamId);
+                                                                            $(this).dialog("close");
+                                                                        }
+                                                                    }
+                                                                });
+                                                        }
+                                                    }
+                                                });
+                                                $(this).dialog("close");
+                                            },
+                                            No: function () {
+                                                $(this).dialog("close");
+
+                                                }
+                                            },
+                                            close: function (event, ui) {
+                                                  $(this).remove();
+                                             }
+                                        });
+
+                                }
+                                else {
+                                    $('<div></div>').appendTo('body')
+                                    .html("<div><h5>" + data.message + "</h5></div>")
+                                    .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.StockCountSheet + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                              buttons: { Ok: function () { $(this).dialog("close"); } } });
+                                }
+                            }
+                        });
                     }
                 }
             });
         }
 
         function ShowAdjustment() {
-            $.ajax({
-                url: '/StockCount/ValidateUserSession',
-                type: 'GET',
-                datatype: 'Json',
-                success: function (data) {
-                    if (!data.success) {
-                        window.location.href = '/home/default';
-                    }
-                }
-            });
-
+            ValidateUserSession();
             $("#divAdjustments").show();
             ClearAjustmentControls();
 
         }
 
         function CancelAdjustment() {
-
-            $.ajax({
-                url: '/StockCount/ValidateUserSession',
-                type: 'GET',
-                datatype: 'Json',
-                success: function (data) {
-                    if (!data.success) {
-                        window.location.href = '/home/default';
-                    }
-                }
-            });
+            ValidateUserSession();
             $("#divAdjustments").hide();
             ClearAjustmentControls();
         }

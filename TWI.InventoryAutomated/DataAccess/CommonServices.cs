@@ -285,6 +285,28 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
+        public static List<StockCountDetail> GetStockCountDetailByID(int ID,string entryType)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetStockDetailByID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", ID));
+                    command.Parameters.Add(new SqlParameter("@entryType", entryType));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+                    List<StockCountDetail> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountDetail>(reader).ToList();
+                    return _stockcountdata;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
         public static StockCountModel GetStockCountHeaderByID(int ID)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
