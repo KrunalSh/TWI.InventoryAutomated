@@ -285,6 +285,28 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
+
+        public static List<StockCountAllocations> GetStockCountAllocationsByTeamID(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                try
+                {
+                    var command = db.Database.Connection.CreateCommand();
+                    command.CommandText = "[dbo].[GetStockCountAllocationsByTeamID]";
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", ID));
+                    db.Database.Connection.Open();
+                    var reader = command.ExecuteReader();
+                    List<StockCountAllocations> _stockcountdata = ((IObjectContextAdapter)db).ObjectContext.Translate<StockCountAllocations>(reader).ToList();
+                    return _stockcountdata;
+                }
+                catch (Exception ex)
+                { throw; }
+                finally { db.Database.Connection.Close(); }
+            }
+        }
+
         public static List<StockCountDetail> GetStockCountDetailByID(int ID,string entryType)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())

@@ -215,8 +215,8 @@ namespace TWI.InventoryAutomated.Controllers
                     case "live":
                         _resultMsg = ConnectAndPullDataFromLive(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
                         break;
-                    case "dev": _resultMsg = ConnectAndPullDataFromDev(ID,Convert.ToString(Session["CompanyName"]), ref ItemCount);
-                        break;
+                    //case "dev": _resultMsg = ConnectAndPullDataFromDev(ID,Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                    //    break;
                     case "test": _resultMsg = ConnectAndPullFromTest(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
                         break;
                 }
@@ -231,26 +231,29 @@ namespace TWI.InventoryAutomated.Controllers
         public ActionResult PushPhyJournalData(int ID)
         {
             string _resultMsg = string.Empty;
+            bool issuccess = true;
             try
             {
                 //Code to be moved to detail screen where pull, push everything will happen
                 switch (Convert.ToString(Session["InstanceName"]).ToLower())
                 {
                     case "live":
-                        _resultMsg = ConnectAndPushDataToLive(ID, Convert.ToString(Session["CompanyName"]));
+                        issuccess = ConnectAndPushDataToLive(ID, Convert.ToString(Session["CompanyName"]),ref _resultMsg);
                         break;
-                    case "dev":
-                        _resultMsg = ConnectAndPushDataToDEV(ID, Convert.ToString(Session["CompanyName"]));
-                        break;
+                    //case "dev":
+                    //    _resultMsg = ConnectAndPushDataToDEV(ID, Convert.ToString(Session["CompanyName"]));
+                    //    break;
                     case "test":
-                        _resultMsg = ConnectAndPushDataToTest(ID, Convert.ToString(Session["CompanyName"]));
+                         issuccess = ConnectAndPushDataToTest(ID, Convert.ToString(Session["CompanyName"]), ref _resultMsg);
                         break;
                 }
-                return Content(_resultMsg);
+                //return Content(_resultMsg);
+                return Json(new { success = issuccess, message = _resultMsg }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Content(ex.Message);
+                _resultMsg = ex.Message; 
+                return Content(_resultMsg);
             }
         }
 
@@ -1020,7 +1023,10 @@ namespace TWI.InventoryAutomated.Controllers
                     if (TeamID != -1)
                     {
                         if (db.StockCountAllocations.Where(x => x.TeamID == TeamID).Count() > 0)
-                        { _allocateditems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).OrderByDescending(x => x.UpdatedDate).ToList(); }
+                        {
+                            //_allocateditems = db.StockCountAllocations.Where(x => x.TeamID == TeamID).OrderByDescending(x => x.UpdatedDate).ToList();
+                            _allocateditems = CommonServices.GetStockCountAllocationsByTeamID(TeamID);
+                        }
 
                     }
                 }
@@ -1292,22 +1298,22 @@ namespace TWI.InventoryAutomated.Controllers
 
                         StockCountAllocations _item = new StockCountAllocations();
 
-                        if (db.StockCountDetail.Where(x => x.ID == ItemID).Count() > 0)
+                        if (db.StockCountDetail.Where(x => x.StockCountDetailID == ItemID).Count() > 0)
                             //if (db.StockCountDetail.Where(x => x.ID == ItemID && x.ItemNo == itemno && x.ZoneCode == zonecode && x.BinCode == bincode).Count() > 0)
                         {
                              //&& x.LotNo == lotno
-                            _std = db.StockCountDetail.Where(x => x.ID == ItemID).FirstOrDefault();
+                            _std = db.StockCountDetail.Where(x => x.StockCountDetailID == ItemID).FirstOrDefault();
 
-                            if (db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.ItemNo == _std.ItemNo && x.BinCode == _std.BinCode && x.ZoneCode == _std.ZoneCode && x.LotNo == _std.LotNo && x.ExpirationDate == _std.ExpirationDate).Count() > 0)
+                            if (db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.StockCountDetailID == ItemID && x.ItemNo == _std.ItemNo && x.BinCode == _std.BinCode && x.ZoneCode == _std.ZoneCode && x.LotNo == _std.LotNo && x.ExpirationDate == _std.ExpirationDate).Count() > 0)
                                 continue;
 
                             _item = CreateAllocationRecord(TeamID, _std);
                         }
-                        else if (db.StockCountAllocations.Where(x => x.ID == ItemID).Count() > 0)
+                        else if (db.StockCountAllocations.Where(x => x.StockCountDetailID == ItemID).Count() > 0)
                         {
                             //&& x.LotNo == lotno  && x.ItemNo == itemno && x.ZoneCode == zonecode && x.BinCode == bincode && x.LotNo == 
-                            _prevalloc = db.StockCountAllocations.Where(x => x.ID == ItemID).FirstOrDefault();
-                            if (db.StockCountAllocations.Where(x => x.SCIterationID == CountID && x.ItemNo == _prevalloc.ItemNo && x.BinCode == _prevalloc.BinCode && x.ZoneCode == _prevalloc.ZoneCode && x.LotNo == _prevalloc.LotNo && x.ExpirationDate == _prevalloc.ExpirationDate).Count() > 0)
+                            _prevalloc = db.StockCountAllocations.Where(x => x.StockCountDetailID == ItemID).FirstOrDefault();
+                            if (db.StockCountAllocations.Where(x => x.SCIterationID == CountID &&  x.StockCountDetailID == ItemID && x.ItemNo == _prevalloc.ItemNo && x.BinCode == _prevalloc.BinCode && x.ZoneCode == _prevalloc.ZoneCode && x.LotNo == _prevalloc.LotNo && x.ExpirationDate == _prevalloc.ExpirationDate).Count() > 0)
                                 continue;
 
                             _item = CreateAllocationRecord(TeamID, _prevalloc);
@@ -1332,6 +1338,8 @@ namespace TWI.InventoryAutomated.Controllers
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
+                //&& x.UOMCode == _allocitem.UOMCode
+                NAVItems _navitem = db.NAVItems.Where(x => x.SCID == _item.StockCountID && x.ItemNo == _allocitem.ItemNo).FirstOrDefault();
                 _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
                 _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
                 _item.BatchName = _allocitem.BatchName;
@@ -1340,6 +1348,7 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.CreatedBy = Convert.ToInt32(Session["UserID"]);
                 _item.CreatedDate = DateTime.Now;
                 _item.UpdatedDate = DateTime.Now;
+                _item.NSNNo = _navitem.NSNNo;
                 _item.Description = _allocitem.Description;
                 _item.DocType = _allocitem.DocType;
                 _item.ExpirationDate = _allocitem.ExpirationDate;
@@ -1353,6 +1362,7 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.UOMCode = _allocitem.UOMCode;
                 _item.WhseDocumentNo = _allocitem.WhseDocumentNo;
                 _item.ZoneCode = _allocitem.ZoneCode;
+                _item.StockCountDetailID = _allocitem.StockCountDetailID;
             }
             return _item;
         }
@@ -1363,6 +1373,8 @@ namespace TWI.InventoryAutomated.Controllers
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 _item.StockCountID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID;
+                //&& x.UOMCode == _std.UOMCode
+                NAVItems _navitem = db.NAVItems.Where(x => x.SCID == _item.StockCountID && x.ItemNo == _std.ItemNo).FirstOrDefault();
                 _item.SCIterationID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID;
                 _item.SCIterationName = db.StockCountIterations.Where(x => x.ID == _item.SCIterationID).FirstOrDefault().IterationName;
                 _item.BatchName = _std.BatchName;
@@ -1372,7 +1384,8 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.CreatedDate = DateTime.Now;
                 _item.UpdatedDate = DateTime.Now;
                 _item.Description = _std.Description;
-                _item.DocType = "INV";
+                _item.NSNNo = _navitem.NSNNo;
+                _item.DocType = _std.TemplateName;
                 _item.ExpirationDate = _std.ExpirationDate;
                 _item.ItemNo = Convert.ToString(_std.ItemNo);
                 _item.LocationCode = Convert.ToString(_std.LocationCode);
@@ -1384,6 +1397,7 @@ namespace TWI.InventoryAutomated.Controllers
                 _item.UOMCode = _std.UOMCode;
                 _item.WhseDocumentNo = _std.WhseDocumentNo;
                 _item.ZoneCode = _std.ZoneCode;
+                _item.StockCountDetailID = _std.StockCountDetailID;
             }
             return _item;
         }
@@ -1942,13 +1956,15 @@ namespace TWI.InventoryAutomated.Controllers
                         decimal NetWt = 0;
                         try
                         {
-                            NetWt = db.NAVItems.Where(x => x.SCID == _dbsca.StockCountID && x.ItemNo == _dbsca.ItemNo && x.UOMCode == _dbsca.UOMCode).FirstOrDefault().NetWeight.Value;
+                            //&& x.UOMCode == _dbsca.UOMCode
+                            NetWt = db.NAVItems.Where(x => x.SCID == _dbsca.StockCountID && x.ItemNo == _dbsca.ItemNo ).FirstOrDefault().NetWeight.Value;
                         }
                         catch (Exception e)
                         {
                             NetWt = 0;
                         }
                         _dbsca.PhysicalQty = _sca.PhysicalQty * NetWt;
+                        _dbsca.UpdatedDate = DateTime.Now;
                     }
                     else {
                         if (Convert.ToString(_sca.PhysicalQty).Contains('.')) {
@@ -1959,10 +1975,12 @@ namespace TWI.InventoryAutomated.Controllers
                         if (_sca.PhysicalQty > 999) { return Json(new { success = false, message = "Max Qty for  " + _dbsca.UOMCode + " item is 999." }, JsonRequestBehavior.AllowGet); }
 
                         _dbsca.PhysicalQty = _sca.PhysicalQty;
+                        _dbsca.UpdatedDate = DateTime.Now;
                     }
 
                     db.StockCountAllocations.Attach(_dbsca);
                     db.Entry(_dbsca).Property(y => y.PhysicalQty).IsModified = true;
+                    db.Entry(_dbsca).Property(y => y.UpdatedDate).IsModified = true;
                     db.SaveChanges();
 
                     int CountedRows = db.StockCountAllocations.Where(x => x.TeamID == _dbsca.TeamID && x.DocType == "INV" && x.PhysicalQty != null).Count();
@@ -1990,6 +2008,9 @@ namespace TWI.InventoryAutomated.Controllers
             string InstanceName = Session["InstanceName"].ToString();
             string CompanyName = Session["CompanyName"].ToString();
             ItemNo = ItemNo.Trim();
+            BinCode = BinCode.Trim();
+            LotNo = LotNo.Trim();
+            ExpDate = ExpDate.Trim();
             //List<TestItemList.ItemsList> _obj= new List<ItemsList>();
             //if (string.IsNullOrEmpty(ZoneCode))
             //{
@@ -2041,8 +2062,10 @@ namespace TWI.InventoryAutomated.Controllers
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     int SCID = 0;
+                    int ItrID = 0;
 
                     SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
+                    ItrID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCIterationID.Value;
 
                     if (db.NAVItems.Where(x => x.ItemNo == ItemNo && x.SCID == SCID).Count() == 0)
                         return Json(new { success = false, message = "Item No. invalid. Kindly enter a valid Item No." }, JsonRequestBehavior.AllowGet);
@@ -2054,6 +2077,9 @@ namespace TWI.InventoryAutomated.Controllers
                         return Json(new { success = false, message = "Lot No & Expiry Date are mandatory for this item." }, JsonRequestBehavior.AllowGet);
                     }
 
+                    if (string.IsNullOrEmpty(_item.ItemTrackingCode) && !string.IsNullOrEmpty(ExpDate))
+                    { return Json(new { success = false, message = "Lot No & Expiry Date disabled for this item, kindly clear expiry date and then save." },JsonRequestBehavior.AllowGet); }
+                     
                     if (Qty.Split('.').Length > 2)
                     {
                         return Json(new { success = false, message = "Invalid Qty entered." }, JsonRequestBehavior.AllowGet);
@@ -2067,7 +2093,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                     switch (InstanceName.ToLower())
                     {
-                        //case "live": ZoneCode = GetBinsByZoneAndLocationFromLive(CompanyName, BinCode, _std.LocationCode);break;
+                        case "live": ZoneCode = GetBinsByZoneAndLocationFromLive(CompanyName, BinCode, _std.LocationCode);break;
                         //case "dev": ZoneCode = GetBinsByZoneAndLocationFromDev(CompanyName, BinCode, _std.LocationCode); break;
                         case "test": ZoneCode = GetBinsByZoneAndLocationFromTest(CompanyName, BinCode, _std.LocationCode); break;
                     }
@@ -2083,6 +2109,9 @@ namespace TWI.InventoryAutomated.Controllers
                     {
                         if (int.TryParse(Qty, out ItemQty) == false)
                         { return Json(new { success = false, message = "Invalid Qty entered,Kindly rectify." }, JsonRequestBehavior.AllowGet);}
+
+                        if (ItemQty < 0)
+                        { return Json(new { success = false, message = "Invalid Qty entered,negative values not allowed. Kindly rectify" }, JsonRequestBehavior.AllowGet); }
                     }
                     catch {
                         return Json(new { success = false, message = "Invalid Qty entered,Kindly rectify." }, JsonRequestBehavior.AllowGet);
@@ -2093,18 +2122,35 @@ namespace TWI.InventoryAutomated.Controllers
                     if (!string.IsNullOrEmpty(ExpDate))
                     {
                         try
-                        { DateTime.ParseExact(ExpDate, "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-                          formattedExpDate = DateTime.ParseExact(ExpDate, "dd/MMM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MM/yyyy");
+                        {
+                            //DateTime.ParseExact(ExpDate, "dd/MMM/yyyy", CultureInfo.InvariantCulture);
+                            //formattedExpDate = DateTime.ParseExact(ExpDate, "MMM/dd/yyyy", CultureInfo.CreateSpecificCulture("en-US")).ToString("dd/MM/yyyy");
+                            //DateTime dt = DateTime.ParseExact(ExpDate, "dd/MMM/yyyy", CultureInfo.CreateSpecificCulture("en-US"));
+                            //formattedExpDate = dt.ToString();
+                            System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+                            DateTime usdate = DateTime.Parse(ExpDate, culture, System.Globalization.DateTimeStyles.NoCurrentDateDefault);
+                            formattedExpDate = usdate.ToString("dd/MM/yyyy");
+
+                            //LotNo = usdate.ToShortDateString();
                         }
                         catch (Exception ex)
-                        { return Json(new { success = false, message = "Invalid date entered, Kindly enter date in dd/MMM/yyyy format." }, JsonRequestBehavior.AllowGet); }
+                        { return Json(new { success = false, message = "Invalid date entered, Kindly enter date in MM/dd//yyyy format." }, JsonRequestBehavior.AllowGet); }
                     }
+                    else { LotNo = ""; }
 
                     if (_item.UOMCode.ToLower() == "lb" && ItemQty > 150) { return Json(new { success = false, message = "Max Qty for LB items is 150 Cases, kindly enter a lesser value." }, JsonRequestBehavior.AllowGet); }
                     else if(ItemQty > 999) { return Json(new { success = false, message = "Qty entered cannot be greater than 999." }, JsonRequestBehavior.AllowGet); }
 
                     if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.TeamID == TeamID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == formattedExpDate).Count() > 0)
                     { return Json(new { success = false, message = "1" }, JsonRequestBehavior.AllowGet); }
+
+                    if (db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == ItrID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == formattedExpDate).Count() > 0)
+                    {
+                        StockCountAllocations _scd = db.StockCountAllocations.Where(x => x.StockCountID == SCID && x.SCIterationID == ItrID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == formattedExpDate).FirstOrDefault();
+                        string AllocatedTeam = _scd.TeamCode + " - " + _scd.MemberName;
+
+                        return Json(new { success = false, message = "2", TeamInfo = AllocatedTeam }, JsonRequestBehavior.AllowGet);
+                    }
 
                     if (db.StockCountDetail.Where(x => x.SCID == SCID && x.ItemNo == ItemNo && x.LotNo == LotNo && x.ExpirationDate == formattedExpDate).Count() == 0)
                     {
@@ -2130,19 +2176,21 @@ namespace TWI.InventoryAutomated.Controllers
                     _sca.CreatedDate = DateTime.Now;
                     _sca.UpdatedDate = DateTime.Now;
                     _sca.Description = _item.ItemDesc;
+                    _sca.NSNNo = _item.NSNNo;
                     _sca.DocType = "ADJUST";
                     _sca.ExpirationDate = formattedExpDate;
                     _sca.ItemNo = ItemNo;
                     _sca.LocationCode = _std.LocationCode;
                     _sca.LotNo = LotNo;
                     _sca.NAVQty = 0;
-                    if (_item.UOMCode.ToLower() == "lb") { _sca.PhysicalQty = (Convert.ToDecimal(ItemQty) * _item.NetWeight) ;  } else { _sca.PhysicalQty = Convert.ToDecimal(ItemQty); }
+                    if (_item.UOMCode.ToLower() == "lb") { _sca.PhysicalQty = (Convert.ToDecimal(ItemQty) * _item.NetWeight); } else { _sca.PhysicalQty = Convert.ToDecimal(ItemQty); }
                     _sca.TeamID = TeamID;
                     _sca.TeamCode = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().TeamCode;
-                    _sca.TemplateName = _std.TemplateName;
+                    _sca.TemplateName ="ADJUST";
                     _sca.UOMCode = _item.UOMCode;
                     _sca.WhseDocumentNo = _std.WhseDocumentNo;
                     _sca.ZoneCode = ZoneCode;
+
                     db.StockCountAllocations.Add(_sca);
                     db.SaveChanges();
 
@@ -2178,15 +2226,27 @@ namespace TWI.InventoryAutomated.Controllers
                 SCID = db.StockCountTeams.Where(x => x.ID == TeamID).FirstOrDefault().SCID.Value;
                 ItemNo = ItemNo.Trim();
                 string formatteddate = "";
+                
                 if (!string.IsNullOrEmpty(ExpDate))
-                { formatteddate = DateTime.ParseExact(ExpDate, "dd/MMM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MM/yyyy"); }
+                {
+                    //formatteddate = DateTime.ParseExact(ExpDate, "dd/MMM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MM/yyyy"); LotNo = formatteddate;
+                    System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-US");
+                    DateTime usdate = DateTime.Parse(ExpDate, culture, System.Globalization.DateTimeStyles.NoCurrentDateDefault);
+                    //formatteddate = usdate.ToString("d", culture);
+                    formatteddate = usdate.ToString("dd/MM/yyyy");
+
+                    LotNo = formatteddate;
+                }
+                else { LotNo = ""; }
 
                 if (db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == formatteddate).Count() > 0)
                     _sca = db.StockCountAllocations.Where(x => x.TeamID == TeamID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LotNo == LotNo && x.ExpirationDate == formatteddate).FirstOrDefault();
 
                 _sca.PhysicalQty = Convert.ToDecimal(Qty);
+                _sca.UpdatedDate = DateTime.Now;
                 db.StockCountAllocations.Attach(_sca);
                 db.Entry(_sca).Property(x => x.PhysicalQty).IsModified = true;
+                db.Entry(_sca).Property(x => x.UpdatedDate).IsModified = true;
                 db.SaveChanges();
 
                 string _response = "Saved Successfully" + " - " + GetCountSummary(TeamID);
@@ -2223,6 +2283,15 @@ namespace TWI.InventoryAutomated.Controllers
                 summaryinfo += Resources.GlobalResource.ADJEntries + ": " + Convert.ToString(NewRows);
             }
             return summaryinfo;
+        }
+
+        public JsonResult GetAllocationData(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                StockCountAllocations _scd = db.StockCountAllocations.Where(x => x.ID == ID).FirstOrDefault();
+                return Json(new { data = _scd  }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #endregion
@@ -2446,10 +2515,9 @@ namespace TWI.InventoryAutomated.Controllers
             if (Items.Length == 1)
             {
                 Item = Items[0].Split(':');
-
-                if (!ValidateItem(Item, ref errormsg))
-                    return Json(new { success = false, message = errormsg == "0" ? "Selected Item not allocated in the selected count, Do you still want to proceed?" : "Selected Item is not yet counted, Do you still want to proceed? " }, JsonRequestBehavior.AllowGet);
-                else
+                //if (!ValidateItem(Item, ref errormsg))
+                //    return Json(new { success = false, message = errormsg == "0" ? "Selected Item not allocated in the selected count, Do you still want to proceed?" : "Selected Item is not yet counted, Do you still want to proceed? " }, JsonRequestBehavior.AllowGet);
+                //else
                     UpdateItemFinalQty(Item);
             }
             else
@@ -2597,6 +2665,9 @@ namespace TWI.InventoryAutomated.Controllers
                     if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
                         return Json(new { success = false, message = "Invalid batch selected, kindly check your selection." }, JsonRequestBehavior.AllowGet);
 
+                    if(db.StockCountHeader.Where(x=> x.ID == ID && x.Status == "C").Count() > 0)
+                        return Json(new { success = false, message = "Cannot clear posted data of a closed batch." }, JsonRequestBehavior.AllowGet);
+
                     int rowcount = CommonServices.ClearFinalQtyByBatchID(ID);
                     return Json(new { success = true, message = "Successfully cleared Final Qty." }, JsonRequestBehavior.AllowGet);
                 }
@@ -2656,6 +2727,40 @@ namespace TWI.InventoryAutomated.Controllers
                 }
 
                 return Json(new { success = true, message = itemresult }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult CheckFSOSItem(int teamId, string itemno)
+        {
+            int SCID = 0; string itemresult = "";
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                SCID = db.StockCountAllocations.Where(x => x.TeamID == teamId).FirstOrDefault().StockCountID.Value;
+                NAVItems _item = db.NAVItems.Where(x => x.SCID == SCID && x.ItemNo == itemno).FirstOrDefault();
+
+                if (_item != null)
+                {
+                    string _trackingcode = Convert.ToString(_item.ItemTrackingCode); 
+                    if (!string.IsNullOrEmpty(_trackingcode) && _trackingcode.ToLower()  == "exp")
+                    { return Json(new { success = true}, JsonRequestBehavior.AllowGet); }
+                    else { return Json(new { success = false }, JsonRequestBehavior.AllowGet); }
+                }
+                else
+                {
+                    return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+
+        public JsonResult ValidateBatch(int ID)
+        {
+            using (InventoryPortalEntities db = new InventoryPortalEntities())
+            {
+                if (db.StockCountHeader.Where(x => x.ID == ID && x.Status == "C").Count() > 0)
+                    return Json(new { success = false }, JsonRequestBehavior.AllowGet);
+
+
+                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -2763,6 +2868,8 @@ namespace TWI.InventoryAutomated.Controllers
             _item.ItemCategoryCode = string.IsNullOrEmpty(Convert.ToString(obj.Item_Category_Code)) ? "" : Convert.ToString(obj.Item_Category_Code);
             _item.NetWeight = string.IsNullOrEmpty(Convert.ToString(obj.Net_Weight)) ? 0 : Convert.ToDecimal(obj.Net_Weight);
             _item.StandardCost = string.IsNullOrEmpty(Convert.ToString(obj.Standard_Cost)) ? 0 : Convert.ToDecimal(obj.Standard_Cost);
+            _item.NSNNo  = string.IsNullOrEmpty(Convert.ToString( obj.TW_NSN_No_Cross_Reference_No)) ? "" : Convert.ToString(obj.TW_NSN_No_Cross_Reference_No);
+            _item.ItemTrackingCode = string.IsNullOrEmpty(Convert.ToString(obj.Item_Tracking_Code)) ? "" : Convert.ToString(obj.Item_Tracking_Code);
             _item.CreatedDate = DateTime.Now;
             return _item;
         }
@@ -2778,6 +2885,8 @@ namespace TWI.InventoryAutomated.Controllers
             _item.ItemCategoryCode = string.IsNullOrEmpty(Convert.ToString(obj.Item_Category_Code)) ? "" : Convert.ToString(obj.Item_Category_Code);
             _item.NetWeight = string.IsNullOrEmpty(Convert.ToString(obj.Net_Weight)) ? 0 : Convert.ToDecimal(obj.Net_Weight);
             _item.StandardCost = string.IsNullOrEmpty(Convert.ToString(obj.Standard_Cost)) ? 0 : Convert.ToDecimal(obj.Standard_Cost);
+            _item.NSNNo = string.IsNullOrEmpty(Convert.ToString(obj.TW_NSN_No_Cross_Reference_No)) ? "" : Convert.ToString(obj.TW_NSN_No_Cross_Reference_No);
+            _item.ItemTrackingCode = string.IsNullOrEmpty(Convert.ToString(obj.Item_Tracking_Code)) ? "" : Convert.ToString(obj.Item_Tracking_Code);
             _item.CreatedDate = DateTime.Now;
             return _item;
         }
@@ -4999,7 +5108,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                 List<string> itemno = (from e in db.NAVItems
                                        where e.SCID == SCID
-                                       select e.ItemNo + " - " + e.ItemDesc).ToList();
+                                       select e.ItemNo + " - " +  e.NSNNo + " - " + e.ItemDesc).ToList();
 
                 //itemno = db.NAVItems.Where(x => x.SCID == SCID).Concat(;
                 return Json(itemno, JsonRequestBehavior.AllowGet);
@@ -5255,182 +5364,14 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                     }
                     else if (CompanyName.ToLower() == "theodor wille intertrade usa")
-                    {
-                        #region "Commented Code"
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                        //DeleteStockCountDetail(ID);
-
-                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                        //ItemCount = _obj.Count;
-                        #endregion 
-                    }
+                    { }
                     else if ((CompanyName.ToLower() == "twi gmbh switzerland"))
-                    {
-                        #region "Commented Code"
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                        //DeleteStockCountDetail(ID);
-
-                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                        //ItemCount = _obj.Count;
-                        #endregion 
-                    }
+                    { }
 
                     _sc.TotalItemCount = ItemCount;
                     db.StockCountHeader.Attach(_sc);
                     db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
                     db.SaveChanges();
-                    return Resources.GlobalResource.MsgSuccessfullyPulled + ItemCount.ToString() + Resources.GlobalResource.MsgItemsFromERP;
-                }
-            }
-            catch (Exception ex) { return ex.Message; }
-        }
-
-        private string ConnectAndPullDataFromDev(int ID,string CompanyName,  ref int ItemCount)
-        {
-            try
-            {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
-                {
-                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
-                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
-                    if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPull; }
-
-                    if (CompanyName.ToLower() == "theodor wille intertrade usa")
-                    {
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                        //DeleteStockCountDetail(ID);
-
-                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                        //ItemCount = _obj.Count;
-
-                    }
-                    else if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
-                    {
-                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                            , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                        if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                            return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                        if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                            return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                        DeleteStockCountDetail(ID);
-
-                        foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        { db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                        ItemCount = _obj.Count;
-
-                    }
-                    else if ((CompanyName.ToLower() == "twi gmbh switzerland"))
-                    {
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                        //DeleteStockCountDetail(ID);
-
-                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                        //ItemCount = _obj.Count;
-                    }
-
-                    //_sc.TotalItemCount = ItemCount;
-                    //db.StockCountHeader.Attach(_sc);
-                    //db.Entry(_sc).Property(x => x.TotalItemCount).IsModified = true;
-                    //db.SaveChanges();
                     return Resources.GlobalResource.MsgSuccessfullyPulled + ItemCount.ToString() + Resources.GlobalResource.MsgItemsFromERP;
                 }
             }
@@ -5450,36 +5391,7 @@ namespace TWI.InventoryAutomated.Controllers
                 if (db.StockCountDetail.Where(x => x.SCID == ID).Count() > 0) return "Data Already pulled from NAV, cannot pull data again for the same batch.";
 
                 if (CompanyName.ToLower() == "theodor wille intertrade usa")
-                {
-                        #region "CommentedCode"
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                        //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                        //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                        //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                        //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                        //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                        //DeleteStockCountDetail(ID);
-
-                        //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                        //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                        //ItemCount = _obj.Count;
-                        #endregion
-                }
+                { }
                 else if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
                 {
                     _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
@@ -5518,34 +5430,7 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                 }
                 else if ((CompanyName.ToLower() == "twi gmbh switzerland"))
-                {
-                    //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                    //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                    //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                    //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                    //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                    //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                    //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                    //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                    //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-                    //List<TESTPhyInvJournal.PhysicalInvJournal> _obj = _phyjournal.ToList();
-
-                    //if (_obj.Count == 0) { return Resources.GlobalResource.MsgCreateValidBatch; }
-
-                    //if (_obj.Where(x => x.Qty_Phys_Inventory < 0).Count() > 0)
-                    //    return _obj.Where(x => x.Qty_Phys_Inventory < 0).Count() + " Item Line(s) is having negative value(s), Kindly rectify in NAV to proceed.";
-
-                    //if (_obj.Where(x => x.Qty_Phys_Inventory > 0).Count() > 0)
-                    //    return Resources.GlobalResource.MsgNAVNonZeroPhyQtyMsg;
-
-                    //DeleteStockCountDetail(ID);
-
-                    //foreach (TESTPhyInvJournal.PhysicalInvJournal obj in _obj)
-                    //{ db.StockCountDetail.Add(NewStockCountDetail(obj, ID)); }
-                    //ItemCount = _obj.Count;
-                }
+                { }
 
                 _sc.TotalItemCount = ItemCount;
                 db.StockCountHeader.Attach(_sc);
@@ -5561,322 +5446,593 @@ namespace TWI.InventoryAutomated.Controllers
 
         #region "Helper Function(s) To Push Data"
 
-        string ConnectAndPushDataToLive(int ID, string CompanyName)
-        {
-            string ItemNo = string.Empty;
-            string BinCode = string.Empty;
-            string locationcode = string.Empty;
-            string LotNo = string.Empty;
-            string ExpirationDate = string.Empty;
-            int itemcount = 0;
-            int adjcount = 0;
+        //bool ConnectAndPushDataToLive(int ID, string CompanyName, ref string resultstring)
+        //{
+        //    string ItemNo = string.Empty;
+        //    string BinCode = string.Empty;
+        //    string locationcode = string.Empty;
+        //    string LotNo = string.Empty;
+        //    string ExpirationDate = string.Empty;
+        //    int itemcount = 0;
+        //    int adjcount = 0;
 
+        //    try
+        //    {
+        //        using (InventoryPortalEntities db = new InventoryPortalEntities())
+        //        {
+        //            if (db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).Count() == 0) { resultstring = Resources.GlobalResource.MsgNoRecordsFound; return false; }
+        //            StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).FirstOrDefault();
+        //            if (_sc.Status == "C") {  resultstring =  Resources.GlobalResource.MsgClosedBatchPush; return false; }
+
+        //            //Validation to check whether records pulled from NAV.
+        //            if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+        //            { resultstring = "No Data Pulled for the selected Batch, cannot proceed."; return false; }
+
+        //            //Validation to check whether physical Qty entered for Items is having Negative Values
+        //            if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
+        //            { resultstring = db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further"; }
+
+        //            //Validation to check whether physical Qty entered for all items or not
+        //            if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
+        //                return "Final Value not posted for all Item Lines, cannot push data to NAV";
+
+        //            if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+        //            {
+        //                //Connect to PhysicalInvJournal Service To Post Data
+        //                _service = new LIVEPhyInvJournal.PhysicalInvJournal_Service();
+        //                ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+        //                ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                _servicefilters = new List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>();
+        //                ((List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new LIVEPhyInvJournal.PhysicalInvJournal_Filter { Field = LIVEPhyInvJournal.PhysicalInvJournal_Fields.Journal_Batch_Name, Criteria = _sc.SCCode });
+        //                ((List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new LIVEPhyInvJournal.PhysicalInvJournal_Filter { Field = LIVEPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+        //                LIVEPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+        //                for (int i = 0; i <= _phyjournal.Length - 1; i++)
+        //                {
+        //                    ItemNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Item_No)) ? "" : Convert.ToString(_phyjournal[i].Item_No);
+        //                    BinCode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Bin_Code)) ? "" : Convert.ToString(_phyjournal[i].Bin_Code);
+        //                    locationcode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Location_Code)) ? "" : Convert.ToString(_phyjournal[i].Location_Code);
+        //                    LotNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Lot_No)) ? "" : Convert.ToString(_phyjournal[i].Lot_No);
+        //                    ExpirationDate = _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy");
+
+        //                    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo && x.ExpirationDate == ExpirationDate).FirstOrDefault();
+        //                    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+        //                    itemcount++;
+        //                }
+
+        //                ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+
+
+
+        //                _service = new LIVEGMBHPostAdjustments.InventoryCount();
+        //                ((LIVEGMBHPostAdjustments.InventoryCount)_service).UseDefaultCredentials = false;
+        //                ((LIVEGMBHPostAdjustments.InventoryCount)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                List<StockCountDetail> _batchcount = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "INV" && x.PhyicalQty != null).ToList();
+        //                bool invposted = true;
+
+        //                itemcount = 0;
+        //                decimal physicalqty = 0;
+        //                foreach (StockCountDetail _scd in _batchcount)
+        //                {
+        //                    DateTime _date;
+        //                    if (_scd.ExpirationDate == "")
+        //                    { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/1753", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+        //                    else { _date = Convert.ToDateTime(DateTime.ParseExact(_scd.ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+
+        //                    if (_scd.PhyicalQty != null) { physicalqty = _scd.PhyicalQty.Value; } else { physicalqty = 0; }
+
+        //                    //invposted = ((LIVEGMBHPostAdjustments.InventoryCount)_service).UpdatePhyiscalInventory(_scd.ItemNo, physicalqty, _scd.ZoneCode, _scd.BinCode, _scd.LotNo, _date);
+        //                    //if (invposted) { itemcount++; }
+        //                }
+
+        //                //Code to post adjustments
+        //                List<StockCountDetail> _adjustments = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "ADJUST").ToList();
+        //                bool Posted = true;
+
+
+        //                for (int i = 0; i <= _adjustments.Count() - 1; i++)
+        //                {
+        //                    Posted = ((LIVEGMBHPostAdjustments.InventoryCount)_service).GetAdjustmentLines(_adjustments[i].ItemNo, _adjustments[i].PhyicalQty.Value, _adjustments[i].ZoneCode, _adjustments[i].BinCode, _adjustments[i].LotNo, Convert.ToDateTime(DateTime.ParseExact(_adjustments[i].ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)));
+        //                    if (!Posted) { adjcount++; }
+        //                }
+
+        //                if (adjcount > 0) { return "Adjustment Entry data push failed"; }
+        //            }
+        //            else if (CompanyName.ToLower() == "theodor wille intertrade usa")
+        //            {
+        //                #region "Commented Code"
+        //                ////Connect to PhysicalInvJournal Service To Post Data
+        //                //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+        //                //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+        //                //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+        //                //{
+        //                //    ItemNo = _phyjournal[i].Item_No;
+        //                //    BinCode = _phyjournal[i].Bin_Code;
+        //                //    locationcode = _phyjournal[i].Location_Code;
+        //                //    LotNo = _phyjournal[i].Lot_No;
+
+        //                //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+        //                //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+        //                //    itemcount++;
+        //                //}
+
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+        //                #endregion 
+        //            }
+        //            else if (CompanyName.ToLower() == "twi gmbh switzerland")
+        //            {
+        //                #region "Commented Code"
+        //                ////Connect to PhysicalInvJournal Service To Post Data
+        //                //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+        //                //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+        //                //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+        //                //{
+        //                //    ItemNo = _phyjournal[i].Item_No;
+        //                //    BinCode = _phyjournal[i].Bin_Code;
+        //                //    locationcode = _phyjournal[i].Location_Code;
+        //                //    LotNo = _phyjournal[i].Lot_No;
+
+        //                //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+        //                //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+        //                //    itemcount++;
+        //                //}
+
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+        //                #endregion 
+        //            }
+
+        //            //After successfull data push to NAV, Close the batch in our Web App System.
+        //            _sc.Status = "C";
+        //            db.StockCountHeader.Attach(_sc);
+        //            db.Entry(_sc).Property(x => x.Status).IsModified = true;
+        //            db.SaveChanges();
+        //            return "Data Successfully Pushed to NAV";
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
+
+        bool ConnectAndPushDataToLive(int ID, string CompanyName, ref string resultstring)
+        {
+            string ItemNo = string.Empty; string BinCode = string.Empty; string locationcode = string.Empty; string LotNo = string.Empty; string ExpirationDate = string.Empty;
+            int itemcount = 0;int notcountitems = 0; int adjcount = 0; int adjnotpushed = 0; int totaladj = 0;
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    if (db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
-                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).FirstOrDefault();
-                    if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPush; }
-
-                    //Validation to check whether records pulled from NAV.
-                    if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
-                        return "No Data Pulled for the selected Batch, cannot proceed.";
-
-                    //Validation to check whether physical Qty entered for Items is having Negative Values
-                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
-                        return db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further";
-
-                    //Validation to check whether physical Qty entered for all items or not
-                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
-                        return "Final Value not posted for all Item Lines, cannot push data to NAV";
-
                     if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
                     {
-                        //Connect to PhysicalInvJournal Service To Post Data
-                        _service = new LIVEPhyInvJournal.PhysicalInvJournal_Service();
-                        ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                        _service = new LIVEGMBHPostAdjustments.InventoryCount();
+                        ((LIVEGMBHPostAdjustments.InventoryCount)_service).UseDefaultCredentials = false;
+                        ((LIVEGMBHPostAdjustments.InventoryCount)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
                             , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
                             , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
 
-                        _servicefilters = new List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>();
-                        ((List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new LIVEPhyInvJournal.PhysicalInvJournal_Filter { Field = LIVEPhyInvJournal.PhysicalInvJournal_Fields.Journal_Batch_Name, Criteria = _sc.SCCode });
-                        ((List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new LIVEPhyInvJournal.PhysicalInvJournal_Filter { Field = LIVEPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+                        List<StockCountDetail> _batchcount = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "INV" && x.PhyicalQty != null).ToList();
+                        bool invposted = true;
 
-                        LIVEPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<LIVEPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        for (int i = 0; i <= _phyjournal.Length - 1; i++)
+                        itemcount = 0;
+                        decimal physicalqty = 0;
+                        foreach (StockCountDetail _scd in _batchcount)
                         {
-                            ItemNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Item_No)) ? "" : Convert.ToString(_phyjournal[i].Item_No);
-                            BinCode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Bin_Code)) ? "" : Convert.ToString(_phyjournal[i].Bin_Code);
-                            locationcode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Location_Code)) ? "" : Convert.ToString(_phyjournal[i].Location_Code);
-                            LotNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Lot_No)) ? "" : Convert.ToString(_phyjournal[i].Lot_No);
-                            ExpirationDate = _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy");
+                            DateTime _date;
+                            if (_scd.ExpirationDate == "")
+                            { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/1753", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+                            else { _date = Convert.ToDateTime(DateTime.ParseExact(_scd.ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
 
-                            StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo && x.ExpirationDate == ExpirationDate).FirstOrDefault();
-                            _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                            itemcount++;
+                            if (_scd.PhyicalQty != null) { physicalqty = _scd.PhyicalQty.Value; } else { physicalqty = 0; }
+
+                            invposted = ((LIVEGMBHPostAdjustments.InventoryCount)_service).UpdatePhyiscalInventory(_scd.ItemNo, physicalqty, _scd.ZoneCode, _scd.BinCode, _scd.LotNo, _date, db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault().SCCode);
+                            if (invposted) { itemcount++; } else { notcountitems++; }
                         }
-
-                        ((LIVEPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+                        
+                         ((LIVEGMBHPostAdjustments.InventoryCount)_service).DeleteExistingAdjustments("SPV.ADJ.18");
 
                         //Code to post adjustments
-                        List<StockCountDetail> _adjustments = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "ADJUST").ToList();
+                        List<StockCountDetail> _adjustments = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "ADJUST" && x.PhyicalQty != null).ToList();
                         bool Posted = true;
-
-
+                        totaladj = _adjustments.Count();
                         for (int i = 0; i <= _adjustments.Count() - 1; i++)
                         {
-                            _service = new LIVEGMBHPostAdjustments.InventoryCount();
-                            ((LIVEGMBHPostAdjustments.InventoryCount)_service).UseDefaultCredentials = false;
-                            ((LIVEGMBHPostAdjustments.InventoryCount)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                                , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                                , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+                            DateTime _date;
+                            if (_adjustments[i].ExpirationDate == "")
+                            { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/0001", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+                            else { _date = Convert.ToDateTime(DateTime.ParseExact(_adjustments[i].ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
 
-                            Posted = ((LIVEGMBHPostAdjustments.InventoryCount)_service).GetAdjustmentLines(_adjustments[i].ItemNo, _adjustments[i].PhyicalQty.Value, _adjustments[i].ZoneCode, _adjustments[i].BinCode, _adjustments[i].LotNo, Convert.ToDateTime(DateTime.ParseExact(_adjustments[i].ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)));
+                            Posted = ((LIVEGMBHPostAdjustments.InventoryCount)_service).GetAdjustmentLines(_adjustments[i].ItemNo, _adjustments[i].PhyicalQty.Value, _adjustments[i].ZoneCode, _adjustments[i].BinCode, _adjustments[i].LotNo,_date);
 
-                            if (!Posted) { adjcount++; }
+                            if (!Posted) { adjnotpushed++; } else { adjcount++; }
                         }
-
-                        if (adjcount > 0) { return "Adjustment Entry data push failed"; }
                     }
                     else if (CompanyName.ToLower() == "theodor wille intertrade usa")
-                    {
-                        #region "Commented Code"
-                        ////Connect to PhysicalInvJournal Service To Post Data
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        //for (int i = 0; i <= _phyjournal.Length - 1; i++)
-                        //{
-                        //    ItemNo = _phyjournal[i].Item_No;
-                        //    BinCode = _phyjournal[i].Bin_Code;
-                        //    locationcode = _phyjournal[i].Location_Code;
-                        //    LotNo = _phyjournal[i].Lot_No;
-
-                        //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
-                        //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                        //    itemcount++;
-                        //}
-
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
-                        #endregion 
-                    }
+                    { }
                     else if (CompanyName.ToLower() == "twi gmbh switzerland")
-                    {
-                        #region "Commented Code"
-                        ////Connect to PhysicalInvJournal Service To Post Data
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+                    { }
 
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        //for (int i = 0; i <= _phyjournal.Length - 1; i++)
-                        //{
-                        //    ItemNo = _phyjournal[i].Item_No;
-                        //    BinCode = _phyjournal[i].Bin_Code;
-                        //    locationcode = _phyjournal[i].Location_Code;
-                        //    LotNo = _phyjournal[i].Lot_No;
-
-                        //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
-                        //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                        //    itemcount++;
-                        //}
-
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
-                        #endregion 
-                    }
-
-                    //After successfull data push to NAV, Close the batch in our Web App System.
-                    _sc.Status = "C";
-                    db.StockCountHeader.Attach(_sc);
-                    db.Entry(_sc).Property(x => x.Status).IsModified = true;
-                    db.SaveChanges();
-                    return "Data Successfully Pushed to NAV";
+                    resultstring = Convert.ToString(itemcount) + " INV Items pushed to Physical Inventory Journal. <br/> " + Convert.ToString(notcountitems) + " Items Not Pushed. <br/>" + Convert.ToString(adjcount) + " / " + Convert.ToString(totaladj) + " Adjustments pushed to Adjustment Journal. <br/><br/> Do you wish to close this batch.";
+                    return true;
                 }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                resultstring = ex.Message;
+                return false;
             }
         }
 
-        string ConnectAndPushDataToTest(int ID, string CompanyName)
+        bool ConnectAndPushDataToTest(int ID, string CompanyName,ref string resultstring )
         {
-            string ItemNo = string.Empty;
-            string BinCode = string.Empty;
-            string locationcode = string.Empty;
-            string LotNo = string.Empty;
-            string ExpirationDate = string.Empty;
-            int itemcount = 0;
-            int adjcount = 0;
+            string ItemNo = string.Empty;string BinCode = string.Empty;string locationcode = string.Empty;string LotNo = string.Empty;string ExpirationDate = string.Empty;int itemcount = 0;
+            int notcountitems = 0;int adjcount = 0;int adjnotpushed = 0;int totaladj = 0;
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    if (db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).Count() == 0) return Resources.GlobalResource.MsgNoRecordsFound;
-                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).FirstOrDefault();
-                    if (_sc.Status == "C") { return Resources.GlobalResource.MsgClosedBatchPush; }
-
-                    //Validation to check whether records pulled from NAV.
-                    if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
-                        return "No Data Pulled for the selected Batch, cannot proceed.";
-
-                    //Validation to check whether physical Qty entered for Items is having Negative Values
-                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
-                        return db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further";
-
-                    //Validation to check whether physical Qty entered for all items or not
-                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
-                        return "Final Value not posted for all Item Lines, cannot push data to NAV";
-
                     if (CompanyName.ToLower()  == "theodor wille intertrade gmbh")
                     {
-                        //Connect to PhysicalInvJournal Service To Post Data
-                        _service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+
+                        _service = new TESTPostAdjustments.InventoryCount();
+                        ((TESTPostAdjustments.InventoryCount)_service).UseDefaultCredentials = false;
+                        ((TESTPostAdjustments.InventoryCount)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
                             , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
                             , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
 
-                        _servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Journal_Batch_Name, Criteria = _sc.SCCode });
-                        ((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+                        List<StockCountDetail> _batchcount = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName =="INV" && x.PhyicalQty !=null).ToList();
+                        bool invposted = true;
 
-                        TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        for (int i = 0; i <= _phyjournal.Length - 1; i++)
+                        itemcount = 0;
+                        decimal physicalqty = 0;
+                       
+                        foreach (StockCountDetail _scd in _batchcount)
                         {
-                            ItemNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Item_No)) ? "" : Convert.ToString(_phyjournal[i].Item_No);
-                            BinCode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Bin_Code)) ? "" : Convert.ToString(_phyjournal[i].Bin_Code);
-                            locationcode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Location_Code)) ? "" : Convert.ToString(_phyjournal[i].Location_Code);
-                            LotNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Lot_No)) ? "" : Convert.ToString(_phyjournal[i].Lot_No);
-                            ExpirationDate = _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy");
+                            DateTime _date;
+                            if (_scd.ExpirationDate == "")
+                            { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/1753", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+                            else { _date = Convert.ToDateTime(DateTime.ParseExact(_scd.ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
 
-                            StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo && x.ExpirationDate == ExpirationDate).FirstOrDefault();
-                            _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                            itemcount++;
+                            if (_scd.PhyicalQty != null) { physicalqty = _scd.PhyicalQty.Value; } else { physicalqty = 0; }
+
+                            invposted = ((TESTPostAdjustments.InventoryCount)_service).UpdatePhyiscalInventory(_scd.ItemNo, physicalqty, _scd.ZoneCode, _scd.BinCode,_scd.LotNo, _date, db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault().SCCode);
+                            if (invposted) { itemcount++; } else { notcountitems++; }
                         }
 
-                        ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+                        ((TESTPostAdjustments.InventoryCount)_service).DeleteExistingAdjustments("SPV.ADJ.18"); 
 
                         //Code to post adjustments
-                        List<StockCountDetail> _adjustments = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "ADJUST").ToList();
+                        List<StockCountDetail> _adjustments = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "ADJUST" && x.PhyicalQty !=null).ToList();
                         bool Posted = true;
-
-
+                        totaladj = _adjustments.Count();
                         for (int i = 0; i <= _adjustments.Count() - 1; i++)
                         {
-                            _service = new TESTPostAdjustments.InventoryCount();
-                            ((TESTPostAdjustments.InventoryCount)_service).UseDefaultCredentials = false;
-                            ((TESTPostAdjustments.InventoryCount)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                                , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                                , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+                            DateTime _date;
+                            if (_adjustments[i].ExpirationDate == "")
+                            { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/0001", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+                            else { _date = Convert.ToDateTime(DateTime.ParseExact(_adjustments[i].ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
 
-                            Posted = ((TESTPostAdjustments.InventoryCount)_service).GetAdjustmentLines(_adjustments[i].ItemNo, _adjustments[i].PhyicalQty.Value, _adjustments[i].ZoneCode, _adjustments[i].BinCode, _adjustments[i].LotNo, Convert.ToDateTime(DateTime.ParseExact(_adjustments[i].ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)));
+                            Posted = ((TESTPostAdjustments.InventoryCount)_service).GetAdjustmentLines(_adjustments[i].ItemNo, _adjustments[i].PhyicalQty.Value, _adjustments[i].ZoneCode, _adjustments[i].BinCode, _adjustments[i].LotNo,_date);
 
-                            if (!Posted) { adjcount++; }
+                            if (!Posted) { adjnotpushed++; } else { adjcount++; }
                         }
-
-                        if (adjcount > 0) { return "Adjustment Entry data push failed"; }
                     }
                     else if (CompanyName.ToLower() == "theodor wille intertrade usa")
-                    {
-                        #region "Commented Code"
-
-                        ////Connect to PhysicalInvJournal Service To Post Data
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        //for (int i = 0; i <= _phyjournal.Length - 1; i++)
-                        //{
-                        //    ItemNo = _phyjournal[i].Item_No;
-                        //    BinCode = _phyjournal[i].Bin_Code;
-                        //    locationcode = _phyjournal[i].Location_Code;
-                        //    LotNo = _phyjournal[i].Lot_No;
-
-                        //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
-                        //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                        //    itemcount++;
-                        //}
-
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
-
-                        #endregion 
-                    }
+                    {}
                     else if (CompanyName.ToLower() == "twi gmbh switzerland")
-                    {
-                        #region "Commented Code"
+                    {}
 
-                        ////Connect to PhysicalInvJournal Service To Post Data
-                        //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
-                        //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
-
-                        //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
-                        //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
-
-                        //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
-
-                        //for (int i = 0; i <= _phyjournal.Length - 1; i++)
-                        //{
-                        //    ItemNo = _phyjournal[i].Item_No;
-                        //    BinCode = _phyjournal[i].Bin_Code;
-                        //    locationcode = _phyjournal[i].Location_Code;
-                        //    LotNo = _phyjournal[i].Lot_No;
-
-                        //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
-                        //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
-                        //    itemcount++;
-                        //}
-
-                        //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
-
-                        #endregion 
-                    }
-
-                    //After successfull data push to NAV, Close the batch in our Web App System.
-                    _sc.Status = "C";
-                    db.StockCountHeader.Attach(_sc);
-                    db.Entry(_sc).Property(x => x.Status).IsModified = true;
-                    db.SaveChanges();
-                    return "Data Successfully Pushed to NAV";
+                    resultstring =  Convert.ToString(itemcount) + " INV Items pushed to Physical Inventory Journal. <br/> " + Convert.ToString(notcountitems) + " Items Not Pushed. <br/>"  + Convert.ToString(adjcount) + " / " + Convert.ToString(totaladj) + " Adjustments pushed to Adjustment Journal. <br/> Do you wish to close this batch.";
+                    return true;
                 }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                resultstring = ex.Message;
+                return false;
             }
         }
+
+        public JsonResult ValidatedataForPush(int ID)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    if (db.StockCountHeader.Where(x => x.ID == ID).Count() == 0)
+                    { return Json(new { success = false, message = Resources.GlobalResource.MsgNoRecordsFound }); }
+
+                    StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+                    if (_sc.Status == "C") { return Json(new { success = false, message = Resources.GlobalResource.MsgClosedBatchPush }, JsonRequestBehavior.AllowGet); }
+
+                    //Validation to check whether records pulled from NAV.
+                    if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+                    { return Json(new { success = false, message = "No Data Pulled for the selected Batch, cannot proceed." }, JsonRequestBehavior.AllowGet); }
+
+                    //Validation to check whether physical Qty entered for Items is having Negative Values
+                    if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
+                    { return Json(new { success = false, message = db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further" }, JsonRequestBehavior.AllowGet); }
+
+                    int itemcount = 0; int newlinescount = 0;
+
+                    itemcount = db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty != null && x.TemplateName == "INV").Count();
+
+                    newlinescount = db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty != null && x.TemplateName == "ADJUST").Count();
+
+                    if (itemcount == 0 && newlinescount == 0)
+                        return Json(new { success = false, message = "No Items have finalised Quantity, cannot push data back to NAV" }, JsonRequestBehavior.AllowGet);
+
+                    string msg = Convert.ToString(itemcount) + " Entries with finalised quantity will be overwritten in NAV Physical Inventory Journal.<br/><br/>";
+                    msg += Convert.ToString(newlinescount) + " Adjustment(s) will be deleted and recreated.<br/><br/>";
+                    msg += "Click Yes to proceed or No to cancel.";
+
+
+                    return Json(new { success = true, message = msg }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult CloseBatchByID(int ID)
+        {
+            try
+            {
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    StockCountHeader _sch = db.StockCountHeader.Where(x => x.ID == ID).FirstOrDefault();
+
+                    //After successfull data push to NAV, Close the batch in our Web App System.
+                    _sch.Status = "C";
+                    db.StockCountHeader.Attach(_sch);
+                    db.Entry(_sch).Property(x => x.Status).IsModified = true;
+                    db.SaveChanges();
+
+                    return Json(new { success = true, message = "Batch Closed Successfully." }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {  return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet); }
+        }
+
+
+        #region "Old Code for pushing data to NAV"
+        //bool ConnectAndPushDataToTest(int ID, string CompanyName, ref string resultstring)
+        //{
+        //    string ItemNo = string.Empty;
+        //    string BinCode = string.Empty;
+        //    string locationcode = string.Empty;
+        //    string LotNo = string.Empty;
+        //    string ExpirationDate = string.Empty;
+        //    int itemcount = 0;
+        //    int notcountitems = 0;
+        //    int adjcount = 0;
+        //    int adjnotpushed = 0;
+        //    int totaladj = 0;
+        //    try
+        //    {
+        //        using (InventoryPortalEntities db = new InventoryPortalEntities())
+        //        {
+        //            //if (db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).Count() == 0)
+        //            //{
+        //            //    resultstring =  Resources.GlobalResource.MsgNoRecordsFound; return false;
+        //            //} 
+        //            //StockCountHeader _sc = db.StockCountHeader.Where(x => x.ID == ID && x.CompanyName == CompanyName).FirstOrDefault();
+        //            //if (_sc.Status == "C") { resultstring = Resources.GlobalResource.MsgClosedBatchPush; return false; }
+
+        //            ////Validation to check whether records pulled from NAV.
+        //            //if (db.StockCountDetail.Where(x => x.SCID == ID).Count() == 0)
+        //            //{ resultstring = "No Data Pulled for the selected Batch, cannot proceed.";  return false; }
+
+
+
+        //            ////Validation to check whether physical Qty entered for Items is having Negative Values
+        //            //if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count()) > 0)
+        //            //{
+        //            //    resultstring = db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty < 0).Count().ToString() + " Item Line(s) is having Negative Value(s), Kindly check cannot proceed further";
+        //            //    return false;
+        //            //}
+
+
+        //            //Validation to check whether physical Qty entered for all items or not
+        //            //if ((db.StockCountDetail.Where(x => x.SCID == ID && x.PhyicalQty >= 0).Count() != db.StockCountDetail.Where(x => x.SCID == ID).Count()))
+        //            //    return "Final Value not posted for all Item Lines, cannot push data to NAV";
+
+        //            if (CompanyName.ToLower() == "theodor wille intertrade gmbh")
+        //            {
+        //                //Connect to PhysicalInvJournal Service To Post Data
+        //                //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Journal_Batch_Name, Criteria = _sc.SCCode });
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+        //                //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+        //                //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+        //                //{
+        //                //    ItemNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Item_No)) ? "" : Convert.ToString(_phyjournal[i].Item_No);
+        //                //    BinCode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Bin_Code)) ? "" : Convert.ToString(_phyjournal[i].Bin_Code);
+        //                //    locationcode = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Location_Code)) ? "" : Convert.ToString(_phyjournal[i].Location_Code);
+        //                //    LotNo = string.IsNullOrEmpty(Convert.ToString(_phyjournal[i].Lot_No)) ? "" : Convert.ToString(_phyjournal[i].Lot_No);
+        //                //    ExpirationDate = _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy") == "01/01/0001" ? "" : _phyjournal[i].Expiration_Date.ToString("dd/MM/yyyy");
+
+        //                //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo && x.ExpirationDate == ExpirationDate).FirstOrDefault();
+
+        //                //    if (_scd != null)
+        //                //    {
+        //                //        if (_scd.PhyicalQty == null) { _phyjournal[i].Qty_Phys_Inventory = 0; }
+        //                //        else
+        //                //            _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+
+        //                //        itemcount++;
+        //                //    }
+        //                //    else
+        //                //    {
+        //                //        _phyjournal[i].Qty_Phys_Inventory = 0;
+        //                //    }
+        //                //}
+
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+
+        //                _service = new TESTPostAdjustments.InventoryCount();
+        //                ((TESTPostAdjustments.InventoryCount)_service).UseDefaultCredentials = false;
+        //                ((TESTPostAdjustments.InventoryCount)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                List<StockCountDetail> _batchcount = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "INV" && x.PhyicalQty != null).ToList();
+        //                bool invposted = true;
+
+        //                itemcount = 0;
+        //                decimal physicalqty = 0;
+        //                foreach (StockCountDetail _scd in _batchcount)
+        //                {
+        //                    DateTime _date;
+        //                    if (_scd.ExpirationDate == "")
+        //                    { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/1753", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+        //                    else { _date = Convert.ToDateTime(DateTime.ParseExact(_scd.ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+
+        //                    if (_scd.PhyicalQty != null) { physicalqty = _scd.PhyicalQty.Value; } else { physicalqty = 0; }
+
+        //                    invposted = ((TESTPostAdjustments.InventoryCount)_service).UpdatePhyiscalInventory(_scd.ItemNo, physicalqty, _scd.ZoneCode, _scd.BinCode, _scd.LotNo, _date);
+        //                    if (invposted) { itemcount++; } else { notcountitems++; }
+        //                }
+
+        //                //Code to post adjustments
+        //                List<StockCountDetail> _adjustments = db.StockCountDetail.Where(x => x.SCID == ID && x.TemplateName == "ADJUST" && x.PhyicalQty != null).ToList();
+        //                bool Posted = true;
+        //                totaladj = _adjustments.Count();
+        //                for (int i = 0; i <= _adjustments.Count() - 1; i++)
+        //                {
+        //                    DateTime _date;
+        //                    if (_adjustments[i].ExpirationDate == "")
+        //                    { _date = Convert.ToDateTime(DateTime.ParseExact("01/01/1753", "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+        //                    else { _date = Convert.ToDateTime(DateTime.ParseExact(_adjustments[i].ExpirationDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)); }
+
+        //                    Posted = ((TESTPostAdjustments.InventoryCount)_service).GetAdjustmentLines(_adjustments[i].ItemNo, _adjustments[i].PhyicalQty.Value, _adjustments[i].ZoneCode, _adjustments[i].BinCode, _adjustments[i].LotNo, _date);
+
+        //                    if (!Posted) { adjnotpushed++; } else { adjcount++; }
+        //                }
+        //                //if (adjnotpushed > 0) { return "Adjustment Entry data push failed"; }
+        //            }
+        //            else if (CompanyName.ToLower() == "theodor wille intertrade usa")
+        //            {
+        //                #region "Commented Code"
+
+        //                ////Connect to PhysicalInvJournal Service To Post Data
+        //                //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+        //                //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+        //                //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+        //                //{
+        //                //    ItemNo = _phyjournal[i].Item_No;
+        //                //    BinCode = _phyjournal[i].Bin_Code;
+        //                //    locationcode = _phyjournal[i].Location_Code;
+        //                //    LotNo = _phyjournal[i].Lot_No;
+
+        //                //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+        //                //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+        //                //    itemcount++;
+        //                //}
+
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+
+        //                #endregion 
+        //            }
+        //            else if (CompanyName.ToLower() == "twi gmbh switzerland")
+        //            {
+        //                #region "Commented Code"
+
+        //                ////Connect to PhysicalInvJournal Service To Post Data
+        //                //_service = new TESTPhyInvJournal.PhysicalInvJournal_Service();
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UseDefaultCredentials = false;
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+        //                //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+        //                //_servicefilters = new List<TESTPhyInvJournal.PhysicalInvJournal_Filter>();
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Whse_Document_No, Criteria = _sc.SCCode });
+        //                //((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).Add(new TESTPhyInvJournal.PhysicalInvJournal_Filter { Field = TESTPhyInvJournal.PhysicalInvJournal_Fields.Location_Code, Criteria = _sc.LocationCode });
+
+        //                //TESTPhyInvJournal.PhysicalInvJournal[] _phyjournal = ((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).ReadMultiple(((List<TESTPhyInvJournal.PhysicalInvJournal_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+        //                //for (int i = 0; i <= _phyjournal.Length - 1; i++)
+        //                //{
+        //                //    ItemNo = _phyjournal[i].Item_No;
+        //                //    BinCode = _phyjournal[i].Bin_Code;
+        //                //    locationcode = _phyjournal[i].Location_Code;
+        //                //    LotNo = _phyjournal[i].Lot_No;
+
+        //                //    StockCountDetail _scd = db.StockCountDetail.Where(x => x.SCID == _sc.ID && x.ItemNo == ItemNo && x.BinCode == BinCode && x.LocationCode == locationcode && x.LotNo == LotNo).FirstOrDefault();
+        //                //    _phyjournal[i].Qty_Phys_Inventory = Convert.ToDecimal(_scd.PhyicalQty);
+        //                //    itemcount++;
+        //                //}
+
+        //                //((TESTPhyInvJournal.PhysicalInvJournal_Service)_service).UpdateMultiple(ref _phyjournal);
+
+        //                #endregion 
+        //            }
+
+        //            //After successfull data push to NAV, Close the batch in our Web App System.
+        //            //_sc.Status = "C";
+        //            //db.StockCountHeader.Attach(_sc);
+        //            //db.Entry(_sc).Property(x => x.Status).IsModified = true;
+        //            //db.SaveChanges();
+
+        //            resultstring = Convert.ToString(itemcount) + " INV Items pushed to Physical Inventory Journal. <br/> " + Convert.ToString(notcountitems) + " Items Not Pushed. <br/>" + Convert.ToString(adjcount) + " / " + Convert.ToString(totaladj) + " Adjustments pushed to Adjustment Journal. <br/> Do you wish to close this batch.";
+        //            return true;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultstring = ex.Message;
+        //        return false;
+        //    }
+        //}
+        #endregion 
 
         private string ConnectAndPushDataToDEV(int ID, string CompanyName)
         {
@@ -6111,5 +6267,6 @@ namespace TWI.InventoryAutomated.Controllers
         #endregion
        
         #endregion
+
     }
 }

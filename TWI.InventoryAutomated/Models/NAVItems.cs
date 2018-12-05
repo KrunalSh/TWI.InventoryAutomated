@@ -23,5 +23,7 @@ namespace TWI.InventoryAutomated.Models
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<decimal> NetWeight { get; set; }
         public Nullable<decimal> StandardCost { get; set; }
+        public string NSNNo { get; set; }
+        public string ItemTrackingCode { get; set; }
     }
 }

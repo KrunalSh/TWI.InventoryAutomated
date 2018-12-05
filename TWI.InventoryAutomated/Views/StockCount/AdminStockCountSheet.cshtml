@@ -105,6 +105,7 @@
                             <th class="datatable_col5PercH">UOM</th>
                             <th class="datatable_col10PercH">NAV Qty</th>
                             <th class="datatable_col10PercH">Phy. Qty</th>
+                            <th class="datatable_col10PercH">ID</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -453,7 +454,10 @@
                     { "data": "ExpirationDate", "orderable": true, "searchable": false, 'className': 'datatable_col10PercR' },
                     { "data": "UOMCode", "orderable": true, "searchable": true, 'className': 'datatable_col5PercR' },
                     { "data": "NAVQty", "orderable":true, "searchable": false, 'className':'datatable_col10PercR'  },
-                    { "data": "PhysicalQty", "orderable": true, "searchable": false, 'className':'datatable_col10PercR' },
+                    {
+                        "data": "PhysicalQty", "orderable": true, "searchable": false, 'className': 'datatable_col10PercR'
+                    },
+                    { "data": "StockCountDetailID", "orderable": true, "searchable": false, 'className': 'datatable_col10PercR' },
                     {
                         "data": "ID", "render": function (data) {
                             return '<a class="btn btn-danger fa fa-trash" style="float:left;width:20px!important;height:20px!important;vertical-align:middle!important;padding-top:2px;padding-left:4px;margin-left:12px;" alt="Delete Item" onclick="DeleteAllocatedItem('+ data + ');"></a>'
@@ -718,7 +722,34 @@
                 success: function (data) {
                     if (data.success) {
                         ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');
-                        RefreshAllocationList(TeamID);
+                        //RefreshAllocationList(TeamID);
+
+                        //summaryTable = $("#tblAllocationSummary").DataTable({
+                        //    "destroy": true,
+                        //    "ajax": {
+                        //        "url": "/StockCount/GetAllocationSummary?ID=" + $("#ddlCounts").val(),
+                        //        "type": "GET",
+                        //        "datatype": "json",
+                        //        "async": true
+                        //    },
+                        //    "columns": [
+                        //        { "data": "TeamName", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                        //        { "data": "NavLines", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                        //        { "data": "NewLines", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                        //        { "data": "TotalLines", "orderable": false, "searchable": false, 'className': 'datatable_col10PercR' },
+                        //        { "data": "Percent", "orderable": false, "searchable": false, 'className': 'datatable_col5PercR' }
+                        //    ],
+                        //    "aaSorting": [[1, "desc"]],
+                        //    "responsive": true,
+                        //    "paging": false,
+                        //    "ordering": false,
+                        //    "info": false,
+                        //    "searching": false,
+                        //    "language": {
+                        //        "emptyTable": "No Allocation Summary available for the selection made.",
+                        //        "url": Path
+                        //    }
+                        //});
                     }
                     else {
                         ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgAdminSheetTitle + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Delete)');

@@ -79,7 +79,7 @@
                     <a class="btn btn-primary" style="width:50px;height:33px;padding-left:7px;padding-top:5px;text-align:center;font-weight:bold;" data-toggle="tooltip" onclick="FilterList();" title="">Filter</a>
                 </div>
                 <div style="float:right;margin-right:10px;margin-bottom:10px;margin-top:-5px;">
-                    <input type="text" class="form-control" placeholder="Search Final Qty" id="txtValue" name="txtValue" style="width:100px !important;" />
+                    <input type="text" class="form-control" placeholder="Search Final Qty" id="txtValue" name="txtValue" style="width:150px !important;" />
                 </div>
                 <div style="float:right;margin-right:10px;">
                     <select id="ddlOperator" class="form-control">
@@ -172,7 +172,7 @@
                         datatype: "Json",
                         data: { SCID: $("#ddlBatches").val() },
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             $("#txtItemNo").autocomplete({
                                 source: data,
                                 minLength: 2,
@@ -666,55 +666,72 @@
                     if (!data.success) {
                         window.location.href = '/home/default';
                     }
-                }
-            });
-            var count = 0;
-            $('#HeaderTable tbody').find('tr').each(function () {
-                var row = $(this);
+                    else {
+                        $.ajax({
+                            url: "/StockCount/ValidateBatch?ID=" + $("#ddlBatches").val(),
+                            datatype: "Json",
+                            type: "GET",
+                            success: function (data) {
+                                if (!data.success) {
+                                    ShowDialog("Cannot Reset Final Qty for a closed batch. Kindly check your selection", '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                                    return;
+                                }
+                                else {
+                                    var count = 0;
+                                    $('#HeaderTable tbody').find('tr').each(function () {
+                                        var row = $(this);
 
-                if (row.find('input[type="checkbox"]').is(':checked')) {
-                    count++;
-                }
-            });
+                                        if (row.find('input[type="checkbox"]').is(':checked')) {
+                                            count++;
+                                        }
+                                    });
 
-            if (count > 0) {
-                $("#filldialog").show();
+                                    if (count > 0) {
+                                        $("#filldialog").show();
 
-                $.ajax({
-                    url: "/StockCount/GetCountsByID?ID=" + $("#ddlBatches").val(),
-                    type: "GET",
-                    datatype: "Json",
-                    success: function (data) {
-                        //console.log(data);
-                        $("#ddlCounts").empty();
-                        $("#chkCountGroup").empty();
-                        for (var i = 0; i < data.length; i++) {
-                            var countopt = new Option(data[i].SCIterationName, data[i].SCIterationID);
-                            var htmlContent = '';
-                            $("#ddlCounts").append(countopt);
+                                        $.ajax({
+                                            url: "/StockCount/GetCountsByID?ID=" + $("#ddlBatches").val(),
+                                            type: "GET",
+                                            datatype: "Json",
+                                            success: function (data) {
+                                                //console.log(data);
+                                                $("#ddlCounts").empty();
+                                                $("#chkCountGroup").empty();
+                                                for (var i = 0; i < data.length; i++) {
+                                                    var countopt = new Option(data[i].SCIterationName, data[i].SCIterationID);
+                                                    var htmlContent = '';
+                                                    $("#ddlCounts").append(countopt);
 
-                            htmlContent += '<label class="block"><input type="checkbox" name="chkCountGroup" value="' + data[i].SCIterationID + '" /><span style="padding-left:5px;font-weight:400;">' + data[i].SCIterationName + '</span></label>';
-                            $("#chkCountGroup").append(htmlContent);
-                        }
+                                                    htmlContent += '<label class="block"><input type="checkbox" name="chkCountGroup" value="' + data[i].SCIterationID + '" /><span style="padding-left:5px;font-weight:400;">' + data[i].SCIterationName + '</span></label>';
+                                                    $("#chkCountGroup").append(htmlContent);
+                                                }
+                                            }
+                                        });
+
+                                        Popup = $("#filldialog").dialog({
+                                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - "+ TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', zIndex: 10000, autoOpen: true, width: 400, resizable: false
+                                            //buttons: {
+                                            //    Ok: function () {
+                                            //        $(this).dialog("close");
+                                            //    }
+                                            //}
+
+                                        });
+                                    }
+                                    else
+                                    {
+                                        ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemSelection)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)' + ' - ' + '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
+                                        //alert("Kindly select atleast one item to proceed");
+                                        return;
+                                    }
+                                }
+
+                            }
+                        });
                     }
-                });
-
-                Popup = $("#filldialog").dialog({
-                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - "+ TWI.InventoryAutomated.Resources.GlobalResource.FillQty)', zIndex: 10000, autoOpen: true, width: 400, resizable: false
-                    //buttons: {
-                    //    Ok: function () {
-                    //        $(this).dialog("close");
-                    //    }
-                    //}
-
-                });
-            }
-            else
-            {
-                ShowDialog('@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgItemSelection)', '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView)' + ' - ' + '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');
-                //alert("Kindly select atleast one item to proceed");
-                return;
-            }
+                }
+            });
+            
         }
 
         function FilterList() {
@@ -961,7 +978,7 @@
             var rows = datatable.table().data();
             //console.log(rows);
             rows.each(function (value, index) {
-                //rowdata = datatable.row(index).data();
+                rowdata = datatable.row(index).data();
                 if (value['ID'] === selectedId) {
 
                     var teamId = $("#ddlBatches").val();
@@ -970,7 +987,7 @@
                         url: '/StockCount/UpdateFinalQty',
                         type: 'GET',
                         datatype: 'Json',
-                        data: { TeamID: teamId, ItemNo: value['Item No'], BinCode: value['Bin Code'], LotNo: value['Lot No'], Expdate: value['Expiry Date'], Qty: $("#txtQty").val() },
+                        data: { TeamID: teamId, ItemNo: value['Item No'], BinCode: value['Bin Code'], LotNo: value['Lot No'], Expdate: value['Expiry Date (DD/MM/YYYY)'], Qty: $("#txtQty").val() },
                         success: function (data) {
                             if (data.success) {
                                 ShowDialog(data.message, '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.SCManagerView + " - " + TWI.InventoryAutomated.Resources.GlobalResource.FillQty)');

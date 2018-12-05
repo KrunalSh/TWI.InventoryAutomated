@@ -140,7 +140,6 @@
                                 }
                             </tbody>
                         </table>
-
                     </div>
                     <script>
                         function ShowMyDiv(Obj) {
@@ -309,40 +308,96 @@
                 return;
             }
 
-            $('<div></div>')
-                .appendTo('body')
-                .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchDataPushConfirmation)" + "</h5></div>")
-                .dialog({
-                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
-                    width: 500, resizable: true,
-                    buttons: {
-                        Yes: function () {
 
-                             Popup =  $('<div></div>').appendTo('body')
-                                    .html("<div><h5>Please be patient while data push operation to navision is in progress..........</h5></div>")
-                                    .dialog({
+            $.ajax({
+                url: "/StockCount/ValidatedataForPush?ID=" + $("#ddlBatches").val(),
+                type: "GET",
+                datatype: "Json",
+                success: function (data) {
+                    console.log(data);
+                    if (!data.success) {
+                        $('<div></div>').appendTo('body')
+                                        .html("<div><h5>" + data.message  + "</h5></div>")
+                            .dialog({
+                                modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")',
+                                zIndex: 10000, autoOpen: true,
+                                width: 'auto', resizable: false, closeOnEscape: false,
+                                buttons: { Ok: function () { $(this).dialog("close"); } },
+                                open: function (event, ui) { $(".ui-dialog-titlebar-close", ui.dialog | ui).show(); }
+                            });
+                    }
+                    else {
+                        $('<div></div>').appendTo('body').html("<div><h5>" + data.message + "</h5></div>")
+                        .dialog({ modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
+                                  width: 500, resizable: true,
+                                  buttons: {
+                                    Yes: function () {
+                                        Popup =  $('<div></div>').appendTo('body').html("<div><h5>Please be patient while data push operation to navision is in progress..........</h5></div>")
+                                        .dialog({
                                         modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
                                         width: 'auto', resizable: false, closeOnEscape: false,
                                         open: function (event, ui) {
                                             $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
                                         }
-                                    });
-
-                            $.ajax({
-                                type: "POST",
-                                url: '@Url.Action("PushPhyJournalData", "StockCount")/' + $("#ddlBatches").val(),
-                                success: function (data) {
-                                    Popup.dialog("close");
-                                    $('<div></div>').appendTo('body')
-                                        .html("<div><h5>" + data + "</h5></div>")
-                                        .dialog({
-                                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
-                                            buttons: {
-                                                Ok: function () {
-                                                    $(this).dialog("close");
-                                                }
-                                            }
                                         });
+
+                                    $.ajax({ type: "POST", url: '@Url.Action("PushPhyJournalData", "StockCount")/' + $("#ddlBatches").val(),
+                                             success: function (data) { Popup.dialog("close");
+                                            if (data.success) {
+                                                $('<div></div>').appendTo('body').html("<div><h5>" + data.message + "</h5></div>")
+                                                    .dialog({
+                                                        modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000,
+                                                        autoOpen: true, width: 500, resizable: true,
+                                                        buttons: {
+                                                        Yes: function () {
+                                                        $.ajax({
+                                                            url: '/Stockcount/CloseBatchByID?ID=' + $("#ddlBatches").val(),
+                                                            datatype: 'Json',
+                                                            type: 'GET',
+                                                            success: function (data) {
+                                                                if (data.success) {
+                                                                    $('<div></div>').appendTo('body').html("<div><h5>Batch Closed Successfully</h5></div>")
+                                                                        .dialog({
+                                                                            modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
+                                                                            width: 'auto', resizable: false, closeOnEscape: false,
+                                                                            buttons: {
+                                                                                Ok: function () {
+                                                                                    RefreshData($("#ddlBatches").val());
+                                                                                    $(this).dialog("close");
+                                                                                }
+                                                                            },
+                                                                            open: function (event, ui) {
+                                                                                $(".ui-dialog-titlebar-close", ui.dialog | ui).show();
+                                                                            }
+                                                                        });
+                                                                    
+                                                                }
+                                                            }
+                                                            });
+                                                            $(this).dialog("close");
+                                                    },
+                                                    No: function () {
+                                                        $(this).dialog("close");
+                                                    }
+                                                }
+                                            });
+                                    }
+                                    else {
+                                         $('<div></div>').appendTo('body')
+                                                         .html("<div><h5>" + data.message  + "</h5></div>")
+                                                         .dialog({
+                                                         modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchTitle + " - Push To NAV")', zIndex: 10000, autoOpen: true,
+                                                         width: 'auto', resizable: false, closeOnEscape: false,
+                                                          buttons: {
+                                                                       Ok: function () {
+                                                                                    $(this).dialog("close");
+                                                                                }
+                                                                            },
+                                                                            open: function (event, ui) {
+                                                                                $(".ui-dialog-titlebar-close", ui.dialog | ui).show();
+                                                                            }
+                                                                        });
+                                    }
                                 }
                             });
                             $(this).dialog("close");
@@ -355,11 +410,13 @@
                         $(this).remove();
                     }
                 });
+                    }
+                }
+            });
         }
 
 
         function PullData() {
-
             $.ajax({
                 url: '/StockCount/ValidateUserSession',
                 type: 'GET',
@@ -641,7 +698,6 @@
 
                     adjdataTable = $("#ADJHeaderTable").dataTable({
                         "destroy": true,
-                        "buttons": ['copy', 'csv', 'excel', 'pdf', 'print'],
                         "ajax": {
                             "url": "/StockCount/GetStockCountDetail",
                             "data": { ID: ID, entrytype: 'ADJUST' },

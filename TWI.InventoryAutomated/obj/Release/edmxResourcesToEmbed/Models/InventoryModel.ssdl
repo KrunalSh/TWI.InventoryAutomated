@@ -75,8 +75,10 @@
     <Property Name="SCID" Type="int" />
     <Property Name="ItemNo" Type="nvarchar" MaxLength="50" />
     <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
-    <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
     <Property Name="ItemCategoryCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="NSNNo" Type="nvarchar" MaxLength="100" />
+    <Property Name="ItemTrackingCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
     <Property Name="NetWeight" Type="decimal" Precision="18" Scale="2" />
     <Property Name="StandardCost" Type="decimal" Precision="18" Scale="2" />
     <Property Name="CreatedDate" Type="datetime" />
@@ -120,6 +122,7 @@
     <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
     <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
     <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
+    <Property Name="NSNNo" Type="nvarchar" MaxLength="100" />
     <Property Name="Description" Type="nvarchar" MaxLength="50" />
     <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
     <Property Name="ExpirationDate" Type="varchar" MaxLength="20" />
@@ -133,6 +136,7 @@
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="UpdatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
+    <Property Name="StockCountDetailID" Type="int" />
   </EntityType>
   <EntityType Name="StockCountDetail">
     <Key>
@@ -158,6 +162,7 @@
     <Property Name="MethodUsed" Type="nvarchar" MaxLength="50" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />
+    <Property Name="StockCountDetailID" Type="int" />
   </EntityType>
   <EntityType Name="StockCountHeader">
     <Key>

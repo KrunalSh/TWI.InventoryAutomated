@@ -31,6 +31,10 @@ namespace TWI.InventoryAutomated.LIVEGMBHPostAdjustments {
         
         private System.Threading.SendOrPostCallback GetAdjustmentLinesOperationCompleted;
         
+        private System.Threading.SendOrPostCallback UpdatePhyiscalInventoryOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback DeleteExistingAdjustmentsOperationCompleted;
+        
         private bool useDefaultCredentialsSetExplicitly;
         
         /// <remarks/>
@@ -73,6 +77,12 @@ namespace TWI.InventoryAutomated.LIVEGMBHPostAdjustments {
         public event GetAdjustmentLinesCompletedEventHandler GetAdjustmentLinesCompleted;
         
         /// <remarks/>
+        public event UpdatePhyiscalInventoryCompletedEventHandler UpdatePhyiscalInventoryCompleted;
+        
+        /// <remarks/>
+        public event DeleteExistingAdjustmentsCompletedEventHandler DeleteExistingAdjustmentsCompleted;
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/InventoryCount:GetAdjustmentLines", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/InventoryCount", ResponseElementName="GetAdjustmentLines_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/InventoryCount", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool GetAdjustmentLines(string itemNo, decimal quantity, string zonecode, string bincode, string lotno, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime expirydate) {
@@ -109,6 +119,76 @@ namespace TWI.InventoryAutomated.LIVEGMBHPostAdjustments {
             if ((this.GetAdjustmentLinesCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetAdjustmentLinesCompleted(this, new GetAdjustmentLinesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/InventoryCount:UpdatePhyiscalInventory", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/InventoryCount", ResponseElementName="UpdatePhyiscalInventory_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/InventoryCount", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool UpdatePhyiscalInventory(string itemNo, decimal quantity, string zonecode, string bincode, string lotno, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime expirydate, string batchName) {
+            object[] results = this.Invoke("UpdatePhyiscalInventory", new object[] {
+                        itemNo,
+                        quantity,
+                        zonecode,
+                        bincode,
+                        lotno,
+                        expirydate,
+                        batchName});
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UpdatePhyiscalInventoryAsync(string itemNo, decimal quantity, string zonecode, string bincode, string lotno, System.DateTime expirydate, string batchName) {
+            this.UpdatePhyiscalInventoryAsync(itemNo, quantity, zonecode, bincode, lotno, expirydate, batchName, null);
+        }
+        
+        /// <remarks/>
+        public void UpdatePhyiscalInventoryAsync(string itemNo, decimal quantity, string zonecode, string bincode, string lotno, System.DateTime expirydate, string batchName, object userState) {
+            if ((this.UpdatePhyiscalInventoryOperationCompleted == null)) {
+                this.UpdatePhyiscalInventoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdatePhyiscalInventoryOperationCompleted);
+            }
+            this.InvokeAsync("UpdatePhyiscalInventory", new object[] {
+                        itemNo,
+                        quantity,
+                        zonecode,
+                        bincode,
+                        lotno,
+                        expirydate,
+                        batchName}, this.UpdatePhyiscalInventoryOperationCompleted, userState);
+        }
+        
+        private void OnUpdatePhyiscalInventoryOperationCompleted(object arg) {
+            if ((this.UpdatePhyiscalInventoryCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdatePhyiscalInventoryCompleted(this, new UpdatePhyiscalInventoryCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/InventoryCount:DeleteExistingAdjustments", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/InventoryCount", ResponseElementName="DeleteExistingAdjustments_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/InventoryCount", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void DeleteExistingAdjustments(string batchName) {
+            this.Invoke("DeleteExistingAdjustments", new object[] {
+                        batchName});
+        }
+        
+        /// <remarks/>
+        public void DeleteExistingAdjustmentsAsync(string batchName) {
+            this.DeleteExistingAdjustmentsAsync(batchName, null);
+        }
+        
+        /// <remarks/>
+        public void DeleteExistingAdjustmentsAsync(string batchName, object userState) {
+            if ((this.DeleteExistingAdjustmentsOperationCompleted == null)) {
+                this.DeleteExistingAdjustmentsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteExistingAdjustmentsOperationCompleted);
+            }
+            this.InvokeAsync("DeleteExistingAdjustments", new object[] {
+                        batchName}, this.DeleteExistingAdjustmentsOperationCompleted, userState);
+        }
+        
+        private void OnDeleteExistingAdjustmentsOperationCompleted(object arg) {
+            if ((this.DeleteExistingAdjustmentsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteExistingAdjustmentsCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -156,6 +236,36 @@ namespace TWI.InventoryAutomated.LIVEGMBHPostAdjustments {
             }
         }
     }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    public delegate void UpdatePhyiscalInventoryCompletedEventHandler(object sender, UpdatePhyiscalInventoryCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdatePhyiscalInventoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UpdatePhyiscalInventoryCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3056.0")]
+    public delegate void DeleteExistingAdjustmentsCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }
 
 #pragma warning restore 1591

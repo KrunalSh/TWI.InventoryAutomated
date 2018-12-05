@@ -133,7 +133,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enter &lt;br /&gt; Adjustment.
+        ///   Looks up a localized string similar to New Entry.
         /// </summary>
         public static string buttonAdjustment {
             get {
@@ -655,7 +655,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure to push selected batch data to NAV ? .
+        ///   Looks up a localized string similar to Entries with Final Quantity will be overwritten in NAV Physical Inventory Journal &amp; any existing adjustments will be deleted and recreated. &lt;br/&gt;Click Yes to proceed or No to cancel. .
         /// </summary>
         public static string MsgBatchDataPushConfirmation {
             get {

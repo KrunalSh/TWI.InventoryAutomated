@@ -425,7 +425,9 @@
     <Content Include="Scripts\paginathing.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -514,10 +516,10 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </Content>
     <None Include="Web References\LIVEGMBHPostAdjustments\InventoryCount.wsdl" />
-    <Content Include="Web References\LIVEGMBHPostAdjustments\Reference.map">
+    <None Include="Web References\LIVEGMBHPostAdjustments\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
+    </None>
     <None Include="Web References\LIVEPhyInvJournal\PhysicalInvJournal.wsdl" />
     <Content Include="Web References\LIVEPhyInvJournal\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

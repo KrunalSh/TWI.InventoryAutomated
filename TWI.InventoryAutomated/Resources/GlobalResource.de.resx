@@ -406,7 +406,7 @@
     <value>Status</value>
   </data>
   <data name="buttonAdjustment" xml:space="preserve">
-    <value>Anpassung eingeben</value>
+    <value>Neuer Eintrag</value>
   </data>
   <data name="DeleteItem" xml:space="preserve">
     <value>Element löschen</value>
@@ -470,5 +470,8 @@
   </data>
   <data name="MsgAllocateSelectedItem" xml:space="preserve">
     <value>Sind Sie sicher, dass Sie die ausgewählten Artikel zuordnen möchten. &lt;br /&gt; Klicken Sie zum Fortfahren auf 'Ja' oder zum Abbrechen auf 'Nein'.</value>
+  </data>
+  <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
+    <value>Einträge mit Endmenge werden im Inventarjournal des NAV überschrieben und vorhandene Anpassungen werden gelöscht und erneut erstellt. &lt;br/&gt;&lt;br/&gt; Klicken Sie auf Ja, um fortzufahren, oder auf Nein, um den Vorgang abzubrechen.</value>
   </data>
 </root>

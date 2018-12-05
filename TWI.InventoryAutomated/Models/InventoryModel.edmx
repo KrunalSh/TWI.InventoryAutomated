@@ -80,8 +80,10 @@
           <Property Name="SCID" Type="int" />
           <Property Name="ItemNo" Type="nvarchar" MaxLength="50" />
           <Property Name="ItemDesc" Type="nvarchar" MaxLength="250" />
-          <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
           <Property Name="ItemCategoryCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="NSNNo" Type="nvarchar" MaxLength="100" />
+          <Property Name="ItemTrackingCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="UOMCode" Type="nvarchar" MaxLength="50" />
           <Property Name="NetWeight" Type="decimal" Precision="18" Scale="2" />
           <Property Name="StandardCost" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CreatedDate" Type="datetime" />
@@ -125,6 +127,7 @@
           <Property Name="ZoneCode" Type="nvarchar" MaxLength="10" />
           <Property Name="BinCode" Type="nvarchar" MaxLength="20" />
           <Property Name="ItemNo" Type="nvarchar" MaxLength="20" />
+          <Property Name="NSNNo" Type="nvarchar" MaxLength="100" />
           <Property Name="Description" Type="nvarchar" MaxLength="50" />
           <Property Name="LotNo" Type="nvarchar" MaxLength="20" />
           <Property Name="ExpirationDate" Type="varchar" MaxLength="20" />
@@ -138,6 +141,7 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
+          <Property Name="StockCountDetailID" Type="int" />
         </EntityType>
         <EntityType Name="StockCountDetail">
           <Key>
@@ -163,6 +167,7 @@
           <Property Name="MethodUsed" Type="nvarchar" MaxLength="50" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="int" />
+          <Property Name="StockCountDetailID" Type="int" />
         </EntityType>
         <EntityType Name="StockCountHeader">
           <Key>
@@ -535,6 +540,7 @@
           <Property Name="FinalSource" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CountSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MethodUsed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StockCountDetailID" Type="Int32" />
         </EntityType>
         <EntityType Name="StockCountTeams">
           <Key>
@@ -596,6 +602,8 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="NSNNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StockCountDetailID" Type="Int32" />
         </EntityType>
         <EntityType Name="NAVItems">
           <Key>
@@ -610,6 +618,8 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="NetWeight" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="StandardCost" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="NSNNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ItemTrackingCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -819,6 +829,7 @@
           <EntitySetMapping Name="StockCountDetail">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountDetail">
               <MappingFragment StoreEntitySet="StockCountDetail">
+                <ScalarProperty Name="StockCountDetailID" ColumnName="StockCountDetailID" />
                 <ScalarProperty Name="MethodUsed" ColumnName="MethodUsed" />
                 <ScalarProperty Name="CountSource" ColumnName="CountSource" />
                 <ScalarProperty Name="FinalSource" ColumnName="FinalSource" />
@@ -877,6 +888,8 @@
           <EntitySetMapping Name="StockCountAllocations">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
               <MappingFragment StoreEntitySet="StockCountAllocations">
+                <ScalarProperty Name="StockCountDetailID" ColumnName="StockCountDetailID" />
+                <ScalarProperty Name="NSNNo" ColumnName="NSNNo" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
@@ -909,6 +922,8 @@
           <EntitySetMapping Name="NAVItems">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.NAVItems">
               <MappingFragment StoreEntitySet="NAVItems">
+                <ScalarProperty Name="ItemTrackingCode" ColumnName="ItemTrackingCode" />
+                <ScalarProperty Name="NSNNo" ColumnName="NSNNo" />
                 <ScalarProperty Name="StandardCost" ColumnName="StandardCost" />
                 <ScalarProperty Name="NetWeight" ColumnName="NetWeight" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

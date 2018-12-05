@@ -406,7 +406,7 @@
     <value>Statut</value>
   </data>
   <data name="buttonAdjustment" xml:space="preserve">
-    <value>Entrer l'ajustement</value>
+    <value>Nouvelle entrée</value>
   </data>
   <data name="DeleteItem" xml:space="preserve">
     <value>Effacer l'article</value>
@@ -470,5 +470,8 @@
   </data>
   <data name="MsgAllocateSelectedItem" xml:space="preserve">
     <value>Êtes-vous sûr de vouloir attribuer le ou les éléments sélectionnés? &lt;br /&gt; Cliquez sur 'Oui' pour continuer ou sur 'Non' pour annuler.</value>
+  </data>
+  <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
+    <value>Les entrées avec Quantité finale seront écrasées dans le journal dinventaire physique NAV et tous les ajustements existants seront supprimés et recréés. &lt;br/&gt; &lt;br/&gt; Cliquez sur Oui pour continuer ou sur Non pour annuler.</value>
   </data>
 </root>

@@ -34,5 +34,6 @@ namespace TWI.InventoryAutomated.Models
         public string FinalSource { get; set; }
         public string CountSource { get; set; }
         public string MethodUsed { get; set; }
+        public Nullable<int> StockCountDetailID { get; set; }
     }
 }

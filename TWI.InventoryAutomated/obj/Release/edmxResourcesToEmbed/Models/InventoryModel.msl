@@ -203,6 +203,7 @@
     <EntitySetMapping Name="StockCountDetail">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountDetail">
         <MappingFragment StoreEntitySet="StockCountDetail">
+          <ScalarProperty Name="StockCountDetailID" ColumnName="StockCountDetailID" />
           <ScalarProperty Name="MethodUsed" ColumnName="MethodUsed" />
           <ScalarProperty Name="CountSource" ColumnName="CountSource" />
           <ScalarProperty Name="FinalSource" ColumnName="FinalSource" />
@@ -261,6 +262,8 @@
     <EntitySetMapping Name="StockCountAllocations">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.StockCountAllocations">
         <MappingFragment StoreEntitySet="StockCountAllocations">
+          <ScalarProperty Name="StockCountDetailID" ColumnName="StockCountDetailID" />
+          <ScalarProperty Name="NSNNo" ColumnName="NSNNo" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
@@ -293,6 +296,8 @@
     <EntitySetMapping Name="NAVItems">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.NAVItems">
         <MappingFragment StoreEntitySet="NAVItems">
+          <ScalarProperty Name="ItemTrackingCode" ColumnName="ItemTrackingCode" />
+          <ScalarProperty Name="NSNNo" ColumnName="NSNNo" />
           <ScalarProperty Name="StandardCost" ColumnName="StandardCost" />
           <ScalarProperty Name="NetWeight" ColumnName="NetWeight" />
           <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

@@ -21,6 +21,38 @@
           </sequence>
         </complexType>
       </element>
+      <element name="UpdatePhyiscalInventory">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="quantity" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="zonecode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="bincode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lotno" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="expirydate" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="batchName" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="UpdatePhyiscalInventory_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="DeleteExistingAdjustments">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchName" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="DeleteExistingAdjustments_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
     </schema>
   </types>
   <message name="GetAdjustmentLines">
@@ -29,10 +61,30 @@
   <message name="GetAdjustmentLines_Result">
     <part name="parameters" element="tns:GetAdjustmentLines_Result" />
   </message>
+  <message name="UpdatePhyiscalInventory">
+    <part name="parameters" element="tns:UpdatePhyiscalInventory" />
+  </message>
+  <message name="UpdatePhyiscalInventory_Result">
+    <part name="parameters" element="tns:UpdatePhyiscalInventory_Result" />
+  </message>
+  <message name="DeleteExistingAdjustments">
+    <part name="parameters" element="tns:DeleteExistingAdjustments" />
+  </message>
+  <message name="DeleteExistingAdjustments_Result">
+    <part name="parameters" element="tns:DeleteExistingAdjustments_Result" />
+  </message>
   <portType name="InventoryCount_Port">
     <operation name="GetAdjustmentLines">
       <input name="GetAdjustmentLines" message="tns:GetAdjustmentLines" />
       <output name="GetAdjustmentLines_Result" message="tns:GetAdjustmentLines_Result" />
+    </operation>
+    <operation name="UpdatePhyiscalInventory">
+      <input name="UpdatePhyiscalInventory" message="tns:UpdatePhyiscalInventory" />
+      <output name="UpdatePhyiscalInventory_Result" message="tns:UpdatePhyiscalInventory_Result" />
+    </operation>
+    <operation name="DeleteExistingAdjustments">
+      <input name="DeleteExistingAdjustments" message="tns:DeleteExistingAdjustments" />
+      <output name="DeleteExistingAdjustments_Result" message="tns:DeleteExistingAdjustments_Result" />
     </operation>
   </portType>
   <binding name="InventoryCount_Binding" type="tns:InventoryCount_Port">
@@ -43,6 +95,24 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetAdjustmentLines_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="UpdatePhyiscalInventory">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/InventoryCount:UpdatePhyiscalInventory" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="UpdatePhyiscalInventory">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="UpdatePhyiscalInventory_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="DeleteExistingAdjustments">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/InventoryCount:DeleteExistingAdjustments" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="DeleteExistingAdjustments">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="DeleteExistingAdjustments_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

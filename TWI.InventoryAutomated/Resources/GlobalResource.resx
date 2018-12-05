@@ -415,7 +415,7 @@
     <value>Successfully Deleted the selected Batch</value>
   </data>
   <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
-    <value>Are you sure to push selected batch data to NAV ? </value>
+    <value>Entries with Final Quantity will be overwritten in NAV Physical Inventory Journal &amp; any existing adjustments will be deleted and recreated. &lt;br/&gt;Click Yes to proceed or No to cancel. </value>
   </data>
   <data name="MsgBatchSavedSuccessfully" xml:space="preserve">
     <value>Batch Information Saved Successfully</value>
@@ -493,7 +493,7 @@
     <value>Status</value>
   </data>
   <data name="buttonAdjustment" xml:space="preserve">
-    <value>Enter &lt;br /&gt; Adjustment</value>
+    <value>New Entry</value>
   </data>
   <data name="DeleteItem" xml:space="preserve">
     <value>Delete Item</value>

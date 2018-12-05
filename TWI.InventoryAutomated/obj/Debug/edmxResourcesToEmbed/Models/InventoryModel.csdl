@@ -229,6 +229,7 @@
     <Property Name="FinalSource" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="CountSource" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="MethodUsed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="StockCountDetailID" Type="Int32" />
   </EntityType>
   <EntityType Name="StockCountTeams">
     <Key>
@@ -290,6 +291,8 @@
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
     <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="NSNNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="StockCountDetailID" Type="Int32" />
   </EntityType>
   <EntityType Name="NAVItems">
     <Key>
@@ -304,5 +307,7 @@
     <Property Name="CreatedDate" Type="DateTime" Precision="3" />
     <Property Name="NetWeight" Type="Decimal" Precision="18" Scale="2" />
     <Property Name="StandardCost" Type="Decimal" Precision="18" Scale="2" />
+    <Property Name="NSNNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="ItemTrackingCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>
