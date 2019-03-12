@@ -42,7 +42,6 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
         [HttpGet]
-
         public ActionResult Index(int InstanceID)
         {
             try

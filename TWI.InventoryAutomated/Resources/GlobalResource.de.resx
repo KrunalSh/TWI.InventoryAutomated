@@ -474,4 +474,7 @@
   <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
     <value>Einträge mit Endmenge werden im Inventarjournal des NAV überschrieben und vorhandene Anpassungen werden gelöscht und erneut erstellt. &lt;br/&gt;&lt;br/&gt; Klicken Sie auf Ja, um fortzufahren, oder auf Nein, um den Vorgang abzubrechen.</value>
   </data>
+  <data name="LocationDetail" xml:space="preserve">
+    <value>Standortdetails</value>
+  </data>
 </root>

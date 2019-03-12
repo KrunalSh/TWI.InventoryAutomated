@@ -146,6 +146,8 @@
     <EntitySetMapping Name="UserAccesses">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserAccess">
         <MappingFragment StoreEntitySet="UserAccess">
+          <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
           <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -306,6 +308,22 @@
           <ScalarProperty Name="ItemDesc" ColumnName="ItemDesc" />
           <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
           <ScalarProperty Name="SCID" ColumnName="SCID" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Location">
+      <EntityTypeMapping TypeName="TWIInventoryPortalModel.Location">
+        <MappingFragment StoreEntitySet="Location">
+          <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+          <ScalarProperty Name="InstanceID" ColumnName="InstanceID" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

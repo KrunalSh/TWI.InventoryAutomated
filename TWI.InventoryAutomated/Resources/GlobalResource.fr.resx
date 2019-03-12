@@ -474,4 +474,7 @@
   <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
     <value>Les entrées avec Quantité finale seront écrasées dans le journal dinventaire physique NAV et tous les ajustements existants seront supprimés et recréés. &lt;br/&gt; &lt;br/&gt; Cliquez sur Oui pour continuer ou sur Non pour annuler.</value>
   </data>
+  <data name="LocationDetail" xml:space="preserve">
+    <value>Détail de l'emplacement</value>
+  </data>
 </root>

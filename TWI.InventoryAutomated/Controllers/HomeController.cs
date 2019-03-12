@@ -180,7 +180,7 @@ namespace TWI.InventoryAutomated.Controllers
                 {
                     return Json(new { success = false, message = Resources.GlobalResource.MsgInvalidLoginInformation }, JsonRequestBehavior.AllowGet);
                 }
-                List<UserAccess> uaccess = db.UserAccesses.Where(x => x.UserID == _user.UserID).ToList();
+                List<UserAccess> uaccess = db.UserAccesses.Where(x => x.UserID == _user.UserID && x.IsActive == true).ToList();
                 if (uaccess.Count == 0)
                     return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
                 else
@@ -263,25 +263,26 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         [HttpPost]
-        public ActionResult Home(int InstId, int CompId, string InstName, string compName)
+        public ActionResult Home(int InstId, int CompId,int LocationID, string InstName, string compName,string LocCode)
         {
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    if (Session["DeviceID"] != null && Session["UserID"] != null && InstId != null && CompId != null)
+                    if (Session["DeviceID"] != null && Session["UserID"] != null && InstId != null && CompId != null && LocationID != null)
                     {
                         int DeviceID = Convert.ToInt32(Session["DeviceID"].ToString());
                         int UserID = Convert.ToInt32(Session["UserID"].ToString());
                         List<UserAccess> UserAccess = (from e in db.UserAccesses
                                                        join f in db.UserAccessDevices on e.ID equals f.UserAccessID
-                                                       where e.InstanceID == InstId && e.CompanyID == CompId && f.DeviceID == DeviceID && f.IsActive == true && e.UserID == UserID
+                                                       where e.InstanceID == InstId && e.CompanyID == CompId && e.LocationID == LocationID && f.DeviceID == DeviceID && f.IsActive == true && e.UserID == UserID
                                                        select e).ToList();
                         if (UserAccess.Count > 0)
                         {
                             AddEntryToSessionLog(UserAccess[0].ID);
                             Session["InstanceName"] = InstName;
                             Session["CompanyName"] = compName;
+                            Session["LocationCode"] = LocCode;
                             LocalizationWebsite();
                             return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
                         }
@@ -355,20 +356,17 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult InstanceAuthentication()
         {
-            try
-            {
                 InventoryPortalEntities db = new InventoryPortalEntities();
                 int UserID = Convert.ToInt32(Session["UserID"].ToString());
                 ViewBag.Instances = (from a in db.UserAccesses
-                                     join b in db.Instances on a.InstanceID equals b.ID
-                                     where a.UserID == UserID
-                                     select new
-                                     {   b.ID,
-                                         b.InstanceName
-                                     }).Distinct().ToList();
+                                  join b in db.Instances on a.InstanceID equals b.ID
+                                  where a.UserID == UserID && a.IsActive == true
+                                  select new
+                                  {
+                                      b.ID,
+                                      b.InstanceName
+                                  }).Distinct().ToList();
                 return PartialView("InstanceAuthentication");
-            }
-            catch (Exception ex) { throw; }
         }
 
         [HttpPost]
@@ -378,6 +376,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 InventoryPortalEntities db = new InventoryPortalEntities();
                 int userID = Convert.ToInt32(Session["UserID"].ToString());
+
                 var Companies = (from a in db.UserAccesses
                                  join b in db.Companies on a.CompanyID equals b.ID
                                  where a.UserID == userID && a.InstanceID == intInstID
@@ -386,6 +385,7 @@ namespace TWI.InventoryAutomated.Controllers
                                      b.ID,
                                      b.CompanyName
                                  }).ToList();
+
                 return Json(new { success = true, message = Companies }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -393,6 +393,29 @@ namespace TWI.InventoryAutomated.Controllers
                 return Json(new { success = false, message = "" }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        public ActionResult GetLocations(int CompanyID)
+        {
+            try
+            {
+                InventoryPortalEntities db = new InventoryPortalEntities();
+                int userID = Convert.ToInt32(Session["UserID"].ToString());
+
+                var Locations = (from a in db.UserAccesses
+                                 join b in db.Location on a.CompanyID equals b.CompanyID
+                                 where a.UserID == userID && a.CompanyID == CompanyID
+                                 select new
+                                 {
+                                     b.ID,
+                                     b.Code
+                                 }).ToList();
+
+                return Json(new { success = true, message = Locations }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex){ return Json(new { success = false, message = "" }, JsonRequestBehavior.AllowGet); }
+        }
+        
         #endregion
 
         #region "Helper Function(s) "

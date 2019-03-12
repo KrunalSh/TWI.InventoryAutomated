@@ -484,7 +484,7 @@
     <value>New Entries</value>
   </data>
   <data name="Location" xml:space="preserve">
-    <value>Location</value>
+    <value>Location(s)</value>
   </data>
   <data name="NAVEntries" xml:space="preserve">
     <value>NAV Entries</value>
@@ -554,5 +554,11 @@
   </data>
   <data name="MsgAllocateSelectedItem" xml:space="preserve">
     <value>Are you sure you want to allocate the selected Item(s). &lt;br /&gt; Click 'Yes' to  Proceed or 'No' to Cancel.</value>
+  </data>
+  <data name="LocationDetail" xml:space="preserve">
+    <value>Location Detail</value>
+  </data>
+  <data name="MsgLocationSaved" xml:space="preserve">
+    <value>Location information saved. </value>
   </data>
 </root>

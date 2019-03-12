@@ -502,7 +502,7 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Location.
+        ///   Looks up a localized string similar to Location(s).
         /// </summary>
         public static string Location {
             get {
@@ -516,6 +516,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string LocationCode {
             get {
                 return ResourceManager.GetString("LocationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location Detail.
+        /// </summary>
+        public static string LocationDetail {
+            get {
+                return ResourceManager.GetString("LocationDetail", resourceCulture);
             }
         }
         
@@ -876,6 +885,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string MsgItemsFromERP {
             get {
                 return ResourceManager.GetString("MsgItemsFromERP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location information saved. .
+        /// </summary>
+        public static string MsgLocationSaved {
+            get {
+                return ResourceManager.GetString("MsgLocationSaved", resourceCulture);
             }
         }
         

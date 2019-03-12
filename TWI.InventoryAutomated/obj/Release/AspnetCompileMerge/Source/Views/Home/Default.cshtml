@@ -105,13 +105,16 @@
                                         $('#Instances').change(function () {
                                             fetchCompanies();
                                         });
+
+                                        $("#Companies").change(function () {
+                                            fetchLocation();
+                                        });
                                     });
                                 },
-
                             });
                         }
                         else
-                            location.href = data.message;
+                            window.location.href = data.message;
                     }
                 });
             }
@@ -121,26 +124,56 @@
 
         function fetchCompanies() {
             $("#Companies").empty();
+            
             var intInstID = $('#Instances').val();
             $.ajaxSetup({ async: false });
-            $.post('@Url.Action("GetCompanies", "Home")' +"?intInstID=" + intInstID,function(data){
+            $.post('@Url.Action("GetCompanies", "Home")' + "?intInstID=" + intInstID, function (data) {
+                var Companyopt = new Option("Select Company", "-1");
+                $("#Companies").append(Companyopt);
                 $.each(data.message, function () {
                     $('#Companies').append('<option value=' +
                         this.ID + '>' + this.CompanyName + '</option>');
                 });
-            });
 
+                $("#Location").empty();
+                var Locationopt = new Option("Select Location", "-1");
+                $("#Location").append(Locationopt);
+            });
+        }
+
+        function fetchLocation() {
+            $("#Location").empty();
+            var companyID = $("#Companies").val();
+
+            $.ajaxSetup({ async: false });
+            $.post('@Url.Action("GetLocations", "Home")' + "?CompanyID=" + companyID, function (data) {
+                var Locationopt = new Option("Select Location", "-1");
+                $("#Location").append(Locationopt);
+                $.each(data.message, function () {
+                    $('#Location').append('<option value=' +
+                        this.ID + '>' + this.Code + '</option>');
+                });
+            });
 
         }
+
+
+
+
         function SubmitInstanceForm(form) {
-            if ($('#Instances').val() !== null && $('#Companies').val() !== null) {
-            $.ajaxSetup({ async: false });
-            $.post(form.action + "?InstId=" + $('#Instances').val() + "&CompId=" + $('#Companies').val() + "&InstName=" + $('#Instances  option:selected').text() + "&compName=" + $('#Companies  option:selected').text(),function(data){
-                if (data.success)
-                    location.href = data.message;
-                else
-                    $('#LoginError').text(data.message);
-            });
+            if ($('#Instances').val() !== null && $('#Companies').val() !== "-1" && $("#Location").val() !== "-1") {
+                $.ajaxSetup({ async: false });
+                $.post(form.action + "?InstId=" + $('#Instances').val() + "&CompId=" + $('#Companies').val() + "&LocationID=" + $("#Location").val() + "&InstName=" + $('#Instances  option:selected').text() + "&compName=" + $('#Companies  option:selected').text() + "&LocCode=" + $('#Location  option:selected').text(), function (data) {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = data.message;
+                    }
+                    else
+                        $('#LoginError').text(data.message);
+                });
+            }
+            else {
+                alert('Kindly select Instance,Company & Location to Proceed further');
             }
             return false;
         }

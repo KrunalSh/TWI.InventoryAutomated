@@ -5,26 +5,27 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d1821d47c85f421ea07a288faec04659" Name="Diagram1">
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.User" PointX="2.75" PointY="0.75" Width="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.Company" Width="1.5" PointX="0.75" PointY="4.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.Instance" Width="1.5" PointX="2.75" PointY="4.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.RegisteredDevice" Width="1.5" PointX="4.75" PointY="4.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.Language" Width="1.5" PointX="5.375" PointY="0.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.Form" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.Module" Width="1.5" PointX="0.75" PointY="7.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.Permission" Width="1.5" PointX="3.375" PointY="7.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.UIPermissionAssignment" Width="1.5" PointX="7.375" PointY="4.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserLanguage" Width="1.5" PointX="5.375" PointY="7.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserAccessDevice" Width="1.5" PointX="7.375" PointY="7.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserSessionLog" Width="1.5" PointX="9.375" PointY="4.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserAccess" Width="1.5" PointX="9.375" PointY="7.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.ArchivedSessionLog" Width="1.5" PointX="10.375" PointY="0.75" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountIterations" Width="1.5" PointX="4.125" PointY="10.25" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountDetail" Width="1.5" PointX="2.5" PointY="10.25" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountTeams" Width="1.5" PointX="5.75" PointY="10.25" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountHeader" Width="1.5" PointX="0.75" PointY="10.25" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountAllocations" Width="1.5" PointX="7.5" PointY="10.25" />
-        <EntityTypeShape EntityType="TWIInventoryPortalModel.NAVItems" Width="1.5" PointX="5.75" PointY="13.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.User" PointX="0.5" PointY="0.625" Width="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Company" Width="1.5" PointX="10.25" PointY="0.625" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Instance" Width="1.5" PointX="8.625" PointY="0.625" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.RegisteredDevice" Width="1.5" PointX="7" PointY="0.625" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Language" Width="1.5" PointX="2.125" PointY="0.625" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Form" Width="1.5" PointX="3.75" PointY="0.625" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Module" Width="1.5" PointX="3.75" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Permission" Width="1.5" PointX="5.375" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.UIPermissionAssignment" Width="1.5" PointX="0.5" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserLanguage" Width="1.5" PointX="7" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserAccessDevice" Width="1.5" PointX="8.625" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserSessionLog" Width="1.5" PointX="2.125" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.UserAccess" Width="1.5" PointX="10.25" PointY="3.5" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.ArchivedSessionLog" Width="1.5" PointX="5.375" PointY="0.625" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountIterations" Width="1.5" PointX="3.75" PointY="6.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountDetail" Width="1.5" PointX="2.125" PointY="6.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountTeams" Width="1.5" PointX="5.375" PointY="6.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountHeader" Width="1.5" PointX="0.5" PointY="6.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.StockCountAllocations" Width="1.5" PointX="7" PointY="6.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.NAVItems" Width="1.5" PointX="8.625" PointY="6.25" />
+        <EntityTypeShape EntityType="TWIInventoryPortalModel.Location" Width="1.5" PointX="11.875" PointY="0.625" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

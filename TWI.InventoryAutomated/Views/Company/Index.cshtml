@@ -17,6 +17,7 @@
                         <tr>
                             <th>Company Name</th>
                             <th>Status</th>
+                            <th>Location(s)</th>
                             <th>Created Date</th>
                             <th></th>
                         </tr>
@@ -56,6 +57,11 @@
                         "orderable": false,
                         "searchable": false,
                         "width": "50px"
+                    },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return "<a href='/Location/LocationView?ID=" + data + "'> List  </a>";
+                        }
                     },
                     {
                         "data": "CreatedDate", "render": function (date) {

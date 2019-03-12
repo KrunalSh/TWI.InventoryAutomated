@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">&nbsp;</div>
+<div class="row">&nbsp;</div>
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:80%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">@Convert.ToString(Session["SelectedCompany"]) - @TWI.InventoryAutomated.Resources.GlobalResource.Location</div>
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("Index","Company", new { InstanceID = Convert.ToInt32(Session["SelectedInstanceID"]) })'><i class="fa fa-arrow-left fa-2x"></i></a>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="LocationTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts
+{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            dataTable = $("#LocationTable").DataTable({
+                "ajax": {
+                    "url": '/Location/LoadLocationList?ID=@Convert.ToInt32(Session["SelectedCompanyID"])',
+                    "type": "GET"
+                },
+                "columns": [
+                    { "data": "Code" },
+                    { "data": "Description" },
+                    {
+                        "data": "IsActive", "render": function (data) {
+                            if (data)
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightgreen" ></i><i data-toggle="tooltip" title="Active" class="fa fa-circle-thin fa-stack-1x icon-green"></i></span >';
+                            else
+                                return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightred" ></i><i data-toggle="tooltip" title="InActive" class="fa fa-circle-thin fa-stack-1x icon-red"></i></span >';
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    },
+                    {
+                        "data": "ID", "render": function (data) {
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("CreateUpdateLocation", "Location")/" + data + "')></i>   ";
+                        //<i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ") ></i >
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px"
+                    }
+                ],
+                "aaSorting": [[0, "desc"]] ,
+                "responsive": true,
+                "language": {
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button",
+                    "url": Path
+                },
+                'fnDrawCallback': function (oSettings) {
+                    if ($('.dataTables_filter i').length == 0)
+                        $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("CreateUpdateLocation", "Location")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
+            });
+        });
+
+        function PopupForm(url) {
+            var formDiv = $('<div/>');
+            $.get(url)
+            .done(function (response) {
+                formDiv.html(response);
+
+                Popup = formDiv.dialog({
+                    autoOpen: true,
+                    title: "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.LocationDetail)",
+                    modal: true
+                });
+            });
+        }
+
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+
+
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+                            $('<div></div>').appendTo('body')
+                                .html("<div><h5>" + data.message + "</h5></div>")
+                                .dialog({
+                                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.LocationDetail + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                            //alert(data.message);
+                        }
+                        else {
+                            $('<div></div>').appendTo('body')
+                                .html("<div><h5>" + data.message + "</h5></div>")
+                                .dialog({
+                                    modal: true, title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.LocationDetail + " - " + TWI.InventoryAutomated.Resources.GlobalResource.Save)', zIndex: 10000, autoOpen: true, width: 500, resizable: true,
+                                    buttons: {
+                                        Ok: function () {
+                                            $(this).dialog("close");
+                                        }
+                                    }
+                                });
+                        }
+                            
+                    }
+                });
+            }
+            return false;
+        }
+
+        function Delete(id) {
+            $('<div></div>').appendTo('body')
+                .html("<div><h6>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgDisableRecord)" + "</h6></div>")
+                .dialog({
+                    modal: true, title: 'Delete message', zIndex: 10000, autoOpen: true,
+                    width: 'auto', resizable: false,
+                    buttons: {
+                        Yes: function () {
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("Delete", "Location")/' + id,
+                                success: function (data) {
+                                    if (data.success) {
+                                        dataTable.ajax.reload();
+                                        alert(data.message);
+                                    }
+                                    else
+                                        alert(data.message);
+                                }
+                            });
+
+                            $(this).dialog("close");
+                        },
+                        No: function () {
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function (event, ui) {
+                        $(this).remove();
+                    }
+                });
+        }
+
+
+
+    </script>
+
+}

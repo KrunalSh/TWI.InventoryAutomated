@@ -179,6 +179,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InstanceController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
+    <Compile Include="Controllers\LocationController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\PermissionAssignmentController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
@@ -227,6 +228,9 @@
     </Compile>
     <Compile Include="Models\InventoryModelExtension.cs" />
     <Compile Include="Models\Language.cs">
+      <DependentUpon>InventoryModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Location.cs">
       <DependentUpon>InventoryModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Module.cs">
@@ -482,6 +486,9 @@
     <Content Include="Views\StockCount\UpdatePhysicalQty.cshtml" />
     <Content Include="Views\StockCount\ManagerStockCountSheet.cshtml" />
     <Content Include="Views\StockCount\StockCountSheetTest.cshtml" />
+    <Content Include="Views\Location\LocationView.cshtml" />
+    <Content Include="Views\Location\CreateUpdateLocation.cshtml" />
+    <Content Include="Views\UserAccess\UserAccessList.cshtml" />
     <None Include="Web References\DEVPhyInvJournal\PhysicalInvJournal.wsdl" />
     <Content Include="Web References\DEVPhyInvJournal\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

@@ -57,6 +57,21 @@
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="IsActive" Type="bit" />
   </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="10" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="InstanceID" Type="int" />
+    <Property Name="CompanyID" Type="int" />
+    <Property Name="IsActive" Type="bit" />
+    <Property Name="CreatedBy" Type="int" />
+    <Property Name="CreatedDate" Type="datetime" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedDate" Type="datetime" />
+  </EntityType>
   <EntityType Name="Modules">
     <Key>
       <PropertyRef Name="ModuleID" />
@@ -227,6 +242,8 @@
     <Property Name="CompanyName" Type="nvarchar" MaxLength="500" />
     <Property Name="InstanceID" Type="int" />
     <Property Name="InstanceName" Type="nvarchar" MaxLength="500" />
+    <Property Name="LocationID" Type="int" />
+    <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
     <Property Name="PermissionID" Type="int" />
     <Property Name="IsActive" Type="bit" />
     <Property Name="CreatedDate" Type="datetime" />
@@ -286,6 +303,7 @@
     <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="NAVItems" EntityType="Self.NAVItems" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />

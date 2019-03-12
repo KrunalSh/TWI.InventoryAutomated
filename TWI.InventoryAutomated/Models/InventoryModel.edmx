@@ -62,6 +62,21 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsActive" Type="bit" />
         </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="InstanceID" Type="int" />
+          <Property Name="CompanyID" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="int" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="Modules">
           <Key>
             <PropertyRef Name="ModuleID" />
@@ -232,6 +247,8 @@
           <Property Name="CompanyName" Type="nvarchar" MaxLength="500" />
           <Property Name="InstanceID" Type="int" />
           <Property Name="InstanceName" Type="nvarchar" MaxLength="500" />
+          <Property Name="LocationID" Type="int" />
+          <Property Name="LocationCode" Type="nvarchar" MaxLength="10" />
           <Property Name="PermissionID" Type="int" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
@@ -291,6 +308,7 @@
           <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Instances" EntityType="Self.Instances" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Languages" EntityType="Self.Languages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Location" EntityType="Self.Location" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Modules" EntityType="Self.Modules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NAVItems" EntityType="Self.NAVItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
@@ -346,6 +364,7 @@
           <EntitySet Name="StockCountHeader" EntityType="TWIInventoryPortalModel.StockCountHeader" />
           <EntitySet Name="StockCountAllocations" EntityType="TWIInventoryPortalModel.StockCountAllocations" />
           <EntitySet Name="NAVItems" EntityType="TWIInventoryPortalModel.NAVItems" />
+          <EntitySet Name="Location" EntityType="TWIInventoryPortalModel.Location" />
         </EntityContainer>
         <EntityType Name="Company">
           <Key>
@@ -482,6 +501,8 @@
           <Property Name="CreatedBy" Type="Int32" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="LocationID" Type="Int32" />
+          <Property Name="LocationCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ArchivedSessionLog">
           <Key>
@@ -620,6 +641,21 @@
           <Property Name="StandardCost" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="NSNNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ItemTrackingCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InstanceID" Type="Int32" />
+          <Property Name="CompanyID" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -772,6 +808,8 @@
           <EntitySetMapping Name="UserAccesses">
             <EntityTypeMapping TypeName="TWIInventoryPortalModel.UserAccess">
               <MappingFragment StoreEntitySet="UserAccess">
+                <ScalarProperty Name="LocationCode" ColumnName="LocationCode" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -932,6 +970,22 @@
                 <ScalarProperty Name="ItemDesc" ColumnName="ItemDesc" />
                 <ScalarProperty Name="ItemNo" ColumnName="ItemNo" />
                 <ScalarProperty Name="SCID" ColumnName="SCID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Location">
+            <EntityTypeMapping TypeName="TWIInventoryPortalModel.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="InstanceID" ColumnName="InstanceID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

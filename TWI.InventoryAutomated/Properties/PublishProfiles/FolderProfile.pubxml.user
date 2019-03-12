@@ -22,10 +22,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>11/26/2018 17:13:10</publishTime>
+      <publishTime>01/29/2019 11:51:19</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>11/26/2018 17:13:10</publishTime>
+      <publishTime>01/29/2019 11:51:19</publishTime>
     </File>
     <File Include="bin/ClosedXML.dll">
       <publishTime>06/22/2018 14:15:50</publishTime>
@@ -34,7 +34,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/23/2018 13:30:08</publishTime>
     </File>
     <File Include="bin/de/TWI.InventoryAutomated.resources.dll">
-      <publishTime>11/26/2018 17:13:01</publishTime>
+      <publishTime>01/29/2019 11:51:13</publishTime>
     </File>
     <File Include="bin/DocumentFormat.OpenXml.dll">
       <publishTime>06/06/2017 22:59:22</publishTime>
@@ -52,7 +52,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/06/2018 05:28:04</publishTime>
     </File>
     <File Include="bin/fr/TWI.InventoryAutomated.resources.dll">
-      <publishTime>11/26/2018 17:13:01</publishTime>
+      <publishTime>01/29/2019 11:51:13</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>06/05/2018 13:21:26</publishTime>
@@ -256,13 +256,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:27</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.dll">
-      <publishTime>11/26/2018 17:13:00</publishTime>
+      <publishTime>01/29/2019 11:51:12</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.pdb">
-      <publishTime>11/26/2018 17:13:00</publishTime>
+      <publishTime>01/29/2019 11:51:12</publishTime>
     </File>
     <File Include="bin/TWI.InventoryAutomated.XmlSerializers.dll">
-      <publishTime>11/26/2018 17:13:01</publishTime>
+      <publishTime>01/29/2019 11:51:13</publishTime>
     </File>
     <File Include="bin/WebGrease.dll">
       <publishTime>06/05/2018 13:21:27</publishTime>
@@ -352,13 +352,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Models/InventoryModel.edmx.diagram">
-      <publishTime>10/27/2018 23:13:51</publishTime>
+      <publishTime>01/23/2019 10:39:47</publishTime>
     </File>
     <File Include="Models/TestModel.edmx.diagram">
       <publishTime>10/25/2018 10:26:18</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>11/26/2018 17:13:03</publishTime>
+      <publishTime>01/29/2019 11:51:14</publishTime>
     </File>
     <File Include="Scripts/bootstrap-suggest.js">
       <publishTime>10/30/2018 11:59:51</publishTime>
@@ -433,7 +433,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/12/2018 11:37:29</publishTime>
     </File>
     <File Include="Views/Company/Index.cshtml">
-      <publishTime>09/04/2018 12:10:27</publishTime>
+      <publishTime>01/21/2019 16:49:13</publishTime>
     </File>
     <File Include="Views/CurrentSessions/Index.cshtml">
       <publishTime>11/13/2018 14:18:02</publishTime>
@@ -448,7 +448,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Views/Home/Default.cshtml">
-      <publishTime>11/05/2018 09:21:06</publishTime>
+      <publishTime>01/29/2019 11:50:00</publishTime>
     </File>
     <File Include="Views/Home/Home.cshtml">
       <publishTime>10/11/2018 16:55:45</publishTime>
@@ -457,7 +457,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/30/2018 15:52:51</publishTime>
     </File>
     <File Include="Views/Home/InstanceAuthentication.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>01/27/2019 17:56:26</publishTime>
     </File>
     <File Include="Views/Home/SubMenu.cshtml">
       <publishTime>10/11/2018 16:43:14</publishTime>
@@ -473,6 +473,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Views/Language/Index.cshtml">
       <publishTime>06/05/2018 13:21:25</publishTime>
+    </File>
+    <File Include="Views/Location/CreateUpdateLocation.cshtml">
+      <publishTime>01/23/2019 11:41:33</publishTime>
+    </File>
+    <File Include="Views/Location/LocationView.cshtml">
+      <publishTime>01/23/2019 12:20:04</publishTime>
     </File>
     <File Include="Views/Module/AddOrEdit.cshtml">
       <publishTime>06/05/2018 13:21:25</publishTime>
@@ -514,7 +520,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/12/2018 22:14:04</publishTime>
     </File>
     <File Include="Views/StockCount/ManagerStockCountSheet.cshtml">
-      <publishTime>11/23/2018 19:25:40</publishTime>
+      <publishTime>01/24/2019 12:42:59</publishTime>
     </File>
     <File Include="Views/StockCount/NavDataPull.cshtml">
       <publishTime>11/17/2018 14:19:21</publishTime>
@@ -526,7 +532,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/24/2018 14:59:48</publishTime>
     </File>
     <File Include="Views/StockCount/SelectStockCountItems.cshtml">
-      <publishTime>11/24/2018 15:12:32</publishTime>
+      <publishTime>12/05/2018 11:54:53</publishTime>
     </File>
     <File Include="Views/StockCount/StockCountSheet.cshtml">
       <publishTime>11/23/2018 17:01:33</publishTime>
@@ -544,13 +550,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/05/2018 13:21:25</publishTime>
     </File>
     <File Include="Views/User/Index.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>01/23/2019 21:47:16</publishTime>
     </File>
     <File Include="Views/UserAccess/AddOrEdit.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>01/23/2019 17:13:07</publishTime>
     </File>
     <File Include="Views/UserAccess/Index.cshtml">
-      <publishTime>06/05/2018 13:21:25</publishTime>
+      <publishTime>01/23/2019 17:08:38</publishTime>
+    </File>
+    <File Include="Views/UserAccess/UserAccessList.cshtml">
+      <publishTime>01/27/2019 16:06:15</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>06/05/2018 13:21:25</publishTime>
@@ -604,7 +613,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/09/2018 13:52:03</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>11/26/2018 17:13:02</publishTime>
+      <publishTime>01/27/2019 16:07:14</publishTime>
     </File>
   </ItemGroup>
 </Project>
