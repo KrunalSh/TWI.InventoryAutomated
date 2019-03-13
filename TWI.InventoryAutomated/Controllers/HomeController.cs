@@ -133,8 +133,15 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-        public ActionResult Default()
+        //public ActionResult Default()
+        //{
+        //    return View();
+        //}
+
+        public ActionResult Default(string macaddress ="")
         {
+            Session["DeviceMac"] = macaddress;
+            //Session["DeviceMac"] = "A44CC82CBE25";
             return View();
         }
 
@@ -301,28 +308,42 @@ namespace TWI.InventoryAutomated.Controllers
 
         public PartialViewResult AuthenticateDevice()
         {
-            Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
-            obj = GetAllDevicesOnLAN();
-            IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
-            string MacAddress = string.Empty, txtIPAdress = string.Empty;
-            string ips = "";
-            foreach (IPAddress ip in obj.Keys)
-            {
-                ips += Convert.ToString(obj[ip]) + ",";
-                if (ip.Equals(clientip))
-                {
-                    PhysicalAddress actual = obj[ip];
-                    MacAddress = Convert.ToString(actual);
-                    txtIPAdress = Convert.ToString(clientip);
-                }
-            }
+            //------------------------------------------------------------------------------------------------
+            //Comment: Code Commented as device mac address now comes through Windows Universal App
+            //Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
+            //obj = GetAllDevicesOnLAN();
+            //IPAddress clientip = IPAddress.Parse(Request.UserHostAddress);
+            //string MacAddress = string.Empty, txtIPAdress = string.Empty;
+            //string ips = "";
+            //foreach (IPAddress ip in obj.Keys)
+            //{
+            //    ips += Convert.ToString(obj[ip]) + ",";
+            //    if (ip.Equals(clientip))
+            //    {
+            //        PhysicalAddress actual = obj[ip];
+            //        MacAddress = Convert.ToString(actual);
+            //        txtIPAdress = Convert.ToString(clientip);
+            //    }
+            //}
+            //-------------------------------------------------------------------------------------------------
+
 
             //string MacAddress = "A44CC82CBE25";
+            //if (IsDeviceRegistered(MacAddress))
+            //    return PartialView("Index");
+            //else
+            //{
+            //    //Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
+            //    return PartialView("AccessDenied");
+            //}
+
+            string MacAddress = Convert.ToString(Session["DeviceMac"]);
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
             {
                 //Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
+                Session["DeviceMac"] = null;
                 return PartialView("AccessDenied");
             }
         }

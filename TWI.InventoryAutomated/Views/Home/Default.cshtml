@@ -157,15 +157,11 @@
 
         }
 
-
-
-
         function SubmitInstanceForm(form) {
             if ($('#Instances').val() !== null && $('#Companies').val() !== "-1" && $("#Location").val() !== "-1") {
                 $.ajaxSetup({ async: false });
                 $.post(form.action + "?InstId=" + $('#Instances').val() + "&CompId=" + $('#Companies').val() + "&LocationID=" + $("#Location").val() + "&InstName=" + $('#Instances  option:selected').text() + "&compName=" + $('#Companies  option:selected').text() + "&LocCode=" + $('#Location  option:selected').text(), function (data) {
                     if (data.success) {
-                        alert(data.message);
                         window.location.href = data.message;
                     }
                     else
