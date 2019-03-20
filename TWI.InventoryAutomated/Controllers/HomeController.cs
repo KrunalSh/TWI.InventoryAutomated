@@ -140,8 +140,11 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult Default(string macaddress ="")
         {
-            Session["DeviceMac"] = macaddress;
-            //Session["DeviceMac"] = "A44CC82CBE25";
+            if (string.IsNullOrEmpty(Convert.ToString(Session["DeviceMac"])))
+            {  //Session["DeviceMac"] = macaddress;
+                Session["DeviceMac"] = "A44CC82CBE25";
+            }
+
             return View();
         }
 
@@ -307,7 +310,7 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         public PartialViewResult AuthenticateDevice()
-        {
+         {
             //------------------------------------------------------------------------------------------------
             //Comment: Code Commented as device mac address now comes through Windows Universal App
             //Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
@@ -343,7 +346,7 @@ namespace TWI.InventoryAutomated.Controllers
             else
             {
                 //Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
-                Session["DeviceMac"] = null;
+                //Session["DeviceMac"] = null;
                 return PartialView("AccessDenied");
             }
         }

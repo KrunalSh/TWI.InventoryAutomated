@@ -5,15 +5,22 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Web;
 using TWI.InventoryAutomated.Models;
 using TWI.InventoryAutomated.Security;
+using TWI.InventoryAutomated.TestGmbhWh_Users;
 
 namespace TWI.InventoryAutomated.DataAccess
 {
     public class CommonServices
     {
         #region  "Global Variables"
+
+        //public static List<NAVUsers> _navuserlist;
+
+        public static List<string> _navuserlist;
+
         #endregion
 
         #region "Constructor & Connection Function(s)"
@@ -414,6 +421,40 @@ namespace TWI.InventoryAutomated.DataAccess
             }
         }
 
+        public static void GetNAVUserList()
+        {
+            TestGmbhWh_Users.Users_Service _userservice = new Users_Service();
+            _userservice.UseDefaultCredentials = false;
+            _userservice.Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            List<TestGmbhWh_Users.Users> _navuser = new List<TestGmbhWh_Users.Users>();
+            _navuser = _userservice.ReadMultiple(null, "", 0).ToList();
+            //_navuserlist = new List<NAVUsers>();
+            _navuserlist = new List<string>();
+            foreach (TestGmbhWh_Users.Users _usr in _navuser)
+            {
+                string username = string.IsNullOrEmpty(Convert.ToString(_usr.User_Name)) ? "" : Convert.ToString(_usr.User_Name);
+                string fullname =  string.IsNullOrEmpty(Convert.ToString(_usr.User_Name)) ? "" : Convert.ToString(_usr.Full_Name); 
+                _navuserlist.Add(username + " - " + fullname);
+            }
+        }
+
         #endregion
     }
+
+
+    public class NAVUsers {
+        public string UserName { get; set; }
+        public string FullName { get; set; }
+    }
+
+
+
+
+
+
+
+
 }

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TWI.InventoryAutomated.DataAccess;
 using TWI.InventoryAutomated.Models;
+using TWI.InventoryAutomated.TestGmbhWh_Users;
 
 namespace TWI.InventoryAutomated.Controllers
 {
@@ -23,6 +25,7 @@ namespace TWI.InventoryAutomated.Controllers
                 return RedirectToAction("Default", "Home");
             }
         }
+
         public ActionResult GetData()
         {
             try
@@ -34,6 +37,8 @@ namespace TWI.InventoryAutomated.Controllers
                                     {
                                         x.UserID,
                                         x.UserName,
+                                        x.DisplayName,
+                                        x.NAV_ID,
                                         x.EmailID,
                                         x.IsActive
                                     }).ToList();
@@ -47,7 +52,6 @@ namespace TWI.InventoryAutomated.Controllers
 
         }
 
-
         [HttpGet]
         public ActionResult AddOrEdit(int id = 0)
         {
@@ -55,15 +59,18 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 InventoryPortalEntities db = new InventoryPortalEntities();
                 ViewBag.Languages = (from r in db.Languages where r.IsActive == true select new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code }).ToList();
+
                 if (id == 0)
                 {
                     ViewBag.selectedLanguages = db.Languages.Where(x => x.Description.Contains("English") && x.IsActive == true).Select(x => x.ID).ToList();
+                    ViewBag.selectedNAVID = "";
                     return View(new User());
                 }
                 else
                 {
                     ViewBag.selectedLanguages = db.UserLanguages.Where(x => x.UserID == id && x.IsActive == true).Select(x => x.LanguageID).ToList();
                     User user = db.Users.Where(x => x.UserID == id).FirstOrDefault<User>();
+                    ViewBag.selectedNAVID = user.NAV_ID;
                     user.ConfirmPassword = user.Password;
                     return View(user);
                 }
@@ -75,7 +82,7 @@ namespace TWI.InventoryAutomated.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOrEdit(User user, string selectedlangs)
+        public ActionResult AddOrEdit(User user, string selectedlangs,string navid)
         {
             try
             {
@@ -85,11 +92,17 @@ namespace TWI.InventoryAutomated.Controllers
                 {
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
-
                         if (user.UserID == 0)
                         {
+                            if (!string.IsNullOrEmpty(navid.Trim()))
+                            {
+                                if (db.Users.Where(x => x.NAV_ID == navid).Count() > 0) return Json(new { success = false, message = "Selected NAV_ID already assigned to another user in the system, Kindly verify your selection." },JsonRequestBehavior.AllowGet);
+                            }
+
                             user.CreatedDate = DateTime.Now;
                             user.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
+                            user.NAV_ID = navid.Trim();
+
                             db.Users.Add(user);
                             db.SaveChanges();
                             updateLanguages(user, selectedval);
@@ -97,17 +110,21 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
+                            if (!string.IsNullOrEmpty(navid.Trim()))
+                            {
+                                if (db.Users.Where(x=> x.UserID != user.UserID && x.NAV_ID == navid).Count() > 0) return Json(new { success = false, message = "Selected NAV_ID already assigned to another user in the system, Kindly verify your selection." }, JsonRequestBehavior.AllowGet);
+                            }
+
                             User _user = db.Users.AsNoTracking().Where(x => x.UserID == user.UserID).FirstOrDefault();
                             user.CreatedDate = _user.CreatedDate;
                             user.CreatedBy = _user.CreatedBy;
+                            user.NAV_ID = navid;
                             db.Entry(user).State = EntityState.Modified;
                             db.SaveChanges();
                             updateLanguages(user, selectedval);
                             return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
-
                     }
-
                 }
                 else
                     //return Json(new { success = false, message = "User Name or Email already exists!" }, JsonRequestBehavior.AllowGet);
@@ -117,9 +134,6 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
-
-
-
         }
 
         private void updateLanguages(User user, List<int> languages)
@@ -177,6 +191,7 @@ namespace TWI.InventoryAutomated.Controllers
                 return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileDisable }, JsonRequestBehavior.AllowGet);
             }
         }
+
         public bool isDuplicate(User user)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
@@ -192,5 +207,19 @@ namespace TWI.InventoryAutomated.Controllers
                     return true;
             }
         }
+
+        public ActionResult GetNavUserList()
+        {
+            try
+            {
+                if (CommonServices._navuserlist == null) { CommonServices.GetNAVUserList();}
+                    return Json(CommonServices._navuserlist, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
     }
 }

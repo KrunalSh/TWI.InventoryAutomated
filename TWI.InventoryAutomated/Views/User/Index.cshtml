@@ -15,12 +15,14 @@
                 <table id="UsersTable" class="table table-striped dt-responsive display nowrap table-bordered">
                     <thead>
                         <tr>
-                            <th>User Name</th>
-                            <th>Email Address</th>
-                            <th>Status</th>
+                            <th style="width:10% !important ;">User Name</th>
+                            <th style="width:20% !important">Full Name</th>
+                            <th style="width:10% !important;">NAV ID</th>
+                            <th style="width:60% !important;">Email Address</th>
+                            <th style="width:3%  !important;">Status</th>
                             <th>Created Date</th>
-                            <th>Access</th>
-                            <th></th>
+                            <th style="width:5% !important;">Access</th>
+                            <th style="width:2% !important;"></th>
                         </tr>
                     </thead>
                 </table>
@@ -36,9 +38,11 @@
     table tr td:first-child {
         width: 50%;
     }
-    .txtNotification{
-        margin-top:30px;
+
+    .txtNotification {
+        margin-top: 30px;
     }
+
     select.input-validation-error {
         border: 1px solid red;
     }
@@ -48,6 +52,8 @@
     <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
     <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/jquery-editable-select.min.js"></script>
+
     <script>
         var Popup, dataTable;
         $(document).ready(function () {
@@ -60,8 +66,10 @@
                     "datatype": "json"
                 },
                 "columns": [
-                    { "data": "UserName" },
-                    { "data": "EmailID" },
+                    { "data": "UserName","width" : "10%" },
+                    { "data": "DisplayName", "width": "20%" },
+                    { "data": "NAV_ID", "width": "10%" },
+                    { "data": "EmailID", "width": "50%" },
                     {
                         "data": "IsActive", "render": function (data) {
                             if (data)
@@ -70,8 +78,8 @@
                                 return '<span class="fa-stack customstack fa-lg"><i class="fa fa-circle fa-stack-1x icon-lightred" ></i><i data-toggle="tooltip" title="InActive" class="fa fa-circle-thin fa-stack-1x icon-red"></i></span >';
                         },
                         "orderable": false,
-                        "searchable": false,
-                        "width": "50px"
+                        "searchable": false
+                        ,"width": "2%"
                     },
                     {
                         "data": "CreatedDate", "render": function (date) {
@@ -81,22 +89,21 @@
                         "visible": false
                     },
                     {
-                        "data": "UserID", "render": function (data) {
+                        "data": "UserID", "width": "5%",  "render": function (data) {
                             return "<a href='/UserAccess/UserAccessList?UserID=" + data + "'>Select</a>";
                         }
                     },
                     {
-                        "data": "UserID", "render": function (data) {
-                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "User")/" + data + "')></i>  <i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ")></i>";
+                        "data": "UserID", "width": "3%" , "render": function (data) {
+                            return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('@Url.Action("AddOrEdit", "User")/" + data + "')></i> ";
+                            //<i class='fa fa-trash fa-lg' data-toggle='tooltip' style='margin-left:15px' title='Delete' onclick=Delete(" + data + ") ></i >
                         },
                         "orderable": false,
-                        "searchable": false,
-                        "width": "50px"
+                        "searchable": false
+                        //,"width": "50px"
                     }
-
-
                 ],
-                "aaSorting": [[3, "desc"]] ,
+                "aaSorting": [[0, "desc"]] ,
                 "responsive": true,
                 "language": {
                     "emptyTable": "No data found, Please click on <b>Add New</b> Button",
@@ -122,9 +129,30 @@
                     modal: true,
                     open: function () {
                         $('#ListLanguages').chosen();
+
+                        $.ajax({
+                            url: "/User/GetNavUserList",
+                            type: "GET",
+                            datatype: "Json",
+                            success: function (data) {
+                                @*console.log(data); *@
+                                $('#txtNAVID').autocomplete({
+                                    source: data,
+                                    minLength:1,
+                                    maxLength: 10,
+                                    @*,select: function (event, ui) {
+                                        var itemno = ui.item.value.split('-')[0];
+                                        var TeamId = '@Convert.ToInt32(Session["TeamID"])';
+                                    }*@
+                                });
+                            }
+                        });
+
+                        @*$('#txtNAVID').val('@ViewBag.selectedNAVID');*@
                     }
                 });
-            });
+                });
+
         }
         function Cancelbutton() {
             Popup.dialog('destroy').remove();
@@ -134,7 +162,7 @@
             if ($(form).valid()) {
                 var data = $(form).serialize();
                 var selectedlangs=$('#ListLanguages').val().join(",");
-                var finaldata = data + "&selectedlangs=" + selectedlangs;
+                var finaldata = data + "&selectedlangs=" + selectedlangs + "&navid=" + $('#txtNAVID').val();
                 $.ajax({
                     type: "POST",
                     url: form.action,
@@ -172,13 +200,10 @@
                                     else
                                         alert(data.message);
                                 }
-
                                 });
-
                             $(this).dialog("close");
                         },
                         No: function () {
-
                             $(this).dialog("close");
                         }
                     },
@@ -186,7 +211,7 @@
                         $(this).remove();
                     }
                 });
-            
+
         }
     </script>
 }

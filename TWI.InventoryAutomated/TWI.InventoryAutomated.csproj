@@ -341,6 +341,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="Web References\TestGmbhWh_Users\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\TestItemList\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -537,6 +542,14 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </Content>
+    <Content Include="Web References\TestGmbhWh_Users\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\TestGmbhWh_Users\Users.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\TestGmbhWh_Users\Users.wsdl" />
     <None Include="Web References\TestItemList\ItemsList.wsdl" />
     <Content Include="Web References\TestItemList\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -692,6 +705,17 @@
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>TWI_InventoryAutomated_TESTPhyInvJournal_PhysicalInvJournal_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/Users">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\TestGmbhWh_Users\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/Users</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_TestGmbhWh_Users_Users_Service</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <PropertyGroup>

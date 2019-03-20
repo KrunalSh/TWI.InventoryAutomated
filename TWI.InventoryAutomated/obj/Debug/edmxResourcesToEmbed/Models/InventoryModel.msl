@@ -4,6 +4,7 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="TWIInventoryPortalModel.User">
         <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="NAV_ID" ColumnName="NAV_ID" />
           <ScalarProperty Name="UserID" ColumnName="UserID" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />
           <ScalarProperty Name="EmailID" ColumnName="EmailID" />

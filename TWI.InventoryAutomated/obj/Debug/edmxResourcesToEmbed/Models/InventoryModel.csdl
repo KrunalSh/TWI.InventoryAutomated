@@ -12,6 +12,7 @@
     <Property Name="IsActive" Type="Boolean" />
     <Property Name="CreatedDate" Precision="3" Type="DateTime" />
     <Property Name="CreatedBy" Type="Int32" />
+    <Property Name="NAV_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityContainer Name="InventoryPortalEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Users" EntityType="Self.User" />

@@ -370,7 +370,7 @@
     <value>Löschen</value>
   </data>
   <data name="MsgTeamDeletionConfirm" xml:space="preserve">
-    <value>Möchten Sie das ausgewählte Team wirklich löschen? Klicken Sie auf "Ja", um fortzufahren, oder auf "Nein", um den Vorgang abzubrechen</value>
+    <value>Möchten Sie das ausgewählte Team wirklich löschen? Klicken Sie auf Ja, um fortzufahren, oder auf Nein, um den Vorgang abzubrechen</value>
   </data>
   <data name="MsgTeamDeletionSuccessfull" xml:space="preserve">
     <value>Das ausgewählte Team wurde erfolgreich gelöscht.</value>
@@ -466,10 +466,10 @@
     <value>Wählen Sie mindestens zwei Zähler für mehrere Quellen aus</value>
   </data>
   <data name="MsgClearFinalQtyConfirmation" xml:space="preserve">
-    <value>Sind Sie sicher, die endgültige Menge aller Elemente zu löschen? Klicken Sie auf 'Ja', um fortzufahren, oder auf 'Nein', um den Vorgang abzubrechen.</value>
+    <value>Sind Sie sicher, die endgültige Menge aller Elemente zu löschen? Klicken Sie auf Ja, um fortzufahren, oder auf Nein, um den Vorgang abzubrechen.</value>
   </data>
   <data name="MsgAllocateSelectedItem" xml:space="preserve">
-    <value>Sind Sie sicher, dass Sie die ausgewählten Artikel zuordnen möchten. &lt;br /&gt; Klicken Sie zum Fortfahren auf 'Ja' oder zum Abbrechen auf 'Nein'.</value>
+    <value>Sind Sie sicher, dass Sie die ausgewählten Artikel zuordnen möchten. &lt;br /&gt; Klicken Sie zum Fortfahren auf Ja oder zum Abbrechen auf Nein.</value>
   </data>
   <data name="MsgBatchDataPushConfirmation" xml:space="preserve">
     <value>Einträge mit Endmenge werden im Inventarjournal des NAV überschrieben und vorhandene Anpassungen werden gelöscht und erneut erstellt. &lt;br/&gt;&lt;br/&gt; Klicken Sie auf Ja, um fortzufahren, oder auf Nein, um den Vorgang abzubrechen.</value>

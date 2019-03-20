@@ -27,6 +27,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //&& a.ID != currentSession && x.PermissionDesc != "Super Admin"
                 int currentSession = Session["CurrentSession"] != null ? Convert.ToInt32(Session["CurrentSession"].ToString()) : 0;
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
@@ -35,7 +36,8 @@ namespace TWI.InventoryAutomated.Controllers
                                 join c in db.Users on b.UserID equals c.UserID
                                 join x in db.Permissions on b.PermissionID equals x.ID
                                 join e in db.RegisteredDevices on a.DeviceID equals e.ID
-                                where a.IsActive == isActive && a.ID != currentSession && x.PermissionDesc != "Super Admin"
+                                where a.IsActive == isActive 
+                                orderby a.SessionStart descending
                                 select new
                                 {
                                     a.ID,
