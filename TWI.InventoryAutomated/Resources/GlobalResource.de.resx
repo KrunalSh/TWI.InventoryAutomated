@@ -477,4 +477,43 @@
   <data name="LocationDetail" xml:space="preserve">
     <value>Standortdetails</value>
   </data>
+  <data name="InboundPurchaseOrders" xml:space="preserve">
+    <value>PO erhalten</value>
+  </data>
+  <data name="InboundTransferOrders" xml:space="preserve">
+    <value>TO Receive</value>
+  </data>
+  <data name="ExpiryDate" xml:space="preserve">
+    <value>Verfallsdatum</value>
+  </data>
+  <data name="ItemTrackingTitle" xml:space="preserve">
+    <value>Artikelverfolgung</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Menge</value>
+  </data>
+  <data name="StartReceive" xml:space="preserve">
+    <value>Beginnen Sie mit dem Empfang</value>
+  </data>
+  <data name="ContainerNo" xml:space="preserve">
+    <value>Kontainernummer</value>
+  </data>
+  <data name="ItemNo" xml:space="preserve">
+    <value>Artikelnummer</value>
+  </data>
+  <data name="NSNNo" xml:space="preserve">
+    <value>NSN Nr</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Auftragsdatum</value>
+  </data>
+  <data name="PostingDate" xml:space="preserve">
+    <value>Buchungsdatum</value>
+  </data>
+  <data name="ReceiptNo" xml:space="preserve">
+    <value>Quittungsnr</value>
+  </data>
+  <data name="VendorName" xml:space="preserve">
+    <value>Herstellername</value>
+  </data>
 </root>

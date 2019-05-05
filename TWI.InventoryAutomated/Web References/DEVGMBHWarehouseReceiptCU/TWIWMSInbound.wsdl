@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/TWIWMSInbound" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/TWIWMSInbound" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/TWIWMSInbound" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="GetWhseReceipt">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="sourceNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWhseReceipt_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="GetWhseReceipt">
+    <part name="parameters" element="tns:GetWhseReceipt" />
+  </message>
+  <message name="GetWhseReceipt_Result">
+    <part name="parameters" element="tns:GetWhseReceipt_Result" />
+  </message>
+  <portType name="TWIWMSInbound_Port">
+    <operation name="GetWhseReceipt">
+      <input name="GetWhseReceipt" message="tns:GetWhseReceipt" />
+      <output name="GetWhseReceipt_Result" message="tns:GetWhseReceipt_Result" />
+    </operation>
+  </portType>
+  <binding name="TWIWMSInbound_Binding" type="tns:TWIWMSInbound_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GetWhseReceipt">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/TWIWMSInbound:GetWhseReceipt" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWhseReceipt">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWhseReceipt_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="TWIWMSInbound">
+    <port name="TWIWMSInbound_Port" binding="tns:TWIWMSInbound_Binding">
+      <address location="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Codeunit/TWIWMSInbound" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

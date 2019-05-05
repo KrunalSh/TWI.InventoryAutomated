@@ -430,7 +430,7 @@
 
             var currentCult = getCookie("Language");
             var Path = FetchPathforCultureFile(currentCult);
-            if ($("#ddlBatches").val() === "-1") {
+            @*if ($("#ddlBatches").val() === "-1") {
 
                 $('<div></div>').appendTo('body')
                     .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchSelectionMandatory)" + "</h5></div>")
@@ -443,7 +443,7 @@
                         }
                     });
                  return;
-            }
+            }*@
             $('<div></div>')
                 .appendTo('body')
                 .html("<div><h5>" + "@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.MsgBatchExistingDataOverwrite)" + "</h5></div>")

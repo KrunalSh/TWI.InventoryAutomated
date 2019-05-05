@@ -561,4 +561,43 @@
   <data name="MsgLocationSaved" xml:space="preserve">
     <value>Location information saved. </value>
   </data>
+  <data name="InboundPurchaseOrders" xml:space="preserve">
+    <value>PO Receive</value>
+  </data>
+  <data name="InboundTransferOrders" xml:space="preserve">
+    <value>TO Receive</value>
+  </data>
+  <data name="ExpiryDate" xml:space="preserve">
+    <value>Expiry Date</value>
+  </data>
+  <data name="ItemTrackingTitle" xml:space="preserve">
+    <value>Item Tracking</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="StartReceive" xml:space="preserve">
+    <value>Start Receiving</value>
+  </data>
+  <data name="ContainerNo" xml:space="preserve">
+    <value>Container No</value>
+  </data>
+  <data name="ItemNo" xml:space="preserve">
+    <value>Item No</value>
+  </data>
+  <data name="NSNNo" xml:space="preserve">
+    <value>NSN No</value>
+  </data>
+  <data name="OrderDate" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+  <data name="PostingDate" xml:space="preserve">
+    <value>Posting Date</value>
+  </data>
+  <data name="ReceiptNo" xml:space="preserve">
+    <value>Receipt No</value>
+  </data>
+  <data name="VendorName" xml:space="preserve">
+    <value>Vendor Name</value>
+  </data>
 </root>

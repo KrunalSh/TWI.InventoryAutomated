@@ -25,9 +25,9 @@
                         <tr>
                             <th>User Id</th>
                             <th>Name</th>
-                            <th>MAC Address</th>
-                            <th>Instance Name</th>
-                            <th>Company Name</th>
+                            <th>MAC ID</th>
+                            <th>Instance </th>
+                            <th>Company</th>
                             <th>Start Date</th>
                             <th></th>
                         </tr>
@@ -57,16 +57,17 @@
                     "datatype": "json"
                 },
                 "columns": [
-                    { "data": "UserID" },
-                    { "data": "DisplayName" },
-                    { "data": "MacAddress" },
-                    { "data": "InstanceName" },
-                    { "data": "CompanyName" },
+                    { "data": "UserID", "orderable" :false,"sortable" : false,"width": "80px" },
+                    { "data": "DisplayName", "orderable": false, "sortable": false, "width": "150px" },
+                    { "data": "MacAddress", "orderable": false, "sortable": false, "width": "100px" },
+                    { "data": "InstanceName", "orderable": false, "sortable": false, "width": "100px" },
+                    { "data": "CompanyName", "orderable": false, "sortable": false, "width": "200px" },
                     {
                         "data": "SessionStart", "render": function (date) {
                             if (date !== null) return moment(date).format("DD/MM/YYYY HH:mm");
                             else return "";
                         }
+                        , "orderable": false, "sortable": false,"width": "100px"
                     },
                     {
                         "data": "ID", "render": function (data) {
@@ -74,12 +75,13 @@
                         },
                         "orderable": false,
                         "searchable": false,
+                        "sorting": false,
                         "width": "50px"
                     }
                 ],
+                "aoColumnDefs": [{"bSortable" : false, "aTargets" : [0,1,2,3,4,5,6]}],
                 "responsive": true,
                 "language": {
-
                     "emptyTable": "No data found, Please click on <b>Add New</b> Button",
                     "url": Path
                 }

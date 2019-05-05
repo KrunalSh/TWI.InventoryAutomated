@@ -132,5 +132,73 @@ namespace TWI.InventoryAutomated.Properties {
                 return ((string)(this["TWI_InventoryAutomated_TestGmbhWh_Users_Users_Service"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20" +
+            "GMBH/Page/TWIWMS_PurchaseOrder")]
+        public string TWI_InventoryAutomated_DEVGMBHPurchaseOrder_TWIWMS_PurchaseOrder_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_DEVGMBHPurchaseOrder_TWIWMS_PurchaseOrder_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20" +
+            "GMBH/Page/TWIWMS_ReservationEntries")]
+        public string TWI_InventoryAutomated_DEVGMBHReservationEntries_TWIWMS_ReservationEntries_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_DEVGMBHReservationEntries_TWIWMS_ReservationEntries_Servic" +
+                    "e"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20" +
+            "GMBH/Page/TWIWMS_TransferOrder")]
+        public string TWI_InventoryAutomated_DEVGMBHTransferOrder_TWIWMS_TransferOrder_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_DEVGMBHTransferOrder_TWIWMS_TransferOrder_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20" +
+            "GMBH/Page/TWIWMS_Item")]
+        public string TWI_InventoryAutomated_DEVGMBHItemCard_TWIWMS_Item_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_DEVGMBHItemCard_TWIWMS_Item_Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20" +
+            "GMBH/Page/TWIWMS_WarehouseReceiptLines")]
+        public string TWI_InventoryAutomated_DEVGMBHWarehouseReceiptLines_TWIWMS_WarehouseReceiptLines_Service {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_DEVGMBHWarehouseReceiptLines_TWIWMS_WarehouseReceiptLines_" +
+                    "Service"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20" +
+            "GMBH/Codeunit/TWIWMSInbound")]
+        public string TWI_InventoryAutomated_DEVGMBHWarehouseReceiptCU_TWIWMSInbound {
+            get {
+                return ((string)(this["TWI_InventoryAutomated_DEVGMBHWarehouseReceiptCU_TWIWMSInbound"]));
+            }
+        }
     }
 }

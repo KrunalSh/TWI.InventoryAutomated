@@ -183,8 +183,10 @@
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\PermissionAssignmentController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
+    <Compile Include="Controllers\PurchaseOrdersController.cs" />
     <Compile Include="Controllers\RegisteredDeviceController.cs" />
     <Compile Include="Controllers\StockCountController.cs" />
+    <Compile Include="Controllers\TransferOrderController.cs" />
     <Compile Include="Controllers\UserAccessController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DataAccess\ArchiveLogs.cs" />
@@ -311,6 +313,36 @@
     <Compile Include="Security\CustomAuthorizeAttribute.cs" />
     <Compile Include="Security\CustomPrincipal.cs" />
     <Compile Include="Security\SessionPersister.cs" />
+    <Compile Include="Web References\DEVGMBHItemCard\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DEVGMBHPurchaseOrder\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DEVGMBHReservationEntries\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DEVGMBHTransferOrder\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DEVGMBHWarehouseReceiptCU\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DEVGMBHWarehouseReceiptLines\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\DEVPhyInvJournal\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -494,6 +526,55 @@
     <Content Include="Views\Location\LocationView.cshtml" />
     <Content Include="Views\Location\CreateUpdateLocation.cshtml" />
     <Content Include="Views\UserAccess\UserAccessList.cshtml" />
+    <Content Include="Web References\DEVGMBHItemCard\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\DEVGMBHItemCard\TWIWMS_Item.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Views\PurchaseOrders\ItemTracking.cshtml" />
+    <None Include="Web References\DEVGMBHItemCard\TWIWMS_Item.wsdl" />
+    <None Include="Web References\DEVGMBHPurchaseOrder\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\DEVGMBHPurchaseOrder\TWIWMS_PurchaseOrder.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <Content Include="Views\PurchaseOrders\Index.cshtml" />
+    <Content Include="Views\Home\InboundSubMenus.cshtml" />
+    <Content Include="Views\TransferOrder\Index.cshtml" />
+    <None Include="Web References\DEVGMBHPurchaseOrder\TWIWMS_PurchaseOrder.wsdl" />
+    <None Include="Web References\DEVGMBHReservationEntries\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\DEVGMBHReservationEntries\TWIWMS_ReservationEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\DEVGMBHReservationEntries\TWIWMS_ReservationEntries.wsdl" />
+    <None Include="Web References\DEVGMBHTransferOrder\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\DEVGMBHTransferOrder\TWIWMS_TransferOrder.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\DEVGMBHTransferOrder\TWIWMS_TransferOrder.wsdl" />
+    <None Include="Web References\DEVGMBHWarehouseReceiptCU\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\DEVGMBHWarehouseReceiptCU\TWIWMSInbound.wsdl" />
+    <None Include="Web References\DEVGMBHWarehouseReceiptLines\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Web References\DEVGMBHWarehouseReceiptLines\TWIWMS_WarehouseReceiptLines.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Content>
+    <None Include="Web References\DEVGMBHWarehouseReceiptLines\TWIWMS_WarehouseReceiptLines.wsdl" />
     <None Include="Web References\DEVPhyInvJournal\PhysicalInvJournal.wsdl" />
     <Content Include="Web References\DEVPhyInvJournal\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -661,6 +742,72 @@
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>TWI_InventoryAutomated_DEVPhyInvJournal_PhysicalInvJournal_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Codeunit/TWIWMSInbound">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVGMBHWarehouseReceiptCU\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Codeunit/TWIWMSInbound</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVGMBHWarehouseReceiptCU_TWIWMSInbound</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_Item">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVGMBHItemCard\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_Item</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVGMBHItemCard_TWIWMS_Item_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_PurchaseOrder">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVGMBHPurchaseOrder\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_PurchaseOrder</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVGMBHPurchaseOrder_TWIWMS_PurchaseOrder_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_ReservationEntries">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVGMBHReservationEntries\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_ReservationEntries</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVGMBHReservationEntries_TWIWMS_ReservationEntries_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_TransferOrder">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVGMBHTransferOrder\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_TransferOrder</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVGMBHTransferOrder_TWIWMS_TransferOrder_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_WarehouseReceiptLines">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DEVGMBHWarehouseReceiptLines\</RelPath>
+      <UpdateFromURL>http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Page/TWIWMS_WarehouseReceiptLines</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TWI_InventoryAutomated_DEVGMBHWarehouseReceiptLines_TWIWMS_WarehouseReceiptLines_Service</CachedSettingsPropName>
     </WebReferenceUrl>
     <WebReferenceUrl Include="http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%2520Wille%2520Intertrade%2520GMBH/Codeunit/InventoryCount">
       <UrlBehavior>Dynamic</UrlBehavior>

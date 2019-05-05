@@ -16,11 +16,13 @@ namespace TWI.InventoryAutomated.Controllers
         //[CustomAuthorize(Roles = "Create Product2")]
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
@@ -29,6 +31,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to retrieve list of registered devices in the system.
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     List<RegisteredDevice> devicesList = db.RegisteredDevices.ToList<RegisteredDevice>();
@@ -47,10 +50,14 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to load Popup screen based on ID. 
+                //if ID = 0 then empty all fields in UI
                 if (id == 0)
                     return View(new RegisteredDevice());
                 else
                 {
+                    //Linq query to retrieve device details by ID and populate respective fields
+                    // in UI
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
                         return View(db.RegisteredDevices.Where(x => x.ID == id).FirstOrDefault<RegisteredDevice>());
@@ -68,12 +75,17 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Condition to check whether device mac address 
+                // doesn't duplicate in the system.
                 if (!isDuplicate(regDevice))
                 {
+                    //Updating "CreateDate" and "CreatedBy" details along with changes made through UI
+                    //Saving data to database
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
                         if (regDevice.ID == 0)
                         {
+                            //Code - while create a new device in the system.
                             regDevice.CreatedDate = DateTime.Now;
                             regDevice.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
                             db.RegisteredDevices.Add(regDevice);
@@ -82,6 +94,7 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
+                            //Code - while modifying details of a device
                             RegisteredDevice regdevice = db.RegisteredDevices.AsNoTracking().Where(x => x.ID == regDevice.ID).FirstOrDefault();
                             regDevice.CreatedDate = regdevice.CreatedDate;
                             regDevice.CreatedBy = regdevice.CreatedBy;
@@ -102,21 +115,28 @@ namespace TWI.InventoryAutomated.Controllers
 
 
         }
+
+
         public bool isDuplicate(RegisteredDevice regDevice)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 RegisteredDevice regdevice;
+                //check to validate entered mac address is not duplicating
                 if (regDevice.ID != 0)
                     regdevice = db.RegisteredDevices.AsNoTracking().Where(x => x.MacAddress == regDevice.MacAddress && x.ID != regDevice.ID).FirstOrDefault();
                 else
                     regdevice = db.RegisteredDevices.AsNoTracking().Where(x => x.MacAddress == regDevice.MacAddress).FirstOrDefault();
+
+                //code to return false if no duplicate record found
                 if (regdevice == null)
                     return false;
                 else
                     return true;
             }
         }
+
+
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -124,6 +144,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
+                    // Disable a device in the system by setting "IsActive" field to false 
                     RegisteredDevice regDevice = db.RegisteredDevices.Where(x => x.ID == id).FirstOrDefault<RegisteredDevice>();
                     regDevice.IsActive = false;
                     db.SaveChanges();

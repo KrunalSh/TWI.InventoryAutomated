@@ -223,6 +223,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Container No.
+        /// </summary>
+        public static string ContainerNo {
+            get {
+                return ResourceManager.GetString("ContainerNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Count.
         /// </summary>
         public static string CountInfo {
@@ -358,6 +367,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expiry Date.
+        /// </summary>
+        public static string ExpiryDate {
+            get {
+                return ResourceManager.GetString("ExpiryDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fill Qty.
         /// </summary>
         public static string FillQty {
@@ -430,6 +448,24 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PO Receive.
+        /// </summary>
+        public static string InboundPurchaseOrders {
+            get {
+                return ResourceManager.GetString("InboundPurchaseOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TO Receive.
+        /// </summary>
+        public static string InboundTransferOrders {
+            get {
+                return ResourceManager.GetString("InboundTransferOrders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance.
         /// </summary>
         public static string Instance {
@@ -471,6 +507,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string Internal {
             get {
                 return ResourceManager.GetString("Internal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item No.
+        /// </summary>
+        public static string ItemNo {
+            get {
+                return ResourceManager.GetString("ItemNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Item Tracking.
+        /// </summary>
+        public static string ItemTrackingTitle {
+            get {
+                return ResourceManager.GetString("ItemTrackingTitle", resourceCulture);
             }
         }
         
@@ -1114,6 +1168,24 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NSN No.
+        /// </summary>
+        public static string NSNNo {
+            get {
+                return ResourceManager.GetString("NSNNo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order Date.
+        /// </summary>
+        public static string OrderDate {
+            get {
+                return ResourceManager.GetString("OrderDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OutBound.
         /// </summary>
         public static string OutBound {
@@ -1177,6 +1249,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Posting Date.
+        /// </summary>
+        public static string PostingDate {
+            get {
+                return ResourceManager.GetString("PostingDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proceed.
         /// </summary>
         public static string Proceed {
@@ -1200,6 +1281,24 @@ namespace TWI.InventoryAutomated.Resources {
         public static string Push {
             get {
                 return ResourceManager.GetString("Push", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quantity.
+        /// </summary>
+        public static string Quantity {
+            get {
+                return ResourceManager.GetString("Quantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Receipt No.
+        /// </summary>
+        public static string ReceiptNo {
+            get {
+                return ResourceManager.GetString("ReceiptNo", resourceCulture);
             }
         }
         
@@ -1294,6 +1393,15 @@ namespace TWI.InventoryAutomated.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Receiving.
+        /// </summary>
+        public static string StartReceive {
+            get {
+                return ResourceManager.GetString("StartReceive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
         public static string Status {
@@ -1380,6 +1488,15 @@ namespace TWI.InventoryAutomated.Resources {
         public static string ValidEmailID {
             get {
                 return ResourceManager.GetString("ValidEmailID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vendor Name.
+        /// </summary>
+        public static string VendorName {
+            get {
+                return ResourceManager.GetString("VendorName", resourceCulture);
             }
         }
         

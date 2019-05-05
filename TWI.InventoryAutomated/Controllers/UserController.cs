@@ -16,11 +16,13 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: User
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
@@ -30,6 +32,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to retrieve list of users registered in the system.
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     var dataList = (from x in db.Users
@@ -57,18 +60,28 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //code to load active languages in the dropdown list
                 InventoryPortalEntities db = new InventoryPortalEntities();
-                ViewBag.Languages = (from r in db.Languages where r.IsActive == true select new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code }).ToList();
+                ViewBag.Languages = (from r in db.Languages where r.IsActive == true
+                                     select 
+                                     new SelectListItem { Value = r.ID.ToString(), Text = r.Description + " - " + r.Code })
+                                     .ToList();
 
+                //Code to load Popup screen based on ID. 
+                //if ID = 0 then empty all fields in UI
                 if (id == 0)
                 {
-                    ViewBag.selectedLanguages = db.Languages.Where(x => x.Description.Contains("English") && x.IsActive == true).Select(x => x.ID).ToList();
+                    ViewBag.selectedLanguages = db.Languages.Where(x => x.Description.Contains("English") && x.IsActive == true)
+                                                  .Select(x => x.ID).ToList();
                     ViewBag.selectedNAVID = "";
                     return View(new User());
                 }
                 else
                 {
-                    ViewBag.selectedLanguages = db.UserLanguages.Where(x => x.UserID == id && x.IsActive == true).Select(x => x.LanguageID).ToList();
+                    //Linq query to retrieve user details by ID and populate respective fields in UI
+                    ViewBag.selectedLanguages = db.UserLanguages.Where(x => x.UserID == id && x.IsActive == true)
+                                                  .Select(x => x.LanguageID).ToList();
+
                     User user = db.Users.Where(x => x.UserID == id).FirstOrDefault<User>();
                     ViewBag.selectedNAVID = user.NAV_ID;
                     user.ConfirmPassword = user.Password;
@@ -86,25 +99,34 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to split the language ids coming in as parameter - selecedlangs
                 List<int> selectedval = selectedlangs.Split(',').Select(int.Parse).ToList();
 
+                //Code to check whether navid field is not empty
+                if (string.IsNullOrEmpty(navid))
+                { return Json(new { success = false, message = "NAV ID is a required field, Kindly select NAV ID of this user." }, JsonRequestBehavior.AllowGet); }
+
+
+                //Condition to check whether user name 
+                // doesn't duplicate in the system.
                 if (!isDuplicate(user))
                 {
+                    //Updating "CreateDate" and "CreatedBy" details along with changes made through UI
+                    //Saving data to database
+                    //Condition to check whether NAV_ID doesn't duplicate in the system.
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
                         if (user.UserID == 0)
                         {
                             if (!string.IsNullOrEmpty(navid.Trim()))
                             {
-                                if (db.Users.Where(x => x.NAV_ID == navid).Count() > 0) return Json(new { success = false, message = "Selected NAV_ID already assigned to another user in the system, Kindly verify your selection." },JsonRequestBehavior.AllowGet);
+                                if (db.Users.Where(x => x.NAV_ID == navid).Count() > 0) return Json(new { success = false,
+                                message = "Selected NAV_ID already assigned to another user in the system, Kindly verify your selection." },
+                                JsonRequestBehavior.AllowGet);
                             }
-
-                            user.CreatedDate = DateTime.Now;
-                            user.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
-                            user.NAV_ID = navid.Trim();
-
-                            db.Users.Add(user);
-                            db.SaveChanges();
+                            user.CreatedDate = DateTime.Now; user.CreatedBy = Convert.ToInt32(Session["UserID"].ToString());
+                            user.NAV_ID = navid.Trim(); db.Users.Add(user); db.SaveChanges();
+                            //Code to update languages selected in the database.
                             updateLanguages(user, selectedval);
                             return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullySaved }, JsonRequestBehavior.AllowGet);
                         }
@@ -112,22 +134,20 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             if (!string.IsNullOrEmpty(navid.Trim()))
                             {
-                                if (db.Users.Where(x=> x.UserID != user.UserID && x.NAV_ID == navid).Count() > 0) return Json(new { success = false, message = "Selected NAV_ID already assigned to another user in the system, Kindly verify your selection." }, JsonRequestBehavior.AllowGet);
+                                if (db.Users.Where(x=> x.UserID != user.UserID && x.NAV_ID == navid).Count() > 0) return Json(new { success = false,
+                                    message = "Selected NAV_ID already assigned to another user in the system, Kindly verify your selection." },
+                                    JsonRequestBehavior.AllowGet);
                             }
-
                             User _user = db.Users.AsNoTracking().Where(x => x.UserID == user.UserID).FirstOrDefault();
-                            user.CreatedDate = _user.CreatedDate;
-                            user.CreatedBy = _user.CreatedBy;
-                            user.NAV_ID = navid;
-                            db.Entry(user).State = EntityState.Modified;
-                            db.SaveChanges();
+                            user.CreatedDate = _user.CreatedDate; user.CreatedBy = _user.CreatedBy;
+                            user.NAV_ID = navid; db.Entry(user).State = EntityState.Modified; db.SaveChanges();
+                            //Code to update languages selected in the database.
                             updateLanguages(user, selectedval);
                             return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
                     }
                 }
                 else
-                    //return Json(new { success = false, message = "User Name or Email already exists!" }, JsonRequestBehavior.AllowGet);
                     return Json(new { success = false, message = Resources.GlobalResource.MsgAlreadyExist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -140,10 +160,15 @@ namespace TWI.InventoryAutomated.Controllers
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
+                //Code to retrieve languages saved for a user.
                 List<UserLanguage> uls = db.UserLanguages.Where(x => x.UserID == user.UserID).ToList();
+
+                //loop to check whether each selected language was saved previously / while creation of user  in the database
                 foreach (var item in languages)
                 {
                     UserLanguage lang = uls.Where(x => x.LanguageID == item).FirstOrDefault();
+                    //if a language is not saved previously / at the time user creation then a new entry of it will be created
+                    // in the database.
                     if (lang == null)
                     {
                         UserLanguage ul = new UserLanguage();
@@ -156,10 +181,14 @@ namespace TWI.InventoryAutomated.Controllers
                     }
                     else
                     {
+                        //if a language is saved previously / at the time user creation then the existing entry of it will be updated 
+                        // in the database by making IsActive field true.
                         lang.IsActive = true;
                         db.SaveChanges();
                     }
                 }
+
+
                 var rejectList = uls.Where(i => languages.Contains((int)i.LanguageID));
                 var filteredList = uls.Except(rejectList);
                 foreach (var item in filteredList)
@@ -178,6 +207,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
+                    // Disable a user in the system by setting "IsActive" field to false
                     User user = db.Users.Where(x => x.UserID == id).FirstOrDefault<User>();
                     user.IsActive = false;
                     user.ConfirmPassword = user.Password;
@@ -196,15 +226,18 @@ namespace TWI.InventoryAutomated.Controllers
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
+                //check to validate entered  module name is not duplicating
                 User _user;
                 if (user.UserID != 0)
-                    _user = db.Users.AsNoTracking().Where(x => (x.UserName == user.UserName || (user.EmailID != null && x.EmailID == user.EmailID)) && x.UserID != user.UserID).FirstOrDefault();
+                    _user = db.Users.AsNoTracking()
+                              .Where(x => (x.UserName == user.UserName || (user.EmailID != null && x.EmailID == user.EmailID))
+                                                          && x.UserID != user.UserID).FirstOrDefault();
                 else
-                    _user = db.Users.AsNoTracking().Where(x => x.UserName == user.UserName || (user.EmailID != null && x.EmailID == user.EmailID)).FirstOrDefault();
-                if (_user == null)
-                    return false;
-                else
-                    return true;
+                    _user = db.Users.AsNoTracking()
+                            .Where(x => x.UserName == user.UserName || (user.EmailID != null && x.EmailID == user.EmailID))
+                                                   .FirstOrDefault();
+                //code to return false if no duplicate record found
+                if (_user == null) return false; else return true;
             }
         }
 
@@ -212,7 +245,8 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
-                if (CommonServices._navuserlist == null) { CommonServices.GetNAVUserList();}
+               //Code to get User ID List from Navision ERP.
+               if (CommonServices._navuserlist == null) { CommonServices.GetNAVUserList();}
                     return Json(CommonServices._navuserlist, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

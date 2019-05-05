@@ -14,11 +14,13 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Module
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
@@ -27,6 +29,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to retrieve list of Modules registered in the system.
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     List<Module> List = db.Modules.ToList<Module>();
@@ -45,10 +48,14 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to load Popup screen based on ID. 
+                //if ID = 0 then empty all fields in UI
                 if (id == 0)
                     return View(new Module());
                 else
                 {
+                    //Linq query to retrieve module details by ID and populate respective fields
+                    // in UI
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
                         return View(db.Modules.Where(x => x.ModuleID == id).FirstOrDefault<Module>());
@@ -66,10 +73,16 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Condition to check whether module name 
+                // doesn't duplicate in the system.
                 if (!isDuplicate(mod))
                 {
+                    //Updating "CreateDate" and "CreatedBy" details along with changes made through UI
+                    //Saving data to database
+
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
+                        //Code - while create a new module in the system.
                         if (mod.ModuleID == 0)
                         {
                             mod.CreatedDate = DateTime.Now;
@@ -80,6 +93,7 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
+                            //Code - while modifying details of a module
                             Module module = db.Modules.AsNoTracking().Where(x => x.ModuleID == mod.ModuleID).FirstOrDefault();
                             module.CreatedDate = mod.CreatedDate;
                             module.CreatedBy = mod.CreatedBy;
@@ -102,6 +116,7 @@ namespace TWI.InventoryAutomated.Controllers
         }
         public bool isDuplicate(Module mod)
         {
+            //check to validate entered  module name is not duplicating
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 Module module;
@@ -109,17 +124,21 @@ namespace TWI.InventoryAutomated.Controllers
                     module = db.Modules.AsNoTracking().Where(x => x.ModuleName == mod.ModuleName && x.ModuleID != mod.ModuleID).FirstOrDefault();
                 else
                     module = db.Modules.AsNoTracking().Where(x => x.ModuleName == mod.ModuleName).FirstOrDefault();
+
+                //code to return false if no duplicate record found
                 if (module == null)
                     return false;
                 else
                     return true;
             }
         }
+
         [HttpPost]
         public ActionResult Delete(int id)
         {
             try
             {
+                // Disable a module in the system by setting "IsActive" field to false
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     Module mod = db.Modules.Where(x => x.ModuleID == id).FirstOrDefault<Module>();

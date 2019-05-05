@@ -16,11 +16,13 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Language
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
@@ -31,6 +33,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
+                    //Code to retrieve list of Languages registered in the system.
                     List<Language> LangList = db.Languages.ToList<Language>();
                     return Json(new { data = LangList }, JsonRequestBehavior.AllowGet);
                 }
@@ -47,10 +50,14 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to load Popup screen based on ID. 
+                //if ID = 0 then empty all fields in UI
                 if (id == 0)
                     return View(new Language());
                 else
                 {
+                    //Linq query to retrieve language details by ID and populate respective fields
+                    // in UI
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
                         return View(db.Languages.Where(x => x.ID == id).FirstOrDefault<Language>());
@@ -68,10 +75,16 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Condition to check whether language code 
+                // doesn't duplicate in the system.
                 if (!isDuplicate(lang))
                 {
+                    //Updating "CreateDate" and "CreatedBy" details along with changes made through UI
+                    //Saving data to database
+
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
+                        //Code - while create a new language in the system.
                         if (lang.ID == 0)
                         {
                             lang.CreatedDate = DateTime.Now;
@@ -82,9 +95,10 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
-                            Language regdevice = db.Languages.AsNoTracking().Where(x => x.ID == lang.ID).FirstOrDefault();
-                            lang.CreatedDate = regdevice.CreatedDate;
-                            lang.CreatedBy = regdevice.CreatedBy;
+                            //Code - while modifying details of a language
+                            Language regLanguage = db.Languages.AsNoTracking().Where(x => x.ID == lang.ID).FirstOrDefault();
+                            lang.CreatedDate = regLanguage.CreatedDate;
+                            lang.CreatedBy = regLanguage.CreatedBy;
                             db.Entry(lang).State = EntityState.Modified;
                             db.SaveChanges();
                             return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
@@ -108,11 +122,14 @@ namespace TWI.InventoryAutomated.Controllers
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
+                //check to validate entered  language code is not duplicating
                 Language language;
                 if (lang.ID != 0)
                     language = db.Languages.AsNoTracking().Where(x => x.Code == lang.Code && x.ID != lang.ID).FirstOrDefault();
                 else
                     language = db.Languages.AsNoTracking().Where(x => x.Code == lang.Code).FirstOrDefault();
+
+                //code to return false if no duplicate record found
                 if (language == null)
                     return false;
                 else
@@ -126,8 +143,9 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
-                    Language regDevice = db.Languages.Where(x => x.ID == id).FirstOrDefault<Language>();
-                    regDevice.IsActive = false;
+                    // Disable a language in the system by setting "IsActive" field to false
+                    Language reglang = db.Languages.Where(x => x.ID == id).FirstOrDefault<Language>();
+                    reglang.IsActive = false;
                     db.SaveChanges();
                     return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyDisabled }, JsonRequestBehavior.AllowGet);
                 }
@@ -141,6 +159,8 @@ namespace TWI.InventoryAutomated.Controllers
         [HttpPost]
         public ActionResult MakeitDefault(string defaultlang, bool isdefault)
         {
+            //Code function to make a language default so next time when user log's in
+            // WMS App loads with the set default Language.
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
@@ -151,11 +171,15 @@ namespace TWI.InventoryAutomated.Controllers
                         {
                             int userid = Convert.ToInt32(Session["UserID"]);
                             List<UserLanguage> ul = db.UserLanguages.Where(x => x.UserID == userid && x.IsActive == true).ToList();
+                            //code to clear default language setting for all languages opted by user.
                             foreach (var item in ul)
                             {
                                 item.IsDefault = false;
                             }
                             db.SaveChanges();
+
+                            //Code to Set the current language as Default.
+                            //Make the IsDefault Field as 'True' in UserLanguage table based on UserID.
                             UserLanguage currentlang = (from a in db.Languages
                                                         join b in db.UserLanguages on a.ID equals b.LanguageID
                                                         where a.Description == defaultlang && b.UserID == userid

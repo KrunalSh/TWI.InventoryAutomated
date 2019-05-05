@@ -133,6 +133,28 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
+        public ActionResult InboundSubMenus()
+        {
+            try
+            {
+                //ArchiveLogs.SaveActivityLogs("SubMenu", "Home", "FetchSubmenu", null);
+
+                CommonServices cs = new CommonServices();
+                if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
+                    return View();
+                else
+                {
+                    cs.RemoveSessions();
+                    return RedirectToAction("Default", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                //ArchiveLogs.SaveActivityLogs("SubMenu", "Home", "FetchSubmenu", ex.ToString());
+                return null;
+            }
+        }
+
         //public ActionResult Default()
         //{
         //    return View();
@@ -140,9 +162,13 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult Default(string macaddress ="")
         {
+            //check whether session variable DeviceMac is not null or empty
+            //if it is does not have a value then assign the macaddress parameter received
+            // by this action. It is used authorize the access of a user to WMS App.
             if (string.IsNullOrEmpty(Convert.ToString(Session["DeviceMac"])))
-            {  //Session["DeviceMac"] = macaddress;
-                Session["DeviceMac"] = "A44CC82CBE25";
+            {  
+               //Session["DeviceMac"] = macaddress;
+               Session["DeviceMac"] = "A44CC82CBE25";
             }
 
             return View();
@@ -173,24 +199,40 @@ namespace TWI.InventoryAutomated.Controllers
         {
             return View();
         }
+
+
         [HttpPost]
         public ActionResult Login(User user)
         {
             try
             {
+                #region "commented code"
                 //string IP = Request.UserHostName; // Fetch Computer Name
                 //IPAddress myIP = IPAddress.Parse(IP);
                 //IPHostEntry GetIPHost = Dns.GetHostEntry(myIP);
                 //List<string> compName = GetIPHost.HostName.ToString().Split('.').ToList();
                 //return Json(new { success = false, message = IP +" _ "+ myIP + " _ " +GetIPHost + " _ " + compName.FirstOrDefault() }, JsonRequestBehavior.AllowGet);
+                #endregion 
+
+                
                 CommonServices cs = new CommonServices();
+
                 InventoryPortalEntities db = new InventoryPortalEntities();
-                User _user = db.Users.Where(x => x.UserName.Equals(user.UserName) && x.Password.Equals(user.Password) && x.IsActive == true).FirstOrDefault();
+
+                //Query to authenticate the user credentials by validating it against database entries in Users Table.
+                User _user = db.Users.Where(x => x.UserName.Equals(user.UserName) && x.Password.Equals(user.Password) && x.IsActive == true)
+                                     .FirstOrDefault();
+
+                //If user credential authentication fails, then error message return 
                 if (_user == null)
                 {
                     return Json(new { success = false, message = Resources.GlobalResource.MsgInvalidLoginInformation }, JsonRequestBehavior.AllowGet);
                 }
+
+                //Code to check the access user is having 
                 List<UserAccess> uaccess = db.UserAccesses.Where(x => x.UserID == _user.UserID && x.IsActive == true).ToList();
+
+                //if no access granted to the user, then return Access denied message and login process stops. 
                 if (uaccess.Count == 0)
                     return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
                 else
@@ -201,20 +243,28 @@ namespace TWI.InventoryAutomated.Controllers
                         SessionPersister.UserName = _user.UserName;
                         Session["DisplayName"] = _user.DisplayName;
                         Session["UserID"] = _user.UserID;
+
+                        //Code to check whethere user is authorized to use the WMS App using the device.               
                         List<int> UserAccessID = (from e in db.UserAccesses
                                                   join f in db.UserAccessDevices on e.ID equals f.UserAccessID
                                                   where f.DeviceID == ID && f.IsActive == true && e.UserID == _user.UserID
                                                   select e.ID).ToList();
+                        //if user is not authorized to use WMS App on the device then return message  - 'Access denied'
                         if (UserAccessID.Count == 0)
                             return Json(new { success = false, message = Resources.GlobalResource.MsgAccessDenied }, JsonRequestBehavior.AllowGet);
+
+                        //Code to check whether logged in user is already having a session open on any device 
                         if (!(bool)user.IsActive && CheckAlreadyLogin(_user))
                         {
-                            return Json(new { success = false, message = "MsgAlreadyLoggedin" + Resources.GlobalResource.MsgAlreadyLoggedin }, JsonRequestBehavior.AllowGet);
+                            return Json(new { success = false, message = "MsgAlreadyLoggedin" + Resources.GlobalResource.MsgAlreadyLoggedin },
+                                     JsonRequestBehavior.AllowGet);
                         }
                         else if ((bool)user.IsActive)
                         {
                             cs.CloseExistingSessions(_user.UserID);
                         }
+
+                        //Code to check whether user is having single instance
                         if (uaccess.Count == 1)
                         {
                             UserAccess useraccess = uaccess.FirstOrDefault();
@@ -225,7 +275,10 @@ namespace TWI.InventoryAutomated.Controllers
                             return Json(new { success = true, message = Url.Action("Home", "Home") }, JsonRequestBehavior.AllowGet);
                         }
                         else
-                            return Json(new { success = true, message = Url.Action("InstanceAuthentication", "Home") }, JsonRequestBehavior.AllowGet);
+                        { // if multiple access then return code to open Instance Authentication screen where user can select the instance,company 
+                            // and Location to work / access
+                            return Json(new { success = true, message = Url.Action("InstanceAuthentication", "Home") }, JsonRequestBehavior.AllowGet); }
+                          
                     }
                     else
                         return Json(new { success = false, message = Resources.GlobalResource.MsgUnabletoLogin }, JsonRequestBehavior.AllowGet);
@@ -243,6 +296,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to close all session of the user logged in
                 CommonServices cs = new CommonServices();
                 if (Session["CurrentSession"] != null)
                 {
@@ -264,6 +318,8 @@ namespace TWI.InventoryAutomated.Controllers
                         Response.Cookies["SystemLang"].Expires = DateTime.Now.AddDays(-1);
                     }
                 }
+
+                //redirect to Default page 
                 return RedirectToAction("Default", "Home");
             }
             catch (Exception ex)
@@ -311,6 +367,7 @@ namespace TWI.InventoryAutomated.Controllers
 
         public PartialViewResult AuthenticateDevice()
          {
+            #region "Old Code"
             //------------------------------------------------------------------------------------------------
             //Comment: Code Commented as device mac address now comes through Windows Universal App
             //Dictionary<IPAddress, PhysicalAddress> obj = new Dictionary<IPAddress, PhysicalAddress>();
@@ -340,19 +397,25 @@ namespace TWI.InventoryAutomated.Controllers
             //    return PartialView("AccessDenied");
             //}
 
+            #endregion 
+
+            //Code to Authenticate received mac address  with the list of mac addresses 
+            //registered in the system.
             string MacAddress = Convert.ToString(Session["DeviceMac"]);
             if (IsDeviceRegistered(MacAddress))
                 return PartialView("Index");
             else
             {
+                //If Authentication fails then users is redirected to Access denied dialog screen
+
                 //Session["DeviceMac"] = "Total Ip: "+ obj.Count() + " Network IP's :" + ips + "Device MAC:" + MacAddress + "client IP:" + clientip;
-                //Session["DeviceMac"] = null;
                 return PartialView("AccessDenied");
             }
         }
 
         private bool IsDeviceRegistered(string macAddress)
         {
+            //Code to check whether the passed mac address is registered in the system or not.
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 try
@@ -360,11 +423,13 @@ namespace TWI.InventoryAutomated.Controllers
                     RegisteredDevice rDevices = db.RegisteredDevices.Where(x => x.IsActive == true && x.MacAddress == macAddress).FirstOrDefault();
                     if (rDevices != null)
                     {
+                        //if device is registered then device ID is stored in a session variable.
                         Session["DeviceID"] = rDevices.ID;
                         return true;
                     }
                     else
                     {
+                        // if device mac address is not registered then session variable is cleared.
                         Session["DeviceID"] = null;
                         return false;
                     }
@@ -583,6 +648,7 @@ namespace TWI.InventoryAutomated.Controllers
                 }
             }
         }
+
         public bool CheckAlreadyLogin(User user)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())

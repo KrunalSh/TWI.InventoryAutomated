@@ -281,6 +281,7 @@
     <Property Name="EmailID" Type="nvarchar" MaxLength="250" />
     <Property Name="DisplayName" Type="nvarchar" MaxLength="150" />
     <Property Name="Password" Type="nvarchar" MaxLength="20" />
+    <Property Name="NAV_ID" Type="nvarchar" MaxLength="50" />
     <Property Name="IsActive" Type="bit" />
     <Property Name="CreatedDate" Type="datetime" />
     <Property Name="CreatedBy" Type="int" />

@@ -15,7 +15,7 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult UserAccessList(int UserID)
         {
-          
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
             {
@@ -23,10 +23,13 @@ namespace TWI.InventoryAutomated.Controllers
                 {
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
+                        //Code to retrieve the User name displayed to indicate 
+                        //for which user logged in user is working on.
                         User user = db.Users.Where(x => x.UserID == UserID).FirstOrDefault();
                         ViewBag.UserName = user.UserName == null ? user.EmailID : user.UserName;
                         ViewBag.UserID = user.UserID;
-                        //ViewBag.Devices = (from r in db.RegisteredDevices where r.IsActive == true select new SelectListItem { Value = r.ID.ToString(), Text = r.DeviceName }).ToList();
+                        //ViewBag.Devices = (from r in db.RegisteredDevices where r.IsActive == true 
+                        //select new SelectListItem { Value = r.ID.ToString(), Text = r.DeviceName }).ToList();
                         return View();
                     }
                 }
@@ -37,24 +40,54 @@ namespace TWI.InventoryAutomated.Controllers
             }
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
         }
 
-        public ActionResult GetMasterData(int AccessID)
+        [HttpPost]
+        public ActionResult GetData(int UserId)
         {
-            List<Instance> _instances = new List<Instance>();
-            List<Company> _companies = new List<Company>();
-            List<Location> _locations = new List<Location>();
-            List<Permission> _permissions = new List<Permission>();
-            List<RegisteredDevice> _regdevices = new List<RegisteredDevice>();
-            List<UserAccess> _useracc = new List<UserAccess>();
-            List<UserAccessDevice> _userdevice = new List<UserAccessDevice>();
-            List<object> _masterdata = new List<object>();
-
             try
             {
+                //Code to retrieve list of user accesses of a user in the system by passing UserID.
+                using (InventoryPortalEntities db = new InventoryPortalEntities())
+                {
+                    var dataList = (from w in db.UserAccesses
+                                    join x in db.Companies on w.CompanyID equals x.ID
+                                    join y in db.Instances on w.InstanceID equals y.ID
+                                    join z in db.Permissions on w.PermissionID equals z.ID
+                                    where w.UserID == UserId
+                                    select new
+                                    {
+                                        w.ID,
+                                        y.InstanceName,
+                                        x.CompanyName,
+                                        z.PermissionDesc,
+                                        w.IsActive,
+                                        w.UserID
+                                    }).ToList();
+
+                    return Json(new { data = dataList }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public ActionResult GetMasterData(int AccessID)
+        {
+            List<Instance> _instances = new List<Instance>(); List<Company> _companies = new List<Company>();
+            List<Location> _locations = new List<Location>(); List<Permission> _permissions = new List<Permission>();
+            List<RegisteredDevice> _regdevices = new List<RegisteredDevice>();List<UserAccess> _useracc = new List<UserAccess>();
+            List<UserAccessDevice> _userdevice = new List<UserAccessDevice>();List<object> _masterdata = new List<object>();
+            try
+            {
+                //Code to load User Access details in the Popup screen based on Access ID. 
+                //Code to load master data required to display User Access field values
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     if (db.Instances.Where(x => x.IsActive == true).Count() > 0) { _instances = db.Instances.Where(x => x.IsActive == true).ToList(); }
@@ -67,17 +100,22 @@ namespace TWI.InventoryAutomated.Controllers
                     Location _loc = new Location(); _loc.ID = -1; _loc.Code = "Select Location"; _locations.Insert(0, _loc);
                     _masterdata.Add(_locations);
 
-                    if (db.Permissions.Where(x => x.IsActive == true).Count() > 0) { _permissions = db.Permissions.Where(x => x.IsActive == true).ToList(); }
+                    if (db.Permissions.Where(x => x.IsActive == true).Count() > 0)
+                    { _permissions = db.Permissions.Where(x => x.IsActive == true).ToList(); }
+
                     Permission _per = new Permission(); _per.ID = -1; _per.PermissionDesc = "Select Permission"; _permissions.Insert(0, _per);
                     _masterdata.Add(_permissions);
 
-                    if (db.RegisteredDevices.Where(x => x.IsActive == true).Count() > 0) { _regdevices = db.RegisteredDevices.Where(x => x.IsActive == true).ToList(); }
+                    if (db.RegisteredDevices.Where(x => x.IsActive == true).Count() > 0)
+                    { _regdevices = db.RegisteredDevices.Where(x => x.IsActive == true).ToList(); }
                     _masterdata.Add(_regdevices);
 
                     if (AccessID > 0)
                     {
-                        if (db.UserAccesses.Where(x => x.ID == AccessID).Count() > 0) { _useracc = db.UserAccesses.Where(x => x.ID == AccessID).ToList(); }
-                        if (db.UserAccessDevices.Where(x => x.UserAccessID == AccessID).Count() > 0) { _userdevice = db.UserAccessDevices.Where(x => x.UserAccessID == AccessID).ToList();  }
+                        if (db.UserAccesses.Where(x => x.ID == AccessID).Count() > 0)
+                        { _useracc = db.UserAccesses.Where(x => x.ID == AccessID).ToList(); }
+                        if (db.UserAccessDevices.Where(x => x.UserAccessID == AccessID).Count() > 0)
+                        { _userdevice = db.UserAccessDevices.Where(x => x.UserAccessID == AccessID).ToList();  }
                     }
 
                     _masterdata.Add(_useracc);
@@ -92,19 +130,24 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-        public ActionResult SaveUserAccessDetails(int UserID,int AccessID,int InstanceID, int CompanyID, int LocationID, int PermissionID, string DeviceID,bool isActive)
+        public ActionResult SaveUserAccessDetails(int UserID,int AccessID,int InstanceID, int CompanyID, int LocationID, int PermissionID,string DeviceID,bool isActive)
         {
             try
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     UserAccess _useracc;
-                    //Record Duplication check
+                    //Query to check whether access for the instance,company & location exists or not. if exists then, return below message.
+                    //Updating "CreatedDate",Instance Name,Company Name,Location Code,"CreatedBy" details along with changes made through UI
                     if (AccessID == 0)
                     {
-                        if (db.UserAccesses.Where(x => x.UserID == UserID && x.InstanceID == InstanceID && x.CompanyID == CompanyID && x.LocationID == LocationID).Count() > 0)
-                            return Json(new { success = false, message = "Access for the selected Instance, Company & Location already exists, cannot duplicate it." }, JsonRequestBehavior.AllowGet);
+                        if (db.UserAccesses.Where(x => x.UserID == UserID && x.InstanceID == InstanceID && x.CompanyID == CompanyID 
+                                                  && x.LocationID == LocationID).Count() > 0)
+                            return Json(new { success = false, message = "Access for the selected Instance, Company & Location already exists," +
+                                " cannot duplicate it." }, JsonRequestBehavior.AllowGet);
 
+
+                        //Save User Access details in the database after successfull validation.
                         _useracc = new UserAccess();
                         _useracc.UserID = UserID;
                         _useracc.InstanceID = InstanceID; _useracc.CompanyID = CompanyID; _useracc.LocationID = LocationID; _useracc.PermissionID = PermissionID;
@@ -117,8 +160,10 @@ namespace TWI.InventoryAutomated.Controllers
                     }
                     else
                     {
-                        if (db.UserAccesses.Where(x => x.UserID == UserID && x.InstanceID == InstanceID && x.CompanyID == CompanyID && x.LocationID == LocationID && x.ID != AccessID).Count() > 0)
-                            return Json(new { success = false, message = "Access for the selected Instance, Company & Location already exists, cannot duplicate it." }, JsonRequestBehavior.AllowGet);
+                        if (db.UserAccesses.Where(x => x.UserID == UserID && x.InstanceID == InstanceID && x.CompanyID == CompanyID 
+                        && x.LocationID == LocationID && x.ID != AccessID).Count() > 0)
+                            return Json(new { success = false, message = "Access for the selected Instance, Company & Location already" +
+                                " exists, cannot duplicate it." }, JsonRequestBehavior.AllowGet);
 
                         _useracc = db.UserAccesses.Where(x => x.ID == AccessID).FirstOrDefault();
                         _useracc.PermissionID = PermissionID;
@@ -144,7 +189,7 @@ namespace TWI.InventoryAutomated.Controllers
 
                     
 
-                    //Creating  the Devices for the 
+                    //Creating  the Devices entries for the new devices selected
                     for (int i = 0; i <= _deviceids.Length - 1; i++)
                     {
                         UserAccessDevice _deviceaccess = new UserAccessDevice();
@@ -162,42 +207,11 @@ namespace TWI.InventoryAutomated.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult GetData(int UserId)
-        {
-            try
-            {
-                using (InventoryPortalEntities db = new InventoryPortalEntities())
-                {
-                    var dataList = (from w in db.UserAccesses
-                                    join x in db.Companies on w.CompanyID equals x.ID
-                                    join y in db.Instances on w.InstanceID equals y.ID
-                                    join z in db.Permissions on w.PermissionID equals z.ID
-                                    where w.UserID == UserId
-                                    select new
-                                    {
-                                        w.ID,
-                                        y.InstanceName,
-                                        x.CompanyName,
-                                        z.PermissionDesc,
-                                        w.IsActive,
-                                        w.UserID
-                                    }).ToList();
-
-
-                    return Json(new { data = dataList }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
         public string GetDevicesInformations(int id)
         {
             try
             {
+                //Query to get device name for a specific user access by passing User Access ID as parameter
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     List<RegisteredDevice> Devices = (from w in db.UserAccessDevices
@@ -224,15 +238,19 @@ namespace TWI.InventoryAutomated.Controllers
                 return "";
             }
         }
+
         public bool isDuplicate(UserAccess useracc)
         {
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
+                //check to validate whether user access is not duplicating for the same user
                 UserAccess UA;
                 if (useracc.ID != 0)
                     UA = db.UserAccesses.AsNoTracking().Where(x => x.CompanyID == useracc.CompanyID && x.UserID == useracc.UserID && x.InstanceID == useracc.InstanceID && x.ID != useracc.ID).FirstOrDefault();
                 else
                     UA = db.UserAccesses.AsNoTracking().Where(x => x.CompanyID == useracc.CompanyID && x.UserID == useracc.UserID && x.InstanceID == useracc.InstanceID).FirstOrDefault();
+
+                //code to return false if no duplicate record found
                 if (UA == null)
                     return false;
                 else
@@ -242,10 +260,12 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult GetCompany(int InstanceID)
         {
+            //Code to get list of companies for a instance
             InventoryPortalEntities db = new InventoryPortalEntities();
             List<Company> _companies = new List<Company>();
 
-            if (db.Companies.Where(x => x.InstanceID == InstanceID && x.IsActive == true).Count() > 0) { _companies = db.Companies.Where(x => x.InstanceID == InstanceID && x.IsActive == true).ToList(); }
+            if (db.Companies.Where(x => x.InstanceID == InstanceID && x.IsActive == true).Count() > 0)
+            { _companies = db.Companies.Where(x => x.InstanceID == InstanceID && x.IsActive == true).ToList(); }
             Company _co = new Company(); _co.ID = -1; _co.CompanyName = "Select Company"; _companies.Insert(0, _co);
 
             return Json(new { success = true, message = _companies }, JsonRequestBehavior.AllowGet);
@@ -253,16 +273,16 @@ namespace TWI.InventoryAutomated.Controllers
 
         public ActionResult GetLocation(int CompanyID)
         {
+            //Code to get list of locations for a company
             InventoryPortalEntities db = new InventoryPortalEntities();
             List<Location> _location = new List<Location>();
 
-            if (db.Location.Where(x => x.CompanyID == CompanyID && x.IsActive == true).Count() > 0) { _location = db.Location.Where(x => x.CompanyID == CompanyID && x.IsActive == true).ToList(); }
+            if (db.Location.Where(x => x.CompanyID == CompanyID && x.IsActive == true).Count() > 0)
+            { _location = db.Location.Where(x => x.CompanyID == CompanyID && x.IsActive == true).ToList(); }
             Location _loc = new Location(); _loc.ID = -1; _loc.Code = "Select Location"; _location.Insert(0, _loc);
 
             return Json(new { success = true, message = _location }, JsonRequestBehavior.AllowGet);
         }
-
-
 
         #region "Old Code"
 

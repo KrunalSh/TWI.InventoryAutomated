@@ -14,11 +14,13 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: Permission
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
@@ -29,6 +31,7 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
+                    //Code to retrieve list of Permissions registered in the system.
                     List<Permission> dataList = db.Permissions.Where(x => x.PermissionDesc != "Super Admin").ToList<Permission>();
                     return Json(new { data = dataList }, JsonRequestBehavior.AllowGet);
                 }
@@ -45,10 +48,14 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to load Popup screen based on ID. 
+                //if ID = 0 then empty all fields in UI
                 if (id == 0)
                     return View(new Permission());
                 else
                 {
+                    //Linq query to retrieve permission details by ID and populate respective fields
+                    // in UI
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
                         return View(db.Permissions.Where(x => x.ID == id).FirstOrDefault<Permission>());
@@ -66,10 +73,15 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Condition to check whether permission description 
+                // doesn't duplicate in the system.
                 if (!isDuplicate(perm))
                 {
+                    //Updating "CreateDate" and "CreatedBy" details with changes made through UI
+                    //Saving data to database
                     using (InventoryPortalEntities db = new InventoryPortalEntities())
                     {
+                        //Code - while creating a new permission in the system.
                         if (perm.ID == 0)
                         {
                             perm.CreatedDate = DateTime.Now;
@@ -80,6 +92,7 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
+                            //Code - while modifying details of a permission
                             Permission permission = db.Permissions.AsNoTracking().Where(x => x.ID == perm.ID).FirstOrDefault();
                             perm.CreatedDate = permission.CreatedDate;
                             perm.CreatedBy = permission.CreatedBy;
@@ -87,7 +100,6 @@ namespace TWI.InventoryAutomated.Controllers
                             db.SaveChanges();
                             return Json(new { success = true, message = Resources.GlobalResource.MsgSuccessfullyUpdated }, JsonRequestBehavior.AllowGet);
                         }
-
                     }
                 }
                 else
@@ -97,11 +109,11 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 return Json(new { success = false, message = Resources.GlobalResource.MsgErrorwhileAdding }, JsonRequestBehavior.AllowGet);
             }
-
-
         }
+
         public bool isDuplicate(Permission perm)
         {
+            //check to validate entered permission description name is not duplicating
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
                 Permission permission;
@@ -109,17 +121,22 @@ namespace TWI.InventoryAutomated.Controllers
                     permission = db.Permissions.AsNoTracking().Where(x => x.PermissionDesc == perm.PermissionDesc && x.ID != perm.ID).FirstOrDefault();
                 else
                     permission = db.Permissions.AsNoTracking().Where(x => x.PermissionDesc == perm.PermissionDesc).FirstOrDefault();
+
+                //code to return false if no duplicate record found
                 if (permission == null)
                     return false;
                 else
                     return true;
             }
         }
+
+
         [HttpPost]
         public ActionResult Delete(int id)
         {
             try
             {
+                // Disable a permission in the system by setting "IsActive" field to false
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     Permission perm = db.Permissions.Where(x => x.ID == id).FirstOrDefault<Permission>();

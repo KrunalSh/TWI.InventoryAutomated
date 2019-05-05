@@ -14,6 +14,7 @@ namespace TWI.InventoryAutomated.Controllers
         //List all locations by CompanyID
         public ActionResult LocationView(int ID)
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
             {
@@ -28,6 +29,7 @@ namespace TWI.InventoryAutomated.Controllers
             }
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
@@ -39,7 +41,11 @@ namespace TWI.InventoryAutomated.Controllers
             {
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
+                    //Code to retrieve the company name displayed to indicate 
+                    //for which company user is working on.
                     ViewBag.CompanyName = db.Companies.Where(x => x.ID == ID).FirstOrDefault().CompanyName;
+
+                    //Code to retrieve list of Locations for a Company in the system by passing Company ID.
                     List<Location> LocationList = db.Location.Where(x => x.CompanyID == ID).ToList<Location>();
                     return Json(new { data = LocationList }, JsonRequestBehavior.AllowGet);
                 }
@@ -53,10 +59,16 @@ namespace TWI.InventoryAutomated.Controllers
             Location _loc;
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
+                //Linq query to retrieve Location details by ID and populate respective fields
+                // in UI
                 if (ID != 0)
                     _loc = db.Location.Where(x => x.ID == ID).FirstOrDefault();
                 else
-                { _loc = new Location(); _loc.IsActive = true; }
+                {
+                    //Code to load Popup screen based on ID. 
+                    //if ID = 0 then empty all fields in UI
+                    _loc = new Location(); _loc.IsActive = true;
+                }
                   
                 return View(_loc);
             }
@@ -65,21 +77,24 @@ namespace TWI.InventoryAutomated.Controllers
         [HttpPost]
         public ActionResult CreateUpdateLocation(Location _loc)
         {
-            int InstanceID = Convert.ToInt32(Session["SelectedInstanceID"]);
-            int CompanyID = Convert.ToInt32(Session["SelectedCompanyID"]);
+        int InstanceID = Convert.ToInt32(Session["SelectedInstanceID"]);
 
-            using (InventoryPortalEntities db = new InventoryPortalEntities())
-            {
-                //This condition  checks whether there is any input from the user
-                if (_loc == null) { return Json(new { success = false, message = "* Marked fields are mandatory fields, Kindly enter a values for respective fields" }, JsonRequestBehavior.AllowGet); }
+        int CompanyID = Convert.ToInt32(Session["SelectedCompanyID"]);
 
-                //This condition checks whether Location Code field is null or left empty by the user
-                if (_loc.Code == null || string.IsNullOrEmpty(_loc.Code.Trim()))
-                    return Json(new { success = false, message = "Value for Code field is mandatory, Kindly enter a value" }, JsonRequestBehavior.AllowGet);
+        using (InventoryPortalEntities db = new InventoryPortalEntities())
+        {
+         //This condition  checks whether there is any input from the user
+        if (_loc == null) {
+        return Json(new { success = false, message = "* Marked fields are mandatory fields, Kindly enter a values for respective fields" }, JsonRequestBehavior.AllowGet);
+        }
 
-                //This condition checks whether Location Description field is null or left empty by the user
-                if (_loc.Description == null || string.IsNullOrEmpty(_loc.Description.Trim()))
-                    return Json(new { success = false, message = "Value for Description field is mandatory, Kindly enter a value" }, JsonRequestBehavior.AllowGet);
+        //This condition checks whether Location Code field is null or left empty by the user
+        if (_loc.Code == null || string.IsNullOrEmpty(_loc.Code.Trim()))
+        return Json(new { success = false, message = "Value for Code field is mandatory, Kindly enter a value" }, JsonRequestBehavior.AllowGet);
+
+        //This condition checks whether Location Description field is null or left empty by the user
+        if (_loc.Description == null || string.IsNullOrEmpty(_loc.Description.Trim()))
+        return Json(new { success = false, message = "Value for Description field is mandatory, Kindly enter a value" }, JsonRequestBehavior.AllowGet);
 
                 if (_loc.ID == 0)
                 {
@@ -99,10 +114,11 @@ namespace TWI.InventoryAutomated.Controllers
                 else
                 {
                     Location _orginalLoc = db.Location.Where(x => x.ID == _loc.ID).FirstOrDefault();
-                    _orginalLoc.Description = _loc.Description;
-                    _orginalLoc.IsActive = _loc.IsActive;
-                    _orginalLoc.ModifiedBy = Convert.ToInt32(Session["UserID"]);
-                    _orginalLoc.ModifiedDate = DateTime.Now;
+
+                    _orginalLoc.Description = _loc.Description; _orginalLoc.IsActive = _loc.IsActive;
+
+                    _orginalLoc.ModifiedBy = Convert.ToInt32(Session["UserID"]); _orginalLoc.ModifiedDate = DateTime.Now;
+
                     db.Entry(_orginalLoc).State = System.Data.Entity.EntityState.Modified;
                 }
 

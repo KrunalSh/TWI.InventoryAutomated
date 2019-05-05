@@ -15,6 +15,7 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to select the forms associsated with the Permission by passing Permission ID as parameter
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     ViewBag.ModuleForms = (from y in db.Forms
@@ -39,6 +40,9 @@ namespace TWI.InventoryAutomated.Controllers
         {
             try
             {
+                //Code to associate forms that are selected to the Permission ID 
+                //function Parameter Ids - ID's of form(s) selected 
+                // function Parameter currentpermission - ID of the permission to which forms are to associated.
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     List<UIPermissionAssignment> perms = db.UIPermissionAssignments.Where(x => x.PermissionID == currentpermission).ToList();
@@ -47,6 +51,7 @@ namespace TWI.InventoryAutomated.Controllers
                         UIPermissionAssignment Per=perms.Where(x => x.FormID == item).FirstOrDefault();
                         if (Per == null)
                         {
+                            // if a form is never associated to a permission then a new record for the same will be created
                             int moduleId=(int)db.Forms.Where(x => x.ID == item).Select(y=>y.ModuleID).FirstOrDefault();
                             UIPermissionAssignment ui = new UIPermissionAssignment();
                             ui.FormID = item;
@@ -58,6 +63,7 @@ namespace TWI.InventoryAutomated.Controllers
                         }
                         else
                         {
+                            // if a form is associated to a permission pervious then the allow access field will be switched to true
                             Per.AllowAccess = true;
                             db.SaveChanges();
                         }
@@ -74,7 +80,6 @@ namespace TWI.InventoryAutomated.Controllers
             }
             catch (Exception)
             {
-
                 return Json(new { success = false, message = Resources.GlobalResource.MsgErrorWhileUpdate }, JsonRequestBehavior.AllowGet);
             }
         }

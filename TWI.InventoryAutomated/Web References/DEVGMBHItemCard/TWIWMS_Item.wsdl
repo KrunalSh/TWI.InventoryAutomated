@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/page/twiwms_item" targetNamespace="urn:microsoft-dynamics-schemas/page/twiwms_item" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/page/twiwms_item" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <xsd:simpleType name="StockoutWarningDefaultYes">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Default" />
+          <xsd:enumeration value="No" />
+          <xsd:enumeration value="Yes" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="PreventNegInventoryDefaultYes">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Default" />
+          <xsd:enumeration value="No" />
+          <xsd:enumeration value="Yes" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Costing_Method">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="FIFO" />
+          <xsd:enumeration value="LIFO" />
+          <xsd:enumeration value="Specific" />
+          <xsd:enumeration value="Average" />
+          <xsd:enumeration value="Standard" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Price_Profit_Calculation">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Profit_x003D_Price_Cost" />
+          <xsd:enumeration value="Price_x003D_Cost_x002B_Profit" />
+          <xsd:enumeration value="No_Relationship" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Replenishment_System">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Purchase" />
+          <xsd:enumeration value="Prod_Order" />
+          <xsd:enumeration value="None" />
+          <xsd:enumeration value="Assembly" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Manufacturing_Policy">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Make_to_Stock" />
+          <xsd:enumeration value="Make_to_Order" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Flushing_Method">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Manual" />
+          <xsd:enumeration value="Forward" />
+          <xsd:enumeration value="Backward" />
+          <xsd:enumeration value="Pick__x002B__Forward" />
+          <xsd:enumeration value="Pick__x002B__Backward" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Assembly_Policy">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Assemble_to_Stock" />
+          <xsd:enumeration value="Assemble_to_Order" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Reordering_Policy">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="_blank_" />
+          <xsd:enumeration value="Fixed_Reorder_Qty" />
+          <xsd:enumeration value="Maximum_Qty" />
+          <xsd:enumeration value="Order" />
+          <xsd:enumeration value="Lot_for_Lot" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Reserve">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Never" />
+          <xsd:enumeration value="Optional" />
+          <xsd:enumeration value="Always" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Order_Tracking_Policy">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="None" />
+          <xsd:enumeration value="Tracking_Only" />
+          <xsd:enumeration value="Tracking__x0026__Action_Msg" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="SCB_672__x003C_FIFO_Level_x003E_">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Day" />
+          <xsd:enumeration value="Week" />
+          <xsd:enumeration value="Month" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="SCB_672__x003C_Pick_To_x003E_">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Bin_Ranking" />
+          <xsd:enumeration value="FIFO" />
+          <xsd:enumeration value="FEFO" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="SCB_672__x003C_Outb_Qty_Adjustment">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Never_Update" />
+          <xsd:enumeration value="Always_Update" />
+          <xsd:enumeration value="Ask" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="SCB_672__x003C_Inb_Qty_Adjust">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Never_Update" />
+          <xsd:enumeration value="Always_Update" />
+          <xsd:enumeration value="Ask" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="SCB_672__x003C_Pick_Layer_x003E_">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="Bottom" />
+          <xsd:enumeration value="Middle" />
+          <xsd:enumeration value="Top" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="TWI_Addition_Status">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="_blank_" />
+          <xsd:enumeration value="Not_Approved_New_Item" />
+          <xsd:enumeration value="Approved_New_Item" />
+          <xsd:enumeration value="Active" />
+          <xsd:enumeration value="Deleted" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="TWI_Item_Type">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="_blank_" />
+          <xsd:enumeration value="MPA" />
+          <xsd:enumeration value="NAPA" />
+          <xsd:enumeration value="Regular" />
+          <xsd:enumeration value="Distribution" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="TWI_Demand_Category">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="_blank_" />
+          <xsd:enumeration value="AA" />
+          <xsd:enumeration value="A" />
+          <xsd:enumeration value="B" />
+          <xsd:enumeration value="C" />
+          <xsd:enumeration value="D" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:simpleType name="Environmental_Code">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="_blank_" />
+          <xsd:enumeration value="Dry" />
+          <xsd:enumeration value="Chill" />
+          <xsd:enumeration value="Frozen" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="TWIWMS_Item">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" maxOccurs="1" name="Key" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Description" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Description_2" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="_x003C_Vendor_Item_No__copy_x003E_" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Brand_Part_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Base_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Assembly_BOM" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Shelf_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Automatic_Ext_Texts" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Created_From_Nonstock_Item" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Item_Category_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Product_Group_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Manufacturer_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Brand_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Service_Item_Group" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Search_Description" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Inventory" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_AktobeStock" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_AktauStock" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Purch_Order" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Prod_Order" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Component_Lines" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Sales_Order" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Service_Order" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Job_Order" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Assembly_Order" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_on_Asm_Component" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reserved_Qty_on_Inventory" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reserved_Qty_on_Purch_Orders" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reserved_Qty_on_Sales_Orders" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Qty_in_Transit" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Internal_Ref" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="COO" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Blocked" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Last_Date_Modified" type="xsd:date" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="StockoutWarningDefaultYes" type="tns:StockoutWarningDefaultYes" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="PreventNegInventoryDefaultYes" type="tns:PreventNegInventoryDefaultYes" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="No_Stockkeeping" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="CVED_Item" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Demo_Item" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Costing_Method" type="tns:Costing_Method" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Cost_is_Adjusted" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Cost_is_Posted_to_G_L" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Standard_Cost" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Unit_Cost" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Overhead_Rate" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Indirect_Cost_Percent" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Last_Direct_Cost" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Price_Profit_Calculation" type="tns:Price_Profit_Calculation" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Profit_Percent" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Unit_Price" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Unit_Price" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Gen_Prod_Posting_Group" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="VAT_Prod_Posting_Group" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Inventory_Posting_Group" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Net_Invoiced_Qty" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Allow_Invoice_Disc" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Item_Disc_Group" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Sales_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Sale_blocked" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Application_Wksh_User_ID" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Replenishment_System" type="tns:Replenishment_System" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Lead_Time_Calculation" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Vendor_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Purch_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Manufacturing_Policy" type="tns:Manufacturing_Policy" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Routing_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Production_BOM_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Rounding_Precision" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Flushing_Method" type="tns:Flushing_Method" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Scrap_Percent" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Lot_Size" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Purchase_blocked" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Assembly_Policy" type="tns:Assembly_Policy" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reordering_Policy" type="tns:Reordering_Policy" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reserve" type="tns:Reserve" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Order_Tracking_Policy" type="tns:Order_Tracking_Policy" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Stockkeeping_Unit_Exists" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Dampener_Period" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Dampener_Quantity" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Critical" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Safety_Lead_Time" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Safety_Stock_Quantity" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Include_Inventory" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Lot_Accumulation_Period" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Rescheduling_Period" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reorder_Point" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Reorder_Quantity" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Maximum_Inventory" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Overflow_Level" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Time_Bucket" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Minimum_Order_Quantity" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Maximum_Order_Quantity" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Order_Multiple" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Tariff_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="HS_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Country_Region_of_Origin_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Net_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Gross_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Item_Tracking_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Serial_Nos" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Lot_Nos" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Expiration_Calculation" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Special_Equipment_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Put_away_Template_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Put_away_Unit_of_Measure_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Phys_Invt_Counting_Period_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Last_Phys_Invt_Date" type="xsd:date" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Last_Counting_Period_Update" type="xsd:date" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Next_Counting_Period" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Identifier_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Use_Cross_Docking" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_FIFO_Level_x003E_" type="tns:SCB_672__x003C_FIFO_Level_x003E_" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Pick_To_x003E_" type="tns:SCB_672__x003C_Pick_To_x003E_" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Odd_Size_x003E_" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_ABC_Code_x003E_" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Old_ABC_Code_x003E_" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Last_ABC_Update_x003E_" type="xsd:dateTime" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Current_ABC_Value_x003E_" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Old_ABC_Value_x003E_" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Inpect_Item_x003E_" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_No_Of_Required_I" type="xsd:int" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Inspection_Sam" type="xsd:int" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Outb_Qty_Adjustment" type="tns:SCB_672__x003C_Outb_Qty_Adjustment" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Inb_Qty_Adjust" type="tns:SCB_672__x003C_Inb_Qty_Adjust" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Pick_Layer_x003E_" type="tns:SCB_672__x003C_Pick_Layer_x003E_" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Units_Per_Pallet_x003E_" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Allow_Create_P" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Allow_Create" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Allow_Create_Otb_Tra" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Receive_Before_D" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Pick_By_Date_Formula_x003E_" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="SCB_672__x003C_Pick_By_Date_Percent_x003E_" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_NSN_No_Cross_Reference_No" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Economic_Indicator" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Update_Indicator" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_FICCode" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_DLA_Troop_Support_Unique" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Standard_Accepted" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Shelf_Life_Period" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Addition_Status" type="tns:TWI_Addition_Status" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Catch_Weight" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Item_Type" type="tns:TWI_Item_Type" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_NAPA_Allowance_Last_Approved" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_NAPA_Allowance_Pending_Approval" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="NAPA_Allowance_UOM" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_MPA_Purchase_Date" type="xsd:date" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Regular_Purchase_Date" type="xsd:date" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Distribution_Price" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Demand_Category" type="tns:TWI_Demand_Category" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Min_Expiration_Date" type="xsd:date" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Remaining_Shelf_Days" type="xsd:int" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Catalog_Code" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Environmental_Code" type="tns:Environmental_Code" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="Weight_Tolerance_Percent" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Tare_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Tare_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Aluminium_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Aluminium_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Tin_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Tin_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Paper_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Paper_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Plastic_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Plastic_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Glass_Weight" type="xsd:decimal" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_Glass_Unit_of_Measure" type="xsd:string" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_VisibleIinWebshop" type="xsd:boolean" />
+          <xsd:element minOccurs="0" maxOccurs="1" name="TWI_LastDateTimeModified" type="xsd:dateTime" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="TWIWMS_Item_List">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" maxOccurs="unbounded" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:simpleType name="TWIWMS_Item_Fields">
+        <xsd:restriction base="xsd:string">
+          <xsd:enumeration value="No" />
+          <xsd:enumeration value="Description" />
+          <xsd:enumeration value="Description_2" />
+          <xsd:enumeration value="_x003C_Vendor_Item_No__copy_x003E_" />
+          <xsd:enumeration value="Brand_Part_No" />
+          <xsd:enumeration value="Base_Unit_of_Measure" />
+          <xsd:enumeration value="Assembly_BOM" />
+          <xsd:enumeration value="Shelf_No" />
+          <xsd:enumeration value="Automatic_Ext_Texts" />
+          <xsd:enumeration value="Created_From_Nonstock_Item" />
+          <xsd:enumeration value="Item_Category_Code" />
+          <xsd:enumeration value="Product_Group_Code" />
+          <xsd:enumeration value="Manufacturer_Code" />
+          <xsd:enumeration value="Brand_Code" />
+          <xsd:enumeration value="Service_Item_Group" />
+          <xsd:enumeration value="Search_Description" />
+          <xsd:enumeration value="Inventory" />
+          <xsd:enumeration value="TWI_AktobeStock" />
+          <xsd:enumeration value="TWI_AktauStock" />
+          <xsd:enumeration value="Qty_on_Purch_Order" />
+          <xsd:enumeration value="Qty_on_Prod_Order" />
+          <xsd:enumeration value="Qty_on_Component_Lines" />
+          <xsd:enumeration value="Qty_on_Sales_Order" />
+          <xsd:enumeration value="Qty_on_Service_Order" />
+          <xsd:enumeration value="Qty_on_Job_Order" />
+          <xsd:enumeration value="Qty_on_Assembly_Order" />
+          <xsd:enumeration value="Qty_on_Asm_Component" />
+          <xsd:enumeration value="Reserved_Qty_on_Inventory" />
+          <xsd:enumeration value="Reserved_Qty_on_Purch_Orders" />
+          <xsd:enumeration value="Reserved_Qty_on_Sales_Orders" />
+          <xsd:enumeration value="Qty_in_Transit" />
+          <xsd:enumeration value="Internal_Ref" />
+          <xsd:enumeration value="COO" />
+          <xsd:enumeration value="Blocked" />
+          <xsd:enumeration value="Last_Date_Modified" />
+          <xsd:enumeration value="StockoutWarningDefaultYes" />
+          <xsd:enumeration value="PreventNegInventoryDefaultYes" />
+          <xsd:enumeration value="No_Stockkeeping" />
+          <xsd:enumeration value="CVED_Item" />
+          <xsd:enumeration value="Demo_Item" />
+          <xsd:enumeration value="Costing_Method" />
+          <xsd:enumeration value="Cost_is_Adjusted" />
+          <xsd:enumeration value="Cost_is_Posted_to_G_L" />
+          <xsd:enumeration value="Standard_Cost" />
+          <xsd:enumeration value="Unit_Cost" />
+          <xsd:enumeration value="Overhead_Rate" />
+          <xsd:enumeration value="Indirect_Cost_Percent" />
+          <xsd:enumeration value="Last_Direct_Cost" />
+          <xsd:enumeration value="Price_Profit_Calculation" />
+          <xsd:enumeration value="Profit_Percent" />
+          <xsd:enumeration value="Unit_Price" />
+          <xsd:enumeration value="TWI_Unit_Price" />
+          <xsd:enumeration value="Gen_Prod_Posting_Group" />
+          <xsd:enumeration value="VAT_Prod_Posting_Group" />
+          <xsd:enumeration value="Inventory_Posting_Group" />
+          <xsd:enumeration value="Net_Invoiced_Qty" />
+          <xsd:enumeration value="Allow_Invoice_Disc" />
+          <xsd:enumeration value="Item_Disc_Group" />
+          <xsd:enumeration value="Sales_Unit_of_Measure" />
+          <xsd:enumeration value="Sale_blocked" />
+          <xsd:enumeration value="Application_Wksh_User_ID" />
+          <xsd:enumeration value="Replenishment_System" />
+          <xsd:enumeration value="Lead_Time_Calculation" />
+          <xsd:enumeration value="Vendor_No" />
+          <xsd:enumeration value="Purch_Unit_of_Measure" />
+          <xsd:enumeration value="Manufacturing_Policy" />
+          <xsd:enumeration value="Routing_No" />
+          <xsd:enumeration value="Production_BOM_No" />
+          <xsd:enumeration value="Rounding_Precision" />
+          <xsd:enumeration value="Flushing_Method" />
+          <xsd:enumeration value="Scrap_Percent" />
+          <xsd:enumeration value="Lot_Size" />
+          <xsd:enumeration value="Purchase_blocked" />
+          <xsd:enumeration value="Assembly_Policy" />
+          <xsd:enumeration value="Reordering_Policy" />
+          <xsd:enumeration value="Reserve" />
+          <xsd:enumeration value="Order_Tracking_Policy" />
+          <xsd:enumeration value="Stockkeeping_Unit_Exists" />
+          <xsd:enumeration value="Dampener_Period" />
+          <xsd:enumeration value="Dampener_Quantity" />
+          <xsd:enumeration value="Critical" />
+          <xsd:enumeration value="Safety_Lead_Time" />
+          <xsd:enumeration value="Safety_Stock_Quantity" />
+          <xsd:enumeration value="Include_Inventory" />
+          <xsd:enumeration value="Lot_Accumulation_Period" />
+          <xsd:enumeration value="Rescheduling_Period" />
+          <xsd:enumeration value="Reorder_Point" />
+          <xsd:enumeration value="Reorder_Quantity" />
+          <xsd:enumeration value="Maximum_Inventory" />
+          <xsd:enumeration value="Overflow_Level" />
+          <xsd:enumeration value="Time_Bucket" />
+          <xsd:enumeration value="Minimum_Order_Quantity" />
+          <xsd:enumeration value="Maximum_Order_Quantity" />
+          <xsd:enumeration value="Order_Multiple" />
+          <xsd:enumeration value="Tariff_No" />
+          <xsd:enumeration value="HS_Code" />
+          <xsd:enumeration value="Country_Region_of_Origin_Code" />
+          <xsd:enumeration value="Net_Weight" />
+          <xsd:enumeration value="Gross_Weight" />
+          <xsd:enumeration value="Item_Tracking_Code" />
+          <xsd:enumeration value="Serial_Nos" />
+          <xsd:enumeration value="Lot_Nos" />
+          <xsd:enumeration value="Expiration_Calculation" />
+          <xsd:enumeration value="Special_Equipment_Code" />
+          <xsd:enumeration value="Put_away_Template_Code" />
+          <xsd:enumeration value="Put_away_Unit_of_Measure_Code" />
+          <xsd:enumeration value="Phys_Invt_Counting_Period_Code" />
+          <xsd:enumeration value="Last_Phys_Invt_Date" />
+          <xsd:enumeration value="Last_Counting_Period_Update" />
+          <xsd:enumeration value="Next_Counting_Period" />
+          <xsd:enumeration value="Identifier_Code" />
+          <xsd:enumeration value="Use_Cross_Docking" />
+          <xsd:enumeration value="SCB_672__x003C_FIFO_Level_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Pick_To_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Odd_Size_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_ABC_Code_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Old_ABC_Code_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Last_ABC_Update_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Current_ABC_Value_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Old_ABC_Value_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Inpect_Item_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_No_Of_Required_I" />
+          <xsd:enumeration value="SCB_672__x003C_Inspection_Sam" />
+          <xsd:enumeration value="SCB_672__x003C_Outb_Qty_Adjustment" />
+          <xsd:enumeration value="SCB_672__x003C_Inb_Qty_Adjust" />
+          <xsd:enumeration value="SCB_672__x003C_Pick_Layer_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Units_Per_Pallet_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Allow_Create_P" />
+          <xsd:enumeration value="SCB_672__x003C_Allow_Create" />
+          <xsd:enumeration value="SCB_672__x003C_Allow_Create_Otb_Tra" />
+          <xsd:enumeration value="SCB_672__x003C_Receive_Before_D" />
+          <xsd:enumeration value="SCB_672__x003C_Pick_By_Date_Formula_x003E_" />
+          <xsd:enumeration value="SCB_672__x003C_Pick_By_Date_Percent_x003E_" />
+          <xsd:enumeration value="TWI_NSN_No_Cross_Reference_No" />
+          <xsd:enumeration value="TWI_Economic_Indicator" />
+          <xsd:enumeration value="TWI_Update_Indicator" />
+          <xsd:enumeration value="TWI_FICCode" />
+          <xsd:enumeration value="TWI_DLA_Troop_Support_Unique" />
+          <xsd:enumeration value="TWI_Standard_Accepted" />
+          <xsd:enumeration value="TWI_Shelf_Life_Period" />
+          <xsd:enumeration value="TWI_Addition_Status" />
+          <xsd:enumeration value="TWI_Catch_Weight" />
+          <xsd:enumeration value="TWI_Item_Type" />
+          <xsd:enumeration value="TWI_NAPA_Allowance_Last_Approved" />
+          <xsd:enumeration value="TWI_NAPA_Allowance_Pending_Approval" />
+          <xsd:enumeration value="NAPA_Allowance_UOM" />
+          <xsd:enumeration value="TWI_MPA_Purchase_Date" />
+          <xsd:enumeration value="TWI_Regular_Purchase_Date" />
+          <xsd:enumeration value="TWI_Distribution_Price" />
+          <xsd:enumeration value="TWI_Demand_Category" />
+          <xsd:enumeration value="TWI_Min_Expiration_Date" />
+          <xsd:enumeration value="TWI_Remaining_Shelf_Days" />
+          <xsd:enumeration value="TWI_Catalog_Code" />
+          <xsd:enumeration value="Environmental_Code" />
+          <xsd:enumeration value="Weight_Tolerance_Percent" />
+          <xsd:enumeration value="TWI_Tare_Weight" />
+          <xsd:enumeration value="TWI_Tare_Unit_of_Measure" />
+          <xsd:enumeration value="TWI_Aluminium_Weight" />
+          <xsd:enumeration value="TWI_Aluminium_Unit_of_Measure" />
+          <xsd:enumeration value="TWI_Tin_Weight" />
+          <xsd:enumeration value="TWI_Tin_Unit_of_Measure" />
+          <xsd:enumeration value="TWI_Paper_Weight" />
+          <xsd:enumeration value="TWI_Paper_Unit_of_Measure" />
+          <xsd:enumeration value="TWI_Plastic_Weight" />
+          <xsd:enumeration value="TWI_Plastic_Unit_of_Measure" />
+          <xsd:enumeration value="TWI_Glass_Weight" />
+          <xsd:enumeration value="TWI_Glass_Unit_of_Measure" />
+          <xsd:enumeration value="TWI_VisibleIinWebshop" />
+          <xsd:enumeration value="TWI_LastDateTimeModified" />
+        </xsd:restriction>
+      </xsd:simpleType>
+      <xsd:complexType name="TWIWMS_Item_Filter">
+        <xsd:sequence>
+          <xsd:element minOccurs="1" maxOccurs="1" name="Field" type="tns:TWIWMS_Item_Fields" />
+          <xsd:element minOccurs="1" maxOccurs="1" name="Criteria" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="Read">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="No" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Read_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReadByRecId">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="recId" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReadByRecId_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReadMultiple">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="unbounded" name="filter" type="tns:TWIWMS_Item_Filter" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="bookmarkKey" type="xsd:string" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="setSize" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="ReadMultiple_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="ReadMultiple_Result" type="tns:TWIWMS_Item_List" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="IsUpdated">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="Key" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="IsUpdated_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="IsUpdated_Result" type="xsd:boolean" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetRecIdFromKey">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="Key" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetRecIdFromKey_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="GetRecIdFromKey_Result" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Create">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Create_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CreateMultiple">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item_List" type="tns:TWIWMS_Item_List" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="CreateMultiple_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item_List" type="tns:TWIWMS_Item_List" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Update">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Update_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item" type="tns:TWIWMS_Item" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UpdateMultiple">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item_List" type="tns:TWIWMS_Item_List" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UpdateMultiple_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="TWIWMS_Item_List" type="tns:TWIWMS_Item_List" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Delete">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="Key" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="Delete_Result">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="Delete_Result" type="xsd:boolean" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </types>
+  <message name="Read">
+    <part name="parameters" element="tns:Read" />
+  </message>
+  <message name="Read_Result">
+    <part name="parameters" element="tns:Read_Result" />
+  </message>
+  <message name="ReadByRecId">
+    <part name="parameters" element="tns:ReadByRecId" />
+  </message>
+  <message name="ReadByRecId_Result">
+    <part name="parameters" element="tns:ReadByRecId_Result" />
+  </message>
+  <message name="ReadMultiple">
+    <part name="parameters" element="tns:ReadMultiple" />
+  </message>
+  <message name="ReadMultiple_Result">
+    <part name="parameters" element="tns:ReadMultiple_Result" />
+  </message>
+  <message name="IsUpdated">
+    <part name="parameters" element="tns:IsUpdated" />
+  </message>
+  <message name="IsUpdated_Result">
+    <part name="parameters" element="tns:IsUpdated_Result" />
+  </message>
+  <message name="GetRecIdFromKey">
+    <part name="parameters" element="tns:GetRecIdFromKey" />
+  </message>
+  <message name="GetRecIdFromKey_Result">
+    <part name="parameters" element="tns:GetRecIdFromKey_Result" />
+  </message>
+  <message name="Create">
+    <part name="parameters" element="tns:Create" />
+  </message>
+  <message name="Create_Result">
+    <part name="parameters" element="tns:Create_Result" />
+  </message>
+  <message name="CreateMultiple">
+    <part name="parameters" element="tns:CreateMultiple" />
+  </message>
+  <message name="CreateMultiple_Result">
+    <part name="parameters" element="tns:CreateMultiple_Result" />
+  </message>
+  <message name="Update">
+    <part name="parameters" element="tns:Update" />
+  </message>
+  <message name="Update_Result">
+    <part name="parameters" element="tns:Update_Result" />
+  </message>
+  <message name="UpdateMultiple">
+    <part name="parameters" element="tns:UpdateMultiple" />
+  </message>
+  <message name="UpdateMultiple_Result">
+    <part name="parameters" element="tns:UpdateMultiple_Result" />
+  </message>
+  <message name="Delete">
+    <part name="parameters" element="tns:Delete" />
+  </message>
+  <message name="Delete_Result">
+    <part name="parameters" element="tns:Delete_Result" />
+  </message>
+  <portType name="TWIWMS_Item_Port">
+    <operation name="Read">
+      <input name="Read" message="tns:Read" />
+      <output name="Read_Result" message="tns:Read_Result" />
+    </operation>
+    <operation name="ReadByRecId">
+      <input name="ReadByRecId" message="tns:ReadByRecId" />
+      <output name="ReadByRecId_Result" message="tns:ReadByRecId_Result" />
+    </operation>
+    <operation name="ReadMultiple">
+      <input name="ReadMultiple" message="tns:ReadMultiple" />
+      <output name="ReadMultiple_Result" message="tns:ReadMultiple_Result" />
+    </operation>
+    <operation name="IsUpdated">
+      <input name="IsUpdated" message="tns:IsUpdated" />
+      <output name="IsUpdated_Result" message="tns:IsUpdated_Result" />
+    </operation>
+    <operation name="GetRecIdFromKey">
+      <input name="GetRecIdFromKey" message="tns:GetRecIdFromKey" />
+      <output name="GetRecIdFromKey_Result" message="tns:GetRecIdFromKey_Result" />
+    </operation>
+    <operation name="Create">
+      <input name="Create" message="tns:Create" />
+      <output name="Create_Result" message="tns:Create_Result" />
+    </operation>
+    <operation name="CreateMultiple">
+      <input name="CreateMultiple" message="tns:CreateMultiple" />
+      <output name="CreateMultiple_Result" message="tns:CreateMultiple_Result" />
+    </operation>
+    <operation name="Update">
+      <input name="Update" message="tns:Update" />
+      <output name="Update_Result" message="tns:Update_Result" />
+    </operation>
+    <operation name="UpdateMultiple">
+      <input name="UpdateMultiple" message="tns:UpdateMultiple" />
+      <output name="UpdateMultiple_Result" message="tns:UpdateMultiple_Result" />
+    </operation>
+    <operation name="Delete">
+      <input name="Delete" message="tns:Delete" />
+      <output name="Delete_Result" message="tns:Delete_Result" />
+    </operation>
+  </portType>
+  <binding name="TWIWMS_Item_Binding" type="tns:TWIWMS_Item_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="Read">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:Read" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="Read">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="Read_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ReadByRecId">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:ReadByRecId" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ReadByRecId">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ReadByRecId_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ReadMultiple">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:ReadMultiple" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ReadMultiple">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ReadMultiple_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="IsUpdated">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:IsUpdated" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="IsUpdated">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="IsUpdated_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetRecIdFromKey">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:GetRecIdFromKey" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetRecIdFromKey">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetRecIdFromKey_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="Create">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:Create" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="Create">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="Create_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreateMultiple">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:CreateMultiple" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreateMultiple">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreateMultiple_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="Update">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:Update" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="Update">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="Update_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="UpdateMultiple">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:UpdateMultiple" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="UpdateMultiple">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="UpdateMultiple_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="Delete">
+      <operation soapAction="urn:microsoft-dynamics-schemas/page/twiwms_item:Delete" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="Delete">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="Delete_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="TWIWMS_Item_Service">
+    <port name="TWIWMS_Item_Port" binding="tns:TWIWMS_Item_Binding">
+      <address location="http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/TWIWMS_Item" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

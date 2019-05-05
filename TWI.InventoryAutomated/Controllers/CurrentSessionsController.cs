@@ -13,22 +13,28 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: CurrentSessions
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
         }
+        
         [HttpPost]
         public ActionResult GetData(bool isActive)
         {
             try
             {
                 //&& a.ID != currentSession && x.PermissionDesc != "Super Admin"
+
                 int currentSession = Session["CurrentSession"] != null ? Convert.ToInt32(Session["CurrentSession"].ToString()) : 0;
+
+                //Code to retrieve list of Active Session of users in the system.
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     var List = (from a in db.UserSessionLogs
@@ -56,11 +62,14 @@ namespace TWI.InventoryAutomated.Controllers
                 throw;
             }
         }
+
+
         [HttpPost]
         public ActionResult RemoveSession(int id)
         {
             try
             {
+                //Code to kill user session by Session ID
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     UserSessionLog session = db.UserSessionLogs.Where(x => x.ID == id).FirstOrDefault<UserSessionLog>();

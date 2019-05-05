@@ -1,0 +1,3 @@
+﻿1>------ Build started: Project: TWI.InventoryAutomated, Configuration: Debug Any CPU ------
+1>  TWI.InventoryAutomated -> D:\Krunal\Projects\SCB_New\SourceCode\TWI.InventoryAutomated\TWI.InventoryAutomated\bin\TWI.InventoryAutomated.dll
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

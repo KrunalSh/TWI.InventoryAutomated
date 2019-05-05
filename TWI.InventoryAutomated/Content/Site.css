@@ -378,6 +378,21 @@ datatable_col59PercH {
     font-family: Calibri;
     font-size: 13px;
 }
+
+.dialog_label {
+    font-family:Calibri;
+    font-size:11px;
+    font-weight:bold;
+}
+
+
+
+
+
+
+
+
+
 /* For mobile phones: */
 [class*="mobileDevices"] {
     text-align: center;

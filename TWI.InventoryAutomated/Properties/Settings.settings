@@ -32,5 +32,23 @@
     <Setting Name="TWI_InventoryAutomated_TestGmbhWh_Users_Users_Service" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">http://twinav01.twi.cloud:8248/TWI_NAV_TEST/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/Users</Value>
     </Setting>
+    <Setting Name="TWI_InventoryAutomated_DEVGMBHPurchaseOrder_TWIWMS_PurchaseOrder_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/TWIWMS_PurchaseOrder</Value>
+    </Setting>
+    <Setting Name="TWI_InventoryAutomated_DEVGMBHReservationEntries_TWIWMS_ReservationEntries_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/TWIWMS_ReservationEntries</Value>
+    </Setting>
+    <Setting Name="TWI_InventoryAutomated_DEVGMBHTransferOrder_TWIWMS_TransferOrder_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/TWIWMS_TransferOrder</Value>
+    </Setting>
+    <Setting Name="TWI_InventoryAutomated_DEVGMBHItemCard_TWIWMS_Item_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/TWIWMS_Item</Value>
+    </Setting>
+    <Setting Name="TWI_InventoryAutomated_DEVGMBHWarehouseReceiptLines_TWIWMS_WarehouseReceiptLines_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Page/TWIWMS_WarehouseReceiptLines</Value>
+    </Setting>
+    <Setting Name="TWI_InventoryAutomated_DEVGMBHWarehouseReceiptCU_TWIWMSInbound" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://twinav01.twi.cloud:8148/TWI_NAV_Dev2019/WS/Theodor%20Wille%20Intertrade%20GMBH/Codeunit/TWIWMSInbound</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

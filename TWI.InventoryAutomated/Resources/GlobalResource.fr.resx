@@ -477,4 +477,16 @@
   <data name="LocationDetail" xml:space="preserve">
     <value>Détail de l'emplacement</value>
   </data>
+  <data name="InboundPurchaseOrders" xml:space="preserve">
+    <value>Entrant - Commandes d''achat</value>
+  </data>
+  <data name="ExpiryDate" xml:space="preserve">
+    <value>Date d'expiration</value>
+  </data>
+  <data name="ItemTrackingTitle" xml:space="preserve">
+    <value>Suivi des articles</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantité</value>
+  </data>
 </root>

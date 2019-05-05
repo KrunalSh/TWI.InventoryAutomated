@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Item Tracking";
+}
+
+<style>
+    .dialog_label {
+        font-family:Calibri;
+        font-size:12px;
+        font-weight:bold;
+    }
+</style>
+
+
+<div style="width:90% !important;margin:auto;">
+    @*padding:5px 5px 10px 5px;*@
+    <div style="background-color: #808080;width:100%;color: #ffffff;height:20px;font-family:Calibri; font-size:11px;font-weight:bold;">
+        <div style="font-weight:bold;padding:3px 5px 0px 5px;">@ViewBag.ItemNo - @ViewBag.Desc</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4" style="float:left;">
+            <label class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.ExpiryDate</label>
+            <input type="text" id="expirydate" name="expirydate" class="form-control" />
+        </div>
+        <div class="col-md-4" style="float:left;">
+            <label class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.Quantity</label>
+            <input type="text" id="quantity" name="quantity" class="form-control" />
+        </div>
+        <div class="col-md-4" style="float:left;padding-top:23px;">
+            <input type="submit" value="@TWI.InventoryAutomated.Resources.GlobalResource.Save" class="btn btn-primary" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 table-responsive" style="float:left;padding-top:23px;">
+            <table id="ItemTrackingTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                <thead>
+                    <tr>
+                        <th>Expiry Date</th>
+                        <th>Quantity</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+    

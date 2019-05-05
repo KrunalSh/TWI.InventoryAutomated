@@ -1,0 +1,302 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .dialog_label {
+        font-family: Calibri;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .data_label {
+        font-family: Calibri;
+        font-size: 16px;
+    }
+
+    .datatable_col20PercH {
+        width: 20% !important;
+        text-align: left !important;
+        font-family: Calibri;
+        font-size: 12px;
+        font-weight: bold;
+        height: 15px !important;
+        color: black !important;
+    }
+</style>
+
+<div class="row">
+    <div class="container">
+        <div style="margin:auto;width:90%;border:2px #808080 solid;">
+            <div style="background-color: #808080;color: #ffffff;padding: 5px;height: 30px;" id="topHeading">
+                <div style="font-weight:bold">@TWI.InventoryAutomated.Resources.GlobalResource.InboundTransferOrders</div>
+                <a style="margin-top:-24px;float: right;color: white;" href='@Url.Action("InboundSubMenus","Home")'><i class="fa fa-home fa-2x"></i></a>
+            </div>
+            <div class="row" style="margin:10px 15px;padding-bottom:10px;border-bottom:1px solid #808080">
+                <div style="float:left;width:150px !important;"><input type="text" id="TONumber" name="TONumber" placeholder="Enter TO No" class="form-control" /></div>
+                <div style="float:left;width:100px !important;margin-left:10px;"><input type="button" value="@TWI.InventoryAutomated.Resources.GlobalResource.StartReceive" class="btn btn-primary" onclick="RetrieveTODetails();" /></div>
+            </div>
+            <div class="row" style="margin:10px 15px 10px 15px;border-bottom:1px solid #808080;padding-bottom:10px;">
+                <div class="row">
+                    @*margin-right:10px;margin-left:20px;*@
+                    @*margin-right:10px;margin-left:20px;*@
+                    <div class="col-md-4" style="float:left;">
+                        @Html.Label(TWI.InventoryAutomated.Resources.GlobalResource.ReceiptNo, new { @class = "dialog_label" })<span class="dialog_label">:</span>
+                        <label class="data_label" id="lblReceiptNo" />
+                    </div>
+                    <div class="col-md-4" style="float:left;">
+                        @Html.Label(TWI.InventoryAutomated.Resources.GlobalResource.VendorName, new { @class = "dialog_label" })<span class="dialog_label">:</span>
+                        <label class="data_label" id="lblVendorName" />
+                    </div>
+                    <div class="col-md-4" style="float:left;">
+                        @Html.Label(TWI.InventoryAutomated.Resources.GlobalResource.ContainerNo, new { @class = "dialog_label" })<span class="dialog_label">:</span>
+                        <label class="data_label" id="lblContainerNo" />
+                    </div>
+                </div>
+                <div class="row">
+                    @*margin-right:10px;margin-left:20px;*@
+                    <div class="col-md-4" style="float:left;">
+                        @Html.Label(TWI.InventoryAutomated.Resources.GlobalResource.LocationCode, new { @class = "dialog_label" })<span class="dialog_label">:</span>
+                        <label class="data_label" id="lblLocation" />
+                    </div>
+                    @*margin-right:10px;margin-left:20px;*@
+                    <div class="col-md-4" style="float:left;">
+                        @Html.Label(TWI.InventoryAutomated.Resources.GlobalResource.OrderDate, new { @class = "dialog_label" })<span class="dialog_label">:</span>
+                        <label class="data_label" id="lblOrderDate" />
+                    </div>
+                    @*margin-right:10px;margin-left:20px;*@
+                    <div class="col-md-4" style="float:left;">
+                        @Html.Label(TWI.InventoryAutomated.Resources.GlobalResource.PostingDate, new { @class = "dialog_label" })<span class="dialog_label">:</span>
+                        <input type="text" id="PostingDate" name="Posting Date" placeholder="" style="width:100px !important;border-radius:4px;border:1px solid #c7c7c7;" />
+                    </div>
+                </div>
+            </div>
+            <div style="width:95%;margin:22px 25px;" class="table-responsive">
+                <table id="TransferOrderTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.ItemNo</th>
+                            <th class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.NSNNo</th>
+                            <th class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.Description</th>
+                            @*<th class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.ExpiryDate</th>*@
+                            <th class="dialog_label">@TWI.InventoryAutomated.Resources.GlobalResource.Quantity</th>
+                            <th class="dialog_label"></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="width:90% !important;margin:auto;display:none;" id="itemtracking">
+        @*padding:5px 5px 10px 5px;*@
+        <div style="width:100% !important; border:1px solid #808080;">
+            <div style="background-color: #808080;color: #ffffff;height:20px;font-family:Calibri; font-size:13px;font-weight:bold;">
+                <div style="font-weight:bold;padding:3px 5px 0px 5px;" id="itemdetail"></div>
+                @*<div style="font-weight:bold;padding:3px 5px 0px 5px;" id="itemdetail">@ViewBag.ItemNo - @ViewBag.Desc</div>*@
+            </div>
+            <div style="width:100% !important;">
+               
+                <div class="table-responsive" style="float:left;padding-top:18px;">
+                    <div style="background-color: #808080;color: #ffffff;height:20px;font-family:Calibri; font-size:13px;font-weight:bold;">
+                        <div style="font-weight:bold;padding:0px 5px 0px 5px;">Pending Quantity to Receive</div>
+                    </div>
+                    <table id="ItemTrackingTable" class="table table-striped dt-responsive display nowrap table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="dialog_label" style="width:48% !important;height:25px !important;">Lot No</th>
+                                <th class="dialog_label" style="width:30% !important;height:25px !important;">Qty</th>
+                                <th class="dialog_label" style="width:18% !important;height:25px !important;">Qty to Receive</th>
+                                <th class="dialog_label" style="width:4% !important;height:25px !important;"></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+            <div style="float:left;width:100% !important;">
+                <div style="margin-top:8px;padding-left:10px;border-radius:5px;border:solid 1px #808080  ;background-color:#e9e9e9;height:30px;" id="PostedQty"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+@section scripts{
+    <script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        var Popup, dataTable;
+        $(document).ready(function () {
+            //RetrievePODetails();
+        });
+
+        function RetrieveTODetails()
+        {
+             var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            var tono = $("#TONumber").val();
+
+
+            $.ajax({
+                url: '/TransferOrder/GetTOHeaderDetails?TONo=' + tono,
+                type: 'GET',
+                datatype: 'JSON',
+                success: function (data) {
+                    if (data.success) {
+                        $("#lblContainerNo").html(data.message.ContainerNo);
+                        $("#lblOrderDate").html(data.message.OrderDate);
+                        $("#lblVendorName").html(data.message.VendorName);
+                        $("#lblLocation").html(data.message.LocationCode);
+                        $("#PostingDate").val(data.message.PostedDate)
+                        //console.log(data);
+
+                        dataTable = $("#TransferOrderTable").DataTable({
+                            "destroy" : true,
+                            "ajax": {
+                                "url": "/TransferOrder/GetTODetails?TONo=" + $("#TONumber").val(),
+                                "type": "GET",
+                                "datatype": "json"
+                            },
+                            "columns": [
+                                { "data": "ItemNo", "className" : "data_label" },
+                                { "data": "NSNo", "className": "data_label" },
+                                { "data": "Description", "className": "data_label" },
+                                //{ "data": "ExpiryDate", "className": "data_label" },
+                                { "data": "Quantity", "className": "data_label" },
+                                {
+                                    "data": "ItemNo", "render": function (data1) {
+                                        @*onclick=PopupForm('@Url.Action("AddOrEdit", "RegisteredDevice")/" + data + "')
+                                        <i class='fa fa-trash fa-lg' data-toggle='tooltip' title='Delete' style='margin-left:15px' data-confirm='Are you sure you want to delete?' onclick=Delete(" + data + ")></i>*@
+                                        return "<i class='fa fa-pencil fa-lg' data-toggle='tooltip' title='Edit' onclick=PopupForm('" + data1 + "')></i>";
+                                    },
+                                    "orderable": false,
+                                    "searchable": false,
+                                    "width": "50px"
+                                    , "className": "data_label"
+                                }
+                            ],
+                            "aaSorting": [[0, "desc"]],
+                            "responsive": true,
+                            "language": {
+                                "emptyTable": "No data found for the selected TO Number",
+                                "url": Path
+                            },
+                            @*'fnDrawCallback': function (oSettings) {
+                                if ($('.dataTables_filter i').length == 0)
+                                    $('.dataTables_filter').append('  <a class="btn btn-success" style="height:30px;background-color:#7E1617" data-toggle="tooltip" title="Add New" onclick="PopupForm(\'@Url.Action("AddOrEdit", "RegisteredDevice")\')"><i class="fa fa-plus fa-lg"</i></a>');
+                                $('[data-toggle="tooltip"]').tooltip();
+                            }*@
+                        });
+                    }
+                    else {
+                        alert(data.message);
+                    }
+
+                }
+            });
+
+
+        }
+
+       function PopupForm(itemno) {
+            var currentCult = getCookie("Language");
+            var Path = FetchPathforCultureFile(currentCult);
+            var TONo = $("#TONumber").val();
+            var url = '/TransferOrder/ItemTracking?ItemNo=' + itemno + '&TONo=' + TONo ;
+
+            var formDiv = $('#itemtracking');
+                        Popup = formDiv.dialog({
+                            autoOpen: true,
+                            title: '@Html.Raw(TWI.InventoryAutomated.Resources.GlobalResource.ItemTrackingTitle)',
+                            modal: true,
+                            width: 450,
+                            close: function () {
+                                $('#itemdetail').html('');
+                                $('#PostedQty').html('');
+                            }
+
+            });
+
+
+            $.ajax({
+                url: '/TransferOrder/ItemTracking?ItemNo=' + itemno + '&TONo=' + TONo,
+                type: 'GET',
+                datatype: 'Json',
+                success: function (data) {
+                    $('#itemdetail').html(data.ItemNo + ' - ' + data.Desc);
+                    $('#PostedQty').html('<span class="dialog_label">Qty Posted : </span><span class="dialog_label">' + data.QtyRec + '</span>');
+                }
+            });
+
+            var itemDataTable = $("#ItemTrackingTable").DataTable({
+                "destroy": true,
+                "ajax": {
+                    "url": "/TransferOrder/GetItemTrackingLine?TONo=" + $("#TONumber").val() + "&ItemNo=" + itemno,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "Lot_No", 'className': 'dialog_label' },
+                    { "data": "Quantity_Base", 'className': 'dialog_label' },
+                    {
+                        "data": "ItemNo", "render": function (ItemNo) {
+                            return "<input type='text' name='txtqty' id='txtqty' style='width:100px !important;' />"
+                        } 
+                    },
+                    {
+                        "data": "Item_No", "render": function (data1) {
+                            @*onclick = Delete(" + data + ") style = 'margin-left:15px' *@
+
+                            return "<i class='fa fa-trash fa-lg' data - toggle='tooltip' title = 'Delete' data - confirm='Are you sure you want to delete?'></i>";
+                        },
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "50px", 'className': 'dialog_label'
+                    }
+                ],
+                "aaSorting": [[0, "desc"]],
+                "responsive": true,
+                "ordering" : false,
+                "searching": false,
+                "paging": false,
+                "info" : false,
+                "language": {
+                    "emptyTable": "No Item Tracking Lines found.",
+                    "url": Path
+                }
+            });
+       }
+
+        function Cancelbutton() {
+            Popup.dialog('destroy').remove();
+        }
+        function SubmitForm(form) {
+            $.validator.unobtrusive.parse(form);
+            if ($(form).valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: form.action,
+                    data: $(form).serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            Popup.dialog('close');
+                            dataTable.ajax.reload();
+                            alert(data.message);
+                        }
+                        else
+                            alert(data.message);
+                    }
+                });
+            }
+            return false;
+        }
+    </script>
+}

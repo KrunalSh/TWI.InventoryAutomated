@@ -210,16 +210,32 @@ namespace TWI.InventoryAutomated.Controllers
             try
             {
                 //Code to be moved to detail screen where pull, push everything will happen
-                switch (Convert.ToString(Session["InstanceName"]).ToLower())
+                switch ("dev")
                 {
                     case "live":
                         _resultMsg = ConnectAndPullDataFromLive(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
                         break;
-                    //case "dev": _resultMsg = ConnectAndPullDataFromDev(ID,Convert.ToString(Session["CompanyName"]), ref ItemCount);
-                    //    break;
-                    case "test": _resultMsg = ConnectAndPullFromTest(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                    case "dev":
+                        _resultMsg = ConnectAndPullDataFromDev();
+                        break;
+                    case "test":
+                        _resultMsg = ConnectAndPullFromTest(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
                         break;
                 }
+
+                //Original Code
+                //switch (Convert.ToString(Session["InstanceName"]).ToLower())
+                //{
+                //    case "live":
+                //        _resultMsg = ConnectAndPullDataFromLive(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                //        break;
+                //    //case "dev": _resultMsg = ConnectAndPullDataFromDev(ID,Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                //    //    break;
+                //    case "test":
+                //        _resultMsg = ConnectAndPullFromTest(ID, Convert.ToString(Session["CompanyName"]), ref ItemCount);
+                //        break;
+                //}
+
                 return Content(_resultMsg);
             }
             catch (Exception ex)
@@ -5376,6 +5392,50 @@ namespace TWI.InventoryAutomated.Controllers
                 }
             }
             catch (Exception ex) { return ex.Message; }
+        }
+
+        private string ConnectAndPullDataFromDev()
+        {
+
+            //Purchase Orders
+            //_service = new DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Service();
+            //((DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Service)_service).UseDefaultCredentials = false;
+            //((DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //_servicefilters = new List<DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Filter>();
+            //((List<DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Filter>)_servicefilters).Add(new DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Filter { Field = DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Fields.No, Criteria = "PO-009489" });
+
+            //DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder[] _purchaseorders = ((DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Service)_service).ReadMultiple(((List<DEVGMBHPurchaseOrder.TWIWMS_PurchaseOrder_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+            //DEVGMBHPurchaseOrder.Purchase_Order_Line[] _purorderline = _purchaseorders[0].PurchLines;
+
+            //Reservation Entries
+            _service = new DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Service();
+            ((DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Service)_service).UseDefaultCredentials = false;
+            ((DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+                , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+                , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            _servicefilters = new List<DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Filter>();
+            ((List<DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Filter>)_servicefilters).Add(new DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Filter { Field = DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Fields.Source_ID, Criteria = "PO-009489" });
+
+            DEVGMBHReservationEntries.TWIWMS_ReservationEntries[] _purchaseorders = ((DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Service)_service).ReadMultiple(((List<DEVGMBHReservationEntries.TWIWMS_ReservationEntries_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+
+            //Transfer Order 
+            //_service = new DEVGMBHTransferOrder.TWIWMS_TransferOrder_Service();
+            //((DEVGMBHTransferOrder.TWIWMS_TransferOrder_Service)_service).UseDefaultCredentials = false;
+            //((DEVGMBHTransferOrder.TWIWMS_TransferOrder_Service)_service).Credentials = new NetworkCredential(System.Configuration.ConfigurationManager.AppSettings["WebService.UserName"]
+            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Password"]
+            //    , System.Configuration.ConfigurationManager.AppSettings["WebService.Domain"]);
+
+            //_servicefilters = new List<DEVGMBHTransferOrder.TWIWMS_TransferOrder_Filter>();
+            //((List<DEVGMBHTransferOrder.TWIWMS_TransferOrder_Filter>)_servicefilters).Add(new DEVGMBHTransferOrder.TWIWMS_TransferOrder_Filter { Field = DEVGMBHTransferOrder.TWIWMS_TransferOrder_Fields.No, Criteria = "ITO-003352" });
+
+            //DEVGMBHTransferOrder.TWIWMS_TransferOrder[] _purchaseorders = ((DEVGMBHTransferOrder.TWIWMS_TransferOrder_Service)_service).ReadMultiple(((List<DEVGMBHTransferOrder.TWIWMS_TransferOrder_Filter>)_servicefilters).ToArray(), string.Empty, 0);
+            //DEVGMBHTransferOrder.Transfer_Order_Line[] _transferlines = _purchaseorders[0].TransferLines;
+
+            return "Success";
         }
 
         private string ConnectAndPullFromTest(int ID, string CompanyName, ref int ItemCount)

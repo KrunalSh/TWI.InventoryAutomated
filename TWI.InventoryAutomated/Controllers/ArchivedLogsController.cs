@@ -16,18 +16,22 @@ namespace TWI.InventoryAutomated.Controllers
         // GET: ArchivedLogs
         public ActionResult Index()
         {
+            //Check to Validate user session to prevent unauthorized access to this web page
             CommonServices cs = new CommonServices();
             if (cs.IsCurrentSessionActive(Session["CurrentSession"]))
                 return View();
             else
             {
+                //Clear all the session and redirect App to Login Screen
                 cs.RemoveSessions();
                 return RedirectToAction("Default", "Home");
             }
         }
+
         [HttpGet]
         public ActionResult Index(int SessionID)
         {
+            //Code to get the Session header information.
             HeaderInfo HI = new HeaderInfo();
             using (InventoryPortalEntities db = new InventoryPortalEntities())
             {
@@ -50,11 +54,13 @@ namespace TWI.InventoryAutomated.Controllers
                 return View(HeaderInfo);
             }
         }
+
         [HttpPost]
         public ActionResult GetData(int SessionID)
         {
             try
             {
+                //Linq query to retrieve Activity Log of a user session by SessionID
                 using (InventoryPortalEntities db = new InventoryPortalEntities())
                 {
                     var dataList = (from a in db.ArchivedSessionLogs
